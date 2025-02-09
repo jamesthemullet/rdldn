@@ -19,6 +19,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
+      - name: Wait for Vercel Deployment
+        run: sleep 30
       - name: Audit URLs using Lighthouse
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v12
@@ -86,10 +88,10 @@ jobs:
           yarn add chromedriver@$CHROMIUM_VERSION
           echo "chromedriver version: $(chromedriver --version)"
       - run: yarn run build
-      - run: yarn dev & npx wait-on http://localhost:3000
+      - run: yarn dev & npx wait-on http://localhost:4221
       - name: Run axe
         run: |
           yarn add @axe-core/cli
           CHROMIUM_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
           yarn add chromedriver@$CHROMIUM_VERSION
-          npx axe --chromedriver-path $(yarn bin)/chromedriver http://localhost:3000/ --load-delay=1500 --exit
+          npx axe --chromedriver-path $(yarn bin)/chromedriver http://localhost:4321/ --load-delay=1500 --exit
