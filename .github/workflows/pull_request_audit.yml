@@ -20,7 +20,15 @@ jobs:
           vercel-org-id: ${{ secrets.ORG_ID}}
           vercel-project-id: ${{ secrets.PROJECT_ID}}
       - name: Wait for Vercel Deployment
-        run: sleep 30
+        run: |
+          for i in {1..30}; do
+            if curl --head --fail --silent "${{ steps.vercel_action.outputs.preview-url }}" > /dev/null; then
+              echo "Deployment is live!"
+              break
+            fi
+            echo "Waiting for Vercel deployment..."
+            sleep 5
+          done
       - name: Audit URLs using Lighthouse
         id: lighthouse_audit
         uses: treosh/lighthouse-ci-action@v12
