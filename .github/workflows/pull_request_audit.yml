@@ -70,6 +70,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 18.x
+      - run: npx browser-driver-manager install chrome
       - run: yarn install
       - run: yarn run build
       - run: yarn dev & npx wait-on http://localhost:4321
