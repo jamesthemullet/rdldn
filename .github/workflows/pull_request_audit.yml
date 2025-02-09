@@ -27,7 +27,8 @@ jobs:
             ${{ steps.vercel_action.outputs.preview-url }}
           budgetPath: ".github/lighthouse/budget.json"
           uploadArtifacts: true
-          runs: 5
+          runs: 1
+          artifactName: lighthouse_results
       - name: Format lighthouse score
         id: format_lighthouse_score
         uses: actions/github-script@v3
@@ -59,3 +60,21 @@ jobs:
           header: lighthouse
           message: |
             ${{ steps.format_lighthouse_score.outputs.comment }}
+  axe:
+    runs-on: ubuntu-latest
+    env:
+      WORDPRESS_API_URL: https://www.rdldn.co.uk/graphql
+      GITHUB_API_SECRET: ${{ secrets.PIPELINE_GITHUB_API_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+      - run: yarn install
+      - run: yarn run build
+      - run: yarn dev & npx wait-on http://localhost:3000
+      - name: Run axe
+        run: |
+          yarn add @axe-core/cli
+          npx axe http://localhost:3000 --exit
