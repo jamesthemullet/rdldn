@@ -72,8 +72,8 @@ jobs:
           node-version: 18.x
       - run: yarn install
       - run: yarn run build
-      - run: yarn dev & npx wait-on http://localhost:3000
+      - run: yarn dev & npx wait-on http://localhost:4321
       - name: Run axe
         run: |
           yarn add @axe-core/cli
-          npx axe http://localhost:3000 --exit
+          npx axe http://localhost:4321 --exit
