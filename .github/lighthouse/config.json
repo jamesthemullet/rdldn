@@ -1,0 +1,18 @@
+{
+  "extends": "lighthouse:default",
+  "settings": {
+    "throttlingMethod": "simulate",
+    "formFactor": "desktop",
+    "screenEmulation": {
+      "width": 1920,
+      "height": 1080,
+      "deviceScaleFactor": 1,
+      "mobile": false
+    },
+    "throttling": {
+      "rttMs": 40,
+      "throughputKbps": 10240,
+      "cpuSlowdownMultiplier": 1
+    }
+  }
+}
