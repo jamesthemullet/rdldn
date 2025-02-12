@@ -1,0 +1,75 @@
+---
+// import Header from "../components/header/header.astro";
+// import Footer from "../components/footer/footer.astro";
+const { pageTitle, description, opengraphImage } = Astro.props;
+import "./layout.css";
+// import "@fontsource/yellowtail";
+// import yellowtailWoff2 from "@fontsource/yellowtail/files/yellowtail-latin-400-normal.woff2?url";
+
+// import logo3 from "../images/logos/rdaw-logo-3.webp";
+
+// import { SEO } from "astro-seo";
+---
+
+<html lang="en">
+  <head>
+    <!-- <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={yellowtailWoff2}
+      crossorigin="anonymous"
+    /> -->
+
+    <meta charset="utf-8" />
+    <!-- <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    /> -->
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- <SEO
+      title={pageTitle || "Roast Dinners In London"}
+      description={description ||
+        "Lord Gravy bringing you a guide to the best and worst roast dinners in London."}
+      openGraph={{
+        basic: {
+          title: pageTitle || "Roast Dinners In London",
+          type: "Article",
+          image: opengraphImage || logo3,
+        },
+        optional: {
+          description:
+            description ||
+            "Lord Gravy bringing you a guide to the best and worst roast dinners in London.",
+          siteName: "Roast Dinners In London",
+        },
+      }}
+    /> -->
+    <!-- Google tag (gtag.js) -->
+  </head>
+  <body>
+    <div class="page-container">
+      <!-- <Header /> -->
+      <main>
+        <slot />
+      </main>
+      <!-- <Footer /> -->
+    </div>
+  </body>
+</html>
