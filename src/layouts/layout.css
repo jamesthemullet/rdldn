@@ -1,9 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Loved+by+the+King&display=swap");
+
+:root {
+  --roast-main-text: #403b37;
+  --roast-pink: #ff0f83;
+  --roast-blue: #0f83ff;
+  --roast-light: #ebebeb;
+  --roast-white: #fff;
+  --roast-black: #000;
+  --roast-new-blue: #0129ad;
+  --halloween: #ff810a;
+  --blood: #e60005;
+  --bakerloo: #b36305;
+  --central: #e32017;
+  --circle: #ffd300;
+  --district: #00782a;
+  --hammersmithandcity: #f3a9bb;
+  --jubilee: #a0a5a9;
+  --metropolitan: #9b0056;
+  --northern: #000;
+  --piccadilly: #003688;
+  --victoria: #0098d4;
+  --overground: #ee7c0e;
+}
+
 body {
   font-family: "xxxxxxxxxxxxxxxx", sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: blue;
+  color: --roast-main-text;
   font-size: 18px;
 }
 
@@ -39,10 +64,9 @@ h2 {
   @media (max-width: 768px) {
     font-size: 1.75em;
   }
-  font-family: "xxxxxxxxxxxxxxx", "xxxxxxxxxxxxxxxxx", sans-serif;
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
   font-size: 3em;
-  color: #333;
-  margin: 10px;
 }
 
 h2 {
@@ -51,7 +75,7 @@ h2 {
   }
   font-size: 2em;
   text-decoration: underline;
-  color: #603d34;
+  margin: 1rem 1rem 0 1rem;
 }
 
 ol {
@@ -59,7 +83,6 @@ ol {
     padding: 0 20px;
   }
   padding: 0;
-  color: #333;
 
   li {
     margin: 0;
@@ -69,6 +92,5 @@ ol {
   li a,
   li p {
     text-decoration: none;
-    color: #333;
   }
 }

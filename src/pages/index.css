@@ -1,8 +1,3 @@
-h2 {
-  text-align: left;
-  margin: 1rem;
-}
-
 ul {
   display: flex;
   flex-wrap: wrap;
@@ -21,6 +16,8 @@ ul {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
 
     @media (min-width: 768px) {
       flex: 50%;

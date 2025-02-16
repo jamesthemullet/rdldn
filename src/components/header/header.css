@@ -1,0 +1,173 @@
+header {
+  width: 100%;
+}
+
+.nav-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: var(--roast-new-blue);
+  color: var(--roast-white);
+  font-size: 1.5em;
+  margin-right: 2rem;
+
+  a {
+    text-decoration: none;
+    padding-right: 1rem;
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
+    color: var(--roast-white);
+
+    img {
+      width: 50px;
+      height: 50px;
+
+      @media (min-width: 768px) {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  }
+
+  .logo {
+    font-size: 1.5em;
+    display: none;
+    min-height: 4rem;
+    align-content: center;
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+}
+
+.nav-container {
+  position: relative;
+  flex-wrap: wrap;
+}
+
+#nav-toggle {
+  position: absolute;
+  width: 30px;
+  height: 1.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 1rem;
+  top: 1rem;
+  right: 1rem;
+
+  @media (min-width: 1000px) {
+    display: none;
+  }
+}
+
+#nav-toggle::before,
+#nav-toggle::after,
+#nav-toggle span {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 0.25rem;
+  background-color: var(--roast-white);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+#nav-toggle::before {
+  top: 0;
+}
+
+#nav-toggle span {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#nav-toggle::after {
+  bottom: 0;
+}
+
+#nav-toggle.open::before {
+  transform: translateY(8px) rotate(45deg);
+}
+
+#nav-toggle.open span {
+  opacity: 0;
+}
+
+#nav-toggle.open::after {
+  transform: translateY(-1rem) rotate(-45deg);
+}
+
+#nav-menu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: var(--roast-white);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    top: 100px;
+    width: auto;
+  }
+
+  @media (min-width: 1000px) {
+    display: flex;
+    position: relative;
+    box-shadow: none;
+    top: 0;
+    justify-content: center;
+    width: 100%;
+    background-color: var(--roast-main-text);
+  }
+
+  @media (min-width: 1550px) {
+    width: unset;
+  }
+}
+
+#nav-menu a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+
+  @media (min-width: 768px) {
+    font-size: 1.5em;
+  }
+
+  @media (min-width: 1000px) {
+    margin: 0;
+    line-height: 1;
+    font-size: 1em;
+  }
+}
+
+#nav-menu a:hover {
+  color: #603d34;
+
+  @media (min-width: 1000px) {
+    color: #603d34;
+  }
+}
+
+#nav-toggle.open + #nav-menu {
+  display: block;
+}
