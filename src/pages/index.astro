@@ -5,6 +5,7 @@ import "./index.css";
 import { fetchGraphQL } from "../lib/api";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
 let recentPost;
 let recentPostCursor;
@@ -45,6 +46,19 @@ if (recentPostCursor) {
 }
 
 const posts = [recentPost, ...otherPosts];
+
+let singlePageData;
+const variables = { id: "5614" };
+try {
+  const singlePageResponse = await fetchGraphQL(
+    SINGLE_PAGE_QUERY_PREVIEW,
+    variables
+  );
+  console.log(40, singlePageResponse);
+  singlePageData = singlePageResponse?.page;
+} catch (error) {
+  console.error("Error fetching single page data:", error);
+}
 ---
 
 <BaseLayout pageTitle="Home">
@@ -72,4 +86,21 @@ const posts = [recentPost, ...otherPosts];
     }
   </ul>
   <h2>Roast By Location:</h2>
+  {
+    singlePageData && (
+      <div>
+        <h3>{singlePageData.title}</h3>
+        <p>{singlePageData.content}</p>
+        <a href={singlePageData.slug} rel="noopener noreferrer">
+          {/* <Image
+            src={singlePageData.featured_image}
+            alt={`Photo of the roast dinner at ${singlePageData.title}`}
+            width={768}
+            height={576}
+            loading={"lazy"}
+          /> */}
+        </a>
+      </div>
+    )
+  }
 </BaseLayout>
