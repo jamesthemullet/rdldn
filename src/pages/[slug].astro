@@ -1,0 +1,114 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import "./post.css";
+
+export async function getStaticPaths() {
+  const response = await fetch("https://www.rdldn.co.uk/graphql", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        query AllSlugs {
+          posts {
+            nodes {
+              slug
+            }
+          }
+        }
+        `,
+    }),
+  });
+
+  const { data } = await response.json();
+
+  console.log(10, data);
+
+  const posts = data.posts.nodes;
+
+  const paths = posts.map((post) => {
+    return { params: post };
+  });
+
+  return paths;
+}
+
+const { slug } = Astro.params;
+
+console.log(11, slug);
+
+const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query: `
+        query SinglePost($id: ID = "${slug}") {
+          post(idType: SLUG, id: $id) {
+            date
+            content
+            title
+            featuredImage {
+              node {
+                sourceUrl
+              }
+            }
+            seo {
+              opengraphTitle
+              opengraphDescription
+              opengraphSiteName
+              opengraphImage {
+                uri
+                altText
+                mediaDetails {
+                  file
+                  height
+                  width
+                }
+                mediaItemUrl
+                sourceUrl
+                srcSet
+              }
+            }
+          }
+        }
+        `,
+  }),
+});
+
+const { data } = await singleResponse.json();
+
+console.log(15, data);
+
+const singlePost = data.post;
+---
+
+<BaseLayout
+  pageTitle={singlePost.title}
+  description={singlePost?.seo?.opengraphDescription || "test"}
+  opengraphImage={singlePost.seo.opengraphImage.sourceUrl || "test"}
+>
+  <Image
+    src={singlePost.featuredImage.node.sourceUrl}
+    alt={singlePost.title}
+    width={5000}
+    height={5000}
+    class="featured-image"
+    loading="eager"
+  />
+  <div class="container">
+    <h2>{singlePost.title}</h2>
+    <div set:html={singlePost.content} />
+    <!-- <p>
+      <strong>Rating:</strong>
+      {singlePost.customfields.rating}
+    </p>
+    <p>
+      <strong>Country:</strong>
+      {singlePost.customfields.country}
+    </p>
+    <p>
+      <strong>Year visited:</strong>
+      {new Date(singlePost.date).getFullYear()}
+    </p> -->
+  </div>
+</BaseLayout>

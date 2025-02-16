@@ -1,10 +1,8 @@
 ---
-// import Header from "../components/header/header.astro";
+import Header from "../components/header/header.astro";
 // import Footer from "../components/footer/footer.astro";
 const { pageTitle, description, opengraphImage } = Astro.props;
 import "./layout.css";
-// import "@fontsource/yellowtail";
-// import yellowtailWoff2 from "@fontsource/yellowtail/files/yellowtail-latin-400-normal.woff2?url";
 
 // import logo3 from "../images/logos/rdaw-logo-3.webp";
 
@@ -13,14 +11,6 @@ import "./layout.css";
 
 <html lang="en">
   <head>
-    <!-- <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href={yellowtailWoff2}
-      crossorigin="anonymous"
-    /> -->
-
     <meta charset="utf-8" />
     <!-- <link
       rel="apple-touch-icon"
@@ -65,7 +55,7 @@ import "./layout.css";
   </head>
   <body>
     <div class="page-container">
-      <!-- <Header /> -->
+      <Header />
       <main>
         <slot />
       </main>
