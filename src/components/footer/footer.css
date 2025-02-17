@@ -1,0 +1,11 @@
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+  font-family: "Loved by the King", sans-serif;
+  font-size: 1.5em;
+}
