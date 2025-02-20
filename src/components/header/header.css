@@ -19,6 +19,8 @@ header {
     font-family: "Loved by the King", sans-serif;
     text-transform: uppercase;
     color: var(--roast-white);
+    font-weight: 700;
+    letter-spacing: 2px;
 
     img {
       width: 50px;
@@ -32,13 +34,15 @@ header {
   }
 
   .logo {
-    font-size: 1.5em;
-    display: none;
+    display: block;
     min-height: 4rem;
     align-content: center;
 
-    @media (min-width: 768px) {
-      display: block;
+    a {
+      font-size: 1rem;
+      @media (min-width: 768px) {
+        font-size: 2rem;
+      }
     }
   }
 
@@ -113,14 +117,16 @@ header {
 }
 
 #nav-menu {
-  display: none;
   position: absolute;
-  top: 50px;
+  top: 4rem;
   right: 0;
-  background-color: var(--roast-white);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   width: 100%;
+  background-color: var(--roast-main-text);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 
   @media (min-width: 768px) {
     top: 100px;
@@ -134,12 +140,14 @@ header {
     top: 0;
     justify-content: center;
     width: 100%;
-    background-color: var(--roast-main-text);
+    max-height: 500px;
+    overflow: visible;
   }
+}
 
-  @media (min-width: 1550px) {
-    width: unset;
-  }
+#nav-toggle.open + #nav-menu {
+  display: block;
+  max-height: 500px;
 }
 
 #nav-menu a {
@@ -161,11 +169,7 @@ header {
 }
 
 #nav-menu a:hover {
-  color: #603d34;
-
-  @media (min-width: 1000px) {
-    color: #603d34;
-  }
+  color: var(--roast-pink);
 }
 
 #nav-toggle.open + #nav-menu {

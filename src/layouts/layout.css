@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Loved+by+the+King&display=swap");
-
 :root {
   --roast-main-text: #403b37;
   --roast-pink: #ff0f83;
@@ -21,6 +19,11 @@
   --piccadilly: #003688;
   --victoria: #0098d4;
   --overground: #ee7c0e;
+}
+
+@font-face {
+  font-family: "Loved by the King";
+  src: url("/fonts/LovedbytheKing-Regular.ttf") format("truetype");
 }
 
 body {
