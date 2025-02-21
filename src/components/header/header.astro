@@ -1,14 +1,16 @@
 ---
 import { Image } from "astro:assets";
-// import logo3 from "../../images/logos/rdaw-logo-3.webp";
+import logo1 from "../../images/logo-1.png";
 import "./header.css";
 ---
 
 <header>
   <div class="nav-container">
-    <!-- <a href='/'><Image src={logo3} width='100' height='100' /></a> -->
+    <a class="logo" href="/"
+      ><Image src={logo1} alt="" width="100" height="100" /></a
+    >
     <h1 class="sr-only">Roast Dinners in London</h1>
-    <div class="logo">
+    <div class="title">
       <a href="/">Roast Dinners in London</a>
     </div>
     <button id="nav-toggle" aria-label="Toggle Navigation Menu"
