@@ -1,28 +1,28 @@
 ul {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
   gap: 1rem;
   margin: 0;
   padding: 0;
-  flex-direction: column;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-direction: row;
+  max-width: 100%;
 
-  @media (min-width: 768px) {
+  @media (min-width: 1200px) {
     flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   li {
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: inline-block;
+    flex: 0 0 auto;
     font-family: "Loved by the King", sans-serif;
     text-transform: uppercase;
 
-    @media (min-width: 768px) {
-      flex: 50%;
-      max-width: calc(50% - 1rem);
-    }
     @media (min-width: 1200px) {
       flex: 33%;
       max-width: calc(33% - 1rem);
@@ -35,7 +35,9 @@ ul {
 
   img {
     width: 100%;
+    max-width: 400px;
     height: auto;
+    aspect-ratio: 12 / 9;
   }
 
   a {
