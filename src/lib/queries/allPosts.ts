@@ -12,6 +12,23 @@ const ALL_POSTS_QUERY = `
           country
           yearVisited
         }
+        seo {
+          opengraphTitle
+          opengraphDescription
+          opengraphSiteName
+          opengraphImage {
+            uri
+            altText
+            mediaDetails {
+              file
+              height
+              width
+            }
+            mediaItemUrl
+            sourceUrl
+            srcSet
+          }
+        }
       }
     }
   }

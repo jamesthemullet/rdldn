@@ -84,8 +84,8 @@ const singlePost = data.post;
 
 <BaseLayout
   pageTitle={singlePost.title}
-  description={singlePost?.seo?.opengraphDescription || "test"}
-  opengraphImage={singlePost.seo.opengraphImage.sourceUrl || "test"}
+  description={singlePost?.seo?.opengraphDescription}
+  opengraphImage={singlePost.seo.opengraphImage.sourceUrl}
 >
   <Image
     src={singlePost.featuredImage.node.sourceUrl}

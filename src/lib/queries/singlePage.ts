@@ -8,6 +8,23 @@ const SINGLE_PAGE_QUERY_PREVIEW = `
           
         }
       }
+      seo {
+        opengraphTitle
+        opengraphDescription
+        opengraphSiteName
+        opengraphImage {
+          uri
+          altText
+          mediaDetails {
+            file
+            height
+            width
+          }
+          mediaItemUrl
+          sourceUrl
+          srcSet
+        }
+      }
     }
   }
 `;

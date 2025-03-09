@@ -2,11 +2,12 @@
 import Header from "../components/header/header.astro";
 import Footer from "../components/footer/footer.astro";
 const { pageTitle, description, opengraphImage } = Astro.props;
+console.log(35, pageTitle, description, opengraphImage);
 import "./layout.css";
+import { SEO } from "astro-seo";
+import logo1 from "../images/logo-1.png";
 
 // import logo3 from "/images/logo-3.png";
-
-// import { SEO } from "astro-seo";
 ---
 
 <html lang="en">
@@ -33,7 +34,7 @@ import "./layout.css";
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="viewport" content="width=device-width" />
-    <!-- <SEO
+    <SEO
       title={pageTitle || "Roast Dinners In London"}
       description={description ||
         "Lord Gravy bringing you a guide to the best and worst roast dinners in London."}
@@ -41,7 +42,7 @@ import "./layout.css";
         basic: {
           title: pageTitle || "Roast Dinners In London",
           type: "Article",
-          image: opengraphImage || logo3,
+          image: opengraphImage || logo1,
         },
         optional: {
           description:
@@ -50,7 +51,7 @@ import "./layout.css";
           siteName: "Roast Dinners In London",
         },
       }}
-    /> -->
+    />
     <!-- Google tag (gtag.js) -->
     <script
       type="text/partytown"

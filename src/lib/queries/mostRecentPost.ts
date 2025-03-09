@@ -16,6 +16,23 @@ const MOST_RECENT_POST_QUERY = `
             }
           }
         }
+        seo {
+          opengraphTitle
+          opengraphDescription
+          opengraphSiteName
+          opengraphImage {
+            uri
+            altText
+            mediaDetails {
+              file
+              height
+              width
+            }
+            mediaItemUrl
+            sourceUrl
+            srcSet
+          }
+        }
       }
       pageInfo {
         endCursor
