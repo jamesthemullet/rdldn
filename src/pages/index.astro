@@ -45,6 +45,8 @@ if (recentPostCursor) {
   }
 }
 
+console.log(50, recentPost);
+
 const posts = [recentPost, ...otherPosts];
 
 let singlePageData;
@@ -61,7 +63,11 @@ try {
 }
 ---
 
-<BaseLayout pageTitle="Home">
+<BaseLayout
+  pageTitle="Home of Roast Dinners In London"
+  description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
+  openGraphImage={recentPost.seo.opengraphImage.sourceUrl}
+>
   <h2>Latest Reviews:</h2>
   <ul>
     {
