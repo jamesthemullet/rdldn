@@ -49,17 +49,20 @@ console.log(50, recentPost);
 
 const posts = [recentPost, ...otherPosts];
 
-let singlePageData;
-const variables = { id: "5614" };
+const locationPageIds = ["5614", "5612", "5616", "5594"];
+
+let locationPages = [];
+
 try {
-  const singlePageResponse = await fetchGraphQL(
-    SINGLE_PAGE_QUERY_PREVIEW,
-    variables
+  const pageResponses = await Promise.all(
+    locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
   );
-  console.log(40, singlePageResponse);
-  singlePageData = singlePageResponse?.page;
+
+  locationPages = pageResponses
+    .map((response) => response?.page)
+    .filter(Boolean);
 } catch (error) {
-  console.error("Error fetching single page data:", error);
+  console.error("Error fetching location pages:", error);
 }
 ---
 
@@ -92,23 +95,28 @@ try {
     }
   </ul>
   <h2>Roast By Location:</h2>
-  {
-    singlePageData && (
-      <div>
-        <h3>{singlePageData.title}</h3>
-        <p>{singlePageData.content}</p>
-        <a href={singlePageData.slug} rel="noopener noreferrer">
-          {/* <Image
-            src={singlePageData.featured_image}
-            alt={`Photo of the roast dinner at ${singlePageData.title}`}
-            width={768}
-            height={576}
-            loading={"lazy"}
-          /> */}
-        </a>
-      </div>
-    )
-  }
+  <ul>
+    {
+      locationPages.map((page) => (
+        <li>
+          <h3>
+            <a href={page.slug} rel="noopener noreferrer">
+              <Fragment set:html={page.title} />
+            </a>
+          </h3>
+          <a href={page.slug} rel="noopener noreferrer">
+            <Image
+              src={page.featuredImage?.node?.sourceUrl}
+              alt={`Photo of the roast dinner at ${page.title}`}
+              width={768}
+              height={576}
+              loading="lazy"
+            />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
   <h2>Search:</h2>
   <h2>Best roasts:</h2>
   <h2>Features:</h2>
