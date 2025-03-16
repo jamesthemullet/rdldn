@@ -1,0 +1,68 @@
+<section x-data="searchComponent()">
+  <form @submit.prevent="handleSearch">
+    <input type="text" placeholder="Search..." x-model="searchTerm" required />
+    <button type="submit">Search</button>
+  </form>
+
+  <ul x-show="searchResults.length > 0">
+    <template x-for="post in searchResults" :key="post.slug">
+      <li>
+        <h3>
+          <a :href="`/posts/${post.slug}`" x-text="post.title"></a>
+        </h3>
+
+        <a :href="`/posts/${post.slug}`" rel="noopener noreferrer">
+          <img
+            :src="post.featuredImage?.node?.sourceUrl"
+            :alt="`Photo of the roast dinner at ${post.title}`"
+            width="768"
+            height="576"
+          />
+        </a>
+      </li>
+    </template>
+  </ul>
+</section>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("searchComponent", () => ({
+      searchTerm: "",
+      searchResults: [],
+      async handleSearch() {
+        try {
+          const GRAPHQL_ENDPOINT = "https://www.rdldn.co.uk/graphql";
+          const SEARCH_QUERY = `
+            query SearchPosts($search: String!) {
+              posts(where: { search: $search }, first: 4) {
+                nodes {
+                  title
+                  slug
+                  featuredImage {
+                    node {
+                      sourceUrl
+                    }
+                  }
+                }
+              }
+            }
+          `;
+
+          const response = await fetch(GRAPHQL_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: SEARCH_QUERY,
+              variables: { search: this.searchTerm },
+            }),
+          });
+
+          const json = await response.json();
+          this.searchResults = json?.data?.posts?.nodes || [];
+        } catch (error) {
+          console.error("Error fetching search results:", error);
+        }
+      },
+    }));
+  });
+</script>

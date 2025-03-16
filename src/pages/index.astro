@@ -6,6 +6,7 @@ import { fetchGraphQL } from "../lib/api";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import Search from "../components/search/search.astro";
 
 let recentPost;
 let recentPostCursor;
@@ -44,8 +45,6 @@ if (recentPostCursor) {
     console.error("Error fetching other posts:", error);
   }
 }
-
-console.log(50, recentPost);
 
 const posts = [recentPost, ...otherPosts];
 
@@ -118,6 +117,8 @@ try {
     }
   </ul>
   <h2>Search:</h2>
+
+  <Search />
   <h2>Best roasts:</h2>
   <h2>Features:</h2>
   <h2>Roastatistics:</h2>

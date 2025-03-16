@@ -2,7 +2,6 @@
 import Header from "../components/header/header.astro";
 import Footer from "../components/footer/footer.astro";
 const { pageTitle, description, opengraphImage } = Astro.props;
-console.log(35, pageTitle, description, opengraphImage);
 import "./layout.css";
 import { SEO } from "astro-seo";
 import logo1 from "../images/logo-1.png";
@@ -12,6 +11,10 @@ import logo1 from "../images/logo-1.png";
 
 <html lang="en">
   <head>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
+    ></script>
     <meta charset="utf-8" />
     <link
       rel="apple-touch-icon"
