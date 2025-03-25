@@ -7,6 +7,7 @@ import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 import Search from "../components/search/search.astro";
+import GET_LOCATIONS from "../lib/queries/getLocations";
 
 let recentPost;
 let recentPostCursor;
@@ -63,6 +64,19 @@ try {
 } catch (error) {
   console.error("Error fetching location pages:", error);
 }
+
+let allLocations = [];
+
+try {
+  const locations = await fetchGraphQL(GET_LOCATIONS);
+  console.log(20, locations);
+  allLocations.push(...locations?.areas?.nodes);
+  allLocations.push(...locations?.boroughs?.nodes);
+} catch (error) {
+  console.error("Error fetching location pages:", error);
+}
+
+console.log(26, allLocations);
 ---
 
 <BaseLayout
@@ -116,6 +130,37 @@ try {
       ))
     }
   </ul>
+  <div class="preferred-locations">
+    <h3>Have some preferred locations?</h3>
+    <p>
+      Select from the lists below and we'll highlight appropriate reviews to you
+      in the future.
+    </p>
+
+    <div class="custom-select">
+      <button class="dropdown-btn" id="dropdown-btn">Select Locations</button>
+      <div class="dropdown-content">
+        {
+          allLocations.map((location) => (
+            <label key={location.slug} class="dropdown-item">
+              <input
+                type="checkbox"
+                value={location.slug}
+                class="hidden-checkbox location-checkbox"
+                data-location={location.slug}
+              />
+              <span>{location.name}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+    <div id="selected-locations">
+      <h4>Selected Locations:</h4>
+      <ul id="selected-locations-list"></ul>
+    </div>
+  </div>
+
   <h2>Search:</h2>
 
   <Search />
@@ -123,3 +168,72 @@ try {
   <h2>Features:</h2>
   <h2>Roastatistics:</h2>
 </BaseLayout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const dropdownButton = document.getElementById("dropdown-btn");
+    const dropdownContent = document.querySelector(".dropdown-content");
+    const locationCheckboxes = document.querySelectorAll(".location-checkbox");
+    const selectedLocationsList = document.getElementById(
+      "selected-locations-list"
+    );
+
+    const savedLocations =
+      JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
+    locationCheckboxes.forEach((checkbox) => {
+      if (savedLocations.includes((checkbox as HTMLInputElement).value)) {
+        (checkbox as HTMLInputElement).checked = true;
+      }
+    });
+
+    displaySelectedLocations(savedLocations);
+
+    if (dropdownButton) {
+      dropdownButton.addEventListener("click", function () {
+        if (dropdownContent) {
+          dropdownContent.classList.toggle("open");
+        }
+      });
+    }
+
+    locationCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", function () {
+        updateSelectedLocations();
+      });
+    });
+
+    function updateSelectedLocations() {
+      const selectedLocations = Array.from(locationCheckboxes)
+        .filter((checkbox) => checkbox.checked)
+        .map((checkbox) => checkbox.value);
+
+      console.log("Selected Locations:", selectedLocations);
+
+      localStorage.setItem(
+        "selectedLocations",
+        JSON.stringify(selectedLocations)
+      );
+
+      displaySelectedLocations(selectedLocations);
+    }
+
+    function displaySelectedLocations(locations: string[]) {
+      if (selectedLocationsList) {
+        selectedLocationsList.innerHTML = "";
+      }
+      if (locations.length === 0) {
+        if (selectedLocationsList) {
+          selectedLocationsList.innerHTML = "<li>No locations selected</li>";
+        }
+      } else {
+        locations.forEach((location) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = location;
+          if (selectedLocationsList) {
+            selectedLocationsList.appendChild(listItem);
+          }
+        });
+      }
+    }
+  });
+</script>
