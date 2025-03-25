@@ -62,7 +62,7 @@ ul {
 
 .dropdown-btn {
   padding: 10px;
-  background-color: #007bff;
+  background-color: var(--roast-new-blue);
   color: white;
   border: none;
   cursor: pointer;
