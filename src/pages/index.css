@@ -62,7 +62,7 @@ ul {
 
 .dropdown-btn {
   padding: 10px;
-  background-color: #007bff;
+  background-color: var(--roast-new-blue);
   color: white;
   border: none;
   cursor: pointer;
@@ -82,11 +82,9 @@ ul {
   z-index: 1;
   max-height: 200px;
   overflow-y: auto;
-  padding: 5px 0;
 }
 
 .dropdown-item {
-  padding: 8px 16px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -100,10 +98,18 @@ ul {
   display: none;
 }
 
+.dropdown-item span {
+  padding: 8px 16px;
+  margin-left: 8px;
+}
+
 /* Add some styles for when the checkbox is checked */
 .dropdown-item input:checked + span {
   font-weight: bold;
-  color: green;
+  background-color: var(--roast-new-blue);
+  color: var(--roast-white);
+  width: 100%;
+  height: 100%;
 }
 
 .dropdown-btn:focus {
