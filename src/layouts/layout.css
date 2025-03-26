@@ -79,7 +79,6 @@ h2 {
   }
   font-size: 2em;
   text-decoration: underline;
-  margin: 1rem 1rem 0 1rem;
 }
 
 ol {
@@ -101,10 +100,13 @@ ol {
 
 input {
   padding: 0.5rem;
-  margin: 0.5rem;
-  border: 1px solid #333;
   min-height: 2rem;
   border: 2px solid var(--roast-new-blue);
+
+  &:focus {
+    outline: none;
+    border: 2px solid var(--roast-pink);
+  }
 }
 
 select {
