@@ -1,4 +1,4 @@
-<section x-data="searchComponent()">
+<div x-data="searchComponent()">
   <form @submit.prevent="handleSearch">
     <input type="text" placeholder="Search..." x-model="searchTerm" required />
     <button type="submit">Search</button>
@@ -22,7 +22,7 @@
       </li>
     </template>
   </ul>
-</section>
+</div>
 
 <script>
   document.addEventListener("alpine:init", () => {

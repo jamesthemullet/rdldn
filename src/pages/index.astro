@@ -75,8 +75,6 @@ try {
 } catch (error) {
   console.error("Error fetching location pages:", error);
 }
-
-console.log(26, allLocations);
 ---
 
 <BaseLayout
@@ -84,57 +82,60 @@ console.log(26, allLocations);
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
   openGraphImage={recentPost.seo.opengraphImage.sourceUrl}
 >
-  <h2>Latest Reviews:</h2>
-  <ul>
-    {
-      posts.map((post, index) => (
-        <li>
-          <h3>
+  <section>
+    <h2>Latest Reviews:</h2>
+    <ul>
+      {
+        posts.map((post, index) => (
+          <li class="heading">
+            <h3>
+              <a href={post.slug} rel="noopener noreferrer">
+                <Fragment set:html={post.title} />
+              </a>
+            </h3>
             <a href={post.slug} rel="noopener noreferrer">
-              <Fragment set:html={post.title} />
+              <Image
+                src={post.featured_image}
+                alt={`Photo of the roast dinner at ${post.title}`}
+                width={768}
+                height={576}
+                loading={index === 0 ? "eager" : "lazy"}
+              />
             </a>
-          </h3>
-          <a href={post.slug} rel="noopener noreferrer">
-            <Image
-              src={post.featured_image}
-              alt={`Photo of the roast dinner at ${post.title}`}
-              width={768}
-              height={576}
-              loading={index === 0 ? "eager" : "lazy"}
-            />
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-  <h2>Roast By Location:</h2>
-  <ul>
-    {
-      locationPages.map((page) => (
-        <li>
-          <h3>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <section>
+    <h2>Roast By Location:</h2>
+    <ul>
+      {
+        locationPages.map((page) => (
+          <li class="heading">
+            <h3>
+              <a href={page.slug} rel="noopener noreferrer">
+                <Fragment set:html={page.title} />
+              </a>
+            </h3>
             <a href={page.slug} rel="noopener noreferrer">
-              <Fragment set:html={page.title} />
+              <Image
+                src={page.featuredImage?.node?.sourceUrl}
+                alt={`Photo of the roast dinner at ${page.title}`}
+                width={768}
+                height={576}
+                loading="lazy"
+              />
             </a>
-          </h3>
-          <a href={page.slug} rel="noopener noreferrer">
-            <Image
-              src={page.featuredImage?.node?.sourceUrl}
-              alt={`Photo of the roast dinner at ${page.title}`}
-              width={768}
-              height={576}
-              loading="lazy"
-            />
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-  <div class="preferred-locations">
-    <h3>Have some preferred locations?</h3>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <section class="preferred-locations">
     <p>
-      Select from the lists below and we'll highlight appropriate reviews to you
-      in the future.
+      Select your preferred location from the list below and we'll highlight
+      appropriate reviews to you in the future.
     </p>
 
     <div class="custom-select">
@@ -156,84 +157,99 @@ console.log(26, allLocations);
       </div>
     </div>
     <div id="selected-locations">
-      <h4>Selected Locations:</h4>
+      <p>Your selected locations:</p>
       <ul id="selected-locations-list"></ul>
     </div>
-  </div>
+  </section>
 
-  <h2>Search:</h2>
-
-  <Search />
-  <h2>Best roasts:</h2>
-  <h2>Features:</h2>
-  <h2>Roastatistics:</h2>
-</BaseLayout>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const dropdownButton = document.getElementById("dropdown-btn");
-    const dropdownContent = document.querySelector(".dropdown-content");
-    const locationCheckboxes = document.querySelectorAll(".location-checkbox");
-    const selectedLocationsList = document.getElementById(
-      "selected-locations-list"
-    );
-
-    const savedLocations =
-      JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
-    locationCheckboxes.forEach((checkbox) => {
-      if (savedLocations.includes((checkbox as HTMLInputElement).value)) {
-        (checkbox as HTMLInputElement).checked = true;
-      }
-    });
-
-    displaySelectedLocations(savedLocations);
-
-    if (dropdownButton) {
-      dropdownButton.addEventListener("click", function () {
-        if (dropdownContent) {
-          dropdownContent.classList.toggle("open");
-        }
-      });
-    }
-
-    locationCheckboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", function () {
-        updateSelectedLocations();
-      });
-    });
-
-    function updateSelectedLocations() {
-      const selectedLocations = Array.from(locationCheckboxes)
-        .filter((checkbox) => checkbox.checked)
-        .map((checkbox) => checkbox.value);
-
-      console.log("Selected Locations:", selectedLocations);
-
-      localStorage.setItem(
-        "selectedLocations",
-        JSON.stringify(selectedLocations)
+  <section>
+    <h2>Search:</h2>
+    <Search />
+  </section>
+  <section>
+    <h2>Best roasts:</h2>
+  </section>
+  <section>
+    <h2>Features:</h2>
+  </section>
+  <section>
+    <h2>Roastatistics:</h2>
+  </section>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const dropdownButton = document.getElementById("dropdown-btn");
+      const dropdownContent = document.querySelector(".dropdown-content");
+      const locationCheckboxes =
+        document.querySelectorAll(".location-checkbox");
+      const selectedLocationsList = document.getElementById(
+        "selected-locations-list"
       );
 
-      displaySelectedLocations(selectedLocations);
-    }
-
-    function displaySelectedLocations(locations: string[]) {
-      if (selectedLocationsList) {
-        selectedLocationsList.innerHTML = "";
-      }
-      if (locations.length === 0) {
-        if (selectedLocationsList) {
-          selectedLocationsList.innerHTML = "<li>No locations selected</li>";
+      const savedLocations =
+        JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
+      locationCheckboxes.forEach((checkbox) => {
+        if (savedLocations.includes((checkbox as HTMLInputElement).value)) {
+          (checkbox as HTMLInputElement).checked = true;
         }
-      } else {
-        locations.forEach((location) => {
-          const listItem = document.createElement("li");
-          listItem.textContent = location;
-          if (selectedLocationsList) {
-            selectedLocationsList.appendChild(listItem);
+      });
+
+      const capitaliseAndRemoveHyphen = (string: string) => {
+        return string
+          .split("-")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      };
+
+      displaySelectedLocations(savedLocations);
+
+      if (dropdownButton) {
+        dropdownButton.addEventListener("click", function () {
+          if (dropdownContent) {
+            dropdownContent.classList.toggle("open");
           }
         });
       }
-    }
-  });
-</script>
+
+      locationCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+          updateSelectedLocations();
+        });
+      });
+
+      function updateSelectedLocations() {
+        const selectedLocations = Array.from(locationCheckboxes)
+          .filter((checkbox) => checkbox.checked)
+          .map((checkbox) => checkbox.value);
+
+        console.log("Selected Locations:", selectedLocations);
+
+        localStorage.setItem(
+          "selectedLocations",
+          JSON.stringify(selectedLocations)
+        );
+
+        displaySelectedLocations(selectedLocations);
+      }
+
+      function displaySelectedLocations(locations: string[]) {
+        console.log(25, locations);
+        if (selectedLocationsList) {
+          selectedLocationsList.innerHTML = "";
+        }
+        if (locations.length === 0) {
+          if (selectedLocationsList) {
+            selectedLocationsList.innerHTML = "<li>No locations selected</li>";
+          }
+        } else {
+          locations.forEach((location) => {
+            const listItem = document.createElement("li");
+            listItem.textContent = capitaliseAndRemoveHyphen(location);
+            if (selectedLocationsList) {
+              selectedLocationsList.appendChild(listItem);
+            }
+          });
+        }
+      }
+    });
+  </script>
+</BaseLayout>
