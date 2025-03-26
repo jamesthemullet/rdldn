@@ -39,7 +39,7 @@ if (recentPostCursor) {
       data?.posts?.nodes?.map((post) => ({
         ...post,
         featured_image: post.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size) => size.name === "medium_large"
+          (size) => size.name === "homepage"
         )?.sourceUrl,
       })) || [];
   } catch (error) {
@@ -58,8 +58,23 @@ try {
     locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
   );
 
+  console.log(10, pageResponses[0].page.featuredImage.node.mediaDetails.sizes);
+
   locationPages = pageResponses
-    .map((response) => response?.page)
+    .map((response) => {
+      if (!response?.page) return null;
+
+      const featuredImage = response.page.featuredImage?.node;
+      const smallImage =
+        featuredImage?.mediaDetails.sizes.find(
+          (size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
+
+      return {
+        ...response.page,
+        featuredImageUrl: smallImage,
+      };
+    })
     .filter(Boolean);
 } catch (error) {
   console.error("Error fetching location pages:", error);
@@ -69,7 +84,6 @@ let allLocations = [];
 
 try {
   const locations = await fetchGraphQL(GET_LOCATIONS);
-  console.log(20, locations);
   allLocations.push(...locations?.areas?.nodes);
   allLocations.push(...locations?.boroughs?.nodes);
 } catch (error) {
@@ -93,12 +107,16 @@ try {
                 <Fragment set:html={post.title} />
               </a>
             </h3>
-            <a href={post.slug} rel="noopener noreferrer">
+            <a
+              href={post.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
               <Image
                 src={post.featured_image}
                 alt={`Photo of the roast dinner at ${post.title}`}
-                width={768}
-                height={576}
+                width={400}
+                height={300}
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
@@ -120,10 +138,10 @@ try {
             </h3>
             <a href={page.slug} rel="noopener noreferrer">
               <Image
-                src={page.featuredImage?.node?.sourceUrl}
+                src={page.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${page.title}`}
-                width={768}
-                height={576}
+                width={400}
+                height={300}
                 loading="lazy"
               />
             </a>
