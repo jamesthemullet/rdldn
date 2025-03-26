@@ -4,8 +4,13 @@ const SINGLE_PAGE_QUERY_PREVIEW = `
       title
       featuredImage {
         node {
-          sourceUrl
-          
+        sourceUrl
+          mediaDetails {
+            sizes {
+              sourceUrl
+              name
+            }
+          }
         }
       }
       seo {

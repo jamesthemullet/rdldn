@@ -40,6 +40,10 @@ section {
       &.heading {
         font-family: "Loved by the King", sans-serif;
         text-transform: uppercase;
+
+        .featured-image {
+          height: 300px;
+        }
       }
     }
 
