@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "biome lint --write .",
+    "lint:fix": "biome check --write ." 
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.4.3",
@@ -18,5 +20,8 @@
     "alpinejs": "^3.14.9",
     "astro": "^5.1.7",
     "astro-seo": "^0.8.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4"
   }
 }

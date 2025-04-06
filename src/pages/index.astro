@@ -80,7 +80,7 @@ try {
   console.error("Error fetching location pages:", error);
 }
 
-let allLocations = [];
+const allLocations = [];
 
 try {
   const locations = await fetchGraphQL(GET_LOCATIONS);
