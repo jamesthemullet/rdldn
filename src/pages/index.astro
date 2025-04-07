@@ -2,33 +2,68 @@
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "./index.css";
+import Search from "../components/search/search.astro";
 import { fetchGraphQL } from "../lib/api";
+import GET_LOCATIONS from "../lib/queries/getLocations";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
-import Search from "../components/search/search.astro";
-import GET_LOCATIONS from "../lib/queries/getLocations";
 
-let recentPost;
-let recentPostCursor;
+type Size = {
+  name: string;
+  sourceUrl: string;
+};
+
+type Sizes = {
+  name: string;
+  sourceUrl: string;
+}[];
+
+type Post = {
+  title?: string;
+  slug?: string;
+  featuredImage?: {
+    node: {
+      sourceUrl: string;
+      mediaDetails?: {
+        sizes: Sizes;
+      };
+    };
+  };
+  featuredImageUrl?: string;
+  seo?: {
+    opengraphImage?: {
+      sourceUrl: string;
+    };
+  };
+};
+
+type Location = {
+  name: string;
+  slug: string;
+};
+
+let recentPost: Post | null = null;
+let recentPostCursor: string | null = null;
 
 try {
   const data = await fetchGraphQL(MOST_RECENT_POST_QUERY);
-  recentPost = data?.posts?.nodes?.[0];
+  recentPost = data.posts.nodes[0];
   recentPostCursor = data?.posts?.pageInfo?.endCursor;
 
-  if (recentPost) {
-    recentPost.featured_image =
-      recentPost.featuredImage?.node?.mediaDetails?.sizes?.find(
-        (size) => size.name === "medium_large"
-      )?.sourceUrl;
-  }
+  recentPost = {
+    ...recentPost,
+    featuredImageUrl:
+      recentPost?.featuredImage?.node?.mediaDetails?.sizes?.find(
+        (size) => size.name === "homepage"
+      )?.sourceUrl || recentPost?.featuredImage?.node?.sourceUrl,
+  };
 } catch (error) {
   console.error("Error fetching the most recent post:", error);
   recentPost = null;
 }
 
-let otherPosts = [];
+let otherPosts: Post[] = [];
 
 if (recentPostCursor) {
   try {
@@ -36,9 +71,9 @@ if (recentPostCursor) {
       after: recentPostCursor,
     });
     otherPosts =
-      data?.posts?.nodes?.map((post) => ({
+      data?.posts?.nodes?.map((post: Post) => ({
         ...post,
-        featured_image: post.featuredImage?.node?.mediaDetails?.sizes?.find(
+        featuredImageUrl: post.featuredImage?.node?.mediaDetails?.sizes?.find(
           (size) => size.name === "homepage"
         )?.sourceUrl,
       })) || [];
@@ -51,14 +86,12 @@ const posts = [recentPost, ...otherPosts];
 
 const locationPageIds = ["5614", "5612", "5616", "5594"];
 
-let locationPages = [];
+let locationPages: Array<Post & { featuredImageUrl: string }> = [];
 
 try {
   const pageResponses = await Promise.all(
     locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
   );
-
-  console.log(10, pageResponses[0].page.featuredImage.node.mediaDetails.sizes);
 
   locationPages = pageResponses
     .map((response) => {
@@ -67,7 +100,7 @@ try {
       const featuredImage = response.page.featuredImage?.node;
       const smallImage =
         featuredImage?.mediaDetails.sizes.find(
-          (size) => size.name === "homepage"
+          (size: Size) => size.name === "homepage"
         )?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
@@ -80,12 +113,18 @@ try {
   console.error("Error fetching location pages:", error);
 }
 
-const allLocations = [];
+const allLocations: Location[] = [];
 
 try {
   const locations = await fetchGraphQL(GET_LOCATIONS);
-  allLocations.push(...locations?.areas?.nodes);
-  allLocations.push(...locations?.boroughs?.nodes);
+
+  if (locations?.areas?.nodes) {
+    allLocations.push(...locations.areas.nodes);
+  }
+
+  if (locations?.boroughs?.nodes) {
+    allLocations.push(...locations.boroughs.nodes);
+  }
 } catch (error) {
   console.error("Error fetching location pages:", error);
 }
@@ -94,7 +133,7 @@ try {
 <BaseLayout
   pageTitle="Home of Roast Dinners In London"
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
-  openGraphImage={recentPost.seo.opengraphImage.sourceUrl}
+  openGraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
 >
   <section>
     <h2>Latest Reviews:</h2>
@@ -103,20 +142,20 @@ try {
         posts.map((post, index) => (
           <li class="heading">
             <h3>
-              <a href={post.slug} rel="noopener noreferrer">
-                <Fragment set:html={post.title} />
+              <a href={post?.slug} rel="noopener noreferrer">
+                <Fragment set:html={post?.title} />
               </a>
             </h3>
             <a
-              href={post.slug}
+              href={post?.slug}
               rel="noopener noreferrer"
               class="featured-image"
             >
-              <Image
-                src={post.featured_image}
-                alt={`Photo of the roast dinner at ${post.title}`}
-                width={400}
-                height={300}
+              <img
+                src={post?.featuredImageUrl}
+                alt={`Photo of the roast dinner at ${post?.title}`}
+                width="400"
+                height="300"
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
@@ -132,14 +171,14 @@ try {
         locationPages.map((page) => (
           <li class="heading">
             <h3>
-              <a href={page.slug} rel="noopener noreferrer">
-                <Fragment set:html={page.title} />
+              <a href={page?.slug} rel="noopener noreferrer">
+                <Fragment set:html={page?.title} />
               </a>
             </h3>
-            <a href={page.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer">
               <Image
                 src={page.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${page.title}`}
+                alt={`Photo of the roast dinner at ${page?.title}`}
                 width={400}
                 height={300}
                 loading="lazy"
@@ -161,7 +200,7 @@ try {
       <div class="dropdown-content">
         {
           allLocations.map((location) => (
-            <label key={location.slug} class="dropdown-item">
+            <label class="dropdown-item">
               <input
                 type="checkbox"
                 value={location.slug}
@@ -236,8 +275,8 @@ try {
 
       function updateSelectedLocations() {
         const selectedLocations = Array.from(locationCheckboxes)
-          .filter((checkbox) => checkbox.checked)
-          .map((checkbox) => checkbox.value);
+          .filter((checkbox) => (checkbox as HTMLInputElement).checked)
+          .map((checkbox) => (checkbox as HTMLInputElement).value);
 
         console.log("Selected Locations:", selectedLocations);
 
@@ -250,7 +289,6 @@ try {
       }
 
       function displaySelectedLocations(locations: string[]) {
-        console.log(25, locations);
         if (selectedLocationsList) {
           selectedLocationsList.innerHTML = "";
         }
