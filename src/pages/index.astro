@@ -8,40 +8,7 @@ import GET_LOCATIONS from "../lib/queries/getLocations";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
-
-type Size = {
-  name: string;
-  sourceUrl: string;
-};
-
-type Sizes = {
-  name: string;
-  sourceUrl: string;
-}[];
-
-type Post = {
-  title?: string;
-  slug?: string;
-  featuredImage?: {
-    node: {
-      sourceUrl: string;
-      mediaDetails?: {
-        sizes: Sizes;
-      };
-    };
-  };
-  featuredImageUrl?: string;
-  seo?: {
-    opengraphImage?: {
-      sourceUrl: string;
-    };
-  };
-};
-
-type Location = {
-  name: string;
-  slug: string;
-};
+import type { Post, Location, Size } from "../types";
 
 let recentPost: Post | null = null;
 let recentPostCursor: string | null = null;
