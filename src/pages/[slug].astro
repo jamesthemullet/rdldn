@@ -1,7 +1,9 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
 import "./post.css";
+import type { Post } from "../types";
 
 export async function getStaticPaths() {
   const response = await fetch("https://www.rdldn.co.uk/graphql", {
@@ -26,7 +28,7 @@ export async function getStaticPaths() {
 
   const posts = data.posts.nodes;
 
-  const paths = posts.map((post) => {
+  const paths = posts.map((post: Post) => {
     return { params: post };
   });
 

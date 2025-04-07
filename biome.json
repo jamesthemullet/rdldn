@@ -7,10 +7,10 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": []
+    "ignore": [".astro/**", ".git/**", ".cache/**"]
   },
   "formatter": {
-    "enabled": true,
+    "enabled": false,
     "indentStyle": "tab"
   },
   "organizeImports": {
