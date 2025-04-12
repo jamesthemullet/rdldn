@@ -1,8 +1,17 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"],
+  "exclude": ["dist", "node_modules", "src/content.config.ts"],
   "compilerOptions": {
-    "strictNullChecks": true
+    "strict": true,
+    "noImplicitAny": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["astro/client"],
+    "plugins": [{ "name": "@astrojs/ts-plugin" }]
   }
 }
