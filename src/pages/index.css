@@ -47,13 +47,6 @@ section {
       }
     }
 
-    img {
-      width: 100%;
-      max-width: 400px;
-      height: auto;
-      aspect-ratio: 12 / 9;
-    }
-
     a {
       text-decoration: none;
       color: #333;
