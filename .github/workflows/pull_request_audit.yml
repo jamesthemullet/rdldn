@@ -7,7 +7,33 @@ permissions:
   issues: write
   pull-requests: write
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        run: yarn install
+      - name: Run Biome lint
+        run: yarn lint
+  typecheck:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        run: yarn install
+      - name: Run Astro Type Check
+        run: yarn ts-check
   lighthouse:
+    needs: [lint, typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +87,7 @@ jobs:
           message: |
             ${{ steps.format_lighthouse_score.outputs.comment }}
   axe:
+    needs: [lint, typecheck]
     runs-on: ubuntu-latest
     env:
       GITHUB_API_SECRET: ${{ secrets.PIPELINE_GITHUB_API_SECRET }}

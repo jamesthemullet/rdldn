@@ -1,4 +1,4 @@
-export async function fetchGraphQL(query, variables = {}) {
+export async function fetchGraphQL(query: string, variables = {}) {
   const response = await fetch("https://rdldn.co.uk/graphql", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
