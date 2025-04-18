@@ -41,9 +41,10 @@ if (recentPostCursor) {
     otherPosts =
       data?.posts?.nodes?.map((post: Post) => ({
         ...post,
-        featuredImageUrl: post.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size) => size.name === "homepage"
-        )?.sourceUrl,
+        featuredImageUrl:
+          post.featuredImage?.node?.mediaDetails?.sizes?.find(
+            (size) => size.name === "homepage"
+          )?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
       })) || [];
   } catch (error) {
     console.error("Error fetching other posts:", error);
@@ -168,7 +169,7 @@ try {
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
               <Image
-                src={page.featuredImageUrl}
+                src={page?.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${page?.title}`}
                 width={400}
                 height={300}
