@@ -105,7 +105,7 @@ try {
     ?.map((post: Post) => {
       const featuredImage = post.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails.sizes.find(
+        featuredImage?.mediaDetails?.sizes.find(
           (size: Size) => size.name === "homepage"
         )?.sourceUrl || featuredImage?.sourceUrl;
 
