@@ -41,3 +41,22 @@ export type Location = {
   name: string;
   slug: string;
 };
+
+export type Page = {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  featuredImage?: {
+    node: {
+      sourceUrl: string;
+      mediaDetails?: {
+        sizes: Sizes;
+      };
+    };
+  };
+  featuredImageUrl?: string;
+  highlights?: {
+    tag: string;
+  };
+};
