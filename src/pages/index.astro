@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import "./index.css";
 import Search from "../components/search/search.astro";
 import { fetchGraphQL } from "../lib/api";
+import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 import GET_LOCATIONS from "../lib/queries/getLocations";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
@@ -40,9 +41,10 @@ if (recentPostCursor) {
     otherPosts =
       data?.posts?.nodes?.map((post: Post) => ({
         ...post,
-        featuredImageUrl: post.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size) => size.name === "homepage"
-        )?.sourceUrl,
+        featuredImageUrl:
+          post.featuredImage?.node?.mediaDetails?.sizes?.find(
+            (size) => size.name === "homepage"
+          )?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
       })) || [];
   } catch (error) {
     console.error("Error fetching other posts:", error);
@@ -53,7 +55,7 @@ const posts = [recentPost, ...otherPosts];
 
 const locationPageIds = ["5614", "5612", "5616", "5594"];
 
-let locationPages: Array<Post & { featuredImageUrl: string }> = [];
+let locationPages: Array<Post & { featuredImage: string }> = [];
 
 try {
   const pageResponses = await Promise.all(
@@ -94,6 +96,29 @@ try {
   }
 } catch (error) {
   console.error("Error fetching location pages:", error);
+}
+
+let bestRoasts: Post[] = [];
+
+try {
+  const response = await fetchGraphQL(GET_BEST_ROASTS);
+  bestRoasts = response?.posts?.nodes
+    ?.map((post: Post) => {
+      const featuredImage = post.featuredImage?.node;
+      const smallImage =
+        featuredImage?.mediaDetails?.sizes.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
+
+      return {
+        ...post,
+        featuredImageUrl: smallImage,
+      };
+    })
+    .filter(Boolean);
+  bestRoasts = bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
+} catch (error) {
+  console.error("Error fetching best roasts:", error);
 }
 ---
 
@@ -143,8 +168,8 @@ try {
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
-              <Image
-                src={page.featuredImageUrl}
+              <img
+                src={page?.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${page?.title}`}
                 width={400}
                 height={300}
@@ -191,7 +216,35 @@ try {
     <Search />
   </section>
   <section>
-    <h2>Best roasts:</h2>
+    <h2>A few of the best roasts:</h2>
+    <ul>
+      {
+        bestRoasts.map((post, index) => (
+          <li class="heading">
+            <h3>
+              <a href={post?.slug} rel="noopener noreferrer">
+                <Fragment set:html={post?.title} />
+              </a>
+            </h3>
+            <a
+              href={post?.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
+              <img
+                src={post?.featuredImageUrl}
+                alt={`Photo of the roast dinner at ${post?.title}`}
+                width="400"
+                height="300"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </a>
+            <p>Rating: {post?.ratings?.nodes[0]?.name}</p>
+            <p>Year Visited: {post?.yearsOfVisit?.nodes[0]?.name}</p>
+          </li>
+        ))
+      }
+    </ul>
   </section>
   <section>
     <h2>Features:</h2>

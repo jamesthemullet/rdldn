@@ -25,6 +25,16 @@ export type Post = {
       sourceUrl: string;
     };
   };
+  ratings?: {
+    nodes: {
+      name: string;
+    }[];
+  };
+  yearsOfVisit?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
