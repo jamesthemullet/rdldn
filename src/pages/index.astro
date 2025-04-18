@@ -4,12 +4,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import "./index.css";
 import Search from "../components/search/search.astro";
 import { fetchGraphQL } from "../lib/api";
+import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 import GET_LOCATIONS from "../lib/queries/getLocations";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 import type { Location, Post, Size } from "../types";
-import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 
 let recentPost: Post | null = null;
 let recentPostCursor: string | null = null;
