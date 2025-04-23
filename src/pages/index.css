@@ -27,6 +27,7 @@ section {
       list-style: none;
       display: inline-block;
       flex: 0 0 auto;
+      align-content: end;
 
       @media (min-width: 1200px) {
         flex: 33%;
@@ -41,10 +42,21 @@ section {
         h3 {
           font-family: "Loved by the King", sans-serif;
           text-transform: uppercase;
+          max-width: 100%;
+          white-space: normal;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
 
         .featured-image {
           height: 300px;
+
+          a {
+            max-width: 100%;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
         }
 
         p {
@@ -60,6 +72,11 @@ section {
       display: block;
       text-align: center;
       letter-spacing: 2px;
+
+      img {
+        max-width: 100%;
+        display: block;
+      }
     }
 
     p {
