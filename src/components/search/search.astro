@@ -6,7 +6,7 @@
 
   <ul x-show="searchResults.length > 0">
     <template x-for="post in searchResults" :key="post.slug">
-      <li>
+      <li class="heading">
         <h3>
           <a :href="`/posts/${post.slug}`" x-text="post.title"></a>
         </h3>
@@ -15,13 +15,16 @@
           <img
             :src="post.featuredImage?.node?.sourceUrl"
             :alt="`Photo of the roast dinner at ${post.title}`"
-            width="768"
-            height="576"
+            width="400"
+            height="300"
           />
         </a>
       </li>
     </template>
   </ul>
+  <p x-show="searchPerformed && searchResults.length === 0">
+    No results found.
+  </p>
 </div>
 
 <script>
@@ -29,8 +32,10 @@
     Alpine.data("searchComponent", () => ({
       searchTerm: "",
       searchResults: [],
+      searchPerformed: false,
       async handleSearch() {
         try {
+          this.searchPerformed = false;
           const GRAPHQL_ENDPOINT = "https://www.rdldn.co.uk/graphql";
           const SEARCH_QUERY = `
             query SearchPosts($search: String!) {
@@ -61,6 +66,8 @@
           this.searchResults = json?.data?.posts?.nodes || [];
         } catch (error) {
           console.error("Error fetching search results:", error);
+        } finally {
+          this.searchPerformed = true;
         }
       },
     }));
