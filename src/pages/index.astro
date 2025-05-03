@@ -127,7 +127,10 @@ try {
 }
 
 let allPages: Page[] = [];
+let allFeaturesPages: Page[] = [];
+let allRoastStatisticsPages: Page[] = [];
 let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [];
+let roastStatistics: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [];
 
 try {
   const response = await fetchGraphQL(GET_ALL_PAGES);
@@ -144,26 +147,57 @@ try {
         featuredImageUrl: smallImage,
       };
     })
-    .filter(Boolean)
-    .filter((page: Page) => page?.highlights?.tag === "feature");
+    .filter(Boolean);
+
+  allFeaturesPages = allPages.filter(
+    (page: Page) => page?.highlights?.tag === "feature"
+  );
+  allRoastStatisticsPages = allPages.filter(
+    (page: Page) => page?.highlights?.tag === "roastatistics"
+  );
 
   // biome-ignore lint/complexity/noForEach: <explanation>
-  allPages.forEach((page: Page) => {
+  allFeaturesPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     features.push({
       ...page,
-      featuredImage, // Add the `featuredImage` property
+      featuredImage,
     } as PageWithFeaturedImage);
   });
 
-  console.log(10, allPages);
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  allRoastStatisticsPages.forEach((page: Page) => {
+    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
+    roastStatistics.push({
+      ...page,
+      featuredImage,
+    } as PageWithFeaturedImage);
+  });
+
   const postsResponse = await fetchGraphQL(GET_FEATURE_POSTS);
-  console.log(11, postsResponse.posts.edges);
+
   features.push(
     ...postsResponse.posts.edges.map((edge: { node: Post }) => edge.node)
   );
-  console.log(12, features);
+
   features = features.sort(() => Math.random() - 0.5).slice(0, 4);
+
+  roastStatistics = roastStatistics.sort(() => Math.random() - 0.5).slice(0, 3);
+} catch (error) {
+  console.error("Error fetching features data:", error);
+}
+
+try {
+  const response = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
+    id: "4102",
+  });
+  roastStatistics.unshift({
+    ...response.page,
+    featuredImageUrl:
+      response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
+        (size: Size) => size.name === "homepage"
+      )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
+  } as PageWithFeaturedImage);
 } catch (error) {
   console.error("Error fetching features data:", error);
 }
@@ -324,6 +358,32 @@ try {
   </section>
   <section>
     <h2>Roastatistics:</h2>
+    <ul>
+      {
+        roastStatistics.map((post, index) => (
+          <li class="heading">
+            <h3>
+              <a href={post?.slug} rel="noopener noreferrer">
+                <Fragment set:html={post?.title} />
+              </a>
+            </h3>
+            <a
+              href={post?.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
+              <img
+                src={post?.featuredImageUrl}
+                alt={`Photo of the roast dinner at ${post?.title}`}
+                width="400"
+                height="300"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </section>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
