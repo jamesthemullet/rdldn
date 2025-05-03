@@ -177,7 +177,13 @@ try {
   const postsResponse = await fetchGraphQL(GET_FEATURE_POSTS);
 
   features.push(
-    ...postsResponse.posts.edges.map((edge: { node: Post }) => edge.node)
+    ...postsResponse.posts.edges.map((edge: { node: Post }) => ({
+      ...edge.node,
+      featuredImageUrl:
+        edge.node.featuredImage?.node?.mediaDetails?.sizes?.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || edge.node.featuredImage?.node?.sourceUrl,
+    }))
   );
 
   features = features.sort(() => Math.random() - 0.5).slice(0, 4);
