@@ -36,17 +36,19 @@ body {
   font-size: 18px;
 }
 
+main {
+  flex-grow: 1;
+  margin: 0 auto;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 div.page-container {
   display: flex;
   flex-direction: column;
   position: relative;
   min-height: 100vh;
-
-  main {
-    flex-grow: 1;
-    margin: 0 auto;
-    max-width: 100%;
-  }
 }
 
 .container {
@@ -99,6 +101,13 @@ ol {
   }
 }
 
+p {
+  color: #333;
+  padding: 0;
+  line-height: 1.5;
+  font-size: 1.2rem;
+}
+
 input {
   padding: 0.5rem;
   min-height: 2rem;
@@ -136,4 +145,11 @@ button {
   cursor: pointer;
   min-height: 2rem;
   min-width: 6rem;
+}
+
+section {
+  p {
+    margin: 0;
+    padding: 0;
+  }
 }
