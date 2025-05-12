@@ -168,7 +168,7 @@ const singlePost = data.post;
   </section>
   <div class="container">
     <div set:html={singlePost.content} />
-    { singlePost.typesOfPost.nodes[0].name === "Roast Dinner" && (
+    { singlePost.typesOfPost.nodes[0]?.name === "Roast Dinner" && (
     <section id="summary" class="summary">
       <h3>Summary:</h3>
       <p>{singlePost.title}</p>
