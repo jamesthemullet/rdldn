@@ -1,5 +1,6 @@
 header {
   width: 100%;
+  position: fixed;
 }
 
 .nav-container {
@@ -81,6 +82,8 @@ header {
   margin-right: 1rem;
   top: 1rem;
   right: 1rem;
+  min-height: unset;
+  min-width: unset;
 
   @media (min-width: 1000px) {
     display: none;
