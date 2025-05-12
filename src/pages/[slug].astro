@@ -3,41 +3,57 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 import "./post.css";
-import type { Post } from "../types";
 
 export async function getStaticPaths() {
-  const response = await fetch("https://www.rdldn.co.uk/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query AllSlugs {
-          posts {
-            nodes {
-              slug
+  const allPosts = [];
+  let hasNextPage = true;
+  let endCursor = null;
+
+  while (hasNextPage) {
+    const response: Response = await fetch(
+      "https://rdldn.co.uk/graphql",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: `
+          query AllSlugs($first: Int!, $after: String) {
+            posts(first: $first, after: $after) {
+              nodes {
+                slug
+              }
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
             }
           }
-        }
         `,
-    }),
-  });
+          variables: {
+            first: 100,
+            after: endCursor,
+          },
+        }),
+      }
+    );
 
-  const { data } = await response.json();
+    const { data } = await response.json();
+    const posts = data.posts.nodes;
+    allPosts.push(...posts);
 
-  console.log(10, data);
+    hasNextPage = data.posts.pageInfo.hasNextPage;
+    endCursor = data.posts.pageInfo.endCursor;
+  }
 
-  const posts = data.posts.nodes;
-
-  const paths = posts.map((post: Post) => {
-    return { params: post };
-  });
+  const paths = allPosts.map((post) => ({
+    params: { slug: post.slug },
+  }));
 
   return paths;
 }
 
 const { slug } = Astro.params;
 
-console.log(11, slug);
 
 const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
   method: "POST",
@@ -116,7 +132,6 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
 
 const { data } = await singleResponse.json();
 
-console.log(15, data);
 
 const singlePost = data.post;
 ---
@@ -153,11 +168,11 @@ const singlePost = data.post;
   </section>
   <div class="container">
     <div set:html={singlePost.content} />
-    { singlePost.typesOfPost.nodes[0].name === "Roast Dinner" && (
+    { singlePost.typesOfPost.nodes[0]?.name === "Roast Dinner" && (
     <section id="summary" class="summary">
       <h3>Summary:</h3>
       <p>{singlePost.title}</p>
-      <p>Station: {singlePost.tubeStations.nodes[0].name}</p>
+      {singlePost.tubeStations.nodes[0]?.name && <p>Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
       <p>
         Line:{" "}
         {singlePost.tubeLines.nodes
