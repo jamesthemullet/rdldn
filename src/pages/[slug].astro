@@ -172,7 +172,7 @@ const singlePost = data.post;
     <section id="summary" class="summary">
       <h3>Summary:</h3>
       <p>{singlePost.title}</p>
-      <p>Station: {singlePost.tubeStations.nodes[0].name}</p>
+      {singlePost.tubeStations.nodes[0]?.name && <p>Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
       <p>
         Line:{" "}
         {singlePost.tubeLines.nodes
