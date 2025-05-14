@@ -2,6 +2,7 @@ const SINGLE_PAGE_QUERY_PREVIEW = `
   query SinglePage($id: ID!) {
     page(idType: DATABASE_ID, id: $id) {
       title
+      slug
       featuredImage {
         node {
         sourceUrl
