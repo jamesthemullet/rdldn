@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 import "./post.css";
+import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 
 export async function getStaticPaths() {
   const allPosts = [];
@@ -87,6 +88,16 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
                 srcSet
               }
             }
+            areas {
+              nodes {
+                name
+              }
+            }
+            boroughs {
+              nodes {
+                name
+              }
+            }
             tubeStations {
               nodes {
                 name
@@ -131,6 +142,7 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
 });
 
 const { data } = await singleResponse.json();
+console.log(20, data);
 
 
 const singlePost = data.post;
@@ -206,6 +218,16 @@ const singlePost = data.post;
         </p>
       )}
     </section>
+    <RoastByTagSection
+      type="location"
+      tag={singlePost.boroughs.nodes[0]?.name}
+    />
+    // <section>
+    //   <h3>Also in {singlePost.areas.nodes[0].name}:</h3>
+    // </section>
+    // <section>
+    //   <h3>Also around {singlePost.boroughs.nodes[0].name}:</h3>
+    // </section>
     )}
   </div>
 </BaseLayout>
