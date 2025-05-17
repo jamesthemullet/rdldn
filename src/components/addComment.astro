@@ -1,0 +1,95 @@
+---
+interface Props {
+  postId: string;
+  parentId?: string | null;
+}
+const { postId, parentId } = Astro.props as Props;
+
+const message = "";
+const messageColor = "black";
+---
+
+<form
+  id="reply-form"
+  method="POST"
+  class="comment-form"
+  data-post-id={postId}
+  data-parent-id={parentId}
+>
+  <div>
+    <label for="authorName">Name:</label>
+    <input type="text" name="authorName" id="authorName" required />
+  </div>
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required />
+  </div>
+  <div>
+    <label for="commentText">Comment:</label>
+    <textarea name="commentText" id="commentText" required></textarea>
+  </div>
+  <button class="reply-button" data-button-id={parentId}>Post Reply</button>
+  <p style={`color: ${messageColor};`}>{message}</p>
+</form>
+
+<script type="module">
+  document.addEventListener("DOMContentLoaded", () => {
+    const forms = document.querySelectorAll("form[data-post-id]");
+
+    forms.forEach((form) => {
+      const postId = form.getAttribute("data-post-id");
+      const parentId = form.getAttribute("data-parent-id");
+
+      const addButtons = form.querySelectorAll(".reply-button");
+
+      addButtons.forEach((button) => {
+        if (button.dataset.handled === "true") return;
+
+        button.dataset.handled = "true";
+
+        button.addEventListener("click", async (event) => {
+          event.preventDefault();
+
+          const authorName = form.querySelector("#authorName")?.value;
+          const email = form.querySelector("#email")?.value;
+          const commentText = form.querySelector("#commentText")?.value;
+
+          const response = await fetch("https://www.rdldn.co.uk/graphql", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: `mutation AddComment($input: CreateCommentInput!) {
+                  createComment(input: $input) {
+                    success
+                  }
+                }`,
+              variables: {
+                input: {
+                  author: authorName,
+                  authorEmail: email,
+                  content: commentText,
+                  commentOn: parseInt(postId, 10),
+                  parent: parentId || null,
+                },
+              },
+            }),
+          });
+
+          const data = await response.json();
+
+          const messageElement = form.querySelector("p");
+
+          if (data.errors) {
+            messageElement.textContent = `Failed to submit comment: ${data.errors[0].message}`;
+            messageElement.style.color = "red";
+          } else {
+            messageElement.textContent =
+              "Comment submitted! Awaiting moderation.";
+            messageElement.style.color = "green";
+            form.reset();
+          }
+        });
+      });
+    });
+  });
+</script>

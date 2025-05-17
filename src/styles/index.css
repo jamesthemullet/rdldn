@@ -5,83 +5,85 @@ section {
     margin-bottom: 0;
   }
 
-  ul {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    white-space: nowrap;
-    flex-direction: row;
-    max-width: 100%;
-
-    @media (min-width: 1200px) {
+  &.home-list {
+    ul {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      overflow-x: auto;
+      white-space: nowrap;
       flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    li {
-      list-style: none;
-      display: inline-block;
-      flex: 0 0 auto;
-      align-content: end;
+      max-width: 100%;
 
       @media (min-width: 1200px) {
-        flex: 33%;
-        max-width: calc(33% - 1rem);
-      }
-      @media (min-width: 1400px) {
-        flex: 25%;
-        max-width: calc(25% - 1rem);
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
-      &.heading {
-        h3 {
-          font-family: "Loved by the King", sans-serif;
-          text-transform: uppercase;
-          max-width: 100%;
-          white-space: normal;
-          word-wrap: break-word;
-          overflow-wrap: break-word;
+      li {
+        list-style: none;
+        display: inline-block;
+        flex: 0 0 auto;
+        align-content: end;
+
+        @media (min-width: 1200px) {
+          flex: 33%;
+          max-width: calc(33% - 1rem);
+        }
+        @media (min-width: 1400px) {
+          flex: 25%;
+          max-width: calc(25% - 1rem);
         }
 
-        .featured-image {
-          height: 300px;
-
-          a {
+        &.heading {
+          h3 {
+            font-family: "Loved by the King", sans-serif;
+            text-transform: uppercase;
             max-width: 100%;
             white-space: normal;
             word-wrap: break-word;
             overflow-wrap: break-word;
           }
-        }
 
-        p {
-          text-align: center;
+          .featured-image {
+            height: 300px;
+
+            a {
+              max-width: 100%;
+              white-space: normal;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+            }
+          }
+
+          p {
+            text-align: center;
+          }
         }
       }
-    }
 
-    a {
-      text-decoration: none;
-      color: #333;
-      font-size: 1.2rem;
-      display: block;
-      text-align: center;
-      letter-spacing: 2px;
-
-      img {
-        max-width: 100%;
+      a {
+        text-decoration: none;
+        color: #333;
+        font-size: 1.2rem;
         display: block;
-      }
-    }
+        text-align: center;
+        letter-spacing: 2px;
 
-    p {
-      color: #666;
-      padding: 0 1rem;
+        img {
+          max-width: 100%;
+          display: block;
+        }
+      }
+
+      p {
+        color: #666;
+        padding: 0 1rem;
+      }
     }
   }
 }

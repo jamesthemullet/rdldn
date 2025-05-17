@@ -1,0 +1,113 @@
+---
+import type { Comment as CommentType } from "../types";
+// Parent Astro File
+import AddComment from "./addComment.astro";
+// @ts-ignore
+import Comment from "./comment.astro";
+
+type Props = {
+  comment: CommentType;
+  postId: string;
+  commentId: string;
+};
+
+const { comment, postId, commentId } = Astro.props as Props;
+
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const formattedDate = date.toLocaleDateString("en-US", options);
+
+  const day = date.getDate();
+  const ordinalSuffix = (day: number) => {
+    if (day > 3 && day < 21) return "th";
+    switch (day % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  const formattedTime = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  return `${formattedDate.replace(/\d+/, day + ordinalSuffix(day))} at ${formattedTime}`;
+};
+---
+
+<li class="comment" data-comment-id={`${commentId}`}>
+  <p>
+    By <strong>{comment.author.node.name}</strong> on {
+      formatDate(comment.date)
+    }:
+  </p>
+  <p set:html={comment.content} />
+
+  <!-- Reply Button for comment -->
+  <button class="reply-btn" data-target-id={comment.id}> Reply </button>
+
+  <div
+    class="reply-form-container"
+    id={`reply-form-${comment.id}`}
+    style="display: none;"
+  >
+    <AddComment postId={postId} parentId={comment.id} />
+  </div>
+
+  {
+    comment.replies && comment.replies.length > 0 ? (
+      <ul class="comment-replies">
+        {comment.replies.map((reply) => (
+          <Comment comment={reply} postId={postId} commentId={reply.id} />
+        ))}
+      </ul>
+    ) : null
+  }
+</li>
+
+<!-- @ts-ignore -->
+<script type="module" client:load>
+  document.addEventListener("DOMContentLoaded", () => {
+    const replyButtons = Array.from(document.querySelectorAll(".reply-btn"));
+    const commentElements = document.querySelectorAll("[data-comment-id]");
+
+    commentElements.forEach((comment) => {
+      const commentId = comment.getAttribute("data-comment-id");
+
+      const matchingButtons = replyButtons.filter((button) => {
+        const buttonId = button.getAttribute("data-target-id");
+        return commentId === buttonId;
+      });
+
+      matchingButtons.forEach((button) => {
+        if (button.dataset.handled === "true") return;
+
+        button.dataset.handled = "true";
+
+        button.addEventListener("click", (event) => {
+          const targetId = event.target.getAttribute("data-target-id");
+          const formContainer = document.getElementById(
+            `reply-form-${targetId}`
+          );
+
+          if (formContainer) {
+            formContainer.style.display =
+              formContainer.style.display === "none" ? "block" : "none";
+          }
+        });
+      });
+    });
+  });
+</script>

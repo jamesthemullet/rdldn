@@ -3,7 +3,7 @@ import { fetchGraphQL } from "../../lib/api";
 import GET_POSTS_BY_TAG from "../../lib/queries/getPostsByTag";
 import type { Post, Size } from "../../types";
 
-const { type, tag } = Astro.props;
+const { tag } = Astro.props;
 let locationPosts: Post[] = [];
 
 try {
@@ -26,7 +26,7 @@ try {
 }
 ---
 
-<section>
+<section class="roast-by-tag">
   <h3>Roasts in {tag}:</h3>
   <ul>
     {
