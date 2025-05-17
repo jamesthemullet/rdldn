@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import "./index.css";
+import "../styles/index.css";
 import Search from "../components/search/search.astro";
 import { fetchGraphQL } from "../lib/api";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
@@ -213,7 +213,7 @@ try {
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
   openGraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
 >
-  <section>
+  <section class="home-list">
     <h2>Latest Reviews:</h2>
     <ul>
       {
@@ -242,7 +242,7 @@ try {
       }
     </ul>
   </section>
-  <section>
+  <section class="home-list">
     <h2>Roast By Location:</h2>
     <ul>
       {
@@ -267,7 +267,7 @@ try {
       }
     </ul>
   </section>
-  <section class="preferred-locations">
+  <section class="home-list preferred-locations">
     <p>
       Select your preferred location from the list below and we'll highlight
       appropriate reviews to you in the future.
@@ -301,7 +301,7 @@ try {
     <h2>Search:</h2>
     <Search />
   </section>
-  <section>
+  <section class="home-list">
     <h2>A few of the best roasts:</h2>
     <ul>
       {
@@ -332,7 +332,7 @@ try {
       }
     </ul>
   </section>
-  <section>
+  <section class="home-list">
     <h2>Features:</h2>
     <ul>
       {
@@ -361,7 +361,7 @@ try {
       }
     </ul>
   </section>
-  <section>
+  <section class="home-list">
     <h2>Roastatistics:</h2>
     <ul>
       {

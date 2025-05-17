@@ -1,8 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType } from "../types";
 
-import "./post.css";
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 
 export async function getStaticPaths() {
@@ -63,6 +65,7 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
     query: `
         query SinglePost($id: ID = "${slug}") {
           post(idType: SLUG, id: $id) {
+            postId
             date
             content
             title
@@ -135,6 +138,19 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
               locationPost
               instagram
             }
+            comments(where: { order: ASC }) {
+              nodes {
+                id
+                content
+                parentId
+                author {
+                  node {
+                    name
+                  }
+                }
+                date
+              }
+            }
           }
         }
         `,
@@ -144,8 +160,34 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
 const { data } = await singleResponse.json();
 console.log(20, data);
 
-
 const singlePost = data.post;
+
+const organiseComments = (comments: CommentsType) => {
+  const commentMap = new Map();
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  const topLevelComments: CommentsType = [];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+};
+
+const threadedComments = organiseComments(data.post.comments.nodes);
 ---
 
 <BaseLayout
@@ -220,8 +262,9 @@ const singlePost = data.post;
     </section>
     <RoastByTagSection
       type="location"
-      tag={singlePost.boroughs.nodes[0]?.name}
+      tag={singlePost.boroughs.nodes[0]?.name.replace(/\s+/g, "-")}
     />
+    <Comments threadedComments={threadedComments} postId={singlePost.postId} />
     // <section>
     //   <h3>Also in {singlePost.areas.nodes[0].name}:</h3>
     // </section>

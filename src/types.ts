@@ -60,3 +60,23 @@ export type Page = {
     tag: string;
   };
 };
+
+export type Comment = {
+  id: string;
+  author: {
+    node: {
+      name: string;
+      avatar: {
+        url: string;
+      };
+    };
+  };
+  date: string;
+  content: {
+    rendered: string;
+  };
+  replies?: Comment[];
+  parentId?: string;
+};
+
+export type Comments = Comment[] | null;
