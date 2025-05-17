@@ -4,6 +4,16 @@
   height: auto;
 }
 
+iframe {
+  max-width: 100%;
+  max-width: -webkit-fill-available;
+  max-height: -webkit-fill-available;
+}
+
+figure.wp-block-embed:not(:has(iframe)) {
+  display: none;
+}
+
 section {
   margin-top: 2rem;
   &.post-title {
@@ -14,6 +24,12 @@ section {
     p {
       color: white;
       text-align: center;
+    }
+
+    iframe {
+      max-width: 100%;
+      max-width: -webkit-fill-available;
+      max-height: -webkit-fill-available;
     }
   }
 
