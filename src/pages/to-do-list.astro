@@ -1,0 +1,80 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType, Page } from "../types";
+
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import { fetchGraphQL } from "../lib/api";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+
+const variables = { id: "17" };
+let singlePage: Page | null = null;
+
+try {
+  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  singlePage = page;
+} catch (error) {
+  console.error("Error fetching GraphQL data:", error);
+}
+
+const organiseComments = (comments: CommentsType) => {
+  const commentMap = new Map();
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  const topLevelComments: CommentsType = [];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+};
+
+if (!singlePage) {
+  throw new Error("No single page data found");
+}
+
+console.log(20, singlePage);
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage.sourceUrl}
+>
+  <div class="image-container">
+    <Image
+      src={singlePage.featuredImage.node.sourceUrl}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+  <div class="container">
+    <div set:html={singlePage.content} />
+
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>

@@ -44,10 +44,11 @@ export type Location = {
 
 export type Page = {
   id: string;
+  pageId: string;
   title: string;
   slug: string;
   content: string;
-  featuredImage?: {
+  featuredImage: {
     node: {
       sourceUrl: string;
       mediaDetails?: {
@@ -55,9 +56,19 @@ export type Page = {
       };
     };
   };
-  featuredImageUrl?: string;
+  featuredImageUrl: string;
   highlights?: {
     tag: string;
+  };
+  comments: {
+    nodes: Comment[];
+  };
+  seo?: {
+    opengraphImage: {
+      sourceUrl: string;
+    };
+    opengraphDescription?: string;
+    opengraphTitle?: string;
   };
 };
 
