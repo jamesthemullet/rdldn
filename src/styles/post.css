@@ -156,3 +156,11 @@ h3 {
   text-align: center;
   padding: 1rem 0;
 }
+
+.wp-block-gallery {
+  display: flex;
+
+  .wp-block-image.size-large {
+    width: calc(50% - var(--wp--style--unstable-gallery-gap, 16px) * 0.5);
+  }
+}
