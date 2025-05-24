@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import type { Comments as CommentsType } from "../types";
 
-import "../styles/post.css";
+    import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 
@@ -55,7 +55,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { slug } = Astro.params;
+    const { slug } = Astro.params;
 
 
 const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
@@ -221,13 +221,25 @@ const threadedComments = organiseComments(data.post.comments.nodes);
     </p>
   </section>
   <div class="container">
+    <button
+  class="skip"
+  onclick="
+    const el = document.getElementById('summary');
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  "
+>
+  Skip The Nonsense
+</button>
     <div set:html={singlePost.content} />
     { singlePost.typesOfPost.nodes[0]?.name === "Roast Dinner" && (
     <section id="summary" class="summary">
-      <h3>Summary:</h3>
-      <p>{singlePost.title}</p>
+              <h3>Summary:</h3>
+        <p>{singlePost.title}</p>
       {singlePost.tubeStations.nodes[0]?.name && <p>Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
-      <p>
+              <p>
         Line:{" "}
         {singlePost.tubeLines.nodes
           .map((line: { name: string }) => line.name)
