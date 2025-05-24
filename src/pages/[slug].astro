@@ -138,7 +138,7 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
               locationPost
               instagram
             }
-            comments(where: { order: ASC }) {
+            comments(where: { order: DESC }) {
               nodes {
                 id
                 content

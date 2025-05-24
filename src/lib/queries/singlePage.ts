@@ -33,7 +33,7 @@ const SINGLE_PAGE_QUERY_PREVIEW = `
           srcSet
         }
       }
-      comments(where: { order: ASC }, first: 100) {
+      comments(where: { order: DESC }, first: 100) {
         nodes {
           id
           content
