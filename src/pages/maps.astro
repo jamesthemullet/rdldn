@@ -6,6 +6,7 @@ import type { Comments as CommentsType, Page, Post } from "../types";
 
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POST_LOCATIONS from "../lib/queries/getAllPostLocations";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
@@ -87,19 +88,16 @@ const markers = allPosts
 
 ---
 
-<BaseLayout
-  pageTitle={singlePage.title}
-  description={singlePage?.seo?.opengraphDescription}
->
+<BaseLayout pageTitle={singlePage.title} description={singlePage?.seo?.opengraphDescription}>
   <div class="image-container">
-    <!-- <Image
-      src={singlePage.featuredImage.node.sourceUrl}
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
       alt={singlePage.title}
       width={5000}
       height={5000}
       class="featured-image"
       loading="eager"
-    /> -->
+    />
     <div class="copyright-overlay">
       &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
     </div>

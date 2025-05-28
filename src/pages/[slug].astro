@@ -6,6 +6,7 @@ import type { Comments as CommentsType } from "../types";
     import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
+import logo3 from "../images/logo-3.png";
 
 export async function getStaticPaths() {
   const allPosts = [];
@@ -195,8 +196,8 @@ const threadedComments = organiseComments(data.post.comments.nodes);
   opengraphImage={singlePost.seo.opengraphImage.sourceUrl}
 >
   <div class="image-container">
-    <Image
-      src={singlePost.featuredImage.node.sourceUrl}
+    <img
+      src={singlePost.featuredImage.node.sourceUrl || logo3}
       alt={singlePost.title}
       width={5000}
       height={5000}

@@ -1,21 +1,21 @@
 ---
-import { Image } from 'astro:assets';
-import BaseLayout from '../layouts/BaseLayout.astro';
-import type { Comments as CommentsType, Page } from '../types';
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType, Page } from "../types";
 
-import '../styles/post.css';
-import Comments from '../components/comments.astro';
-import { fetchGraphQL } from '../lib/api';
-import SINGLE_PAGE_QUERY_PREVIEW from '../lib/queries/singlePage';
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import { fetchGraphQL } from "../lib/api";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: '17' };
+const variables = { id: "17" };
 let singlePage: Page | null = null;
 
 try {
   const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
   singlePage = page;
 } catch (error) {
-  console.error('Error fetching GraphQL data:', error);
+  console.error("Error fetching GraphQL data:", error);
 }
 
 const organiseComments = (comments: CommentsType) => {
@@ -44,7 +44,7 @@ const organiseComments = (comments: CommentsType) => {
 };
 
 if (!singlePage) {
-  throw new Error('No single page data found');
+  throw new Error("No single page data found");
 }
 
 
@@ -57,7 +57,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   opengraphImage={singlePage?.seo?.opengraphImage.sourceUrl}
 >
   <div class="image-container">
-    <Image
+    <img
       src={singlePage.featuredImage.node.sourceUrl}
       alt={singlePage.title}
       width={5000}
