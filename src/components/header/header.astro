@@ -13,9 +13,7 @@ import "./header.css";
     <div class="title">
       <a href="/">Roast Dinners in London</a>
     </div>
-    <button id="nav-toggle" aria-label="Toggle Navigation Menu"
-      ><span></span></button
-    >
+    <button id="nav-toggle" aria-label="Toggle Navigation Menu"><span></span></button>
 
     <nav id="nav-menu">
       <a href="/league-of-roasts">League Of Roasts</a>
@@ -27,17 +25,15 @@ import "./header.css";
     </nav>
   </div>
   <script>
-    document
-      .getElementById("nav-toggle")
-      ?.addEventListener("click", function () {
-        this.classList.toggle("open");
-        let menu = document.getElementById("nav-menu");
-        if (!menu) return;
-        if (menu.style.display === "block") {
-          menu.style.display = "none";
-        } else {
-          menu.style.display = "block";
-        }
-      });
+    document.getElementById("nav-toggle")?.addEventListener("click", function () {
+      this.classList.toggle("open");
+      let menu = document.getElementById("nav-menu");
+      if (!menu) return;
+      if (menu.style.display === "block") {
+        menu.style.display = "none";
+      } else {
+        menu.style.display = "block";
+      }
+    });
   </script>
 </header>
