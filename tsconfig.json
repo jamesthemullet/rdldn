@@ -1,7 +1,14 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules", "src/content.config.ts"],
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/content.config.ts"
+  ],
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,
@@ -11,7 +18,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["astro/client"],
-    "plugins": [{ "name": "@astrojs/ts-plugin" }]
+    "types": [
+      "astro/client"
+    ],
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
   }
 }

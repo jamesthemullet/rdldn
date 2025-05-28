@@ -35,6 +35,10 @@ export type Post = {
       name: string;
     }[];
   };
+  location?: {
+    latitude: string;
+    longitude: string;
+  };
 };
 
 export type Location = {
