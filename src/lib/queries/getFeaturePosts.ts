@@ -3,7 +3,7 @@ const GET_FEATURE_POSTS = `
     posts(where: {tag: "feature"}) {
       edges {
         node {
-          id
+            id
           slug
           title
           featuredImage {

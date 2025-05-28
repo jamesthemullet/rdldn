@@ -51,10 +51,7 @@ console.log(20, singlePage);
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
 
-<BaseLayout
-  pageTitle={singlePage.title}
-  description={singlePage?.seo?.opengraphDescription}
->
+<BaseLayout pageTitle={singlePage.title} description={singlePage?.seo?.opengraphDescription}>
   <div class="image-container">
     <!-- <Image
       src={singlePage.featuredImage.node.sourceUrl}

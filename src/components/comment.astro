@@ -49,20 +49,14 @@ const formatDate = (dateString: string): string => {
 
 <li class="comment" data-comment-id={`${commentId}`}>
   <p>
-    By <strong>{comment.author.node.name}</strong> on {
-      formatDate(comment.date)
-    }:
+    By <strong>{comment.author.node.name}</strong> on {formatDate(comment.date)}:
   </p>
   <p set:html={comment.content} />
 
   <!-- Reply Button for comment -->
   <button class="reply-btn" data-target-id={comment.id}> Reply </button>
 
-  <div
-    class="reply-form-container"
-    id={`reply-form-${comment.id}`}
-    style="display: none;"
-  >
+  <div class="reply-form-container" id={`reply-form-${comment.id}`} style="display: none;">
     <AddComment postId={postId} parentId={comment.id} />
   </div>
 
@@ -98,13 +92,10 @@ const formatDate = (dateString: string): string => {
 
         button.addEventListener("click", (event) => {
           const targetId = event.target.getAttribute("data-target-id");
-          const formContainer = document.getElementById(
-            `reply-form-${targetId}`
-          );
+          const formContainer = document.getElementById(`reply-form-${targetId}`);
 
           if (formContainer) {
-            formContainer.style.display =
-              formContainer.style.display === "none" ? "block" : "none";
+            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
           }
         });
       });

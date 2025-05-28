@@ -83,8 +83,7 @@ const messageColor = "black";
             messageElement.textContent = `Failed to submit comment: ${data.errors[0].message}`;
             messageElement.style.color = "red";
           } else {
-            messageElement.textContent =
-              "Comment submitted! Awaiting moderation.";
+            messageElement.textContent = "Comment submitted! Awaiting moderation.";
             messageElement.style.color = "green";
             form.reset();
           }

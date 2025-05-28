@@ -22,11 +22,11 @@
     "alpinejs": "^3.14.9",
     "astro": "^5.1.7",
     "astro-seo": "^0.8.4",
-    "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }

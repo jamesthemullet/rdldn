@@ -1,16 +1,16 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import '../styles/index.css';
-import Search from '../components/search/search.astro';
-import { fetchGraphQL } from '../lib/api';
-import GET_BEST_ROASTS from '../lib/queries/bestRoasts';
-import GET_ALL_PAGES from '../lib/queries/getAllPages';
-import GET_FEATURE_POSTS from '../lib/queries/getFeaturePosts.ts';
-import GET_LOCATIONS from '../lib/queries/getLocations';
-import MOST_RECENT_POST_QUERY from '../lib/queries/mostRecentPost';
-import OTHER_POSTS_AFTER_FIRST_QUERY from '../lib/queries/otherPostsAfterFirst';
-import SINGLE_PAGE_QUERY_PREVIEW from '../lib/queries/singlePage';
-import type { Location, Page, Post, Size } from '../types';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/index.css";
+import Search from "../components/search/search.astro";
+import { fetchGraphQL } from "../lib/api";
+import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
+import GET_ALL_PAGES from "../lib/queries/getAllPages";
+import GET_FEATURE_POSTS from "../lib/queries/getFeaturePosts.ts";
+import GET_LOCATIONS from "../lib/queries/getLocations";
+import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
+import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import type { Location, Page, Post, Size } from "../types";
 
 type PostWithFeaturedImage = Post & { featuredImage: string };
 type PageWithFeaturedImage = Page & { featuredImage: string };
@@ -26,11 +26,11 @@ try {
   recentPost = {
     ...recentPost,
     featuredImageUrl:
-      recentPost?.featuredImage?.node?.mediaDetails?.sizes?.find((size) => size.name === 'homepage')
+      recentPost?.featuredImage?.node?.mediaDetails?.sizes?.find((size) => size.name === "homepage")
         ?.sourceUrl || recentPost?.featuredImage?.node?.sourceUrl,
   };
 } catch (error) {
-  console.error('Error fetching the most recent post:', error);
+  console.error("Error fetching the most recent post:", error);
   recentPost = null;
 }
 
@@ -45,17 +45,17 @@ if (recentPostCursor) {
       data?.posts?.nodes?.map((post: Post) => ({
         ...post,
         featuredImageUrl:
-          post.featuredImage?.node?.mediaDetails?.sizes?.find((size) => size.name === 'homepage')
+          post.featuredImage?.node?.mediaDetails?.sizes?.find((size) => size.name === "homepage")
             ?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
       })) || [];
   } catch (error) {
-    console.error('Error fetching other posts:', error);
+    console.error("Error fetching other posts:", error);
   }
 }
 
 const posts = [recentPost, ...otherPosts];
 
-const locationPageIds = ['5614', '5612', '5616', '5594'];
+const locationPageIds = ["5614", "5612", "5616", "5594"];
 
 let locationPages: Array<PageWithFeaturedImage> = [];
 
@@ -70,7 +70,7 @@ try {
 
       const featuredImage = response.page.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails.sizes.find((size: Size) => size.name === 'homepage')
+        featuredImage?.mediaDetails.sizes.find((size: Size) => size.name === "homepage")
           ?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
@@ -80,7 +80,7 @@ try {
     })
     .filter(Boolean);
 } catch (error) {
-  console.error('Error fetching location pages:', error);
+  console.error("Error fetching location pages:", error);
 }
 
 const allLocations: Location[] = [];
@@ -96,7 +96,7 @@ try {
     allLocations.push(...locations.boroughs.nodes);
   }
 } catch (error) {
-  console.error('Error fetching location pages:', error);
+  console.error("Error fetching location pages:", error);
 }
 
 let bestRoasts: Post[] = [];
@@ -107,7 +107,7 @@ try {
     ?.map((post: Post) => {
       const featuredImage = post.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === 'homepage')
+        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
           ?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
@@ -118,7 +118,7 @@ try {
     .filter(Boolean);
   bestRoasts = bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
 } catch (error) {
-  console.error('Error fetching best roasts:', error);
+  console.error("Error fetching best roasts:", error);
 }
 
 let allPages: Page[] = [];
@@ -133,7 +133,7 @@ try {
     ?.map((page: Page) => {
       const featuredImage = page.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === 'homepage')
+        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
           ?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
@@ -143,14 +143,14 @@ try {
     })
     .filter(Boolean);
 
-  allFeaturesPages = allPages.filter((page: Page) => page?.highlights?.tag === 'feature');
+  allFeaturesPages = allPages.filter((page: Page) => page?.highlights?.tag === "feature");
   allRoastStatisticsPages = allPages.filter(
-    (page: Page) => page?.highlights?.tag === 'roastatistics'
+    (page: Page) => page?.highlights?.tag === "roastatistics"
   );
 
   // biome-ignore lint/complexity/noForEach: <explanation>
   allFeaturesPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || '';
+    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     features.push({
       ...page,
       featuredImage,
@@ -159,7 +159,7 @@ try {
 
   // biome-ignore lint/complexity/noForEach: <explanation>
   allRoastStatisticsPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || '';
+    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     roastStatistics.push({
       ...page,
       featuredImage,
@@ -173,7 +173,7 @@ try {
       ...edge.node,
       featuredImageUrl:
         edge.node.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size: Size) => size.name === 'homepage'
+          (size: Size) => size.name === "homepage"
         )?.sourceUrl || edge.node.featuredImage?.node?.sourceUrl,
     }))
   );
@@ -182,22 +182,22 @@ try {
 
   roastStatistics = roastStatistics.sort(() => Math.random() - 0.5).slice(0, 3);
 } catch (error) {
-  console.error('Error fetching features data:', error);
+  console.error("Error fetching features data:", error);
 }
 
 try {
   const response = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
-    id: '4102',
+    id: "4102",
   });
   roastStatistics.unshift({
     ...response.page,
     featuredImageUrl:
       response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
-        (size: Size) => size.name === 'homepage'
+        (size: Size) => size.name === "homepage"
       )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
   } as PageWithFeaturedImage);
 } catch (error) {
-  console.error('Error fetching features data:', error);
+  console.error("Error fetching features data:", error);
 }
 ---
 
@@ -223,7 +223,7 @@ try {
                 alt={`Photo of the roast dinner at ${post?.title}`}
                 width="400"
                 height="300"
-                loading={index === 0 ? 'eager' : 'lazy'}
+                loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
           </li>
@@ -307,7 +307,7 @@ try {
                 alt={`Photo of the roast dinner at ${post?.title}`}
                 width="400"
                 height="300"
-                loading={index === 0 ? 'eager' : 'lazy'}
+                loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
             <p>Rating: {post?.ratings?.nodes[0]?.name}</p>
@@ -334,7 +334,7 @@ try {
                 alt={`Photo of the roast dinner at ${post?.title}`}
                 width="400"
                 height="300"
-                loading={index === 0 ? 'eager' : 'lazy'}
+                loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
           </li>
@@ -359,7 +359,7 @@ try {
                 alt={`Photo of the roast dinner at ${post?.title}`}
                 width="400"
                 height="300"
-                loading={index === 0 ? 'eager' : 'lazy'}
+                loading={index === 0 ? "eager" : "lazy"}
               />
             </a>
           </li>
@@ -368,13 +368,13 @@ try {
     </ul>
   </section>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const dropdownButton = document.getElementById('dropdown-btn');
-      const dropdownContent = document.querySelector('.dropdown-content');
-      const locationCheckboxes = document.querySelectorAll('.location-checkbox');
-      const selectedLocationsList = document.getElementById('selected-locations-list');
+    document.addEventListener("DOMContentLoaded", function () {
+      const dropdownButton = document.getElementById("dropdown-btn");
+      const dropdownContent = document.querySelector(".dropdown-content");
+      const locationCheckboxes = document.querySelectorAll(".location-checkbox");
+      const selectedLocationsList = document.getElementById("selected-locations-list");
 
-      const savedLocations = JSON.parse(localStorage.getItem('selectedLocations') || '[]') || [];
+      const savedLocations = JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
       locationCheckboxes.forEach((checkbox) => {
         if (savedLocations.includes((checkbox as HTMLInputElement).value)) {
           (checkbox as HTMLInputElement).checked = true;
@@ -383,23 +383,23 @@ try {
 
       const capitaliseAndRemoveHyphen = (string: string) => {
         return string
-          .split('-')
+          .split("-")
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
+          .join(" ");
       };
 
       displaySelectedLocations(savedLocations);
 
       if (dropdownButton) {
-        dropdownButton.addEventListener('click', function () {
+        dropdownButton.addEventListener("click", function () {
           if (dropdownContent) {
-            dropdownContent.classList.toggle('open');
+            dropdownContent.classList.toggle("open");
           }
         });
       }
 
       locationCheckboxes.forEach((checkbox) => {
-        checkbox.addEventListener('change', function () {
+        checkbox.addEventListener("change", function () {
           updateSelectedLocations();
         });
       });
@@ -409,24 +409,24 @@ try {
           .filter((checkbox) => (checkbox as HTMLInputElement).checked)
           .map((checkbox) => (checkbox as HTMLInputElement).value);
 
-        console.log('Selected Locations:', selectedLocations);
+        console.log("Selected Locations:", selectedLocations);
 
-        localStorage.setItem('selectedLocations', JSON.stringify(selectedLocations));
+        localStorage.setItem("selectedLocations", JSON.stringify(selectedLocations));
 
         displaySelectedLocations(selectedLocations);
       }
 
       function displaySelectedLocations(locations: string[]) {
         if (selectedLocationsList) {
-          selectedLocationsList.innerHTML = '';
+          selectedLocationsList.innerHTML = "";
         }
         if (locations.length === 0) {
           if (selectedLocationsList) {
-            selectedLocationsList.innerHTML = '<li>No locations selected</li>';
+            selectedLocationsList.innerHTML = "<li>No locations selected</li>";
           }
         } else {
           locations.forEach((location) => {
-            const listItem = document.createElement('li');
+            const listItem = document.createElement("li");
             listItem.textContent = capitaliseAndRemoveHyphen(location);
             if (selectedLocationsList) {
               selectedLocationsList.appendChild(listItem);
