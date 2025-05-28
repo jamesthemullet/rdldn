@@ -22,8 +22,8 @@
 }
 
 @font-face {
-  font-family: "Loved by the King";
-  src: url("/fonts/LovedbytheKing-Regular.ttf") format("truetype");
+  font-family: 'Loved by the King';
+  src: url('/fonts/LovedbytheKing-Regular.ttf') format('truetype');
   font-display: swap;
 }
 
@@ -58,6 +58,11 @@ div.page-container {
 
 .container {
   max-width: 1000px;
+
+  @media (min-width: 1200px) {
+    width: 1000px;
+    margin: 20px auto;
+  }
 }
 
 div.logoandtitle {
@@ -76,7 +81,7 @@ h2 {
   @media (max-width: 768px) {
     font-size: 1.75em;
   }
-  font-family: "Loved by the King", sans-serif;
+  font-family: 'Loved by the King', sans-serif;
   text-transform: uppercase;
   font-size: 3em;
 }
@@ -143,7 +148,7 @@ button {
   border: none;
   background-color: var(--roast-new-blue);
   color: var(--roast-white);
-  font-family: "Loved by the King", sans-serif;
+  font-family: 'Loved by the King', sans-serif;
   text-transform: uppercase;
   font-weight: bold;
   font-size: 1.2rem;
