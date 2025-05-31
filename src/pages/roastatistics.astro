@@ -1,14 +1,14 @@
 ---
-import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import type { Comments as CommentsType, Page } from "../types";
 
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "17" };
+const variables = { id: "4102" };
 let singlePage: Page | null = null;
 
 try {
@@ -53,11 +53,11 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 <BaseLayout
   pageTitle={singlePage.title}
   description={singlePage?.seo?.opengraphDescription}
-  opengraphImage={singlePage?.seo?.opengraphImage.sourceUrl}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
 >
   <div class="image-container">
     <img
-      src={singlePage.featuredImage.node.sourceUrl}
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
       alt={singlePage.title}
       width={5000}
       height={5000}
