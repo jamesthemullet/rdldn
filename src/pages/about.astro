@@ -55,19 +55,17 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 <BaseLayout
   pageTitle={singlePage.title}
   description={singlePage?.seo?.opengraphDescription}
-
   opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
-
-  >
+>
   <div class="image-container">
     <img
-  src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
-  alt={singlePage.title}
-  width={5000}
-  height={5000}
-  class="featured-image"
-  loading="eager"
-/>
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
     <div class="copyright-overlay">
       &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
     </div>

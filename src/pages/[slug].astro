@@ -132,6 +132,11 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
                 name
               }
             }
+            closedDowns {
+              nodes {
+                name
+              }
+            }
             highlights {
               loathed
               loved
@@ -187,6 +192,33 @@ const organiseComments = (comments: CommentsType) => {
   return topLevelComments;
 };
 
+const getClosedMessage = () => {
+  const closedDownId = singlePost.closedDowns.nodes[0]?.name;
+
+  if (closedDownId === "closeddown") {
+    return "Closed Down";
+  }
+  if (closedDownId === "newmanagement") {
+    return "Under New Management";
+  }
+  if (closedDownId === "newowners") {
+    return "Under New Owners";
+  }
+  if (closedDownId === "popupmoved") {
+    return "Popup Now Trading Elsewhere";
+  }
+  if (closedDownId === "popupstopped") {
+    return "Popup Stopped Trading";
+  }
+  if (closedDownId === "tempclosed") {
+    return "Temporarily Closed";
+  }
+  if (closedDownId.includes("re-reviewed")) {
+    return `Re-reviewed: ${closedDownId.replace("re-reviewed", "").trim()}`;
+  }
+  return 'Closed Down'
+};
+
 const threadedComments = organiseComments(data.post.comments.nodes);
 ---
 
@@ -204,6 +236,11 @@ const threadedComments = organiseComments(data.post.comments.nodes);
       class="featured-image"
       loading="eager"
     />
+    {singlePost.closedDowns.nodes.length > 0 && (
+      <div class="closed-overlay">
+        {getClosedMessage()}
+      </div>
+    )}
     <div class="copyright-overlay">
       &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
     </div>
@@ -233,10 +270,16 @@ const threadedComments = organiseComments(data.post.comments.nodes);
 >
   Skip The Nonsense
 </button>
-    <div set:html={singlePost.content} />
+        <div set:html={singlePost.content} />
     { singlePost.typesOfPost.nodes[0]?.name === "Roast Dinner" && (
     <section id="summary" class="summary">
               <h3>Summary:</h3>
+
+      {singlePost.closedDowns.nodes.length > 0 && (
+        <p class="closed-message">
+          {getClosedMessage()}
+        </p>
+      )}
         <p>{singlePost.title}</p>
       {singlePost.tubeStations.nodes[0]?.name && <p>Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
               <p>
@@ -255,21 +298,24 @@ const threadedComments = organiseComments(data.post.comments.nodes);
       <p>Loathed: {singlePost.highlights.loathed}</p>
     </section>
     <section>
-      <h3>Get Booking:</h3>
-      {singlePost.highlights.website && (
-        <p>
-          <a href={`${singlePost.highlights.website}`}>
-            {" "}
-            Book {singlePost.title}
-          </a>
-        </p>
-      )}
-      {singlePost.highlights.instagram && (
-        <p>
-          <a href={`${singlePost.highlights.instagram}`}>
-            Follow on Instagram
-          </a>
-        </p>
+      {singlePost.closedDowns.nodes.length === 0 && (
+        <>
+          <h3>Get Booking:</h3>
+          {singlePost.highlights.website && (
+            <p>
+              <a href={singlePost.highlights.website}>
+                Book {singlePost.title}
+              </a>
+            </p>
+          )}
+          {singlePost.highlights.instagram && (
+            <p>
+              <a href={singlePost.highlights.instagram}>
+                Follow on Instagram
+              </a>
+            </p>
+          )}
+        </>
       )}
     </section>
     <RoastByTagSection

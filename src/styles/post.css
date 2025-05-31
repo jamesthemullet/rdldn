@@ -128,6 +128,26 @@ h3 {
 .image-container {
   position: relative;
   display: inline-block;
+
+  .closed-overlay {
+    color: var(--roast-pink);
+    position: absolute;
+    top: 33%;
+    left: 0;
+    background: #000;
+    opacity: 0.8;
+    width: 100%;
+    font-size: 4rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: auto 0;
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
+    z-index: 2;
+    padding: 1rem 0;
+  }
 }
 
 .featured-image {
@@ -159,5 +179,17 @@ button {
   &.skip {
     margin: 20px auto 0;
     font-size: 1.5rem;
+  }
+}
+
+p {
+  &.closed-message {
+    font-size: 2rem;
+    color: var(--roast-pink);
+    font-weight: bold;
+    margin-top: 20px;
+
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
   }
 }
