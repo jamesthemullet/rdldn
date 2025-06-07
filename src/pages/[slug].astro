@@ -137,6 +137,11 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
                 name
               }
             }
+            nSFWs {
+              nodes {
+                name
+              }
+            }
             highlights {
               loathed
               loved
@@ -219,6 +224,10 @@ const getClosedMessage = () => {
   return 'Closed Down'
 };
 
+const currentYear = new Date().getFullYear();
+const postYear = new Date(singlePost.date).getFullYear();
+const postMoreThanTwoYearsOld = postYear < currentYear - 2;
+
 const threadedComments = organiseComments(data.post.comments.nodes);
 ---
 
@@ -270,6 +279,16 @@ const threadedComments = organiseComments(data.post.comments.nodes);
 >
   Skip The Nonsense
 </button>
+{postMoreThanTwoYearsOld && (
+    <p class="warning">
+      This post is from {postYear}. Maybe check some other reviews on Google Maps or something before booking.  But definitely read this one first.  Or else.
+    </p>
+  )}
+  { singlePost.nSFWs.nodes.length > 0 && (
+    <p class="nsfw">
+      NSFW: Warning - this review may not be safe for work due to {singlePost.nSFWs.nodes.map((nsfw: { name: string}) => nsfw.name).join(", ")}.
+    </p>
+  )}
         <div set:html={singlePost.content} />
     { singlePost.typesOfPost.nodes[0]?.name === "Roast Dinner" && (
     <section id="summary" class="summary">

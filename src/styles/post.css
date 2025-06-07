@@ -192,4 +192,19 @@ p {
     font-family: "Loved by the King", sans-serif;
     text-transform: uppercase;
   }
+
+  &.warning {
+    font-size: 1.5rem;
+    color: var(--roast-pink);
+    font-weight: bold;
+    margin-top: 20px;
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
+  }
+
+  &.nsfw {
+    font-size: 1.5rem;
+    text-decoration: underline;
+    text-decoration-color: var(--roast-pink);
+  }
 }
