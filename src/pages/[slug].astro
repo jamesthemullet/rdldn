@@ -235,6 +235,7 @@ const threadedComments = organiseComments(data.post.comments.nodes);
   pageTitle={singlePost.title}
   description={singlePost?.seo?.opengraphDescription}
   opengraphImage={singlePost.seo.opengraphImage.sourceUrl}
+  halloween={singlePost.typesOfPost.nodes.some((node: { name: string }) => node.name === "Halloween") ? true : false}
 >
   <div class="image-container">
     <img
@@ -290,7 +291,7 @@ const threadedComments = organiseComments(data.post.comments.nodes);
     </p>
   )}
         <div set:html={singlePost.content} />
-    { singlePost.typesOfPost.nodes[0]?.name === "Roast Dinner" && (
+    { singlePost.typesOfPost.nodes.some((node: { name: string }) => node.name === "Roast Dinner") && (
     <section id="summary" class="summary">
               <h3>Summary:</h3>
 

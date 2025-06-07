@@ -35,6 +35,15 @@ section {
       max-width: -webkit-fill-available;
       max-height: -webkit-fill-available;
     }
+
+    &.halloween {
+      font-family: "Creepster", sans-serif;
+
+      h2 {
+        font-family: "Creepster", sans-serif;
+        font-size: 4rem;
+      }
+    }
   }
 
   &.roast-by-tag {
@@ -206,5 +215,42 @@ p {
     font-size: 1.5rem;
     text-decoration: underline;
     text-decoration-color: var(--roast-pink);
+  }
+}
+
+.page-container.halloween {
+  .nav-container {
+    background-color: var(--halloween);
+
+    .title a {
+      color: var(--blood);
+      font-family: "Creepster", sans-serif;
+    }
+  }
+
+  .post-title {
+    font-family: "Creepster", sans-serif;
+    font-size: 4rem;
+    background-color: var(--halloween);
+    color: var(--blood);
+    text-align: center;
+
+    h2 {
+      font-family: "Creepster", sans-serif;
+      color: var(--blood);
+      text-decoration: none;
+    }
+
+    p {
+      color: var(--blood);
+      font-family: "Creepster", sans-serif;
+    }
+  }
+
+  .wp-block-heading {
+    font-family: "Creepster", sans-serif;
+    font-size: 3rem;
+    color: var(--blood);
+    text-decoration: none;
   }
 }
