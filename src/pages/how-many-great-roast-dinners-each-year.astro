@@ -1,0 +1,136 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType, Page, Post } from "../types";
+
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import logo3 from "../images/logo-3.png";
+import { fetchGraphQL } from "../lib/api";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+
+const variables = { id: "9145" };
+let singlePage: Page | null = null;
+
+try {
+  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  singlePage = page;
+} catch (error) {
+  console.error("Error fetching GraphQL data:", error);
+}
+
+const organiseComments = (comments: CommentsType) => {
+  const commentMap = new Map();
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  const topLevelComments: CommentsType = [];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+};
+
+if (!singlePage) {
+  throw new Error("No single page data found");
+}
+
+const allRoastPosts: Post[] = [];
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+
+  allRoastPosts.push(...posts.nodes);
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+
+  console.log(200, allRoastPosts.length, "posts fetched");
+}
+
+const roastDinnerPosts = allRoastPosts.filter((post) =>
+  post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner")
+);
+
+const greatRoastsByYear: Record<string, { great: number; total: number }> = {};
+
+// biome-ignore lint/complexity/noForEach: <explanation>
+roastDinnerPosts.forEach((post) => {
+  const yearTerm = post.yearsOfVisit?.nodes[0]?.name;
+  if (!yearTerm) return;
+
+  if (!greatRoastsByYear[yearTerm]) {
+    greatRoastsByYear[yearTerm] = { great: 0, total: 0 };
+  }
+
+  greatRoastsByYear[yearTerm].total++;
+
+  const ratingTerm = post.ratings?.nodes[0]?.name;
+  if (ratingTerm && Number.parseFloat(ratingTerm) >= 8) {
+    greatRoastsByYear[yearTerm].great++;
+  }
+});
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <div class="image-container">
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+  <div class="container">
+    <div set:html={singlePage.content} />
+
+    <ul>
+      {
+        Object.entries(greatRoastsByYear)
+          .sort(([a], [b]) => b.localeCompare(a))
+          .map(([year, { great, total }]) => {
+            const wasOrIs = year === String(new Date().getFullYear()) ? "is" : "was";
+            const percentage = total > 0 ? Math.round((great / total) * 100) : 0;
+            return (
+              <li>
+                The number of really good roast dinners in {year} {wasOrIs} {great} ({percentage}%
+                of roasts).
+              </li>
+            );
+          })
+      }
+    </ul>
+
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>

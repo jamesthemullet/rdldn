@@ -39,6 +39,11 @@ export type Post = {
     latitude: string;
     longitude: string;
   };
+  typesOfPost?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
