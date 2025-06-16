@@ -8,10 +8,10 @@
     <template x-for="post in searchResults" :key="post.slug">
       <li class="heading">
         <h3>
-          <a :href="`/posts/${post.slug}`" x-text="post.title"></a>
+          <a :href="`/${post.slug}`" x-text="post.title"></a>
         </h3>
 
-        <a :href="`/posts/${post.slug}`" rel="noopener noreferrer">
+        <a :href="`/${post.slug}`" rel="noopener noreferrer">
           <img
             :src="post.featuredImage?.node?.sourceUrl"
             :alt="`Photo of the roast dinner at ${post.title}`"

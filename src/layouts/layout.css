@@ -63,6 +63,7 @@ div.page-container {
 }
 
 .container {
+  margin: 10px;
   max-width: 1000px;
 
   @media (min-width: 1200px) {
