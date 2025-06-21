@@ -3,6 +3,7 @@ const GET_ALL_POST_LOCATIONS = `
     posts(first: 100, after: $after) {
       nodes {
         id
+        slug
         title
         location {
           latitude

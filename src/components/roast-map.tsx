@@ -8,6 +8,7 @@ interface Marker {
   lng: number;
   label?: string;
   rating: number;
+  slug?: string;
 }
 
 interface Props {
@@ -50,6 +51,7 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 };
 
 export default function RoastMap({ markers }: Props) {
+  console.log(20, markers);
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,10 +64,12 @@ export default function RoastMap({ markers }: Props) {
     }).addTo(map);
 
     // biome-ignore lint/complexity/noForEach: <explanation>
-    markers.forEach(({ lat, lng, label, rating }) => {
+    markers.forEach(({ lat, lng, label, rating, slug }) => {
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
-      L.marker([lat, lng], { icon }).addTo(map).bindPopup(`${label} - ${rating}/10`);
+      L.marker([lat, lng], { icon })
+        .addTo(map)
+        .bindPopup(`<a href="${slug}">${label}</a> - ${rating}/10`);
     });
 
     return () => {
