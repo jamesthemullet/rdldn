@@ -49,6 +49,11 @@ export type Post = {
       name: string;
     }[];
   };
+  areas?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
