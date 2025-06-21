@@ -16,6 +16,11 @@ const GET_ALL_POSTS = `
               name
             }
           }
+          prices {
+            nodes {
+              name
+            }
+          }
           yearsOfVisit {
             nodes {
               name
