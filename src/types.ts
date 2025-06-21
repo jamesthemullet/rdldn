@@ -44,6 +44,11 @@ export type Post = {
       name: string;
     }[];
   };
+  prices?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
