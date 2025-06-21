@@ -36,6 +36,11 @@ const GET_ALL_POSTS = `
               name
             }
           }
+          boroughs {
+            nodes {
+              name
+            }
+          }
         }
       }
     }

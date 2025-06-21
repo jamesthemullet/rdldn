@@ -54,6 +54,11 @@ export type Post = {
       name: string;
     }[];
   };
+  boroughs?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
