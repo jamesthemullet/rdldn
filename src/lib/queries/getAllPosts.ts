@@ -25,13 +25,20 @@ const GET_ALL_POSTS = `
             nodes {
               name
             }
-}typesOfPost {
-        nodes {
-          name
-        }
-}}
+          }
+          areas {
+            nodes {
+              name
+            }
+          }
+          typesOfPost {
+            nodes {
+              name
+            }
+          }
         }
       }
+    }
 `;
 
 export default GET_ALL_POSTS;
