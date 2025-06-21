@@ -38,7 +38,7 @@
   background: #fff;
   border-left: 4px solid var(----roast-new-blue);
   border-radius: 4px;
-  width: 100%;
+  min-width: 100%;
   max-width: fit-content;
 }
 
@@ -48,6 +48,10 @@
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
+
+  .comment {
+    min-width: calc(100% - 1rem);
+  }
 }
 
 .comment-reply {
