@@ -240,6 +240,27 @@ p {
   }
 }
 
+@keyframes flicker {
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    text-shadow:
+      0 0 4px #fff,
+      0 0 11px #fff,
+      0 0 19px #fff;
+  }
+
+  20%,
+  24%,
+  55% {
+    text-shadow: none;
+  }
+}
+
 .page-container.halloween {
   .nav-container {
     background-color: var(--halloween);
@@ -247,6 +268,7 @@ p {
     .title a {
       color: var(--blood);
       font-family: "Creepster", sans-serif;
+      animation: flicker 3s infinite alternate;
     }
   }
 
@@ -261,6 +283,8 @@ p {
       font-family: "Creepster", sans-serif;
       color: var(--blood);
       text-decoration: none;
+
+      animation: flicker 3s infinite alternate;
     }
 
     p {
