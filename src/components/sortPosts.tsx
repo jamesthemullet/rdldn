@@ -17,15 +17,10 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   const [showMeat, setShowMeat] = useState(true);
   const [showPrice, setShowPrice] = useState(true);
 
+  type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
+
   const handleCheckboxChange =
-    (setter: {
-      (value: SetStateAction<boolean>): void;
-      (value: SetStateAction<boolean>): void;
-      (value: SetStateAction<boolean>): void;
-      (value: SetStateAction<boolean>): void;
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      (arg0: (prev: any) => boolean): void;
-    }) =>
+    (setter: BooleanStateSetter) =>
     () => {
       setter((prev) => !prev);
     };
