@@ -66,7 +66,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
       return (
         // (meatFilter ? meat === meatFilter : true) &&
         // (countryFilter ? country === countryFilter : true) &&
-        scoreFilter ? rating >= scoreFilter : true
+        scoreFilter ? Number(rating) >= Number(scoreFilter) : true
         // (priceFilter ? convertedPrice <= priceFilter : true)
       );
     });
