@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent, type SetStateAction } from "react";
+import { type ChangeEvent, type SetStateAction, useEffect, useState } from "react";
 import type { Post } from "../types";
 
 const SortPosts = ({ posts }: { posts: Post[] }) => {
