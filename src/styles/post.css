@@ -300,3 +300,9 @@ p {
     text-decoration: none;
   }
 }
+
+.league-of-roasts {
+  li {
+    list-style: decimal;
+  }
+}
