@@ -59,6 +59,11 @@ export type Post = {
       name: string;
     }[];
   };
+  owners?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
