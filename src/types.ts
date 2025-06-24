@@ -59,6 +59,11 @@ export type Post = {
       name: string;
     }[];
   };
+  meats?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
