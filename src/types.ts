@@ -59,6 +59,11 @@ export type Post = {
       name: string;
     }[];
   };
+  owners?: {
+    nodes: {
+      name: string;
+    }[];
+  };
   meats?: {
     nodes: {
       name: string;

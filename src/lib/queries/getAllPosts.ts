@@ -41,6 +41,11 @@ const GET_ALL_POSTS = `
               name
             }
           }
+          owners {
+            nodes {
+              name
+            }
+          }
           meats {
             nodes {
               name
