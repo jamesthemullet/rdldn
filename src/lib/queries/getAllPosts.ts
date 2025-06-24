@@ -46,6 +46,11 @@ const GET_ALL_POSTS = `
               name
             }
           }
+          meats {
+            nodes {
+              name
+            }
+          }
         }
       }
     }
