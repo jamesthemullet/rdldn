@@ -51,6 +51,16 @@ const GET_ALL_POSTS = `
               name
             }
           }
+          tubeStations {
+            nodes {
+              name
+            }
+          }
+          closedDowns {
+            nodes {
+              name
+            }
+          }
         }
       }
     }

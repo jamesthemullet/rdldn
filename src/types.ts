@@ -69,6 +69,16 @@ export type Post = {
       name: string;
     }[];
   };
+  tubeStations?: {
+    nodes: {
+      name: string;
+    }[];
+  };
+  closedDowns?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {

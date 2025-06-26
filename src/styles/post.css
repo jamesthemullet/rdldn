@@ -304,5 +304,9 @@ p {
 .league-of-roasts {
   li {
     list-style: decimal;
+
+    span {
+      margin-left: 0.5rem;
+    }
   }
 }
