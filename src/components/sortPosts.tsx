@@ -2,37 +2,39 @@ import { type ChangeEvent, type SetStateAction, useEffect, useState } from "reac
 import type { Post } from "../types";
 
 const SortPosts = ({ posts }: { posts: Post[] }) => {
-  console.log(10, posts);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortColumn, setSortColumn] = useState("ratings");
   const [sortedPosts, setSortedPosts] = useState([...posts]);
 
   const [meatFilter, setMeatFilter] = useState("");
-  const [countryFilter, setCountryFilter] = useState("");
   const [scoreFilter, setScoreFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
+  const [areaFilter, setAreaFilter] = useState("");
+  const [boroughFilter, setBoroughFilter] = useState("");
+  const [ownerFilter, setOwnerFilter] = useState("");
+  const [closedDownFilter, setClosedDownFilter] = useState("");
 
-  const [showYearVisited, setShowYearVisited] = useState(true);
-  const [showCountry, setShowCountry] = useState(true);
-  const [showMeat, setShowMeat] = useState(true);
-  const [showPrice, setShowPrice] = useState(true);
+  const [showYearVisited, setShowYearVisited] = useState(false);
+  const [showMeat, setShowMeat] = useState(false);
+  const [showPrice, setShowPrice] = useState(false);
+  const [showTubeStation, setShowTubeStation] = useState(false);
+  const [showArea, setShowArea] = useState(false);
+  const [showBorough, setShowBorough] = useState(false);
+  const [showOwner, setShowOwner] = useState(false);
+  const [showClosedDown, setShowClosedDown] = useState(true);
 
   type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
 
-  const handleCheckboxChange =
-    (setter: BooleanStateSetter) =>
-    () => {
-      setter((prev) => !prev);
-    };
+  const handleCheckboxChange = (setter: BooleanStateSetter) => () => {
+    setter((prev) => !prev);
+  };
 
   const sortedByColumn = (posts: Post[], column: string, order: string) => {
     return [...posts].sort((a, b) => {
-      console.log(30, a, b, column, order);
       let aValue: string | number = "";
       let bValue: string | number = "";
 
       switch (column) {
-        case "ratings":
         case "rating":
           aValue = a.ratings?.nodes[0]?.name ?? "";
           bValue = b.ratings?.nodes[0]?.name ?? "";
@@ -42,6 +44,38 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           aValue = a.yearsOfVisit?.nodes[0]?.name ?? "";
           bValue = b.yearsOfVisit?.nodes[0]?.name ?? "";
           break;
+
+        case "meat":
+          aValue = a.meats?.nodes[0]?.name ?? "";
+          bValue = b.meats?.nodes[0]?.name ?? "";
+          break;
+
+        case "tubeStation":
+          aValue = a.tubeStations?.nodes[0]?.name ?? "";
+          bValue = b.tubeStations?.nodes[0]?.name ?? "";
+          break;
+
+        case "area":
+          aValue = a.areas?.nodes[0]?.name ?? "";
+          bValue = b.areas?.nodes[0]?.name ?? "";
+          break;
+        case "borough":
+          aValue = a.boroughs?.nodes[0]?.name ?? "";
+          bValue = b.boroughs?.nodes[0]?.name ?? "";
+          break;
+        case "owner":
+          aValue = a.owners?.nodes[0]?.name ?? "";
+          bValue = b.owners?.nodes[0]?.name ?? "";
+          break;
+        case "closedDown":
+          aValue = a.closedDowns?.nodes[0]?.name ?? "";
+          bValue = b.closedDowns?.nodes[0]?.name ?? "";
+          break;
+        case "title":
+          aValue = a.title ?? "";
+          bValue = b.title ?? "";
+          break;
+
         default:
           aValue = "";
           bValue = "";
@@ -55,14 +89,22 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
   const filterPosts = (posts: Post[]) => {
     return posts.filter((post) => {
-      // const { meat, country, rating, convertedPrice } = post.customfields;
       const rating = post.ratings?.nodes[0]?.name || 0;
+      const meat = post.meats?.nodes[0]?.name || "";
+      const price = post.prices?.nodes[0]?.name || "0";
 
       return (
-        // (meatFilter ? meat === meatFilter : true) &&
-        // (countryFilter ? country === countryFilter : true) &&
-        scoreFilter ? Number(rating) >= Number(scoreFilter) : true
-        // (priceFilter ? convertedPrice <= priceFilter : true)
+        (meatFilter ? meat === meatFilter : true) &&
+        (scoreFilter ? Number(rating) >= Number(scoreFilter) : true) &&
+        (priceFilter ? Number(price.replace(/[£,]/g, "")) <= Number(priceFilter) : true) &&
+        (areaFilter ? post.areas?.nodes[0]?.name === areaFilter : true) &&
+        (boroughFilter ? post.boroughs?.nodes[0]?.name === boroughFilter : true) &&
+        (ownerFilter ? post.owners?.nodes[0]?.name === ownerFilter : true) &&
+        (closedDownFilter
+          ? closedDownFilter === "open"
+            ? !post.closedDowns?.nodes[0]?.name
+            : post.closedDowns?.nodes[0]?.name === closedDownFilter
+          : true)
       );
     });
   };
@@ -70,9 +112,20 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const filteredPosts = filterPosts(posts);
-    console.log(50, filteredPosts);
+
     setSortedPosts(sortedByColumn(filteredPosts, sortColumn, sortOrder));
-  }, [sortColumn, sortOrder, posts]);
+  }, [
+    sortColumn,
+    sortOrder,
+    posts,
+    meatFilter,
+    scoreFilter,
+    priceFilter,
+    areaFilter,
+    boroughFilter,
+    ownerFilter,
+    closedDownFilter,
+  ]);
 
   const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newSortColumn = e.target.value;
@@ -89,19 +142,25 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   ) => {
     const { name, value } = e.target;
     if (name === "meat") setMeatFilter(value);
-    if (name === "country") setCountryFilter(value);
     if (name === "score") setScoreFilter(value);
     if (name === "price") setPriceFilter(value);
+    if (name === "area") setAreaFilter(value);
+    if (name === "borough") setBoroughFilter(value);
+    if (name === "owner") setOwnerFilter(value);
+    if (name === "closedDown") setClosedDownFilter(value);
   };
 
   const clearFilters = () => {
     setMeatFilter("");
-    setCountryFilter("");
     setScoreFilter("");
     setPriceFilter("");
+    setAreaFilter("");
+    setBoroughFilter("");
+    setOwnerFilter("");
+    setClosedDownFilter("");
   };
 
-  // const uniqueMeats = [...new Set(posts.map((post) => post.customfields.meat))];
+  const uniqueMeats = [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))];
 
   return (
     <div>
@@ -121,13 +180,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           onChange={handleCheckboxChange(setShowMeat)}
         />
         <label htmlFor="meat">Meat</label>
-        <input
-          type="checkbox"
-          id="country"
-          checked={showCountry}
-          onChange={handleCheckboxChange(setShowCountry)}
-        />
-        <label htmlFor="country">Country</label>
+
         <input
           type="checkbox"
           id="yearVisited"
@@ -135,6 +188,41 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           onChange={handleCheckboxChange(setShowYearVisited)}
         />
         <label htmlFor="yearVisited">Year Visited</label>
+        <input
+          type="checkbox"
+          id="tubeStation"
+          checked={showTubeStation}
+          onChange={handleCheckboxChange(setShowTubeStation)}
+        />
+        <label htmlFor="tubeStation">Tube Station</label>
+        <input
+          type="checkbox"
+          id="area"
+          checked={showArea}
+          onChange={handleCheckboxChange(setShowArea)}
+        />
+        <label htmlFor="area">Area</label>
+        <input
+          type="checkbox"
+          id="borough"
+          checked={showBorough}
+          onChange={handleCheckboxChange(setShowBorough)}
+        />
+        <label htmlFor="borough">Borough</label>
+        <input
+          type="checkbox"
+          id="owner"
+          checked={showOwner}
+          onChange={handleCheckboxChange(setShowOwner)}
+        />
+        <label htmlFor="owner">Owner</label>
+        <input
+          type="checkbox"
+          id="closeddown"
+          checked={showClosedDown}
+          onChange={handleCheckboxChange(setShowClosedDown)}
+        />
+        <label htmlFor="closeddown">Closed Down</label>
       </div>
 
       <div className="sort-posts">
@@ -143,8 +231,12 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           <option value="rating">Rating</option>
           <option value="convertedPrice">Price (GBP)</option>
           <option value="meat">Meat</option>
-          <option value="country">Country</option>
           <option value="yearVisited">Year Visited</option>
+          <option value="tubeStation">Tube Station</option>
+          <option value="area">Area</option>
+          <option value="borough">Borough</option>
+          <option value="owner">Owner</option>
+          <option value="title">Title</option>
         </select>
         <button type="button" onClick={toggleSortOrder}>
           {sortOrder === "asc" ? "Sort Descending" : "Sort Ascending"}
@@ -155,11 +247,11 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
         <label htmlFor="meat-filter">Filter by Meat: </label>
         <select id="meat-filter" name="meat" value={meatFilter} onChange={handleFilterChange}>
           <option value="">All</option>
-          {/* {uniqueMeats.map((meat: string) => (
+          {uniqueMeats.map((meat) => (
             <option key={meat} value={meat}>
               {meat}
             </option>
-          ))} */}
+          ))}
         </select>
 
         <label htmlFor="score-filter">Filter by Rating (minimum): </label>
@@ -179,6 +271,55 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           value={priceFilter}
           onChange={handleFilterChange}
         />
+
+        <label htmlFor="area-filter">Filter by Area: </label>
+        <select id="area-filter" name="area" onChange={handleFilterChange}>
+          <option value="">All</option>
+          {Array.from(new Set(posts.map((post) => post.areas?.nodes[0]?.name)))
+            .filter(Boolean)
+            .map((area) => (
+              <option key={area} value={area}>
+                {area}
+              </option>
+            ))}
+        </select>
+
+        <label htmlFor="borough-filter">Filter by Borough: </label>
+        <select id="borough-filter" name="borough" onChange={handleFilterChange}>
+          <option value="">All</option>
+          {Array.from(new Set(posts.map((post) => post.boroughs?.nodes[0]?.name)))
+            .filter(Boolean)
+            .map((borough) => (
+              <option key={borough} value={borough}>
+                {borough}
+              </option>
+            ))}
+        </select>
+
+        <label htmlFor="owner-filter">Filter by Owner: </label>
+        <select id="owner-filter" name="owner" onChange={handleFilterChange}>
+          <option value="">All</option>
+          {Array.from(new Set(posts.map((post) => post.owners?.nodes[0]?.name)))
+            .filter(Boolean)
+            .map((owner) => (
+              <option key={owner} value={owner}>
+                {owner}
+              </option>
+            ))}
+        </select>
+
+        <label htmlFor="closed-down-filter">Filter by Closed Down: </label>
+        <select id="closed-down-filter" name="closedDown" onChange={handleFilterChange}>
+          <option value="">All</option>
+          <option value="open">Open</option>
+          {Array.from(new Set(posts.map((post) => post.closedDowns?.nodes[0]?.name)))
+            .filter(Boolean)
+            .map((closedDown) => (
+              <option key={closedDown} value={closedDown}>
+                {closedDown}
+              </option>
+            ))}
+        </select>
       </div>
 
       <button type="button" className="clear-button" onClick={clearFilters}>
@@ -187,8 +328,6 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
       <ol className="grid-container league-of-roasts">
         {sortedPosts.map((post) => {
-          // const { rating, currency, price, meat, country, yearVisited, convertedPrice } =
-          //   post.customfields;
           return (
             <li className="grid-item" key={post.slug}>
               <a href={post.slug} target="_blank" rel="noopener noreferrer">
@@ -196,8 +335,13 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               </a>
               <span>{post.ratings?.nodes[0]?.name}</span>
               {showPrice && <span>{post.prices?.nodes[0]?.name || ""}</span>}
-              {/* {showMeat && <span>{meat}</span>} */}
+              {showMeat && <span>{post.meats?.nodes[0]?.name}</span>}
               {showYearVisited && <span>{post.yearsOfVisit?.nodes[0]?.name}</span>}
+              {showTubeStation && <span>{post.tubeStations?.nodes[0]?.name}</span>}
+              {showArea && <span>{post.areas?.nodes[0]?.name}</span>}
+              {showBorough && <span>{post.boroughs?.nodes[0]?.name}</span>}
+              {showOwner && <span>{post.owners?.nodes[0]?.name}</span>}
+              {showClosedDown && <span>{post.closedDowns?.nodes[0]?.name}</span>}
             </li>
           );
         })}
