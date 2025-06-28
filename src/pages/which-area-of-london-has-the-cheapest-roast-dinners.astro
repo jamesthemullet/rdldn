@@ -48,8 +48,6 @@ if (!singlePage) {
   throw new Error("No single page data found");
 }
 
-const allRoastPosts: Post[] = [];
-
 const areaPrices: Record<string, number[]> = {};
 let hasNextPage = true;
 let endCursor: string | null = null;
