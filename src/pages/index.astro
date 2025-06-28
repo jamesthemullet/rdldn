@@ -23,12 +23,15 @@ try {
   recentPost = data.posts.nodes[0];
   recentPostCursor = data?.posts?.pageInfo?.endCursor;
 
-  recentPost = {
-    ...recentPost,
-    featuredImageUrl:
-      recentPost?.featuredImage?.node?.mediaDetails?.sizes?.find((size) => size.name === "homepage")
-        ?.sourceUrl || recentPost?.featuredImage?.node?.sourceUrl,
-  };
+  if (recentPost) {
+    recentPost = {
+      ...recentPost,
+      featuredImageUrl:
+        recentPost.featuredImage?.node?.mediaDetails?.sizes?.find(
+          (size) => size.name === "homepage"
+        )?.sourceUrl || recentPost.featuredImage?.node?.sourceUrl,
+    };
+  }
 } catch (error) {
   console.error("Error fetching the most recent post:", error);
   recentPost = null;
