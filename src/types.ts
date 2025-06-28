@@ -11,6 +11,7 @@ export type Sizes = {
 export type Post = {
   title?: string;
   slug?: string;
+  date: string;
   featuredImage?: {
     node: {
       sourceUrl: string;

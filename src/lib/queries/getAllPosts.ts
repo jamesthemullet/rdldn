@@ -11,6 +11,7 @@ const GET_ALL_POSTS = `
             nodes {
             postId
             title
+            date
           ratings {
             nodes {
               name

@@ -9,7 +9,7 @@ import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "7140" };
+const variables = { id: "9289" };
 let singlePage: Page | null = null;
 
 try {
@@ -48,7 +48,21 @@ if (!singlePage) {
   throw new Error("No single page data found");
 }
 
-const areaPrices: Record<string, number[]> = {};
+const monthStats: Record<string, { name: string; total: number; count: number }> = {
+  "01": { name: "January", total: 0, count: 0 },
+  "02": { name: "February", total: 0, count: 0 },
+  "03": { name: "March", total: 0, count: 0 },
+  "04": { name: "April", total: 0, count: 0 },
+  "05": { name: "May", total: 0, count: 0 },
+  "06": { name: "June", total: 0, count: 0 },
+  "07": { name: "July", total: 0, count: 0 },
+  "08": { name: "August", total: 0, count: 0 },
+  "09": { name: "September", total: 0, count: 0 },
+  "10": { name: "October", total: 0, count: 0 },
+  "11": { name: "November", total: 0, count: 0 },
+  "12": { name: "December", total: 0, count: 0 },
+};
+
 let hasNextPage = true;
 let endCursor: string | null = null;
 
@@ -58,38 +72,36 @@ while (hasNextPage) {
 
   // biome-ignore lint/complexity/noForEach: <explanation>
   posts.nodes.forEach((post: Post) => {
-    const area = post.areas?.nodes[0]?.name;
-    const priceString = post.prices?.nodes[0]?.name;
+    const dateStr = post.date;
+    const ratingStr = post.ratings?.nodes?.[0]?.name ?? "";
+    const match = ratingStr.match(/[\d.]+/);
+    const rating = match ? Number.parseFloat(match[0]) : null;
 
-    if (!area || !priceString) return;
+    if (!dateStr || !rating || Number.isNaN(rating)) return;
 
-    const match = priceString.match(/[\d,.]+/);
-    const numericPrice = match ? Number.parseFloat(match[0].replace(",", "")) : null;
+    const postMonth = new Date(dateStr).toISOString().slice(5, 7); // e.g. "03"
+    if (!monthStats[postMonth]) return;
 
-    if (!numericPrice || Number.isNaN(numericPrice)) return;
-
-    if (!areaPrices[area]) {
-      areaPrices[area] = [];
-    }
-
-    areaPrices[area].push(numericPrice);
+    monthStats[postMonth].total += rating;
+    monthStats[postMonth].count += 1;
   });
 
   hasNextPage = posts.pageInfo.hasNextPage;
   endCursor = posts.pageInfo.endCursor;
 }
 
-const areaStats = Object.entries(areaPrices)
-  .filter(([_, prices]) => prices.length >= 5) // minimum 5 reviews
-  .map(([area, prices]) => {
-    const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
-    return {
-      name: area,
-      average: Number.parseFloat(avg.toFixed(2)),
-      count: prices.length,
-    };
-  })
-  .sort((a, b) => a.average - b.average);
+const monthOrder = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+
+const monthlyAverages = monthOrder.map((month) => {
+  const stats = monthStats[month];
+  const average = stats.count > 0 ? +(stats.total / stats.count).toFixed(2) : null;
+
+  return {
+    month: stats.name,
+    average,
+    count: stats.count,
+  };
+});
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
@@ -119,10 +131,11 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <div set:html={singlePage.content} />
     <ul>
       {
-        areaStats.map((area) => (
+        monthlyAverages.map(({ month, average, count }) => (
           <li>
-            The average price in {area.name} is £{area.average.toFixed(2)} ({area.count}{" "}
-            {area.count === 1 ? "review" : "reviews"})
+            In {month}, the average roast dinner rating is{" "}
+            {average !== null ? average.toFixed(2) : "N/A"} based on {count}{" "}
+            {count === 1 ? "review" : "reviews"}.
           </li>
         ))
       }
