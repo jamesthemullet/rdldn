@@ -16,9 +16,9 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
   const [showOptions, setShowOptions] = useState(false);
 
-  console.log(10, sortColumn);
+  
 
-  console.log(12, sortedPosts);
+  
 
   const [showYearVisited, setShowYearVisited] = useState(false);
   const [showMeat, setShowMeat] = useState(false);
