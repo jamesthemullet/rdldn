@@ -91,11 +91,9 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <section class="post-title">
     <h2>{singlePage.title}</h2>
   </section>
-  <div class="container">
+  <div class="container league-container">
     <div set:html={singlePage.content} />
-    <div class="container">
-      <SortPosts client:only="react" posts={allRoastPosts} />
-    </div>
+    <SortPosts client:only="react" posts={allRoastPosts} />
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>

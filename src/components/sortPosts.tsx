@@ -2,8 +2,8 @@ import { type ChangeEvent, type SetStateAction, useEffect, useState } from "reac
 import type { Post } from "../types";
 
 const SortPosts = ({ posts }: { posts: Post[] }) => {
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [sortColumn, setSortColumn] = useState("ratings");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortColumn, setSortColumn] = useState("rating");
   const [sortedPosts, setSortedPosts] = useState([...posts]);
 
   const [meatFilter, setMeatFilter] = useState("");
@@ -13,6 +13,12 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   const [boroughFilter, setBoroughFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
   const [closedDownFilter, setClosedDownFilter] = useState("");
+
+  const [showOptions, setShowOptions] = useState(false);
+
+  console.log(10, sortColumn);
+
+  console.log(12, sortedPosts);
 
   const [showYearVisited, setShowYearVisited] = useState(false);
   const [showMeat, setShowMeat] = useState(false);
@@ -34,10 +40,21 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
       let aValue: string | number = "";
       let bValue: string | number = "";
 
+      console.log(13, column);
+
       switch (column) {
         case "rating":
           aValue = a.ratings?.nodes[0]?.name ?? "";
           bValue = b.ratings?.nodes[0]?.name ?? "";
+          break;
+
+        case "price":
+          aValue = a.prices?.nodes[0]?.name ?? "";
+          bValue = b.prices?.nodes[0]?.name ?? "";
+          if (typeof aValue === "string") {
+            aValue = Number(aValue.replace(/[£,]/g, ""));
+            bValue = Number(bValue.replace(/[£,]/g, ""));
+          }
           break;
 
         case "yearVisited":
@@ -113,6 +130,8 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   useEffect(() => {
     const filteredPosts = filterPosts(posts);
 
+    console.log(11, filteredPosts, sortColumn, sortOrder);
+
     setSortedPosts(sortedByColumn(filteredPosts, sortColumn, sortOrder));
   }, [
     sortColumn,
@@ -164,167 +183,208 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
   return (
     <div>
-      <div className="toggle-columns">
-        <p>Show/hide columns:</p>
-        <input
-          type="checkbox"
-          id="price"
-          checked={showPrice}
-          onChange={handleCheckboxChange(setShowPrice)}
-        />
-        <label htmlFor="price">Price</label>
-        <input
-          type="checkbox"
-          id="meat"
-          checked={showMeat}
-          onChange={handleCheckboxChange(setShowMeat)}
-        />
-        <label htmlFor="meat">Meat</label>
-
-        <input
-          type="checkbox"
-          id="yearVisited"
-          checked={showYearVisited}
-          onChange={handleCheckboxChange(setShowYearVisited)}
-        />
-        <label htmlFor="yearVisited">Year Visited</label>
-        <input
-          type="checkbox"
-          id="tubeStation"
-          checked={showTubeStation}
-          onChange={handleCheckboxChange(setShowTubeStation)}
-        />
-        <label htmlFor="tubeStation">Tube Station</label>
-        <input
-          type="checkbox"
-          id="area"
-          checked={showArea}
-          onChange={handleCheckboxChange(setShowArea)}
-        />
-        <label htmlFor="area">Area</label>
-        <input
-          type="checkbox"
-          id="borough"
-          checked={showBorough}
-          onChange={handleCheckboxChange(setShowBorough)}
-        />
-        <label htmlFor="borough">Borough</label>
-        <input
-          type="checkbox"
-          id="owner"
-          checked={showOwner}
-          onChange={handleCheckboxChange(setShowOwner)}
-        />
-        <label htmlFor="owner">Owner</label>
-        <input
-          type="checkbox"
-          id="closeddown"
-          checked={showClosedDown}
-          onChange={handleCheckboxChange(setShowClosedDown)}
-        />
-        <label htmlFor="closeddown">Closed Down</label>
-      </div>
-
-      <div className="sort-posts">
-        <label htmlFor="sort-column">Sort by: </label>
-        <select id="sort-column" onChange={handleSortChange} value={sortColumn}>
-          <option value="rating">Rating</option>
-          <option value="convertedPrice">Price (GBP)</option>
-          <option value="meat">Meat</option>
-          <option value="yearVisited">Year Visited</option>
-          <option value="tubeStation">Tube Station</option>
-          <option value="area">Area</option>
-          <option value="borough">Borough</option>
-          <option value="owner">Owner</option>
-          <option value="title">Title</option>
-        </select>
-        <button type="button" onClick={toggleSortOrder}>
-          {sortOrder === "asc" ? "Sort Descending" : "Sort Ascending"}
-        </button>
-      </div>
-
-      <div className="filter-posts">
-        <label htmlFor="meat-filter">Filter by Meat: </label>
-        <select id="meat-filter" name="meat" value={meatFilter} onChange={handleFilterChange}>
-          <option value="">All</option>
-          {uniqueMeats.map((meat) => (
-            <option key={meat} value={meat}>
-              {meat}
-            </option>
-          ))}
-        </select>
-
-        <label htmlFor="score-filter">Filter by Rating (minimum): </label>
-        <input
-          type="number"
-          id="score-filter"
-          name="score"
-          value={scoreFilter}
-          onChange={handleFilterChange}
-        />
-
-        <label htmlFor="price-filter">Filter by Price (maximum): </label>
-        <input
-          type="number"
-          id="price-filter"
-          name="price"
-          value={priceFilter}
-          onChange={handleFilterChange}
-        />
-
-        <label htmlFor="area-filter">Filter by Area: </label>
-        <select id="area-filter" name="area" onChange={handleFilterChange}>
-          <option value="">All</option>
-          {Array.from(new Set(posts.map((post) => post.areas?.nodes[0]?.name)))
-            .filter(Boolean)
-            .map((area) => (
-              <option key={area} value={area}>
-                {area}
-              </option>
-            ))}
-        </select>
-
-        <label htmlFor="borough-filter">Filter by Borough: </label>
-        <select id="borough-filter" name="borough" onChange={handleFilterChange}>
-          <option value="">All</option>
-          {Array.from(new Set(posts.map((post) => post.boroughs?.nodes[0]?.name)))
-            .filter(Boolean)
-            .map((borough) => (
-              <option key={borough} value={borough}>
-                {borough}
-              </option>
-            ))}
-        </select>
-
-        <label htmlFor="owner-filter">Filter by Owner: </label>
-        <select id="owner-filter" name="owner" onChange={handleFilterChange}>
-          <option value="">All</option>
-          {Array.from(new Set(posts.map((post) => post.owners?.nodes[0]?.name)))
-            .filter(Boolean)
-            .map((owner) => (
-              <option key={owner} value={owner}>
-                {owner}
-              </option>
-            ))}
-        </select>
-
-        <label htmlFor="closed-down-filter">Filter by Closed Down: </label>
-        <select id="closed-down-filter" name="closedDown" onChange={handleFilterChange}>
-          <option value="">All</option>
-          <option value="open">Open</option>
-          {Array.from(new Set(posts.map((post) => post.closedDowns?.nodes[0]?.name)))
-            .filter(Boolean)
-            .map((closedDown) => (
-              <option key={closedDown} value={closedDown}>
-                {closedDown}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <button type="button" className="clear-button" onClick={clearFilters}>
-        Clear All Filters
+      <p>
+        The league table is fully customisable, you can filter, sort and show extra data. Click to
+        show all options.
+      </p>
+      <button type="button" onClick={() => setShowOptions((prev) => !prev)}>
+        {showOptions ? "Hide options" : "Show all options"}
       </button>
+      {showOptions && (
+        <div>
+          <div className="toggle-columns">
+            <h4>Show/hide columns:</h4>
+            <div>
+              <input
+                type="checkbox"
+                id="price"
+                checked={showPrice}
+                onChange={handleCheckboxChange(setShowPrice)}
+              />
+              <label htmlFor="price">Price</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="meat"
+                checked={showMeat}
+                onChange={handleCheckboxChange(setShowMeat)}
+              />
+              <label htmlFor="meat">Meat</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="yearVisited"
+                checked={showYearVisited}
+                onChange={handleCheckboxChange(setShowYearVisited)}
+              />
+              <label htmlFor="yearVisited">Year Visited</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="tubeStation"
+                checked={showTubeStation}
+                onChange={handleCheckboxChange(setShowTubeStation)}
+              />
+              <label htmlFor="tubeStation">Tube Station</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="area"
+                checked={showArea}
+                onChange={handleCheckboxChange(setShowArea)}
+              />
+              <label htmlFor="area">Area</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="borough"
+                checked={showBorough}
+                onChange={handleCheckboxChange(setShowBorough)}
+              />
+              <label htmlFor="borough">Borough</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="owner"
+                checked={showOwner}
+                onChange={handleCheckboxChange(setShowOwner)}
+              />
+              <label htmlFor="owner">Owner</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="closeddown"
+                checked={showClosedDown}
+                onChange={handleCheckboxChange(setShowClosedDown)}
+              />
+              <label htmlFor="closeddown">Closed Down</label>
+            </div>
+          </div>
+
+          <div className="sort-posts">
+            <label htmlFor="sort-column">Sort by: </label>
+            <select id="sort-column" onChange={handleSortChange} value={sortColumn}>
+              <option value="rating">Rating</option>
+              <option value="price">Price (GBP)</option>
+              <option value="meat">Meat</option>
+              <option value="yearVisited">Year Visited</option>
+              <option value="tubeStation">Tube Station</option>
+              <option value="area">Area</option>
+              <option value="borough">Borough</option>
+              <option value="owner">Owner</option>
+              <option value="title">Title</option>
+            </select>
+            <button type="button" onClick={toggleSortOrder}>
+              {sortOrder === "asc" ? "Sort Descending" : "Sort Ascending"}
+            </button>
+          </div>
+
+          <div className="filter-posts">
+            <div>
+              <label htmlFor="meat-filter">Filter by Meat: </label>
+              <select id="meat-filter" name="meat" value={meatFilter} onChange={handleFilterChange}>
+                <option value="">All</option>
+                {uniqueMeats.map((meat) => (
+                  <option key={meat} value={meat}>
+                    {meat}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="score-filter">Filter by Rating (minimum): </label>
+              <input
+                type="number"
+                id="score-filter"
+                name="score"
+                value={scoreFilter}
+                onChange={handleFilterChange}
+              />
+            </div>{" "}
+            <div>
+              <label htmlFor="price-filter">Filter by Price (maximum): </label>
+              <input
+                type="number"
+                id="price-filter"
+                name="price"
+                value={priceFilter}
+                onChange={handleFilterChange}
+              />
+            </div>{" "}
+            <div>
+              <label htmlFor="area-filter">Filter by Area: </label>
+              <select id="area-filter" name="area" onChange={handleFilterChange}>
+                <option value="">All</option>
+                {Array.from(new Set(posts.map((post) => post.areas?.nodes[0]?.name)))
+                  .filter(Boolean)
+                  .map((area) => (
+                    <option key={area} value={area}>
+                      {area}
+                    </option>
+                  ))}
+              </select>
+            </div>{" "}
+            <div>
+              <label htmlFor="borough-filter">Filter by Borough: </label>
+              <select id="borough-filter" name="borough" onChange={handleFilterChange}>
+                <option value="">All</option>
+                {Array.from(new Set(posts.map((post) => post.boroughs?.nodes[0]?.name)))
+                  .filter(Boolean)
+                  .map((borough) => (
+                    <option key={borough} value={borough}>
+                      {borough}
+                    </option>
+                  ))}
+              </select>
+            </div>{" "}
+            <div>
+              <label htmlFor="owner-filter">Filter by Owner: </label>
+              <select id="owner-filter" name="owner" onChange={handleFilterChange}>
+                <option value="">All</option>
+                {Array.from(new Set(posts.map((post) => post.owners?.nodes[0]?.name)))
+                  .filter(Boolean)
+                  .map((owner) => (
+                    <option key={owner} value={owner}>
+                      {owner}
+                    </option>
+                  ))}
+              </select>
+            </div>{" "}
+            <div>
+              <label htmlFor="closed-down-filter">Filter by Closed Down: </label>
+              <select id="closed-down-filter" name="closedDown" onChange={handleFilterChange}>
+                <option value="">All</option>
+                <option value="open">Open</option>
+                {Array.from(new Set(posts.map((post) => post.closedDowns?.nodes[0]?.name)))
+                  .filter(Boolean)
+                  .map((closedDown) => (
+                    <option key={closedDown} value={closedDown}>
+                      {closedDown}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </div>
+
+          <button type="button" className="clear-button" onClick={clearFilters}>
+            Clear All Filters
+          </button>
+        </div>
+      )}
 
       <ol className="grid-container league-of-roasts">
         {sortedPosts.map((post) => {
