@@ -2,7 +2,8 @@ main {
   margin: 0;
 }
 
-ul {
+ul,
+ol {
   padding: 0;
   margin: 0;
   display: flex;
@@ -125,6 +126,15 @@ h3 {
   text-decoration: underline;
   text-decoration-color: var(--roast-new-blue);
   text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+h4 {
+  color: var(--roast-new-blue);
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+  text-decoration: underline;
   margin: 0;
   padding: 0;
 }
@@ -301,12 +311,68 @@ p {
   }
 }
 
-.league-of-roasts {
-  li {
-    list-style: decimal;
+.league-container {
+  p {
+    margin: 0;
+  }
+  button {
+    margin: 0 auto;
+    margin-bottom: 1rem;
+  }
+  .league-of-roasts {
+    list-style: none;
+    counter-reset: roast-counter;
+    padding-left: 0;
+    margin-left: 0;
 
-    span {
-      margin-left: 0.5rem;
+    li {
+      list-style: decimal;
+      list-style-position: inside;
+      display: flex;
+      flex-wrap: wrap;
+      counter-increment: roast-counter;
+      position: relative;
+      padding-left: 2.2em;
+
+      span {
+        margin-left: 0.5rem;
+      }
+    }
+
+    li::before {
+      content: counter(roast-counter) ".";
+      position: absolute;
+      left: 0;
+      top: 0;
+      min-width: 2em;
+      text-align: right;
+    }
+  }
+
+  .toggle-columns {
+    div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      input[type="checkbox"] {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+
+      label {
+        font-size: 1.2rem;
+        color: var(--roast-new-blue);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .filter-posts {
+    div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
     }
   }
 }
