@@ -329,6 +329,7 @@ p {
     padding-left: 0;
     margin-left: 0;
     margin-top: 1rem;
+    color: var(--roast-main-text);
 
     li {
       list-style: decimal;
@@ -341,6 +342,11 @@ p {
 
       span {
         margin-left: 0.5rem;
+      }
+
+      a {
+        text-decoration: underline;
+        color: var(--roast-main-text);
       }
     }
 

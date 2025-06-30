@@ -411,13 +411,12 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
       <ol className="grid-container league-of-roasts">
         {sortedPosts.map((post) => {
+          console.log(12, post);
           return (
             <li className="grid-item" key={post.slug}>
               <a
-                href={post.slug}
+                href={`/${post.slug}`}
                 className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 {post.title}
               </a>
