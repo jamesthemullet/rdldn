@@ -12,6 +12,7 @@ const GET_ALL_POSTS = `
             postId
             title
             date
+            slug
           ratings {
             nodes {
               name

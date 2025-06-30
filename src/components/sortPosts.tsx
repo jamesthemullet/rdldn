@@ -16,10 +16,6 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
   const [showOptions, setShowOptions] = useState(false);
 
-  
-
-  
-
   const [showYearVisited, setShowYearVisited] = useState(false);
   const [showMeat, setShowMeat] = useState(false);
   const [showPrice, setShowPrice] = useState(false);
@@ -156,6 +152,29 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     setSortOrder(newSortOrder);
   };
 
+  const translateClosedDown = (closedDown: string | undefined) => {
+    switch (closedDown) {
+      case "closeddown":
+        return "Closed Down";
+      case "stopped":
+        return "Stopped Doing Roasts";
+      case "popupmoved":
+        return "Popup Moved";
+      case "tempclosed":
+        return "Temporarily Closed";
+      case "newowners":
+        return "New Owners";
+      case "popupstopped":
+        return "Popup Stopped";
+      default:
+        if (closedDown?.startsWith("re-reviewed-")) {
+          const year = closedDown.split("re-reviewed-")[1];
+          return `Re-reviewed in ${year}`;
+        }
+        return closedDown;
+    }
+  };
+
   const handleFilterChange = (
     e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>
   ) => {
@@ -187,7 +206,11 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
         The league table is fully customisable, you can filter, sort and show extra data. Click to
         show all options.
       </p>
-      <button type="button" onClick={() => setShowOptions((prev) => !prev)}>
+      <button
+        type="button"
+        className="show-hide-button"
+        onClick={() => setShowOptions((prev) => !prev)}
+      >
         {showOptions ? "Hide options" : "Show all options"}
       </button>
       {showOptions && (
@@ -388,12 +411,18 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
       <ol className="grid-container league-of-roasts">
         {sortedPosts.map((post) => {
+          console.log(12, post);
           return (
             <li className="grid-item" key={post.slug}>
-              <a href={post.slug} target="_blank" rel="noopener noreferrer">
+              <a
+                href={`/${post.slug}`}
+                className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}
+              >
                 {post.title}
               </a>
-              <span>{post.ratings?.nodes[0]?.name}</span>
+              <span className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}>
+                {post.ratings?.nodes[0]?.name}
+              </span>
               {showPrice && <span>{post.prices?.nodes[0]?.name || ""}</span>}
               {showMeat && <span>{post.meats?.nodes[0]?.name}</span>}
               {showYearVisited && <span>{post.yearsOfVisit?.nodes[0]?.name}</span>}
@@ -401,7 +430,9 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               {showArea && <span>{post.areas?.nodes[0]?.name}</span>}
               {showBorough && <span>{post.boroughs?.nodes[0]?.name}</span>}
               {showOwner && <span>{post.owners?.nodes[0]?.name}</span>}
-              {showClosedDown && <span>{post.closedDowns?.nodes[0]?.name}</span>}
+              {showClosedDown && (
+                <span>{translateClosedDown(post.closedDowns?.nodes[0]?.name)}</span>
+              )}
             </li>
           );
         })}

@@ -127,24 +127,26 @@ p {
 
 input {
   margin-top: 0.5rem;
-  height: 3rem;
   border: 2px solid var(--roast-new-blue);
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
     border: 2px solid var(--roast-pink);
   }
+
+  &:not([type="checkbox"]):not([type="radio"]) {
+    height: 3rem;
+  }
 }
 
 select {
-  margin-top: 0.5rem;
   border: 1px solid #333;
   height: 3rem;
 }
 
 option {
   padding: 0.5rem;
-  margin-top: 0.5rem;
   border: 1px solid #333;
   font-size: 1.2rem;
 }
