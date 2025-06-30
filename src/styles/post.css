@@ -316,14 +316,19 @@ p {
     margin: 0;
   }
   button {
-    margin: 0 auto;
-    margin-bottom: 1rem;
+    margin: 0;
   }
+
+  .show-hide-button {
+    margin: 1rem 0;
+  }
+
   .league-of-roasts {
     list-style: none;
     counter-reset: roast-counter;
     padding-left: 0;
     margin-left: 0;
+    margin-top: 1rem;
 
     li {
       list-style: decimal;
@@ -347,15 +352,24 @@ p {
       min-width: 2em;
       text-align: right;
     }
+
+    .closed-down {
+      opacity: 0.5;
+      pointer-events: none;
+      text-decoration: line-through;
+    }
   }
 
   .toggle-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
     div {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-
-      input[type="checkbox"] {
+      max input[type="checkbox"] {
         width: 1.5rem;
         height: 1.5rem;
       }
@@ -369,10 +383,38 @@ p {
   }
 
   .filter-posts {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      gap: 2rem;
+    }
+
     div {
       display: flex;
       flex-direction: column;
-      margin-bottom: 1rem;
+
+      @media (min-width: 768px) {
+        max-width: 300px;
+      }
     }
+
+    select,
+    option {
+      margin-top: 0.5rem;
+    }
+  }
+
+  .sort-posts {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
   }
 }
