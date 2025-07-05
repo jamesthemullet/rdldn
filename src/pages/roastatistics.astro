@@ -1,21 +1,60 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import type { Comments as CommentsType, Page } from "../types";
+import type { Comments as CommentsType, Page, Size } from "../types";
 
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
+import GET_ALL_PAGES from "../lib/queries/getAllPages";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
 const variables = { id: "4102" };
 let singlePage: Page | null = null;
+
+type PageWithFeaturedImage = Page & { featuredImage: string };
 
 try {
   const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
   singlePage = page;
 } catch (error) {
   console.error("Error fetching GraphQL data:", error);
+}
+
+let allPages: Page[] = [];
+let allRoastStatisticsPages: Page[] = [];
+const roastStatistics: Array<PageWithFeaturedImage> = [];
+
+try {
+  const response = await fetchGraphQL(GET_ALL_PAGES);
+  allPages = response?.pages?.nodes
+    ?.map((page: Page) => {
+      const featuredImage = page.featuredImage?.node;
+      const smallImage =
+        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
+          ?.sourceUrl || featuredImage?.sourceUrl;
+
+      return {
+        ...page,
+        featuredImageUrl: smallImage,
+      };
+    })
+    .filter(Boolean);
+
+  allRoastStatisticsPages = allPages.filter(
+    (page: Page) => page?.highlights?.tag === "roastatistics"
+  );
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  allRoastStatisticsPages.forEach((page: Page) => {
+    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
+    roastStatistics.push({
+      ...page,
+      featuredImage,
+    } as PageWithFeaturedImage);
+  });
+} catch (error) {
+  console.error("Error fetching features data:", error);
 }
 
 const organiseComments = (comments: CommentsType) => {
@@ -73,6 +112,36 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   </section>
   <div class="container">
     <div set:html={singlePage.content} />
+    <section class="other-list">
+      <ul>
+        {
+          roastStatistics.map((post, index) => (
+            <li class="heading">
+              <h3>
+                <a href={post?.slug} rel="noopener noreferrer">
+                  <Fragment set:html={post?.title} />
+                </a>
+              </h3>
+              <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+                <img
+                  src={post?.featuredImageUrl}
+                  alt={`Photo of the roast dinner at ${post?.title}`}
+                  width="400"
+                  height="300"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <p>
+      Got some roastatistics that you'd like to see? <a
+        href="mailto:passmethegravy@rdldn.co.uk?subject=Roastatistics%20Are%20Sexier%20Than%20Margaret%20Thatcher%20In%20A%20Mini%20Skirt"
+        >Hit me up</a
+      > and I'll see what I can do.
+    </p>
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
