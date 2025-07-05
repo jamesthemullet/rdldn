@@ -128,7 +128,7 @@ let allPages: Page[] = [];
 let allFeaturesPages: Page[] = [];
 let allRoastStatisticsPages: Page[] = [];
 let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [];
-let roastStatistics: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [];
+let roastStatistics: Array<PageWithFeaturedImage> = [];
 
 try {
   const response = await fetchGraphQL(GET_ALL_PAGES);
