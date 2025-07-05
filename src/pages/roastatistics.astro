@@ -6,8 +6,8 @@ import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
-import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 import GET_ALL_PAGES from "../lib/queries/getAllPages";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
 const variables = { id: "4102" };
 let singlePage: Page | null = null;
