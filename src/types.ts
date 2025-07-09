@@ -15,6 +15,7 @@ export type Post = {
   featuredImage?: {
     node: {
       sourceUrl: string;
+      altText?: string;
       mediaDetails?: {
         sizes: Sizes;
       };
