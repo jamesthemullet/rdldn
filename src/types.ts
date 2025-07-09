@@ -15,6 +15,7 @@ export type Post = {
   featuredImage?: {
     node: {
       sourceUrl: string;
+      altText?: string;
       mediaDetails?: {
         sizes: Sizes;
       };
@@ -79,6 +80,10 @@ export type Post = {
     nodes: {
       name: string;
     }[];
+  };
+  highlights?: {
+    loved: string;
+    loathed: string;
   };
 };
 
