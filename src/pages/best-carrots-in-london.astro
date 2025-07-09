@@ -149,7 +149,10 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
             {post.featuredImage?.node?.sourceUrl && (
               <div class="best-container-image">
-                <img src={post.featuredImage.node.sourceUrl} alt={`Image for ${post.title}`} />
+                <img
+                  src={post.featuredImage.node.sourceUrl}
+                  alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+                />
               </div>
             )}
           </div>
