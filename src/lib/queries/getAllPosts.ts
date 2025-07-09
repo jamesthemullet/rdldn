@@ -13,6 +13,12 @@ const GET_ALL_POSTS = `
             title
             date
             slug
+            featuredImage {
+              node {
+                sourceUrl
+                altText
+              }
+            }
           ratings {
             nodes {
               name
@@ -62,6 +68,10 @@ const GET_ALL_POSTS = `
             nodes {
               name
             }
+          }
+          highlights {
+            loved
+            loathed
           }
         }
       }

@@ -80,6 +80,10 @@ export type Post = {
       name: string;
     }[];
   };
+  highlights?: {
+    loved: string;
+    loathed: string;
+  };
 };
 
 export type Location = {
