@@ -78,6 +78,7 @@ const markers = allPosts
     label: post.title,
     rating: Number(post.ratings?.nodes[0]?.name),
     slug: post.slug,
+    closed: post.closedDowns?.nodes[0]?.name || "",
   }));
 ---
 
