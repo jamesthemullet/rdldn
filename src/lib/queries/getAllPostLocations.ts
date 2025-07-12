@@ -10,6 +10,11 @@ const GET_ALL_POST_LOCATIONS = `
           longitude
           title
         }
+        closedDowns {
+          nodes {
+            name
+          }
+        }
         ratings {
           nodes {
             name

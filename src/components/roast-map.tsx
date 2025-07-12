@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 // import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 
@@ -9,6 +9,7 @@ interface Marker {
   label?: string;
   rating: number;
   slug?: string;
+  closed?: string;
 }
 
 interface Props {
@@ -53,6 +54,7 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 export default function RoastMap({ markers }: Props) {
   console.log(20, markers);
   const mapRef = useRef<HTMLDivElement>(null);
+  const [showClosed, setShowClosed] = useState(false);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -64,7 +66,11 @@ export default function RoastMap({ markers }: Props) {
     }).addTo(map);
 
     // biome-ignore lint/complexity/noForEach: <explanation>
-    markers.forEach(({ lat, lng, label, rating, slug }) => {
+    markers.forEach(({ lat, lng, label, rating, slug, closed }) => {
+      if (!showClosed && closed) {
+        return;
+      }
+
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
       L.marker([lat, lng], { icon })
@@ -75,7 +81,22 @@ export default function RoastMap({ markers }: Props) {
     return () => {
       map.remove();
     };
-  }, [markers]);
+  }, [markers, showClosed]);
 
-  return <div id="map" ref={mapRef} style={{ height: "600px" }} />;
+  return (
+    <>
+      <p>Also show places that have closed down?</p>
+      <label>
+        <input
+          type="checkbox"
+          checked={showClosed}
+          onChange={(e) => setShowClosed(e.target.checked)}
+        />
+        Show closed places
+      </label>
+      <br />
+      <br />
+      <div id="map" ref={mapRef} style={{ height: "600px" }} />
+    </>
+  );
 }
