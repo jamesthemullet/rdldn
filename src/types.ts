@@ -85,6 +85,11 @@ export type Post = {
     loved: string;
     loathed: string;
   };
+  tags?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
