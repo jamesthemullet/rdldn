@@ -8,6 +8,7 @@ import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import Newsletter from "../components/newsletter.astro";
 
 const variables = { id: "9891" };
 let singlePage: Page | null = null;
@@ -128,6 +129,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       }
     </ul>
     <p>Only meats with at least 3 reviews are included. Vegan options not available.</p>
+    <Newsletter />
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>

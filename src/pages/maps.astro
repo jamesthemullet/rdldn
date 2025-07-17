@@ -9,6 +9,7 @@ import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POST_LOCATIONS from "../lib/queries/getAllPostLocations";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import Newsletter from "../components/newsletter.astro";
 
 const variables = { id: "631" };
 let singlePage: Page | null = null;
@@ -103,6 +104,7 @@ const markers = allPosts
     <div>
       <RoastMap client:only="react" markers={markers} />
 
+      <Newsletter />
       <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
     </div>
   </div>

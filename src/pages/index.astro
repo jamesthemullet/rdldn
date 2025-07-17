@@ -11,6 +11,7 @@ import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 import type { Location, Page, Post, Size } from "../types";
+import Newsletter from "../components/newsletter.astro";
 
 type PostWithFeaturedImage = Post & { featuredImage: string };
 type PageWithFeaturedImage = Page & { featuredImage: string };
@@ -370,6 +371,7 @@ try {
       }
     </ul>
   </section>
+  <Newsletter />
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const dropdownButton = document.getElementById("dropdown-btn");

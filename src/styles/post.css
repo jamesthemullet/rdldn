@@ -484,3 +484,21 @@ p {
     }
   }
 }
+
+/* Substack sign-up block styles */
+.substack-signup {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.substack-signup-link {
+  display: inline-block;
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--roast-pink);
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: background 0.2s;
+}

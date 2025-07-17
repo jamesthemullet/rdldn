@@ -7,6 +7,7 @@ import Comments from "../components/comments.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import Newsletter from "../components/newsletter.astro";
 
 const variables = { id: "10368" };
 let singlePage: Page | null = null;
@@ -74,6 +75,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
 
+    <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
