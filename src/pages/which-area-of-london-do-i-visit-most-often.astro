@@ -4,11 +4,11 @@ import type { Comments as CommentsType, Page, Post } from "../types";
 
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
-import Newsletter from "../components/newsletter.astro";
 
 const variables = { id: "8297" };
 let singlePage: Page | null = null;

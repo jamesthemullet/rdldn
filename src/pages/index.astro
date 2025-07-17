@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/index.css";
+import Newsletter from "../components/newsletter.astro";
 import Search from "../components/search/search.astro";
 import { fetchGraphQL } from "../lib/api";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
@@ -11,7 +12,6 @@ import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 import type { Location, Page, Post, Size } from "../types";
-import Newsletter from "../components/newsletter.astro";
 
 type PostWithFeaturedImage = Post & { featuredImage: string };
 type PageWithFeaturedImage = Page & { featuredImage: string };
