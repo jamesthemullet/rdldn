@@ -4,6 +4,7 @@ import type { Comments as CommentsType } from "../types";
 
     import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import logo3 from "../images/logo-3.png";
 
@@ -290,6 +291,8 @@ const threadedComments = organiseComments(data.post.comments.nodes);
     </p>
   )}
         <div set:html={singlePost.content} />
+
+        <Newsletter />
     { singlePost.typesOfPost.nodes.some((node: { name: string }) => node.name === "Roast Dinner") && (
     <section id="summary" class="summary">
               <h3>Summary:</h3>
@@ -341,13 +344,9 @@ const threadedComments = organiseComments(data.post.comments.nodes);
       type="location"
       tag={singlePost.boroughs.nodes[0]?.name.replace(/\s+/g, "-")}
     />
+
     <Comments threadedComments={threadedComments} postId={singlePost.postId} />
-    // <section>
-    //   <h3>Also in {singlePost.areas.nodes[0].name}:</h3>
-    // </section>
-    // <section>
-    //   <h3>Also around {singlePost.boroughs.nodes[0].name}:</h3>
-    // </section>
+
     )}
   </div>
 </BaseLayout>

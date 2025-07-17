@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/index.css";
+import Newsletter from "../components/newsletter.astro";
 import Search from "../components/search/search.astro";
 import { fetchGraphQL } from "../lib/api";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
@@ -370,6 +371,7 @@ try {
       }
     </ul>
   </section>
+  <Newsletter />
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const dropdownButton = document.getElementById("dropdown-btn");

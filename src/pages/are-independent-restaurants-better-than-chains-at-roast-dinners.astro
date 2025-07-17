@@ -4,6 +4,7 @@ import type { Comments as CommentsType, Page, Post } from "../types";
 
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
@@ -119,6 +120,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <p>Average score for independent restaurants: {avgIndependent}</p>
     <p>Average score for non-independent restaurants: {avgNonIndependent}</p>
 
+    <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
