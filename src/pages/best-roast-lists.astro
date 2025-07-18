@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import type { Comments as CommentsType, Page } from "../types";
+import type { Comments as CommentsType, Page, Size } from "../types";
 
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
@@ -8,15 +8,52 @@ import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import GET_ALL_PAGES from "../lib/queries/getAllPages";
 
 const variables = { id: "10368" };
 let singlePage: Page | null = null;
+
+type PageWithFeaturedImage = Page & { featuredImage: string };
 
 try {
   const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
   singlePage = page;
 } catch (error) {
   console.error("Error fetching GraphQL data:", error);
+}
+
+let allPages: Page[] = [];
+let allBestListPages: Page[] = [];
+const bestRoasts: Array<PageWithFeaturedImage> = [];
+
+try {
+  const response = await fetchGraphQL(GET_ALL_PAGES);
+  allPages = response?.pages?.nodes
+    ?.map((page: Page) => {
+      const featuredImage = page.featuredImage?.node;
+      const smallImage =
+        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
+          ?.sourceUrl || featuredImage?.sourceUrl;
+
+      return {
+        ...page,
+        featuredImageUrl: smallImage,
+      };
+    })
+    .filter(Boolean);
+
+  allBestListPages = allPages.filter((page: Page) => page?.highlights?.tag === "best"); // biome-ignore lint/complexity/noForEach: <explanation>
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  allBestListPages.forEach((page: Page) => {
+    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
+    bestRoasts.push({
+      ...page,
+      featuredImage,
+    } as PageWithFeaturedImage);
+  });
+} catch (error) {
+  console.error("Error fetching features data:", error);
 }
 
 const organiseComments = (comments: CommentsType) => {
@@ -74,6 +111,62 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   </section>
   <div class="container">
     <div set:html={singlePage.content} />
+
+    <section class="other-list">
+      <h3>Best Roasts In...</h3>
+      <ul>
+        {
+          bestRoasts
+            .filter((post) => !post.title?.toLowerCase().includes("line"))
+            .map((post, index) => (
+              <li class="heading">
+                <h3>
+                  <a href={post?.slug} rel="noopener noreferrer">
+                    <Fragment set:html={post?.title} />
+                  </a>
+                </h3>
+                <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+                  <img
+                    src={post?.featuredImageUrl}
+                    alt={`Photo of the roast dinner at ${post?.title}`}
+                    width="400"
+                    height="300"
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </a>
+              </li>
+            ))
+        }
+      </ul>
+    </section>
+
+    <section class="other-list">
+      <h3>Best Roast Dinners on Tube Lines</h3>
+      <ul>
+        {
+          bestRoasts
+            .filter((post) => post.title?.toLowerCase().includes("line"))
+            .map((post, index) => (
+              <li class="heading">
+                <h3>
+                  <a href={post?.slug} rel="noopener noreferrer">
+                    <Fragment set:html={post?.title} />
+                  </a>
+                </h3>
+                <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+                  <img
+                    src={post?.featuredImageUrl}
+                    alt={`Photo of the roast dinner at ${post?.title}`}
+                    width="400"
+                    height="300"
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                </a>
+              </li>
+            ))
+        }
+      </ul>
+    </section>
 
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
