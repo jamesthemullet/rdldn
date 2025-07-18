@@ -45,13 +45,10 @@ try {
   allBestListPages = allPages.filter((page: Page) => page?.highlights?.tag === "best"); // biome-ignore lint/complexity/noForEach: <explanation>
 
   // biome-ignore lint/complexity/noForEach: <explanation>
-  allBestListPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-    bestRoasts.push({
-      ...page,
-      featuredImage,
-    } as PageWithFeaturedImage);
-  });
+  const bestRoasts = allBestListPages.map((page: Page) => ({
+    ...page,
+    featuredImage: page.featuredImage?.node?.sourceUrl || "",
+  })) as Array<PageWithFeaturedImage>;
 } catch (error) {
   console.error("Error fetching features data:", error);
 }
