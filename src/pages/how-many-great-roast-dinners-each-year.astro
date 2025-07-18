@@ -61,8 +61,6 @@ while (hasNextPage) {
   allRoastPosts.push(...posts.nodes);
   hasNextPage = posts.pageInfo.hasNextPage;
   endCursor = posts.pageInfo.endCursor;
-
-  console.log(200, allRoastPosts.length, "posts fetched");
 }
 
 const roastDinnerPosts = allRoastPosts.filter((post) =>

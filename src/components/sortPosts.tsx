@@ -36,8 +36,6 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
       let aValue: string | number = "";
       let bValue: string | number = "";
 
-      console.log(13, column);
-
       switch (column) {
         case "rating":
           aValue = a.ratings?.nodes[0]?.name ?? "";
@@ -125,8 +123,6 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const filteredPosts = filterPosts(posts);
-
-    console.log(11, filteredPosts, sortColumn, sortOrder);
 
     setSortedPosts(sortedByColumn(filteredPosts, sortColumn, sortOrder));
   }, [
@@ -411,7 +407,6 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
       <ol className="grid-container league-of-roasts">
         {sortedPosts.map((post) => {
-          console.log(12, post);
           return (
             <li className="grid-item" key={post.slug}>
               <a

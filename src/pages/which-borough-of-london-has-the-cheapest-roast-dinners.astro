@@ -67,7 +67,7 @@ while (hasNextPage) {
 
     const match = priceStr.match(/[\d,.]+/);
     const price = match ? Number.parseFloat(match[0].replace(",", "")) : null;
-    console.log(10, price);
+
     if (!price || Number.isNaN(price)) return;
 
     // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
