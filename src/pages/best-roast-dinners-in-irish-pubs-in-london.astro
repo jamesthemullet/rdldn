@@ -59,7 +59,7 @@ export async function getTopRatedRoasts(): Promise<Post[]> {
       const tags = post.tags?.nodes?.map((tag) => tag.name) || [];
       const isClosed = post.closedDowns?.nodes[0]?.name || "";
       const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
-      return tags.includes("Irish Pub") && !isClosed && !Number.isNaN(rating) && rating > 7.5;
+      return tags.includes("Irish Pub") && !isClosed && !Number.isNaN(rating) && rating > 7;
     });
 
     allPosts.push(...filtered);
