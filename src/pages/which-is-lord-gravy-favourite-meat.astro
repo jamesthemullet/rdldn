@@ -56,12 +56,10 @@ let endCursor: string | null = null;
 while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
-  console.log(10, posts);
 
   // biome-ignore lint/complexity/noForEach: <explanation>
   posts.nodes.forEach((post: Post) => {
     const meat = post.meats?.nodes?.[0]?.name;
-    console.log(15, meat);
     const ratingStr = post.ratings?.nodes?.[0]?.name;
 
     if (!meat || !ratingStr) return;
@@ -79,8 +77,6 @@ while (hasNextPage) {
   endCursor = posts.pageInfo.endCursor;
 }
 
-console.log(19, meatRatings);
-
 const meatStats = Object.entries(meatRatings)
   .filter(([_, ratings]) => ratings.length >= 3)
   .map(([name, ratings]) => ({
@@ -89,8 +85,6 @@ const meatStats = Object.entries(meatRatings)
     average: +(ratings.reduce((s, r) => s + r, 0) / ratings.length).toFixed(2),
   }))
   .sort((a, b) => b.average - a.average);
-
-console.log(20, meatStats);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---

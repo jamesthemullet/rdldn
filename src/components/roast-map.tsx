@@ -52,7 +52,6 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 };
 
 export default function RoastMap({ markers }: Props) {
-  console.log(20, markers);
   const mapRef = useRef<HTMLDivElement>(null);
   const [showClosed, setShowClosed] = useState(false);
 

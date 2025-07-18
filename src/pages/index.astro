@@ -414,8 +414,6 @@ try {
           .filter((checkbox) => (checkbox as HTMLInputElement).checked)
           .map((checkbox) => (checkbox as HTMLInputElement).value);
 
-        console.log("Selected Locations:", selectedLocations);
-
         localStorage.setItem("selectedLocations", JSON.stringify(selectedLocations));
 
         displaySelectedLocations(selectedLocations);
