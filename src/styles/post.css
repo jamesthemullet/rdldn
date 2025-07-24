@@ -1,20 +1,3 @@
-.tube-circle-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  min-width: 32px;
-  margin-right: 1rem;
-}
-
-.tube-connector {
-  width: 5px;
-  height: 32px;
-  background: var(--roast-black);
-  display: block;
-  margin-bottom: -4px;
-  z-index: 0;
-}
 main {
   margin: 0;
 }
@@ -518,7 +501,24 @@ p {
   border-radius: 8px;
   text-decoration: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: background 0.2s;
+}
+
+.tube-circle-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  min-width: 32px;
+  margin-right: 1rem;
+}
+
+.tube-connector {
+  width: 5px;
+  height: 32px;
+  background: var(--roast-black);
+  display: block;
+  margin-bottom: -4px;
+  z-index: 0;
 }
 
 /* Tube line station list styles */
@@ -565,5 +565,38 @@ p {
     a {
       color: var(--roast-main-text);
     }
+  }
+}
+
+.heading-underline {
+  &.central {
+    text-decoration-color: var(--central);
+  }
+  &.bakerloo {
+    text-decoration-color: var(--bakerloo);
+  }
+  &.circle {
+    text-decoration-color: var(--circle);
+  }
+  &.district {
+    text-decoration-color: var(--district);
+  }
+  &.hammersmithandcity {
+    text-decoration-color: var(--hammersmithandcity);
+  }
+  &.jubilee {
+    text-decoration-color: var(--jubilee);
+  }
+  &.metropolitan {
+    text-decoration-color: var(--metropolitan);
+  }
+  &.northern {
+    text-decoration-color: var(--northern);
+  }
+  &.piccadilly {
+    text-decoration-color: var(--piccadilly);
+  }
+  &.victoria {
+    text-decoration-color: var(--victoria);
   }
 }

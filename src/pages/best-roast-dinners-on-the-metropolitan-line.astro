@@ -10,7 +10,7 @@ import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "6947" };
+const variables = { id: "7165" };
 let singlePage: Page | null = null;
 
 try {
@@ -46,32 +46,41 @@ if (!singlePage) {
   throw new Error("No single page data found");
 }
 
-const bakerlooStations = [
-  "Harrow And Wealdstone",
-  "Kenton",
-  "South Kenton",
-  "North Wembley",
-  "Wembley Central",
-  "Stonebridge Park",
-  "Harlesden",
-  "Willesden Junction",
-  "Kensal Green",
-  "Queen’s Park",
-  "Kilburn Park",
-  "Maida Vale",
-  "Warwick Avenue",
-  "Paddington",
-  "Edgware Road",
-  "Marylebone",
+const metropolitanLineStations = [
+  "Watford",
+  "Croxley",
+  "Amersham",
+  "Chesham",
+  "Chalfont And Latimer",
+  "Chorleywood",
+  "Rickmansworth",
+  "Moor Park",
+  "Northwood",
+  "Northwood Hills",
+  "Pinner",
+  "North Harrow",
+  "Uxbridge",
+  "Hillingdon",
+  "Ickenham",
+  "Ruislip",
+  "Ruislip Manor",
+  "Eastcote",
+  "Rayners Lane",
+  "West Harrow",
+  "Harrow-On-The-Hill",
+  "Northwick Park",
+  "Preston Road",
+  "Wembley Park",
+  "Finchley Road",
   "Baker Street",
-  "Regent’s Park",
-  "Oxford Circus",
-  "Piccadilly Circus",
-  "Charing Cross",
-  "Embankment",
-  "Waterloo",
-  "Lambeth North",
-  "Elephant And Castle",
+  "Great Portland Street",
+  "Euston Square",
+  "King's Cross",
+  "Farringdon",
+  "Barbican",
+  "Moorgate",
+  "Liverpool Street",
+  "Aldgate",
 ];
 
 const roastPosts: Post[] = [];
@@ -89,7 +98,7 @@ while (hasNextPage) {
 
     if (
       rating >= 7.5 &&
-      post.tubeStations?.nodes.some((station) => bakerlooStations.includes(station.name)) &&
+      post.tubeStations?.nodes.some((station) => metropolitanLineStations.includes(station.name)) &&
       post.closedDowns?.nodes.length === 0
     ) {
       roastPosts.push(post);
@@ -128,13 +137,14 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
     <section>
-      <h3 class="heading-underline bakerloo">Roast Dinners On The Bakerloo Line</h3>
+      <h3 class="heading-underline metropolitan">Roast Dinners On The Metropolitan Line</h3>
 
-      <p>Where can you find good roast dinners on the Bakerloo Line?</p>
+      <p>Where can you find good roast dinners on the Metropolitan Line?</p>
       <p>This is based solely on the tube station I used to get there.</p>
+
       <ul class="station-list">
         {
-          bakerlooStations.map((station, index) => {
+          metropolitanLineStations.map((station, index) => {
             const postsForStation = roastPosts.filter((post) =>
               post.tubeStations?.nodes.some((tubeStation) => tubeStation.name === station)
             );
@@ -146,8 +156,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                   {index === 0 && <span class="tube-connector invisible" />}
                   {index !== 0 && <span class="tube-connector" />}
                   <span class="tube-circle" />
-                  {index !== bakerlooStations.length - 1 && <span class="tube-connector" />}
-                  {index === bakerlooStations.length - 1 && (
+                  {index !== metropolitanLineStations.length - 1 && <span class="tube-connector" />}
+                  {index === metropolitanLineStations.length - 1 && (
                     <span class="tube-connector invisible" />
                   )}
                 </span>
