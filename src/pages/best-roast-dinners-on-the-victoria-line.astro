@@ -10,7 +10,7 @@ import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "7165" };
+const variables = { id: "7038" };
 let singlePage: Page | null = null;
 
 try {
@@ -46,41 +46,23 @@ if (!singlePage) {
   throw new Error("No single page data found");
 }
 
-const metropolitanLineStations = [
-  "Watford",
-  "Croxley",
-  "Amersham",
-  "Chesham",
-  "Chalfont And Latimer",
-  "Chorleywood",
-  "Rickmansworth",
-  "Moor Park",
-  "Northwood",
-  "Northwood Hills",
-  "Pinner",
-  "North Harrow",
-  "Uxbridge",
-  "Hillingdon",
-  "Ickenham",
-  "Ruislip",
-  "Ruislip Manor",
-  "Eastcote",
-  "Rayners Lane",
-  "West Harrow",
-  "Harrow-On-The-Hill",
-  "Northwick Park",
-  "Preston Road",
-  "Wembley Park",
-  "Finchley Road",
-  "Baker Street",
-  "Great Portland Street",
-  "Euston Square",
+const victoriaLineStations = [
+  "Walthamstow Central",
+  "Blackhorse Road",
+  "Tottenham Hale",
+  "Seven Sisters",
+  "Finsbury Park",
+  "Highbury & Islington",
   "King's Cross",
-  "Farringdon",
-  "Barbican",
-  "Moorgate",
-  "Liverpool Street",
-  "Aldgate",
+  "Euston",
+  "Warren Street",
+  "Oxford Circus",
+  "Green Park",
+  "Victoria",
+  "Pimlico",
+  "Vauxhall",
+  "Stockwell",
+  "Brixton",
 ];
 
 const roastPosts: Post[] = [];
@@ -98,7 +80,7 @@ while (hasNextPage) {
 
     if (
       rating >= 7.5 &&
-      post.tubeStations?.nodes.some((station) => metropolitanLineStations.includes(station.name)) &&
+      post.tubeStations?.nodes.some((station) => victoriaLineStations.includes(station.name)) &&
       post.closedDowns?.nodes.length === 0
     ) {
       roastPosts.push(post);
@@ -137,14 +119,14 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
     <section>
-      <h3 class="heading-underline metropolitan">Roast Dinners On The Metropolitan Line</h3>
+      <h3 class="heading-underline piccadilly">Roast Dinners On The Victoria Line</h3>
 
-      <p>Where can you find good roast dinners on the Metropolitan Line?</p>
+      <p>Where can you find good roast dinners on the Victoria Line?</p>
       <p>This is based solely on the tube station I used to get there.</p>
 
       <ul class="station-list">
         {
-          metropolitanLineStations.map((station, index) => {
+          victoriaLineStations.map((station, index) => {
             const postsForStation = roastPosts.filter((post) =>
               post.tubeStations?.nodes.some((tubeStation) => tubeStation.name === station)
             );
@@ -156,8 +138,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                   {index === 0 && <span class="tube-connector invisible" />}
                   {index !== 0 && <span class="tube-connector" />}
                   <span class="tube-circle" />
-                  {index !== metropolitanLineStations.length - 1 && <span class="tube-connector" />}
-                  {index === metropolitanLineStations.length - 1 && (
+                  {index !== victoriaLineStations.length - 1 && <span class="tube-connector" />}
+                  {index === victoriaLineStations.length - 1 && (
                     <span class="tube-connector invisible" />
                   )}
                 </span>
