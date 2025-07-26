@@ -1,0 +1,167 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType, Page, Post } from "../types";
+
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import { fetchGraphQL } from "../lib/api";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+
+const variables = { id: "6760" };
+let singlePage: Page | null = null;
+
+try {
+  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  singlePage = page;
+} catch (error) {
+  console.error("Error fetching GraphQL data:", error);
+}
+
+const organiseComments = (comments: CommentsType) => {
+  const commentMap = new Map();
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  const topLevelComments: CommentsType = [];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+};
+
+if (!singlePage) {
+  throw new Error("No single page data found");
+}
+
+export async function getAllRoastDinnerPosts(): Promise<Post[]> {
+  let hasNextPage = true;
+  let endCursor: string | null = null;
+  const allPosts: Post[] = [];
+
+  while (hasNextPage) {
+    const variables = endCursor ? { after: endCursor } : {};
+    const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    posts.nodes.forEach((post: Post) => {
+      allPosts.push(post);
+    });
+
+    hasNextPage = posts.pageInfo.hasNextPage;
+    endCursor = posts.pageInfo.endCursor;
+  }
+
+  return allPosts;
+}
+
+const allPosts = await getAllRoastDinnerPosts();
+
+const filtered = allPosts
+  .filter((post) => {
+    const loved = post.highlights?.loved?.toLowerCase() ?? "";
+    const rating = Number.parseFloat(post.ratings?.nodes[0]?.name || "");
+    const isClosed = (post.closedDowns?.nodes?.length ?? 0) > 0;
+
+    return (
+      loved.includes("roasties") ||
+      (loved.includes("roast potatoes") && !Number.isNaN(rating) && !isClosed)
+    );
+  })
+  .sort(
+    (a, b) =>
+      Number.parseFloat(b?.ratings?.nodes[0].name || "") -
+      Number.parseFloat(a?.ratings?.nodes[0].name || "")
+  )
+  .slice(0, 5);
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <div class="image-container">
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+  <div class="container">
+    <div set:html={singlePage.content} />
+
+    {
+      filtered.map((post) => (
+        <div class="best-container">
+          <div class="best-container-details">
+            <h2>
+              <a href={post.slug}>{post.title}</a>
+            </h2>
+
+            {post.highlights?.loved && (
+              <div class="post-summary-block highlight-block">
+                <p>
+                  <strong>Loved:</strong> {post.highlights.loved}
+                </p>
+                {post.highlights.loathed && (
+                  <p>
+                    <strong>Loathed:</strong> {post.highlights.loathed}
+                  </p>
+                )}
+              </div>
+            )}
+
+            <p>
+              <strong>Rating:</strong> {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
+            </p>
+
+            {post.yearsOfVisit?.nodes?.[0]?.name && (
+              <p>
+                <strong>Year visited:</strong> {post.yearsOfVisit.nodes[0].name}
+              </p>
+            )}
+          </div>
+
+          {post.featuredImage?.node?.sourceUrl && (
+            <div class="best-container-image">
+              <img
+                src={post.featuredImage.node.sourceUrl}
+                alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+              />
+            </div>
+          )}
+        </div>
+      ))
+    }
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>
