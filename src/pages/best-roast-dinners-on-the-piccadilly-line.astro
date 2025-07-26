@@ -10,7 +10,7 @@ import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "7165" };
+const variables = { id: "7038" };
 let singlePage: Page | null = null;
 
 try {
@@ -46,19 +46,7 @@ if (!singlePage) {
   throw new Error("No single page data found");
 }
 
-const metropolitanLineStations = [
-  "Watford",
-  "Croxley",
-  "Amersham",
-  "Chesham",
-  "Chalfont And Latimer",
-  "Chorleywood",
-  "Rickmansworth",
-  "Moor Park",
-  "Northwood",
-  "Northwood Hills",
-  "Pinner",
-  "North Harrow",
+const piccadillyLineStations = [
   "Uxbridge",
   "Hillingdon",
   "Ickenham",
@@ -66,21 +54,51 @@ const metropolitanLineStations = [
   "Ruislip Manor",
   "Eastcote",
   "Rayners Lane",
-  "West Harrow",
-  "Harrow-On-The-Hill",
-  "Northwick Park",
-  "Preston Road",
-  "Wembley Park",
-  "Finchley Road",
-  "Baker Street",
-  "Great Portland Street",
-  "Euston Square",
-  "King's Cross",
-  "Farringdon",
-  "Barbican",
-  "Moorgate",
-  "Liverpool Street",
-  "Aldgate",
+  "South Harrow",
+  "Sudbury Hill",
+  "Sudbury Town",
+  "Alperton",
+  "Royal Park",
+  "North Ealing",
+  "Ealing Common",
+  "Heathrow Terminal 4",
+  "Heathrow Terminals 1,2,3",
+  "Hatton Cross",
+  "Hounslow West",
+  "Hounslow Central",
+  "Hounslow East",
+  "Osterley",
+  "Boston Manor",
+  "Northfields",
+  "South Ealing",
+  "Acton Town",
+  "Turnham Green",
+  "Hammersmith",
+  "Barons Court",
+  "Earl’s Court",
+  "Gloucester Road",
+  "South Kensington",
+  "Knightsbridge",
+  "Hyde Park Corner",
+  "Green Park",
+  "Piccadilly Circus",
+  "Leicester Square",
+  "Covent Garden",
+  "Holborn",
+  "Russell Square",
+  "King’s Cross St. Pancras",
+  "Caledonian Road",
+  "Holloway Road",
+  "Arsenal",
+  "Finsbury Park",
+  "Manor House",
+  "Turnpike Lane",
+  "Wood Green",
+  "Bounds Green",
+  "Arnos Grove",
+  "Southgate",
+  "Oakwood",
+  "Cockfosters",
 ];
 
 const roastPosts: Post[] = [];
@@ -98,7 +116,7 @@ while (hasNextPage) {
 
     if (
       rating >= 7.5 &&
-      post.tubeStations?.nodes.some((station) => metropolitanLineStations.includes(station.name)) &&
+      post.tubeStations?.nodes.some((station) => piccadillyLineStations.includes(station.name)) &&
       post.closedDowns?.nodes.length === 0
     ) {
       roastPosts.push(post);
@@ -137,14 +155,14 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
     <section>
-      <h3 class="heading-underline metropolitan">Roast Dinners On The Metropolitan Line</h3>
+      <h3 class="heading-underline piccadilly">Roast Dinners On The Piccadilly Line</h3>
 
-      <p>Where can you find good roast dinners on the Metropolitan Line?</p>
+      <p>Where can you find good roast dinners on the Piccadilly Line?</p>
       <p>This is based solely on the tube station I used to get there.</p>
 
       <ul class="station-list">
         {
-          metropolitanLineStations.map((station, index) => {
+          piccadillyLineStations.map((station, index) => {
             const postsForStation = roastPosts.filter((post) =>
               post.tubeStations?.nodes.some((tubeStation) => tubeStation.name === station)
             );
@@ -156,8 +174,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                   {index === 0 && <span class="tube-connector invisible" />}
                   {index !== 0 && <span class="tube-connector" />}
                   <span class="tube-circle" />
-                  {index !== metropolitanLineStations.length - 1 && <span class="tube-connector" />}
-                  {index === metropolitanLineStations.length - 1 && (
+                  {index !== piccadillyLineStations.length - 1 && <span class="tube-connector" />}
+                  {index === piccadillyLineStations.length - 1 && (
                     <span class="tube-connector invisible" />
                   )}
                 </span>

@@ -179,7 +179,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                 <span class="station-name">{station}</span>
                 {topPost && (
                   <span class="station-post">
-                    <a href={`/posts/${topPost.slug}`}>{topPost.title}</a>
+                    <a href={`/${topPost.slug}`}>{topPost.title}</a>
                     <span class="station-rating">{topPost?.ratings?.nodes[0].name}</span>
                   </span>
                 )}
