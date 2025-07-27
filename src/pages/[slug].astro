@@ -10,9 +10,11 @@ import logo3 from "../images/logo-3.png";
 
 export async function getStaticPaths() {
   const allPosts = [];
+  const allPages = [];
   let hasNextPage = true;
   let endCursor = null;
 
+  // Fetch all posts
   while (hasNextPage) {
     const response: Response = await fetch(
       "https://rdldn.co.uk/graphql",
@@ -49,21 +51,111 @@ export async function getStaticPaths() {
     endCursor = data.posts.pageInfo.endCursor;
   }
 
-  const paths = allPosts.map((post) => ({
+  // Fetch all pages
+  hasNextPage = true;
+  endCursor = null;
+  
+  while (hasNextPage) {
+    const response: Response = await fetch(
+      "https://rdldn.co.uk/graphql",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: `
+          query AllPageSlugs($first: Int!, $after: String) {
+            pages(first: $first, after: $after) {
+              nodes {
+                slug
+              }
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
+            }
+          }
+        `,
+          variables: {
+            first: 100,
+            after: endCursor,
+          },
+        }),
+      }
+    );
+
+    const { data } = await response.json();
+    const pages = data.pages.nodes;
+    allPages.push(...pages);
+
+    hasNextPage = data.pages.pageInfo.hasNextPage;
+    endCursor = data.pages.pageInfo.endCursor;
+  }
+
+  const postPaths = allPosts.map((post) => ({
     params: { slug: post.slug },
+    props: { contentType: 'post' }
   }));
 
-  return paths;
+  const pagePaths = allPages.map((page) => ({
+    params: { slug: page.slug },
+    props: { contentType: 'page' }
+  }));
+
+  return [...postPaths, ...pagePaths];
 }
 
     const { slug } = Astro.params;
-
+    const { contentType } = Astro.props;
 
 const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    query: `
+    query: contentType === 'page' ? `
+        query SinglePage($id: ID = "${slug}") {
+          page(idType: URI, id: $id) {
+            pageId
+            date
+            content
+            title
+            featuredImage {
+              node {
+                sourceUrl
+              }
+            }
+            seo {
+              opengraphTitle
+              opengraphDescription
+              opengraphSiteName
+              opengraphImage {
+                uri
+                altText
+                mediaDetails {
+                  file
+                  height
+                  width
+                }
+                mediaItemUrl
+                sourceUrl
+                srcSet
+              }
+            }
+            comments(where: { order: DESC }) {
+              nodes {
+                id
+                content
+                parentId
+                author {
+                  node {
+                    name
+                  }
+                }
+                date
+              }
+            }
+          }
+        }
+        ` : `
         query SinglePost($id: ID = "${slug}") {
           post(idType: SLUG, id: $id) {
             postId
@@ -170,7 +262,7 @@ const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
 
 const { data } = await singleResponse.json();
 
-const singlePost = data.post;
+const singlePost = contentType === 'page' ? data.page : data.post;
 
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
@@ -198,8 +290,10 @@ const organiseComments = (comments: CommentsType) => {
 };
 
 const getClosedMessage = () => {
-  const closedDownId = singlePost.closedDowns.nodes[0]?.name;
+  const closedDownId = singlePost.closedDowns?.nodes[0]?.name;
 
+  if (!closedDownId) return '';
+  
   if (closedDownId === "closeddown") {
     return "Closed Down";
   }
@@ -228,25 +322,25 @@ const currentYear = new Date().getFullYear();
 const postYear = new Date(singlePost.date).getFullYear();
 const postMoreThanTwoYearsOld = postYear < currentYear - 2;
 
-const threadedComments = organiseComments(data.post.comments.nodes);
+const threadedComments = organiseComments(contentType === 'page' ? data.page.comments.nodes : data.post.comments.nodes);
 ---
 
 <BaseLayout
   pageTitle={singlePost.title}
   description={singlePost?.seo?.opengraphDescription}
-  opengraphImage={singlePost.seo.opengraphImage.sourceUrl}
-  halloween={singlePost.typesOfPost.nodes.some((node: { name: string }) => node.name === "Halloween") ? true : false}
+  opengraphImage={singlePost.seo?.opengraphImage?.sourceUrl}
+  halloween={singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
 >
   <div class="image-container">
     <img
-      src={singlePost.featuredImage.node.sourceUrl || logo3}
+      src={singlePost.featuredImage?.node?.sourceUrl || logo3}
       alt={singlePost.title}
       width={5000}
       height={5000}
       class="featured-image"
       loading="eager"
     />
-    {singlePost.closedDowns.nodes.length > 0 && (
+    {singlePost.closedDowns?.nodes?.length > 0 && (
       <div class="closed-overlay">
         {getClosedMessage()}
       </div>
@@ -268,69 +362,75 @@ const threadedComments = organiseComments(data.post.comments.nodes);
     </p>
   </section>
   <div class="container">
-    <button
-  class="skip"
-  onclick="
-    const el = document.getElementById('summary');
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  "
->
-  Skip The Nonsense
-</button>
-{postMoreThanTwoYearsOld && (
-    <p class="warning">
-      This post is from {postYear}. Maybe check some other reviews on Google Maps or something before booking.  But definitely read this one first.  Or else.
-    </p>
-  )}
-  { singlePost.nSFWs.nodes.length > 0 && (
-    <p class="nsfw">
-      NSFW: Warning - this review may not be safe for work due to {singlePost.nSFWs.nodes.map((nsfw: { name: string}) => nsfw.name).join(", ")}.
-    </p>
-  )}
-        <div set:html={singlePost.content} />
+    {contentType === 'post' && (
+      <>
+        <button
+          class="skip"
+          onclick="
+            const el = document.getElementById('summary');
+            if (el) {
+              const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+              window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+          "
+        >
+          Skip The Nonsense
+        </button>
+        {postMoreThanTwoYearsOld && (
+          <p class="warning">
+            This post is from {postYear}. Maybe check some other reviews on Google Maps or something before booking.  But definitely read this one first.  Or else.
+          </p>
+        )}
+        { singlePost.nSFWs?.nodes?.length > 0 && (
+          <p class="nsfw">
+            NSFW: Warning - this review may not be safe for work due to {singlePost.nSFWs.nodes.map((nsfw: { name: string}) => nsfw.name).join(", ")}.
+          </p>
+        )}
+      </>
+    )}
+    
+    <div set:html={singlePost.content} />
 
-        <Newsletter />
-    { singlePost.typesOfPost.nodes.some((node: { name: string }) => node.name === "Roast Dinner") && (
+    <Newsletter />
+    
+    {contentType === 'post' && singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner") && (
     <section id="summary" class="summary">
               <h3>Summary:</h3>
 
-      {singlePost.closedDowns.nodes.length > 0 && (
+      {singlePost.closedDowns?.nodes?.length > 0 && (
         <p class="closed-message">
           {getClosedMessage()}
         </p>
       )}
         <p>{singlePost.title}</p>
-      <p>Rating: {singlePost.ratings.nodes[0].name}</p>
-      {singlePost.tubeStations.nodes[0]?.name && <p>Tube Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
+      <p>Rating: {singlePost.ratings?.nodes?.[0]?.name}</p>
+      {singlePost.tubeStations?.nodes?.[0]?.name && <p>Tube Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
               <p>
         Tube Lines:{" "}
-        {singlePost.tubeLines.nodes
-          .map((line: { name: string }) => line.name)
+        {singlePost.tubeLines?.nodes
+          ?.map((line: { name: string }) => line.name)
           .join(", ")}
       </p>
-      <p>Price (in {singlePost.yearsOfVisit.nodes[0].name}): {singlePost.prices.nodes[0].name}</p>
-      <p>Year of Visit: {singlePost.yearsOfVisit.nodes[0].name}</p>
+      <p>Price (in {singlePost.yearsOfVisit?.nodes?.[0]?.name}): {singlePost.prices?.nodes?.[0]?.name}</p>
+      <p>Year of Visit: {singlePost.yearsOfVisit?.nodes?.[0]?.name}</p>
     </section>
     <section>
       <h3>Loved & Loathed:</h3>
-      <p>Loved: {singlePost.highlights.loved}</p>
-      <p>Loathed: {singlePost.highlights.loathed}</p>
+      <p>Loved: {singlePost.highlights?.loved}</p>
+      <p>Loathed: {singlePost.highlights?.loathed}</p>
     </section>
     <section>
-      {singlePost.closedDowns.nodes.length === 0 && (
+      {singlePost.closedDowns?.nodes?.length === 0 && (
         <>
           <h3>Get Booking:</h3>
-          {singlePost.highlights.website && (
+          {singlePost.highlights?.website && (
             <p>
               <a href={singlePost.highlights.website}>
                 Book {singlePost.title}
               </a>
             </p>
           )}
-          {singlePost.highlights.instagram && (
+          {singlePost.highlights?.instagram && (
             <p>
               <a href={singlePost.highlights.instagram}>
                 Follow on Instagram
@@ -342,11 +442,15 @@ const threadedComments = organiseComments(data.post.comments.nodes);
     </section>
     <RoastByTagSection
       type="location"
-      tag={singlePost.boroughs.nodes[0]?.name.replace(/\s+/g, "-")}
+      tag={singlePost.boroughs?.nodes?.[0]?.name?.replace(/\s+/g, "-")}
     />
 
     <Comments threadedComments={threadedComments} postId={singlePost.postId} />
 
+    )}
+
+    {contentType === 'page' && (
+      <Comments threadedComments={threadedComments} postId={singlePost.pageId} />
     )}
   </div>
 </BaseLayout>

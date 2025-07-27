@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType, Page, Post } from "../types";
+
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import { fetchGraphQL } from "../lib/api";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+
+const variables = { id: "9266" };
+let singlePage: Page | null = null;
+
+try {
+  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  singlePage = page;
+} catch (error) {
+  console.error("Error fetching GraphQL data:", error);
+}
+
+const organiseComments = (comments: CommentsType) => {
+  const commentMap = new Map();
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  const topLevelComments: CommentsType = [];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+};
+
+if (!singlePage) {
+  throw new Error("No single page data found");
+}
+
+type Season = "Winter" | "Spring" | "Summer" | "Autumn";
+
+const seasonStats: Record<Season, { totalRatings: number; count: number }> = {
+  Winter: { totalRatings: 0, count: 0 },
+  Spring: { totalRatings: 0, count: 0 },
+  Summer: { totalRatings: 0, count: 0 },
+  Autumn: { totalRatings: 0, count: 0 },
+};
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  posts.nodes.forEach((post: Post) => {
+    const typeOfPost = post.typesOfPost?.nodes?.[0]?.name ?? "";
+    if (typeOfPost.toLowerCase() !== "roast dinner") return;
+    const date = new Date(post.date);
+    const month = date.getMonth() + 1;
+
+    const ratingStr = post.ratings?.nodes?.[0]?.name ?? "";
+    const rating = Number.parseFloat(ratingStr);
+
+    if (Number.isNaN(rating)) return;
+
+    let season = "";
+    if ([12, 1, 2].includes(month)) {
+      season = "Winter";
+    } else if ([3, 4, 5].includes(month)) {
+      season = "Spring";
+    } else if ([6, 7, 8].includes(month)) {
+      season = "Summer";
+    } else {
+      season = "Autumn";
+    }
+
+    seasonStats[season as Season].totalRatings += rating;
+    seasonStats[season as Season].count++;
+  });
+
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+const totalReviews = Object.values(seasonStats).reduce((acc, s) => acc + s.count, 0);
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <div class="image-container">
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+  <div class="container">
+    <div set:html={singlePage.content} />
+    <ul>
+      {
+        Object.entries(seasonStats).map(([season, { totalRatings, count }]) => {
+          const avg = count > 0 ? (totalRatings / count).toFixed(2) : "N/A";
+          return (
+            <li>
+              In {season}, the average roast dinner rating is <strong>{avg}</strong> based on{" "}
+              {count} reviews.
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <p>Total reviews counted: {totalReviews}</p>
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>
