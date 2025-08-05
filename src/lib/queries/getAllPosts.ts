@@ -1,8 +1,11 @@
 const GET_ALL_POSTS = `
-  query GetAllPosts($after: String) {
+  query GetAllPosts($after: String, $search: String) {
     posts(
       first: 100,
-      after: $after
+      after: $after,
+      where: {
+        search: $search,
+      }
     ) {
       pageInfo {
         hasNextPage
