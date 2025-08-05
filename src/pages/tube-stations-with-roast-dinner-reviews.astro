@@ -67,20 +67,19 @@ while (hasNextPage) {
   endCursor = posts.pageInfo.endCursor;
 }
 
-// Create a map of tube stations to their best roast dinner posts
 const stationToBestPost = new Map<string, Post>();
 
+// biome-ignore lint/complexity/noForEach: <explanation>
 allRoastPosts.forEach((post) => {
   if (post.tubeStations?.nodes) {
+    // biome-ignore lint/complexity/noForEach: <explanation>
     post.tubeStations.nodes.forEach((station) => {
       const stationName = station.name;
       const currentBest = stationToBestPost.get(stationName);
 
-      // Get the rating for comparison (assuming higher rating names like "5" are better)
       const postRating = post.ratings?.nodes?.[0]?.name || "0";
       const currentRating = currentBest?.ratings?.nodes?.[0]?.name || "0";
 
-      // If no current best, or this post has a higher rating, update
       if (!currentBest || Number(postRating) > Number(currentRating)) {
         stationToBestPost.set(stationName, post);
       }
@@ -88,7 +87,6 @@ allRoastPosts.forEach((post) => {
   }
 });
 
-// Get list of visited stations for the existing logic
 const visitedStations = Array.from(stationToBestPost.keys());
 
 const tubeLines = [

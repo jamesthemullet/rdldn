@@ -74,8 +74,8 @@ while (hasNextPage) {
 
 // Sort and slice after collecting all posts
 allRoastPosts.sort((a, b) => {
-  const aRating = parseFloat(a?.ratings?.nodes[0]?.name || "0");
-  const bRating = parseFloat(b?.ratings?.nodes[0]?.name || "0");
+  const aRating = Number.parseFloat(a?.ratings?.nodes[0]?.name || "0");
+  const bRating = Number.parseFloat(b?.ratings?.nodes[0]?.name || "0");
   return bRating - aRating;
 });
 
