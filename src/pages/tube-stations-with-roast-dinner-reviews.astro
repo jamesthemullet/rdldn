@@ -1,0 +1,765 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Comments as CommentsType, Page, Post } from "../types";
+
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import { fetchGraphQL } from "../lib/api";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+
+const variables = { id: "6781" };
+let singlePage: Page | null = null;
+
+try {
+  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  singlePage = page;
+} catch (error) {
+  console.error("Error fetching GraphQL data:", error);
+}
+
+const organiseComments = (comments: CommentsType) => {
+  const commentMap = new Map();
+
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    comment.replies = [];
+    commentMap.set(comment.id, comment);
+  });
+
+  const topLevelComments: CommentsType = [];
+  // biome-ignore lint/complexity/noForEach: <explanation>
+  comments?.forEach((comment) => {
+    if (comment.parentId) {
+      const parent = commentMap.get(comment.parentId);
+      if (parent) {
+        parent.replies.push(comment);
+      }
+    } else {
+      topLevelComments.push(comment);
+    }
+  });
+
+  return topLevelComments;
+};
+
+if (!singlePage) {
+  throw new Error("No single page data found");
+}
+
+const allRoastPosts: Post[] = [];
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+
+  allRoastPosts.push(
+    ...posts.nodes.filter((post: Post) =>
+      post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner")
+    )
+  );
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+// Create a map of tube stations to their best roast dinner posts
+const stationToBestPost = new Map<string, Post>();
+
+allRoastPosts.forEach((post) => {
+  if (post.tubeStations?.nodes) {
+    post.tubeStations.nodes.forEach((station) => {
+      const stationName = station.name;
+      const currentBest = stationToBestPost.get(stationName);
+
+      // Get the rating for comparison (assuming higher rating names like "5" are better)
+      const postRating = post.ratings?.nodes?.[0]?.name || "0";
+      const currentRating = currentBest?.ratings?.nodes?.[0]?.name || "0";
+
+      // If no current best, or this post has a higher rating, update
+      if (!currentBest || Number(postRating) > Number(currentRating)) {
+        stationToBestPost.set(stationName, post);
+      }
+    });
+  }
+});
+
+// Get list of visited stations for the existing logic
+const visitedStations = Array.from(stationToBestPost.keys());
+
+const tubeLines = [
+  {
+    name: "Bakerloo",
+    class: "bakerloo",
+    stations: [
+      "Harrow And Wealdstone",
+      "Kenton",
+      "South Kenton",
+      "North Wembley",
+      "Wembley Central",
+      "Stonebridge Park",
+      "Harlesden",
+      "Willesden Junction",
+      "Kensal Green",
+      "Queen’s Park",
+      "Kilburn Park",
+      "Maida Vale",
+      "Warwick Avenue",
+      "Paddington",
+      "Edgware Road",
+      "Marylebone",
+      "Baker Street",
+      "Regent’s Park",
+      "Oxford Circus",
+      "Piccadilly Circus",
+      "Charing Cross",
+      "Embankment",
+      "Waterloo",
+      "Lambeth North",
+      "Elephant And Castle",
+    ],
+  },
+  {
+    name: "Central",
+    class: "central",
+    stations: [
+      "West Ruislip",
+      "Ruislip Gardens",
+      "South Ruislip",
+      "Northolt",
+      "Greenford",
+      "Perivale",
+      "Hangar Lane",
+      "Ealing Broadway",
+      "West Acton",
+      "North Acton",
+      "East Acton",
+      "White City",
+      "Shepherd’s Bush",
+      "Holland Park",
+      "Notting Hill Gate",
+      "Queensway",
+      "Lancaster Gate",
+      "Marble Arch",
+      "Bond Street",
+      "Oxford Circus",
+      "Tottenham Court Road",
+      "Holborn",
+      "Chancery Lane",
+      "St. Paul’s",
+      "Bank",
+      "Liverpool Street",
+      "Bethnal Green",
+      "Mile End",
+      "Stratford",
+      "Leyton",
+      "Leytonstone",
+      "Wanstead",
+      "Redbridge",
+      "Gants Hill",
+      "Newbury Park",
+      "Barkingside",
+      "Fairlop",
+      "Hainault",
+      "Grange Hill",
+      "Chigwell",
+      "Roding Valley",
+      "Snaresbrook",
+      "South Woodford",
+      "Woodford",
+      "Buckhurst Hill",
+      "Loughton",
+      "Debden",
+      "Theydon Bois",
+      "Epping",
+    ],
+  },
+  {
+    name: "Circle",
+    class: "circle",
+    stations: [
+      "Aldgate",
+      "Tower Hill",
+      "Monument",
+      "Cannon Street",
+      "Mansion House",
+      "Blackfriars",
+      "Temple",
+      "Embankment",
+      "Westminster",
+      "St. James’ Park",
+      "Victoria",
+      "Sloane Square",
+      "South Kensington",
+      "Gloucester Road",
+      "High Street Kensington",
+      "Notting Hill Gate",
+      "Bayswater",
+      "Paddington",
+      "Edgware Road",
+      "Baker Street",
+      "Great Portland Street",
+      "Euston Square",
+      "King’s Cross St. Pancras",
+      "Farringdon",
+      "Barbican",
+      "Moorgate",
+      "Liverpool Street",
+    ],
+  },
+  {
+    name: "District",
+    class: "district",
+    stations: [
+      "Upminster",
+      "Upminster Bridge",
+      "Hornchurch",
+      "Elm Park",
+      "Dagenham East",
+      "Dagenham Heathway",
+      "Becontree",
+      "Upney",
+      "Barking",
+      "East Ham",
+      "Upton Park",
+      "Plaistow",
+      "West Ham",
+      "Bromley-By-Bow",
+      "Bow Road",
+      "Mile End",
+      "Stepney Green",
+      "Whitechapel",
+      "Aldgate East",
+      "Tower Hill",
+      "Monument",
+      "Cannon Street",
+      "Mansion House",
+      "Blackfriars",
+      "Temple",
+      "Embankment",
+      "Westminster",
+      "St. James Park",
+      "Victoria",
+      "Sloane Square",
+      "South Kensington",
+      "Gloucester Road",
+      "Edgware Road",
+      "Paddington",
+      "Bayswater",
+      "Notting Hill Gate",
+      "High Street Kensington",
+      "Earl’s Court",
+      "Kensington (Olympia)",
+      "West Brompton",
+      "Fulham Broadway",
+      "Parsons Green",
+      "Putney Bridge",
+      "East Putney",
+      "Southfields",
+      "Wimbledon Park",
+      "Wimbledon",
+      "West Kensington",
+      "Barons Court",
+      "Hammersmith",
+      "Ravenscourt Park",
+      "Stamford Brook",
+      "Turnham Green",
+      "Chiswick Park",
+      "Acton Town",
+      "Ealing Common",
+      "Ealing Broadway",
+      "Gunnersbury",
+      "Kew Gardens",
+      "Richmond",
+    ],
+  },
+  {
+    name: "Hammersmith & City",
+    class: "hammersmithandcity",
+    stations: [
+      "Hammersmith",
+      "Goldhawk Road",
+      "Shepherd’s Bush Market",
+      "Wood Lane",
+      "Latimer Road",
+      "Ladbroke Grove",
+      "Westbourne Park",
+      "Royal Oak",
+      "Paddington",
+      "Edgware Road",
+      "Baker Street",
+      "Great Portland Street",
+      "Euston Square",
+      "King’s Cross St. Pancras",
+      "Farringdon",
+      "Barbican",
+      "Moorgate",
+      "Liverpool Street",
+      "Aldgate East",
+      "Whitechapel",
+      "Stepney Green",
+      "Mile End",
+      "Bow Road",
+      "Bromley-By-Bow",
+      "West Ham",
+      "Upton Park",
+      "East Ham",
+      "Barking",
+    ],
+  },
+  {
+    name: "Jubilee",
+    class: "jubilee",
+    stations: [
+      "Stanmore",
+      "Canons Park",
+      "Queensbury",
+      "Kingsbury",
+      "Wembley Park",
+      "Neasden",
+      "Dollis Hill",
+      "Willesden Green",
+      "Kilburn",
+      "West Hampstead",
+      "Finchley Road",
+      "Swiss Cottage",
+      "St. John’s Wood",
+      "Baker Street",
+      "Bond Street",
+      "Green Park",
+      "Westminster",
+      "Waterloo",
+      "Southwark",
+      "London Bridge",
+      "Bermondsey",
+      "Canada Water",
+      "Canary Wharf",
+      "North Greenwich",
+      "Canning Town",
+      "West Ham",
+      "Stratford",
+    ],
+  },
+  {
+    name: "Metropolitan",
+    class: "metropolitan",
+    stations: [
+      "Watford",
+      "Croxley",
+      "Amersham (Or Chesham)",
+      "Chalfont and Latimer",
+      "Chorleywood",
+      "Rickmansworth",
+      "Moor Park",
+      "Northwood",
+      "Northwood Hills",
+      "Pinner",
+      "North Harrow",
+      "Uxbridge",
+      "Hillingdon",
+      "Ickenham",
+      "Ruislip",
+      "Ruislip Manor",
+      "Eastcote",
+      "Rayners Lane",
+      "West Harrow",
+      "Harrow-On-The-Hill",
+      "Northwick Park",
+      "Preston Road",
+      "Wembley Park",
+      "Finchley Road",
+      "Baker Street",
+      "Great Portland Street",
+      "Euston Square",
+      "King's Cross",
+      "Farringdon",
+      "Barbican",
+      "Moorgate",
+      "Liverpool Street",
+      "Aldgate",
+    ],
+  },
+  {
+    name: "Northern",
+    class: "northern",
+    stations: [
+      "Edgware",
+      "Burnt Oak",
+      "Colindale",
+      "Hendon Central",
+      "Brent Cross",
+      "Golders Green",
+      "Hampstead",
+      "Belsize Park",
+      "Chalk Farm",
+      "High Barnet",
+      "Totteridge and Whetstone",
+      "Woodside Park",
+      "West Finchley",
+      "(Mill Hill East)",
+      "Finchley Central",
+      "East Finchley",
+      "Highgate",
+      "Archway",
+      "Tufnell Park",
+      "Kentish Town",
+      "Camden Town",
+      "Mornington Crescent",
+      "Euston",
+      "Warren Street",
+      "Goodge Street",
+      "Tottenham Court Road",
+      "Leicester Square",
+      "Charing Cross",
+      "Embankment",
+      "Waterloo",
+      "Battersea Power Station",
+      "Nine Elms",
+      "Kennington",
+      "Oval",
+      "Stockwell",
+      "Clapham North",
+      "Clapham Common",
+      "Clapham South",
+      "Balham",
+      "Tooting Bec",
+      "Tooting Broadway",
+      "Colliers Wood",
+      "South Wimbledon",
+      "Morden",
+    ],
+  },
+  {
+    name: "Piccadilly",
+    class: "piccadilly",
+    stations: [
+      "Uxbridge",
+      "Hillingdon",
+      "Ickenham",
+      "Ruislip",
+      "Ruislip Manor",
+      "Eastcote",
+      "Rayners Lane",
+      "South Harrow",
+      "Sudbury Hill",
+      "Sudbury Town",
+      "Alperton",
+      "Royal Park",
+      "North Ealing",
+      "Ealing Common",
+      "Heathrow Terminal 4",
+      "Heathrow Terminals 1,2,3",
+      "Hatton Cross",
+      "Hounslow West",
+      "Hounslow Central",
+      "Hounslow East",
+      "Osterley",
+      "Boston Manor",
+      "Northfields",
+      "South Ealing",
+      "Acton Town",
+      "Turnham Green",
+      "Hammersmith",
+      "Barons Court",
+      "Earl’s Court",
+      "Gloucester Road",
+      "South Kensington",
+      "Knightsbridge",
+      "Hyde Park Corner",
+      "Green Park",
+      "Piccadilly Circus",
+      "Leicester Square",
+      "Covent Garden",
+      "Holborn",
+      "Russell Square",
+      "King’s Cross St. Pancras",
+      "Caledonian Road",
+      "Holloway Road",
+      "Arsenal",
+      "Finsbury Park",
+      "Manor House",
+      "Turnpike Lane",
+      "Wood Green",
+      "Bounds Green",
+      "Arnos Grove",
+      "Southgate",
+      "Oakwood",
+      "Cockfosters",
+    ],
+  },
+  {
+    name: "Victoria",
+    class: "victoria",
+    stations: [
+      "Walthamstow Central",
+      "Blackhorse Road",
+      "Tottenham Hale",
+      "Seven Sisters",
+      "Finsbury Park",
+      "Highbury & Islington",
+      "King’s Cross St. Pancras",
+      "Euston",
+      "Warren Street",
+      "Oxford Circus",
+      "Green Park",
+      "Victoria",
+      "Pimlico",
+      "Vauxhall",
+      "Stockwell",
+      "Brixton",
+    ],
+  },
+];
+
+// Overground is separate
+const overgroundStations = [
+  "Acton Central",
+  "Anerley",
+  "Barking Riverside",
+  "Barking",
+  "Battersea Park",
+  "Bethnal Green",
+  "Blackhorse Road",
+  "Brockley",
+  "Brondesbury Park",
+  "Brondesbury",
+  "Bruce Grove",
+  "Bushey",
+  "Caledonian Road & Barnsbury",
+  "Cambridge Heath",
+  "Camden Road",
+  "Canada Water",
+  "Canonbury",
+  "Carpenders Park",
+  "Cheshunt",
+  "Chingford",
+  "Clapham High Street",
+  "Clapham Junction",
+  "Clapton",
+  "Crouch Hill",
+  "Crystal Palace",
+  "Dalston Junction",
+  "Dalston Kingsland",
+  "Denmark Hill",
+  "Edmonton Green",
+  "Emerson Park",
+  "Enfield Town",
+  "Euston",
+  "Finchley Road & Frognal",
+  "Forest Hill",
+  "Gospel Oak",
+  "Gunnersbury",
+  "Hackney Central",
+  "Hackney Downs",
+  "Hackney Wick",
+  "Haggerston",
+  "Hampstead Heath",
+  "Harlesden",
+  "Harringay Green Lanes",
+  "Harrow & Wealdstone",
+  "Hatch End",
+  "Headstone Lane",
+  "Highams Park",
+  "Highbury & Islington",
+  "Homerton",
+  "Honor Oak Park",
+  "Hoxton",
+  "Imperial Wharf",
+  "Kensal Green",
+  "Kensal Rise",
+  "Kensington (Olympia)",
+  "Kentish Town West",
+  "Kenton",
+  "Kew Gardens (London)",
+  "Kilburn High Road",
+  "Leyton Midland Road",
+  "Leytonstone High Road",
+  "Liverpool Street",
+  "London Fields",
+  "New Cross Gate",
+  "New Cross",
+  "North Wembley",
+  "Norwood Junction",
+  "Peckham Rye",
+  "Penge West",
+  "Queen's Park (England)",
+  "Queens Road Peckham",
+  "Rectory Road",
+  "Richmond (London)",
+  "Romford",
+  "Rotherhithe",
+  "St. James Street",
+  "Seven Sisters",
+  "Shadwell",
+  "Shepherd's Bush",
+  "Shoreditch High Street",
+  "Silver Street",
+  "South Acton (England)",
+  "South Hampstead",
+  "South Kenton",
+  "South Tottenham",
+  "Southbury",
+  "Stamford Hill",
+  "Stoke Newington",
+  "Stonebridge Park",
+  "Stratford",
+  "Surrey Quays",
+  "Sydenham (London)",
+  "Theobalds Grove",
+  "Turkey Street",
+  "Upminster",
+  "Upper Holloway",
+  "Walthamstow Central",
+  "Walthamstow Queen's Road",
+  "Wandsworth Road",
+  "Wanstead Park",
+  "Wapping",
+  "Watford High Street",
+  "Watford Junction",
+  "Wembley Central",
+  "West Brompton",
+  "West Croydon",
+  "West Hampstead",
+  "White Hart Lane",
+  "Whitechapel",
+  "Willesden Junction",
+  "Wood Street",
+  "Woodgrange Park",
+];
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <div class="image-container">
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+  <div class="container">
+    <div set:html={singlePage.content} />
+
+    <div class="entry-content container">
+      <p>
+        Which tube stations have I visited on my adventures through the roast dinners of London?
+      </p>
+      <p>
+        This is based solely on the tube station I used to get there – so will be skewed by what is
+        easiest for me
+      </p>
+
+      {
+        tubeLines.map((line) => {
+          const visited = line.stations.filter((station) => visitedStations.includes(station));
+          return (
+            <div>
+              <h3 class={`heading-underline ${line.class}`}>{line.name}</h3>
+              <ul class="station-list">
+                {line.stations.map((station) => {
+                  const bestPost = stationToBestPost.get(station);
+                  return (
+                    <li class="tube-line-station">
+                      <div class="station-info">
+                        <span class="station-name">{station}</span>
+                        {visitedStations.includes(station) ? (
+                          <img
+                            src="https://s.w.org/images/core/emoji/16.0.1/svg/2714.svg"
+                            alt="Visited"
+                            class="visited-check"
+                            width="16"
+                            height="16"
+                          />
+                        ) : null}
+                      </div>
+                      {bestPost && (
+                        <div class="best-roast">
+                          <a href={`/${bestPost.slug}`} class="roast-link">
+                            {bestPost.title}
+                          </a>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+              <p>
+                {line.name} Line stations visited – {visited.length} out of {line.stations.length}
+              </p>
+            </div>
+          );
+        })
+      }
+
+      <h3 class="heading-underline overground">Overground</h3>
+      <ul class="station-list">
+        {
+          overgroundStations.map((station) => {
+            const bestPost = stationToBestPost.get(station);
+            return (
+              <li class="tube-line-station">
+                <div class="station-info">
+                  <span class="station-name">{station}</span>
+                  {visitedStations.includes(station) ? (
+                    <img
+                      src="https://s.w.org/images/core/emoji/16.0.1/svg/2714.svg"
+                      alt="Visited"
+                      class="visited-check"
+                      width="16"
+                      height="16"
+                    />
+                  ) : null}
+                </div>
+                {bestPost && (
+                  <div class="best-roast">
+                    <a href={`/${bestPost.slug}`} class="roast-link">
+                      {bestPost.title}
+                    </a>
+                  </div>
+                )}
+              </li>
+            );
+          })
+        }
+      </ul>
+      <p>
+        Overground stations visited – {
+          overgroundStations.filter((s) => visitedStations.includes(s)).length
+        } out of {overgroundStations.length}
+      </p>
+
+      <p>
+        So I've currently used {
+          Array.from(
+            new Set(
+              tubeLines.flatMap((line) => line.stations).filter((s) => visitedStations.includes(s))
+            )
+          ).length
+        } tube stations out of {
+          Array.from(new Set(tubeLines.flatMap((line) => line.stations))).length
+        } on my adventures
+      </p>
+    </div>
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>

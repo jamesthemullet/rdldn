@@ -600,3 +600,77 @@ p {
     text-decoration-color: var(--victoria);
   }
 }
+
+.tube-line-station {
+  display: flex;
+  font-size: 1.2rem;
+
+  .station-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--roast-light-gray);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .station-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+  }
+
+  .station-name {
+    color: var(--roast-main-text);
+  }
+
+  .visited-check {
+    width: 16px;
+    height: 16px;
+    margin-left: 0.5rem;
+    opacity: 0.8;
+  }
+  .best-roast {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-left: 1rem;
+    background-color: var(--roast-light-gray);
+    border-radius: 4px;
+  }
+
+  .roast-link {
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .station-item {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .station-info {
+      flex: 1;
+    }
+
+    .best-roast {
+      margin-left: 0;
+      flex: 2;
+      max-width: 400px;
+    }
+
+    .no-roast {
+      margin-left: 0;
+      flex: 2;
+      max-width: 400px;
+    }
+  }
+}
