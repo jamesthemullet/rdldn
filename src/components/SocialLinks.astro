@@ -1,0 +1,50 @@
+---
+interface Props {
+  className?: string;
+}
+
+const { className = "socials" } = Astro.props;
+---
+
+<ul class={className}>
+  <li>
+    <a
+      href="https://www.threads.net/@roastdinnersinlondon"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Follow us on Threads"
+    >
+      <i class="fab fa-instagram"></i>
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://bsky.app/profile/roastdinners.bsky.social"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Follow us on Bluesky"
+    >
+      <i class="fab fa-twitter"></i>
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://facebook.com/roastdinnerslondon"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Follow us on Facebook"
+    >
+      <i class="fab fa-facebook"></i>
+    </a>
+  </li>
+  <li>
+    <a
+      href="https://instagram.com/roastdinnersinlondon"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Follow us on Instagram"
+    >
+      <i class="fab fa-instagram"></i>
+    </a>
+  </li>
+</ul>
