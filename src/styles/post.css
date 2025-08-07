@@ -674,3 +674,71 @@ p {
     }
   }
 }
+
+/* 404 Page Vegan Gallery Styles */
+.vegan-intro {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.vegan-gallery {
+  margin: 3rem 0;
+  padding: 0;
+}
+
+.vegan-image-container {
+  text-align: center;
+  background-color: var(--roast-light-gray);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.vegan-image-container:hover {
+  transform: translateY(-5px);
+}
+
+.vegan-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.return-to-safety {
+  text-align: center;
+  margin-top: 4rem;
+  padding: 2rem;
+  background-color: var(--roast-new-blue);
+  border-radius: 8px;
+}
+
+.safety-link {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  background-color: var(--roast-dark-gray);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.safety-link:hover {
+  background-color: var(--roast-black);
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .vegan-gallery {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .safety-link {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.5rem;
+  }
+}
