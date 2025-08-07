@@ -2,18 +2,24 @@
 import { Image } from "astro:assets";
 import logo1 from "../../images/logo-1.png";
 import "./header.css";
+import SocialLinks from "../SocialLinks.astro";
 ---
 
 <header>
   <div class="nav-container">
-    <a class="logo" href="/" aria-label="Home"
-      ><Image src={logo1} alt="" width="100" height="100" /></a
-    >
-    <h1 class="sr-only">Roast Dinners in London</h1>
-    <div class="title">
-      <a href="/">Roast Dinners in London</a>
+    <div class="nav-top-row">
+      <a class="logo" href="/" aria-label="Home"
+        ><Image src={logo1} alt="" width="100" height="100" /></a
+      >
+      <h1 class="sr-only">Roast Dinners in London</h1>
+      <div class="title">
+        <a href="/">Roast Dinners in London</a>
+      </div>
+
+      <SocialLinks className="socials header-socials" />
+
+      <button id="nav-toggle" aria-label="Toggle Navigation Menu"><span></span></button>
     </div>
-    <button id="nav-toggle" aria-label="Toggle Navigation Menu"><span></span></button>
 
     <nav id="nav-menu">
       <a href="/league-of-roasts">League Of Roasts</a>
@@ -25,15 +31,14 @@ import "./header.css";
     </nav>
   </div>
   <script>
-    document.getElementById("nav-toggle")?.addEventListener("click", function () {
-      this.classList.toggle("open");
-      let menu = document.getElementById("nav-menu");
-      if (!menu) return;
-      if (menu.style.display === "block") {
-        menu.style.display = "none";
-      } else {
-        menu.style.display = "block";
-      }
+    document.addEventListener("DOMContentLoaded", () => {
+      const navToggle = document.getElementById("nav-toggle");
+      const navContainer = document.querySelector(".nav-container");
+
+      navToggle?.addEventListener("click", () => {
+        navToggle.classList.toggle("open");
+        navContainer?.classList.toggle("open");
+      });
     });
   </script>
 </header>

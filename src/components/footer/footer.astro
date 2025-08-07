@@ -1,6 +1,10 @@
 ---
 const today = new Date();
 import "./footer.css";
+import SocialLinks from "../SocialLinks.astro";
 ---
 
-<footer>&copy; {today.getFullYear()} Roast Dinners In London</footer>
+<footer>
+  <SocialLinks className="socials footer-socials" />
+  &copy; {today.getFullYear()} Roast Dinners In London
+</footer>
