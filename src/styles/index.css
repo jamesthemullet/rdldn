@@ -1,11 +1,19 @@
 section {
-  margin: 1rem 1rem 0 1rem;
-
   h2 {
-    margin-bottom: 0;
+    margin: 0;
+
+    @media (min-width: 1200px) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &.home {
+    margin: 1rem 0 0 1rem;
   }
 
   &.home-list {
+    margin: 1rem 0 0 1rem;
+
     ul {
       display: flex;
       flex-wrap: nowrap;
@@ -17,6 +25,8 @@ section {
       white-space: nowrap;
       flex-direction: row;
       max-width: 100%;
+      padding-bottom: 1rem;
+      padding-right: 1rem;
 
       @media (min-width: 1200px) {
         flex-direction: row;
@@ -27,12 +37,13 @@ section {
       li {
         list-style: none;
         display: inline-block;
-        flex: 0 0 auto;
         align-content: end;
+        min-width: 105%;
 
         @media (min-width: 1200px) {
           flex: 33%;
           max-width: calc(33% - 1rem);
+          min-width: 0;
         }
         @media (min-width: 1400px) {
           flex: 25%;
@@ -43,7 +54,6 @@ section {
           h3 {
             font-family: "Loved by the King", sans-serif;
             text-transform: uppercase;
-            max-width: 100%;
             white-space: normal;
             word-wrap: break-word;
             overflow-wrap: break-word;

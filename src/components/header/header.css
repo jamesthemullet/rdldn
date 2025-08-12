@@ -150,13 +150,14 @@ header {
     justify-content: center;
     width: 100%;
     max-height: 500px;
+    min-height: 42px;
     overflow: visible;
   }
 }
 
 #nav-menu a {
   display: block;
-  padding: 10px 20px;
+  padding: 10px 20px 0;
   text-decoration: none;
   font-family: "Loved by the King", sans-serif;
   text-transform: uppercase;

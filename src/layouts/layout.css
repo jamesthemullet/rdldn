@@ -73,39 +73,46 @@ div.page-container {
 }
 
 div.logoandtitle {
-  @media (max-width: 768px) {
-    text-align: center;
-  }
+  text-align: center;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
   width: 100%;
+
+  @media (min-width: 769px) {
+    text-align: left;
+  }
 }
 
 h1,
 h2 {
-  @media (max-width: 768px) {
-    font-size: 1.75em;
-  }
   font-family: "Loved by the King", sans-serif;
   text-transform: uppercase;
-  font-size: 3em;
+  font-size: 1.75em;
+
+  @media (min-width: 769px) {
+    font-size: 3em;
+  }
 }
 
 h2 {
-  @media (max-width: 768px) {
-    font-size: 1.5em;
-  }
-  font-size: 2em;
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+  font-size: 1.5em;
   text-decoration: underline;
+
+  @media (min-width: 769px) {
+    font-size: 2em;
+  }
 }
 
 ol {
-  @media (max-width: 768px) {
-    padding: 0 20px;
+  padding: 0 20px;
+
+  @media (min-width: 769px) {
+    padding: 0;
   }
-  padding: 0;
 
   li {
     margin: 0;
@@ -215,4 +222,20 @@ section {
       font-size: 1.2rem;
     }
   }
+}
+
+.substack-signup {
+  padding: 1rem;
+  text-align: center;
+}
+
+.substack-signup-link {
+  display: inline-block;
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--roast-pink);
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
