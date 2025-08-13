@@ -40,6 +40,10 @@ section {
         align-content: end;
         min-width: 105%;
 
+        @media (min-width: 759px) {
+          min-width: 55%;
+        }
+
         @media (min-width: 1200px) {
           flex: 33%;
           max-width: calc(33% - 1rem);
@@ -51,6 +55,10 @@ section {
         }
 
         &.heading {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
           h3 {
             font-family: "Loved by the King", sans-serif;
             text-transform: uppercase;
