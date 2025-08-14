@@ -147,6 +147,7 @@ header {
     max-height: 500px;
     min-height: 42px;
     overflow: visible;
+    flex-wrap: wrap;
   }
 }
 
