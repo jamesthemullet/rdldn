@@ -152,7 +152,7 @@ header {
 }
 
 #nav-menu a {
-  display: block;
+  display: flex;
   padding: 10px 20px 0;
   text-decoration: none;
   font-family: "Loved by the King", sans-serif;
@@ -172,4 +172,63 @@ header {
 
 .nav-container.open #nav-menu {
   max-height: 500px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-arrow {
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  z-index: 1001;
+  background-color: var(--roast-main-text);
+}
+
+.dropdown-menu a {
+  padding: 10px 20px;
+}
+
+.dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+@media (min-width: 1024px) {
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+}
+
+@media (max-width: 1023px) {
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    margin-left: 20px;
+  }
+
+  .dropdown.open .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown.open .dropdown-arrow {
+    transform: rotate(180deg);
+  }
 }
