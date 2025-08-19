@@ -27,17 +27,34 @@ import SocialLinks from "../SocialLinks.astro";
       <a href="/roastatistics">Roastatistics</a>
       <a href="/maps">Maps</a>
       <a href="/to-do-list">To-Do List</a>
-      <a href="/about">About</a>
+      <div class="dropdown">
+        <a href="/about" class="dropdown-toggle">About <span class="dropdown-arrow">▼</span></a>
+        <div class="dropdown-menu">
+          <a href="/advertise-with-us">Advertise With Us</a>
+        </div>
+      </div>
     </nav>
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const navToggle = document.getElementById("nav-toggle");
       const navContainer = document.querySelector(".nav-container");
+      const dropdownToggle = document.querySelector(".dropdown-toggle");
+      const dropdown = document.querySelector(".dropdown");
 
+      // Main nav toggle
       navToggle?.addEventListener("click", () => {
         navToggle.classList.toggle("open");
         navContainer?.classList.toggle("open");
+      });
+
+      // Dropdown toggle for mobile
+      dropdownToggle?.addEventListener("click", (e) => {
+        // Only prevent default and toggle on mobile
+        if (window.innerWidth < 1024) {
+          e.preventDefault();
+          dropdown?.classList.toggle("open");
+        }
       });
     });
   </script>
