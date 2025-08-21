@@ -70,6 +70,11 @@ export default function RoastMap({ markers }: Props) {
         return;
       }
 
+      if (!lat || !lng) {
+        console.warn("Invalid marker coordinates:", { lat, lng, slug });
+        return;
+      }
+
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
       L.marker([lat, lng], { icon })
