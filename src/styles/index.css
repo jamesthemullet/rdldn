@@ -12,7 +12,9 @@ section {
   }
 
   &.home-list {
-    margin: 1rem 0 0 1rem;
+    &:not(.search-container) {
+      margin: 1rem 0 0 1rem;
+    }
 
     ul {
       display: flex;
@@ -174,4 +176,10 @@ section {
 /* Style the dropdown items when the dropdown is open */
 .dropdown-content.open {
   display: block;
+}
+
+.search-container-parent {
+  @media (min-width: 1024px) {
+    margin-left: 20px;
+  }
 }
