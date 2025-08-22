@@ -1,27 +1,33 @@
-<div x-data="searchComponent()">
+---
+import "../../styles/index.css";
+---
+
+<div x-data="searchComponent()" class="search-container-parent">
   <form @submit.prevent="handleSearch">
     <input type="text" placeholder="Search..." x-model="searchTerm" required />
     <button type="submit">Search</button>
   </form>
 
-  <ul x-show="searchResults.length > 0">
-    <template x-for="post in searchResults" :key="post.slug">
-      <li class="heading">
-        <h3>
-          <a :href="`/${post.slug}`" x-text="post.title"></a>
-        </h3>
+  <section class="home-list search-container" x-show="searchResults.length > 0">
+    <ul>
+      <template x-for="post in searchResults" :key="post.slug">
+        <li class="heading">
+          <h3>
+            <a :href="`/${post.slug}`" x-text="post.title"></a>
+          </h3>
 
-        <a :href="`/${post.slug}`" rel="noopener noreferrer">
-          <img
-            :src="post.featuredImage?.node?.sourceUrl"
-            :alt="`Photo of the roast dinner at ${post.title}`"
-            width="400"
-            height="300"
-          />
-        </a>
-      </li>
-    </template>
-  </ul>
+          <a :href="`/${post.slug}`" rel="noopener noreferrer" class="featured-image">
+            <img
+              :src="post.featuredImage?.node?.sourceUrl"
+              :alt="`Photo of the roast dinner at ${post.title}`"
+              width="400"
+              height="300"
+            />
+          </a>
+        </li>
+      </template>
+    </ul>
+  </section>
   <p x-show="searchPerformed && searchResults.length === 0">No results found.</p>
 </div>
 
