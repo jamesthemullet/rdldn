@@ -279,8 +279,12 @@ figure {
   }
 
   .wp-block-image.size-large {
-    width: calc(50% - var(--wp--style--unstable-gallery-gap, 16px) * 0.5);
+    width: 100%;
     aspect-ratio: 4 / 3;
+
+    @media (min-width: 768px) {
+      width: calc(50% - var(--wp--style--unstable-gallery-gap, 16px) * 0.5);
+    }
   }
 
   &.is-layout-flex {
