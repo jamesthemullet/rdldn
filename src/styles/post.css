@@ -17,7 +17,7 @@ li {
 }
 
 iframe {
-  max-width: 100%;
+  width: 100%;
   max-width: -webkit-fill-available;
   max-height: -webkit-fill-available;
 }
@@ -46,12 +46,6 @@ section {
 
     p {
       font-size: 1rem;
-    }
-
-    iframe {
-      max-width: 100%;
-      max-width: -webkit-fill-available;
-      max-height: -webkit-fill-available;
     }
 
     &.halloween {
@@ -244,7 +238,6 @@ h4 {
   figcaption {
     color: var(--roast-light);
     width: 100%;
-    font-size: 0.8rem;
     min-height: 22px;
     background-color: var(--roast-new-blue);
     margin: 0;
@@ -452,7 +445,8 @@ p {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      max input[type="checkbox"] {
+
+      input[type="checkbox"] {
         width: 1.5rem;
         height: 1.5rem;
       }
