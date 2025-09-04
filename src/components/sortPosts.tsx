@@ -120,7 +120,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     });
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally omitting filterPosts function
   useEffect(() => {
     const filteredPosts = filterPosts(posts);
 
