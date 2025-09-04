@@ -159,7 +159,6 @@ header {
   text-transform: uppercase;
 
   @media (min-width: 1024px) {
-    font-size: 1.5em;
     margin: 0;
     line-height: 1;
     font-size: 1em;

@@ -38,7 +38,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: --roast-main-text;
+  color: var(--roast-main-text);
   font-size: 18px;
 }
 

@@ -1,13 +1,13 @@
 // @ts-check
+
+
+import alpinejs from "@astrojs/alpinejs";
 import mdx from "@astrojs/mdx";
 import partytown from "@astrojs/partytown";
+import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import { EnumChangefreq } from "sitemap";
-
-import alpinejs from "@astrojs/alpinejs";
-
-import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
