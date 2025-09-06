@@ -24,7 +24,7 @@ try {
 
 let allPages: Page[] = [];
 let allBestListPages: Page[] = [];
-const bestRoasts: Array<PageWithFeaturedImage> = [];
+let bestRoasts: Array<PageWithFeaturedImage> = [];
 
 try {
   const response = await fetchGraphQL(GET_ALL_PAGES);
@@ -42,10 +42,10 @@ try {
     })
     .filter(Boolean);
 
-  allBestListPages = allPages.filter((page: Page) => page?.highlights?.tag === "best"); // biome-ignore lint/complexity/noForEach: <explanation>
+  allBestListPages = allPages.filter((page: Page) => page?.highlights?.tag === "best");
 
   // biome-ignore lint/complexity/noForEach: <explanation>
-  const bestRoasts = allBestListPages.map((page: Page) => ({
+  bestRoasts = allBestListPages.map((page: Page) => ({
     ...page,
     featuredImage: page.featuredImage?.node?.sourceUrl || "",
   })) as Array<PageWithFeaturedImage>;
