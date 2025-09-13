@@ -77,8 +77,11 @@ const filtered = allPosts
     const loved = post.highlights?.loved?.toLowerCase() ?? "";
     const rating = Number.parseFloat(post.ratings?.nodes[0]?.name || "");
     const isClosed = (post.closedDowns?.nodes?.length ?? 0) > 0;
+    const isRoastDinner =
+      post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner") ??
+      false;
 
-    return loved.includes("carrot") && !Number.isNaN(rating) && !isClosed;
+    return loved.includes("carrot") && !Number.isNaN(rating) && !isClosed && isRoastDinner;
   })
   .sort(
     (a, b) =>
