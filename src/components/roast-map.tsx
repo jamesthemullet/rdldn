@@ -100,6 +100,7 @@ export default function RoastMap({ markers }: Props) {
       </label>
       <br />
       <br />
+      {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
       <div id="map" ref={mapRef} style={{ height: "600px" }} />
     </>
   );
