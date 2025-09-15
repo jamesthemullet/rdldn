@@ -10,7 +10,7 @@ import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "7165" };
+const variables = { id: "7009" };
 let singlePage: Page | null = null;
 
 try {
@@ -108,6 +108,8 @@ while (hasNextPage) {
   hasNextPage = posts.pageInfo.hasNextPage;
   endCursor = posts.pageInfo.endCursor;
 }
+
+console.log(10, singlePage);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
