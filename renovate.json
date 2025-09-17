@@ -1,5 +1,12 @@
 {
   "extends": ["config:recommended"],
   "timezone": "Europe/London",
-  "schedule": ["every weekday"]
+  "schedule": ["every weekday"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch"
+    }
+  ]
 }
