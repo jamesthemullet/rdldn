@@ -431,7 +431,6 @@ p {
 
     .closed-down {
       opacity: 0.5;
-      pointer-events: none;
       text-decoration: line-through;
     }
   }
@@ -869,4 +868,9 @@ p {
     color: var(--roast-main-text);
     text-align: center;
   }
+}
+
+.re-reviewed-rating {
+  color: #888;
+  text-decoration: line-through;
 }
