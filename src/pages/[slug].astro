@@ -292,6 +292,7 @@ const organiseComments = (comments: CommentsType) => {
 const getClosedMessage = () => {
   const closedDownId = singlePost.closedDowns?.nodes[0]?.name;
 
+
   if (!closedDownId) return '';
   
   if (closedDownId === "closeddown") {
@@ -313,7 +314,7 @@ const getClosedMessage = () => {
     return "Temporarily Closed";
   }
   if (closedDownId.includes("re-reviewed")) {
-    return `Re-reviewed: ${closedDownId.replace("re-reviewed", "").trim()}`;
+    return `Re-reviewed: ${closedDownId.replace("re-reviewed-", "").trim()}`;
   }
   return 'Closed Down'
 };
@@ -403,7 +404,9 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
         </p>
       )}
         <p>{singlePost.title}</p>
-      <p>Rating: {singlePost.ratings?.nodes?.[0]?.name}</p>
+      <p class={singlePost.closedDowns?.nodes?.[0]?.name?.startsWith("re-reviewed") ? "re-reviewed-rating" : ""}>
+        Rating: {singlePost.ratings?.nodes?.[0]?.name}
+      </p>
       {singlePost.tubeStations?.nodes?.[0]?.name && <p>Tube Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
               <p>
         Tube Lines:{" "}
