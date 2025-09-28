@@ -255,7 +255,7 @@ figure {
   margin: 0 auto;
   text-align: center;
   position: relative;
-  display: flex;
+  /* display: flex; */
 }
 
 .wp-block-gallery {
