@@ -72,6 +72,11 @@ const GET_ALL_POSTS = `
             name
           }
         }
+        features {
+          nodes {
+            name
+          }
+        }
         highlights {
           loved
           loathed
