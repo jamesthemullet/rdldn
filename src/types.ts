@@ -81,6 +81,11 @@ export type Post = {
       name: string;
     }[];
   };
+  features?: {
+    nodes: {
+      name: string;
+    }[];
+  };
   highlights?: {
     loved: string;
     loathed: string;
