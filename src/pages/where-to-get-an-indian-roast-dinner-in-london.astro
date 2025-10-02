@@ -10,7 +10,7 @@ import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
-const variables = { id: "9889" };
+const variables = { id: "9887" };
 let singlePage: Page | null = null;
 
 try {
@@ -80,9 +80,7 @@ const filtered = allPosts
       post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner") ??
       false;
     const isTop50Gastropub =
-      post.features?.nodes.some(
-        (feature: { name: string }) => feature.name === "top-50-gastropub-2025"
-      ) ?? false;
+      post.features?.nodes.some((feature: { name: string }) => feature.name === "indian") ?? false;
 
     return !Number.isNaN(rating) && !isClosed && isRoastDinner && isTop50Gastropub;
   })
@@ -164,10 +162,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       ))
     }
 
-    <p>
-      Have you had a roast dinner at any of the Top 50 Gastropubs? Post in the comments as to what
-      you thought!
-    </p>
+    <p>Know any other Indian roast dinners in London? Do let me know in the comments.</p>
 
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
