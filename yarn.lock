@@ -119,9 +119,9 @@
     vfile "^6.0.3"
 
 "@astrojs/mdx@^4.0.6":
-  version "4.3.7"
-  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-4.3.7.tgz#a6cb6e2c05af037e8abdc6049be342f35210158c"
-  integrity sha512-5SRmvMyT/UMWaU2eoD+htnXtE2mUZZEH2K/nEzhuEy+iCsOSuS/DUry59WuKUJRQETi1mgJFdNR4dZLJHYVuRA==
+  version "4.3.8"
+  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-4.3.8.tgz#b27fb8514d6069dac990f978d7f00186460abbb9"
+  integrity sha512-PXT0n2FfZAWEmQi4u4AZ0OPDDrDIF+aXPZGT5HCf52dex5EV3htMByeJUqYIoXdmazAFTASub0vRZLWBqJhJ9w==
   dependencies:
     "@astrojs/markdown-remark" "6.3.8"
     "@mdx-js/mdx" "^3.1.1"
@@ -129,7 +129,7 @@
     es-module-lexer "^1.7.0"
     estree-util-visit "^2.0.0"
     hast-util-to-html "^9.0.5"
-    kleur "^4.1.5"
+    picocolors "^1.1.1"
     rehype-raw "^7.0.0"
     remark-gfm "^4.0.1"
     remark-smartypants "^3.0.2"
@@ -162,12 +162,12 @@
     vite "^6.3.6"
 
 "@astrojs/rss@^4.0.11":
-  version "4.0.12"
-  resolved "https://registry.yarnpkg.com/@astrojs/rss/-/rss-4.0.12.tgz#ce3505a184232b59b596dbb77e496ca8b1b00fd2"
-  integrity sha512-O5yyxHuDVb6DQ6VLOrbUVFSm+NpObulPxjs6XT9q3tC+RoKbN4HXMZLpv0LvXd1qdAjzVgJ1NFD+zKHJNDXikw==
+  version "4.0.13"
+  resolved "https://registry.yarnpkg.com/@astrojs/rss/-/rss-4.0.13.tgz#195672f2d9d1f17bb8c0532d4bd8e119a42d4842"
+  integrity sha512-ugW4DmGn8kgfl8/qecU3EcKCAuEBrZqY7eYfa6at0sY7HGEwRdzsOafLE437RwDMP2ZuxfKnCNABs99YVhX0kg==
   dependencies:
-    fast-xml-parser "^5.2.0"
-    kleur "^4.1.5"
+    fast-xml-parser "^5.3.0"
+    picocolors "^1.1.1"
 
 "@astrojs/sitemap@^3.2.1":
   version "3.6.0"
@@ -371,59 +371,59 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
-"@biomejs/biome@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/biome/-/biome-2.2.7.tgz#c256a14cf2f0c7be59425ea8483a25700b553a8e"
-  integrity sha512-1a8j0UP1vXVUf3UzMZEJ/zS2VgAG6wU6Cuh/I764sUGI+MCnJs/9WaojHYBDCxCMLTgU60/WqnYof85emXmSBA==
+"@biomejs/biome@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/biome/-/biome-2.3.0.tgz#80030b68d94bd0a0761ac2cd22cc4f2c0f23f4f9"
+  integrity sha512-shdUY5H3S3tJVUWoVWo5ua+GdPW5lRHf+b0IwZ4OC1o2zOKQECZ6l2KbU6t89FNhtd3Qx5eg5N7/UsQWGQbAFw==
   optionalDependencies:
-    "@biomejs/cli-darwin-arm64" "2.2.7"
-    "@biomejs/cli-darwin-x64" "2.2.7"
-    "@biomejs/cli-linux-arm64" "2.2.7"
-    "@biomejs/cli-linux-arm64-musl" "2.2.7"
-    "@biomejs/cli-linux-x64" "2.2.7"
-    "@biomejs/cli-linux-x64-musl" "2.2.7"
-    "@biomejs/cli-win32-arm64" "2.2.7"
-    "@biomejs/cli-win32-x64" "2.2.7"
+    "@biomejs/cli-darwin-arm64" "2.3.0"
+    "@biomejs/cli-darwin-x64" "2.3.0"
+    "@biomejs/cli-linux-arm64" "2.3.0"
+    "@biomejs/cli-linux-arm64-musl" "2.3.0"
+    "@biomejs/cli-linux-x64" "2.3.0"
+    "@biomejs/cli-linux-x64-musl" "2.3.0"
+    "@biomejs/cli-win32-arm64" "2.3.0"
+    "@biomejs/cli-win32-x64" "2.3.0"
 
-"@biomejs/cli-darwin-arm64@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-2.2.7.tgz#d90715e34b35a2bf5c71e2146f18671d64e2b1b6"
-  integrity sha512-xBUUsebnO2/Qj1v7eZmKUy2ZcFkZ4/jLUkxN02Qup1RPoRaiW9AKXHrqS3L7iX6PzofHY2xuZ+Pb9kAcpoe0qA==
+"@biomejs/cli-darwin-arm64@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-arm64/-/cli-darwin-arm64-2.3.0.tgz#78cef4d7415adbf0718c7854e7160e181d916652"
+  integrity sha512-3cJVT0Z5pbTkoBmbjmDZTDFYxIkRcrs9sYVJbIBHU8E6qQxgXAaBfSVjjCreG56rfDuQBr43GzwzmaHPcu4vlw==
 
-"@biomejs/cli-darwin-x64@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.2.7.tgz#415d365938ca239ec012db9ab676a33678c10621"
-  integrity sha512-vsY4NhmxqgfLJufr9XUnC+yGUPJiXAc1mz6FcjaAmuIuLwfghN4uQO7hnW2AneGyoi2mNe9Jbvf6Qtq4AjzrFg==
+"@biomejs/cli-darwin-x64@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-darwin-x64/-/cli-darwin-x64-2.3.0.tgz#068baf1f0f748c01658ba9bb511d8d18461d922b"
+  integrity sha512-6LIkhglh3UGjuDqJXsK42qCA0XkD1Ke4K/raFOii7QQPbM8Pia7Qj2Hji4XuF2/R78hRmEx7uKJH3t/Y9UahtQ==
 
-"@biomejs/cli-linux-arm64-musl@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.2.7.tgz#9ef85a4d890683980c97b0318d3ccfa8e9d62a98"
-  integrity sha512-FrTwvKO/7t5HbVTvhlMOTOVQLAcR7r4O4iFQhEpZXUtBfosHqrX/JJlX7daPawoe14MDcCu9CDg0zLVpTuDvuQ==
+"@biomejs/cli-linux-arm64-musl@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64-musl/-/cli-linux-arm64-musl-2.3.0.tgz#9a1350184abcea8092957a9519098cac7629705a"
+  integrity sha512-nDksoFdwZ2YrE7NiYDhtMhL2UgFn8Kb7Y0bYvnTAakHnqEdb4lKindtBc1f+xg2Snz0JQhJUYO7r9CDBosRU5w==
 
-"@biomejs/cli-linux-arm64@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64/-/cli-linux-arm64-2.2.7.tgz#7749280080d794acbe075f7df2acac04e5340b3b"
-  integrity sha512-nUdco104rjV9dULi1VssQ5R/kX2jE/Z2sDjyqS+siV9sTQda0DwmEUixFNRCWvZJRRiZUWhgiDFJ4n7RowO8Mg==
+"@biomejs/cli-linux-arm64@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-arm64/-/cli-linux-arm64-2.3.0.tgz#f322daebb32fe0b18f7981c8cdbe84a06852bfee"
+  integrity sha512-uhAsbXySX7xsXahegDg5h3CDgfMcRsJvWLFPG0pjkylgBb9lErbK2C0UINW52zhwg0cPISB09lxHPxCau4e2xA==
 
-"@biomejs/cli-linux-x64-musl@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-2.2.7.tgz#f90f539e49163ce2d311291686cecb72d6ff4fb6"
-  integrity sha512-MnsysF5s/iLC5wnYvuMseOy+m8Pd4bWG1uwlVyy2AUbfjAVUgtbYbboc5wMXljFrDY7e6rLjLTR4S2xqDpGlQg==
+"@biomejs/cli-linux-x64-musl@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64-musl/-/cli-linux-x64-musl-2.3.0.tgz#ce441d5c00eda977b74e4116f9723f2edc579485"
+  integrity sha512-+i9UcJwl99uAhtRQDz9jUAh+Xkb097eekxs/D9j4deWDg5/yB/jPWzISe1nBHvlzTXsdUSj0VvB4Go2DSpKIMw==
 
-"@biomejs/cli-linux-x64@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64/-/cli-linux-x64-2.2.7.tgz#dee627681feeab53557b4a358311927c4495020e"
-  integrity sha512-tPTcGAIEOOZrj2tQ7fdraWlaxNKApBw6l4In8wQQV1IyxnAexqi0hykHzKEX8hKKctf5gxGBfNCzyIvqpj4CFQ==
+"@biomejs/cli-linux-x64@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-linux-x64/-/cli-linux-x64-2.3.0.tgz#da7ea904307b3211df62a4b42e5a022f8f583009"
+  integrity sha512-uxa8reA2s1VgoH8MhbGlCmMOt3JuSE1vJBifkh1ulaPiuk0SPx8cCdpnm9NWnTe2x/LfWInWx4sZ7muaXTPGGw==
 
-"@biomejs/cli-win32-arm64@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-arm64/-/cli-win32-arm64-2.2.7.tgz#d348433a3a8a86008e2df3cb3b41d76bcef364b2"
-  integrity sha512-h5D1jhwA2b7cFXerYiJfXHSzzAMFFoEDL5Mc2BgiaEw0iaSgSso/3Nc6FbOR55aTQISql+IpB4PS7JoV26Gdbw==
+"@biomejs/cli-win32-arm64@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-arm64/-/cli-win32-arm64-2.3.0.tgz#cdc0f8bbf025fb28c5b03b326128cce363ecffa5"
+  integrity sha512-ynjmsJLIKrAjC3CCnKMMhzcnNy8dbQWjKfSU5YA0mIruTxBNMbkAJp+Pr2iV7/hFou+66ZSD/WV8hmLEmhUaXA==
 
-"@biomejs/cli-win32-x64@2.2.7":
-  version "2.2.7"
-  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-x64/-/cli-win32-x64-2.2.7.tgz#64b12bd224b6deaebb39d5544f1b1258c3b54947"
-  integrity sha512-URqAJi0kONyBKG4V9NVafHLDtm6IHmF4qPYi/b6x7MD6jxpWeJiTCO6R5+xDlWckX2T/OGv6Yq3nkz6s0M8Ykw==
+"@biomejs/cli-win32-x64@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-x64/-/cli-win32-x64-2.3.0.tgz#10e1de6222e272a1e3e395b3d845ee66cb6febd8"
+  integrity sha512-zOCYmCRVkWXc9v8P7OLbLlGGMxQTKMvi+5IC4v7O8DkjLCOHRzRVK/Lno2pGZNo0lzKM60pcQOhH8HVkXMQdFg==
 
 "@capsizecss/unpack@^3.0.0":
   version "3.0.0"
@@ -980,12 +980,31 @@
     "@types/hast" "^3.0.4"
     hast-util-to-html "^9.0.5"
 
+"@shikijs/core@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-3.14.0.tgz#a1c547794518842fb60bb71932a7bc47de0b4703"
+  integrity sha512-qRSeuP5vlYHCNUIrpEBQFO7vSkR7jn7Kv+5X3FO/zBKVDGQbcnlScD3XhkrHi/R8Ltz0kEjvFR9Szp/XMRbFMw==
+  dependencies:
+    "@shikijs/types" "3.14.0"
+    "@shikijs/vscode-textmate" "^10.0.2"
+    "@types/hast" "^3.0.4"
+    hast-util-to-html "^9.0.5"
+
 "@shikijs/engine-javascript@3.13.0":
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@shikijs/engine-javascript/-/engine-javascript-3.13.0.tgz#d25cefdac378216a95fefdf0b3a560550393ea65"
   integrity sha512-Ty7xv32XCp8u0eQt8rItpMs6rU9Ki6LJ1dQOW3V/56PKDcpvfHPnYFbsx5FFUP2Yim34m/UkazidamMNVR4vKg==
   dependencies:
     "@shikijs/types" "3.13.0"
+    "@shikijs/vscode-textmate" "^10.0.2"
+    oniguruma-to-es "^4.3.3"
+
+"@shikijs/engine-javascript@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/engine-javascript/-/engine-javascript-3.14.0.tgz#546c14fcf2654ca3c27f76686e969bf3b1496b53"
+  integrity sha512-3v1kAXI2TsWQuwv86cREH/+FK9Pjw3dorVEykzQDhwrZj0lwsHYlfyARaKmn6vr5Gasf8aeVpb8JkzeWspxOLQ==
+  dependencies:
+    "@shikijs/types" "3.14.0"
     "@shikijs/vscode-textmate" "^10.0.2"
     oniguruma-to-es "^4.3.3"
 
@@ -997,12 +1016,27 @@
     "@shikijs/types" "3.13.0"
     "@shikijs/vscode-textmate" "^10.0.2"
 
+"@shikijs/engine-oniguruma@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/engine-oniguruma/-/engine-oniguruma-3.14.0.tgz#562bcce2f69cc65c92bcf2ccb637b2a7021f3d7b"
+  integrity sha512-TNcYTYMbJyy+ZjzWtt0bG5y4YyMIWC2nyePz+CFMWqm+HnZZyy9SWMgo8Z6KBJVIZnx8XUXS8U2afO6Y0g1Oug==
+  dependencies:
+    "@shikijs/types" "3.14.0"
+    "@shikijs/vscode-textmate" "^10.0.2"
+
 "@shikijs/langs@3.13.0":
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@shikijs/langs/-/langs-3.13.0.tgz#51a927c8089dffb2560ac8d7549297de9d081b91"
   integrity sha512-672c3WAETDYHwrRP0yLy3W1QYB89Hbpj+pO4KhxK6FzIrDI2FoEXNiNCut6BQmEApYLfuYfpgOZaqbY+E9b8wQ==
   dependencies:
     "@shikijs/types" "3.13.0"
+
+"@shikijs/langs@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/langs/-/langs-3.14.0.tgz#71e6ca44e661b405209eb63d4449b57b9de529d0"
+  integrity sha512-DIB2EQY7yPX1/ZH7lMcwrK5pl+ZkP/xoSpUzg9YC8R+evRCCiSQ7yyrvEyBsMnfZq4eBzLzBlugMyTAf13+pzg==
+  dependencies:
+    "@shikijs/types" "3.14.0"
 
 "@shikijs/themes@3.13.0":
   version "3.13.0"
@@ -1011,10 +1045,25 @@
   dependencies:
     "@shikijs/types" "3.13.0"
 
+"@shikijs/themes@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/themes/-/themes-3.14.0.tgz#2b516c19caf63f78f81f5df9c087800c3b2c7404"
+  integrity sha512-fAo/OnfWckNmv4uBoUu6dSlkcBc+SA1xzj5oUSaz5z3KqHtEbUypg/9xxgJARtM6+7RVm0Q6Xnty41xA1ma1IA==
+  dependencies:
+    "@shikijs/types" "3.14.0"
+
 "@shikijs/types@3.13.0":
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@shikijs/types/-/types-3.13.0.tgz#d223c6e28796914fbb105a3ee63bc3af5483852e"
   integrity sha512-oM9P+NCFri/mmQ8LoFGVfVyemm5Hi27330zuOBp0annwJdKH1kOLndw3zCtAVDehPLg9fKqoEx3Ht/wNZxolfw==
+  dependencies:
+    "@shikijs/vscode-textmate" "^10.0.2"
+    "@types/hast" "^3.0.4"
+
+"@shikijs/types@3.14.0":
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/@shikijs/types/-/types-3.14.0.tgz#4e666f8d31e319494daf23efcc19a32a5fdaa341"
+  integrity sha512-bQGgC6vrY8U/9ObG1Z/vTro+uclbjjD/uG58RvfxKZVD5p9Yc1ka3tVyEFy7BNJLzxuWyHH5NWynP9zZZS59eQ==
   dependencies:
     "@shikijs/vscode-textmate" "^10.0.2"
     "@types/hast" "^3.0.4"
@@ -1937,10 +1986,10 @@ fast-uri@^3.0.1:
   resolved "https://registry.yarnpkg.com/fast-uri/-/fast-uri-3.1.0.tgz#66eecff6c764c0df9b762e62ca7edcfb53b4edfa"
   integrity sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==
 
-fast-xml-parser@^5.2.0:
-  version "5.2.5"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-5.2.5.tgz#4809fdfb1310494e341098c25cb1341a01a9144a"
-  integrity sha512-pfX9uG9Ki0yekDHx2SiuRIyFdyAr1kMIMitPvb0YBo8SUfKvia7w7FIyd/l6av85pFYRhZscS75MwMnbvY+hcQ==
+fast-xml-parser@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-5.3.0.tgz#ae388d5a0f6ed31c8ce9e413c1ac89c8e57e7b07"
+  integrity sha512-gkWGshjYcQCF+6qtlrqBqELqNqnt4CxruY6UVAWWnqb3DQ6qaNFEIKqzYep1XzHLM/QtrHVCxyPOtTk4LTQ7Aw==
   dependencies:
     strnum "^2.1.0"
 
@@ -3575,7 +3624,7 @@ sharp@^0.34.0:
     "@img/sharp-win32-ia32" "0.34.4"
     "@img/sharp-win32-x64" "0.34.4"
 
-shiki@^3.12.0, shiki@^3.13.0:
+shiki@^3.12.0:
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/shiki/-/shiki-3.13.0.tgz#9675e9d36a893434cc297d66ddd4598a4af1fea1"
   integrity sha512-aZW4l8Og16CokuCLf8CF8kq+KK2yOygapU5m3+hoGw0Mdosc6fPitjM+ujYarppj5ZIKGyPDPP1vqmQhr+5/0g==
@@ -3586,6 +3635,20 @@ shiki@^3.12.0, shiki@^3.13.0:
     "@shikijs/langs" "3.13.0"
     "@shikijs/themes" "3.13.0"
     "@shikijs/types" "3.13.0"
+    "@shikijs/vscode-textmate" "^10.0.2"
+    "@types/hast" "^3.0.4"
+
+shiki@^3.13.0:
+  version "3.14.0"
+  resolved "https://registry.yarnpkg.com/shiki/-/shiki-3.14.0.tgz#fd38c387a41c918d709252d2d7d85ce63351d88d"
+  integrity sha512-J0yvpLI7LSig3Z3acIuDLouV5UCKQqu8qOArwMx+/yPVC3WRMgrP67beaG8F+j4xfEWE0eVC4GeBCIXeOPra1g==
+  dependencies:
+    "@shikijs/core" "3.14.0"
+    "@shikijs/engine-javascript" "3.14.0"
+    "@shikijs/engine-oniguruma" "3.14.0"
+    "@shikijs/langs" "3.14.0"
+    "@shikijs/themes" "3.14.0"
+    "@shikijs/types" "3.14.0"
     "@shikijs/vscode-textmate" "^10.0.2"
     "@types/hast" "^3.0.4"
 
