@@ -17,7 +17,7 @@ export async function getStaticPaths() {
   // Fetch all posts
   while (hasNextPage) {
     const response: Response = await fetch(
-      "https://rdldn.co.uk/graphql",
+      "https://blog.rdldn.co.uk/graphql",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ export async function getStaticPaths() {
   
   while (hasNextPage) {
     const response: Response = await fetch(
-      "https://rdldn.co.uk/graphql",
+      "https://blog.rdldn.co.uk/graphql",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -107,7 +107,7 @@ export async function getStaticPaths() {
     const { slug } = Astro.params;
     const { contentType } = Astro.props;
 
-const singleResponse = await fetch("https://www.rdldn.co.uk/graphql", {
+const singleResponse = await fetch("https://blog.rdldn.co.uk/graphql", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
