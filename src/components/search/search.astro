@@ -40,7 +40,7 @@ import "../../styles/index.css";
       async handleSearch() {
         try {
           this.searchPerformed = false;
-          const GRAPHQL_ENDPOINT = "https://www.rdldn.co.uk/graphql";
+          const GRAPHQL_ENDPOINT = "https://blog.rdldn.co.uk/graphql";
           const SEARCH_QUERY = `
             query SearchPosts($search: String!) {
               posts(where: { search: $search }, first: 4) {

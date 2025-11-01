@@ -2,12 +2,12 @@
   "extends": ["config:recommended"],
   "timezone": "Europe/London",
   "schedule": ["every weekday"],
+  "minimumReleaseAge": "1 day",
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch",
-      "minimumReleaseAge": "3 days"
+      "groupSlug": "all-minor-patch"
     }
   ]
 }
