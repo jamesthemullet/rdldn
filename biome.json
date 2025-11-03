@@ -9,11 +9,11 @@
     "ignoreUnknown": false,
     "includes": [
       "**",
-      "!**/.astro/**",
-      "!**/.git/**",
-      "!**/.cache/**",
-      "!**/dist/**",
-      "!**/node_modules/**"
+      "!**/.astro",
+      "!**/.git",
+      "!**/.cache",
+      "!**/dist",
+      "!**/node_modules"
     ]
   },
   "formatter": {

@@ -32,8 +32,9 @@ try {
     ?.map((page: Page) => {
       const featuredImage = page.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
-          ?.sourceUrl || featuredImage?.sourceUrl;
+        featuredImage?.mediaDetails?.sizes.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
         ...page,
@@ -123,7 +124,11 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                   <Fragment set:html={post?.title} />
                 </a>
               </h3>
-              <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+              <a
+                href={post?.slug}
+                rel="noopener noreferrer"
+                class="featured-image"
+              >
                 <img
                   src={post?.featuredImageUrl}
                   alt={`Photo of the roast dinner at ${post?.title}`}
