@@ -122,13 +122,17 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         districtStats.map((district) => (
           <li>
-            The average rating in {district.name} is {district.average.toFixed(2)} ({district.count}{" "}
+            The average rating in {district.name} is{" "}
+            {district.average.toFixed(2)} ({district.count}{" "}
             {district.count === 1 ? "review" : "reviews"})
           </li>
         ))
       }
     </ul>
-    <p>Do note that I am only including boroughs where I've had 3 roast dinners or more.</p>
+    <p>
+      Do note that I am only including boroughs where I've had 3 roast dinners
+      or more.
+    </p>
     <Newsletter />
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
