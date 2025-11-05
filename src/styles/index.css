@@ -40,7 +40,7 @@ section {
         list-style: none;
         display: inline-block;
         align-content: end;
-        min-width: 105%;
+        min-width: 90%;
 
         @media (min-width: 759px) {
           min-width: 55%;
@@ -74,8 +74,6 @@ section {
           }
 
           .featured-image {
-            height: 300px;
-
             a {
               max-width: 100%;
               white-space: normal;
@@ -101,6 +99,8 @@ section {
         img {
           max-width: 100%;
           display: block;
+          height: auto;
+          aspect-ratio: 400 / 300;
         }
       }
 
