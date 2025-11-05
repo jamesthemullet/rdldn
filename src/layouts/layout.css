@@ -49,10 +49,6 @@ main {
   display: flex;
   flex-direction: column;
   margin-top: 64px;
-
-  @media (min-width: 1024px) {
-    margin-top: 111px;
-  }
 }
 
 div.page-container {
