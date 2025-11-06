@@ -6,7 +6,7 @@ interface Props {
 
 import type { Comments as CommentsType } from "../types";
 import Comment from "./comment.astro";
-import "../styles/index.css";
+// import "../styles/index.css";
 import "../styles/comments.css";
 
 const { threadedComments, postId } = Astro.props as Props;
@@ -52,10 +52,13 @@ const { threadedComments, postId } = Astro.props as Props;
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const authorName = (form.querySelector("#authorName") as HTMLInputElement)?.value;
+      const authorName = (form.querySelector("#authorName") as HTMLInputElement)
+        ?.value;
 
       const email = (form.querySelector("#email") as HTMLInputElement)?.value;
-      const commentText = (form.querySelector("#commentText") as HTMLTextAreaElement)?.value;
+      const commentText = (
+        form.querySelector("#commentText") as HTMLTextAreaElement
+      )?.value;
 
       const postId = form?.getAttribute("data-post-id");
 

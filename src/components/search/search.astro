@@ -1,5 +1,5 @@
 ---
-import "../../styles/index.css";
+import "../../styles/search.css";
 ---
 
 <div x-data="searchComponent()" class="search-container-parent">
@@ -16,7 +16,11 @@ import "../../styles/index.css";
             <a :href="`/${post.slug}`" x-text="post.title"></a>
           </h3>
 
-          <a :href="`/${post.slug}`" rel="noopener noreferrer" class="featured-image">
+          <a
+            :href="`/${post.slug}`"
+            rel="noopener noreferrer"
+            class="featured-image"
+          >
             <img
               :src="post.featuredImage?.node?.sourceUrl"
               :alt="`Photo of the roast dinner at ${post.title}`"
@@ -28,7 +32,9 @@ import "../../styles/index.css";
       </template>
     </ul>
   </section>
-  <p x-show="searchPerformed && searchResults.length === 0">No results found.</p>
+  <p x-show="searchPerformed && searchResults.length === 0">
+    No results found.
+  </p>
 </div>
 
 <script>
