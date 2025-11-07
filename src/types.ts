@@ -95,6 +95,11 @@ export type Post = {
       name: string;
     }[];
   };
+  newSlugs?: {
+    nodes: {
+      name: string;
+    }[];
+  };
 };
 
 export type Location = {
