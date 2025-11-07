@@ -149,7 +149,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     setSortOrder(newSortOrder);
   };
 
-  const translateClosedDown = (closedDown: string | undefined) => {
+  const translateClosedDown = (closedDown: string | undefined, newSlug: string | undefined) => {
     switch (closedDown) {
       case "closeddown":
         return "Closed Down";
@@ -166,6 +166,13 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
       default:
         if (closedDown?.startsWith("re-reviewed-")) {
           const year = closedDown.split("re-reviewed-")[1];
+          if (newSlug) {
+            return (
+              <a href={`/${newSlug}`}>
+                Re-reviewed in {year}
+              </a>
+            );
+          }
           return `Re-reviewed in ${year}`;
         }
         return closedDown;
@@ -427,7 +434,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               {showBorough && <span>{post.boroughs?.nodes[0]?.name}</span>}
               {showOwner && <span>{post.owners?.nodes[0]?.name}</span>}
               {showClosedDown && (
-                <span>{translateClosedDown(post.closedDowns?.nodes[0]?.name)}</span>
+                <span>{translateClosedDown(post.closedDowns?.nodes[0]?.name, post.newSlugs?.nodes[0]?.name)}</span>
               )}
             </li>
           );
