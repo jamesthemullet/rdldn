@@ -9,7 +9,7 @@ section {
 
   &.home {
     @media (min-width: 1664px) {
-      width: 1664px;
+      max-width: 1664px;
     }
   }
 
