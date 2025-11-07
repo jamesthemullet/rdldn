@@ -1,10 +1,16 @@
 ---
-import "../../styles/search.css";
+
 ---
 
-<div x-data="searchComponent()" class="search-container-parent">
+<div x-data="searchComponent()">
   <form @submit.prevent="handleSearch">
-    <input type="text" placeholder="Search..." x-model="searchTerm" required />
+    <input
+      type="text"
+      placeholder="Search..."
+      x-model="searchTerm"
+      required
+      style="margin-left: 20px"
+    />
     <button type="submit">Search</button>
   </form>
 

@@ -8,8 +8,11 @@ section {
   }
 
   &.home {
+    margin: 1rem 0 0 2rem;
+    width: 100%;
     @media (min-width: 1664px) {
-      max-width: 1664px;
+      width: 1644px;
+      margin: 1rem 0 0 1rem;
     }
   }
 
