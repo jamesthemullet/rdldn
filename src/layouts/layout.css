@@ -47,7 +47,10 @@ main {
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 64px;
+
+  @media (min-width: 769px) {
+    align-items: center;
+  }
 }
 
 div.page-container {
