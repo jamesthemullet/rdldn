@@ -164,7 +164,7 @@ h4 {
 
 .image-container {
   position: relative;
-  display: inline-block;
+  display: block;
   width: 100%;
 
   figcaption {
