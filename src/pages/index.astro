@@ -49,8 +49,9 @@ if (recentPostCursor) {
       data?.posts?.nodes?.map((post: Post) => ({
         ...post,
         featuredImageUrl:
-          post.featuredImage?.node?.mediaDetails?.sizes?.find((size) => size.name === "homepage")
-            ?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
+          post.featuredImage?.node?.mediaDetails?.sizes?.find(
+            (size) => size.name === "homepage"
+          )?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
       })) || [];
   } catch (error) {
     console.error("Error fetching other posts:", error);
@@ -74,8 +75,43 @@ try {
 
       const featuredImage = response.page.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails.sizes.find((size: Size) => size.name === "homepage")
-          ?.sourceUrl || featuredImage?.sourceUrl;
+        featuredImage?.mediaDetails.sizes.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
+
+      return {
+        ...response.page,
+        featuredImageUrl: smallImage,
+      };
+    })
+    .filter(Boolean);
+} catch (error) {
+  console.error("Error fetching location pages:", error);
+}
+
+const findYourFavouriteRoastPageIds = ["267", "631", "10368", "17"];
+
+let findYourFavouriteRoastPages: Array<PageWithFeaturedImage> = [];
+
+try {
+  const pageResponses = await Promise.all(
+    findYourFavouriteRoastPageIds.map((id) =>
+      fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id })
+    )
+  );
+
+  findYourFavouriteRoastPages = pageResponses
+    .map((response) => {
+      if (!response?.page) return null;
+
+      console.log(15, response.page);
+
+      const featuredImage = response.page.featuredImage?.node;
+      console.log(20, featuredImage);
+      const smallImage =
+        featuredImage?.mediaDetails.sizes.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
         ...response.page,
@@ -111,8 +147,9 @@ try {
     ?.map((post: Post) => {
       const featuredImage = post.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
-          ?.sourceUrl || featuredImage?.sourceUrl;
+        featuredImage?.mediaDetails?.sizes.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
         ...post,
@@ -137,8 +174,9 @@ try {
     ?.map((page: Page) => {
       const featuredImage = page.featuredImage?.node;
       const smallImage =
-        featuredImage?.mediaDetails?.sizes.find((size: Size) => size.name === "homepage")
-          ?.sourceUrl || featuredImage?.sourceUrl;
+        featuredImage?.mediaDetails?.sizes.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || featuredImage?.sourceUrl;
 
       return {
         ...page,
@@ -147,7 +185,9 @@ try {
     })
     .filter(Boolean);
 
-  allFeaturesPages = allPages.filter((page: Page) => page?.highlights?.tag === "feature");
+  allFeaturesPages = allPages.filter(
+    (page: Page) => page?.highlights?.tag === "feature"
+  );
   allRoastStatisticsPages = allPages.filter(
     (page: Page) => page?.highlights?.tag === "roastatistics"
   );
@@ -221,13 +261,42 @@ try {
                 <Fragment set:html={post?.title} />
               </a>
             </h3>
-            <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+            <a
+              href={post?.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
               <img
                 src={post?.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${post?.title}`}
                 width="400"
                 height="300"
                 loading={index === 0 ? "eager" : "lazy"}
+              />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+  <section class="home-list">
+    <h2>Find Your Favourite Roast:</h2>
+    <ul>
+      {
+        findYourFavouriteRoastPages.map((page) => (
+          <li class="heading">
+            <h3>
+              <a href={page?.slug} rel="noopener noreferrer">
+                <Fragment set:html={page?.title} />
+              </a>
+            </h3>
+            <a href={page?.slug} rel="noopener noreferrer">
+              <img
+                src={page?.featuredImageUrl}
+                alt={`Photo of the roast dinner at ${page?.title}`}
+                width={400}
+                height={300}
+                loading="lazy"
               />
             </a>
           </li>
@@ -305,7 +374,11 @@ try {
                 <Fragment set:html={post?.title} />
               </a>
             </h3>
-            <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+            <a
+              href={post?.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
               <img
                 src={post?.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${post?.title}`}
@@ -332,7 +405,11 @@ try {
                 <Fragment set:html={post?.title} />
               </a>
             </h3>
-            <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+            <a
+              href={post?.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
               <img
                 src={post?.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${post?.title}`}
@@ -357,7 +434,11 @@ try {
                 <Fragment set:html={post?.title} />
               </a>
             </h3>
-            <a href={post?.slug} rel="noopener noreferrer" class="featured-image">
+            <a
+              href={post?.slug}
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
               <img
                 src={post?.featuredImageUrl}
                 alt={`Photo of the roast dinner at ${post?.title}`}
@@ -376,10 +457,14 @@ try {
     document.addEventListener("DOMContentLoaded", function () {
       const dropdownButton = document.getElementById("dropdown-btn");
       const dropdownContent = document.querySelector(".dropdown-content");
-      const locationCheckboxes = document.querySelectorAll(".location-checkbox");
-      const selectedLocationsList = document.getElementById("selected-locations-list");
+      const locationCheckboxes =
+        document.querySelectorAll(".location-checkbox");
+      const selectedLocationsList = document.getElementById(
+        "selected-locations-list"
+      );
 
-      const savedLocations = JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
+      const savedLocations =
+        JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
       locationCheckboxes.forEach((checkbox) => {
         if (savedLocations.includes((checkbox as HTMLInputElement).value)) {
           (checkbox as HTMLInputElement).checked = true;
@@ -414,7 +499,10 @@ try {
           .filter((checkbox) => (checkbox as HTMLInputElement).checked)
           .map((checkbox) => (checkbox as HTMLInputElement).value);
 
-        localStorage.setItem("selectedLocations", JSON.stringify(selectedLocations));
+        localStorage.setItem(
+          "selectedLocations",
+          JSON.stringify(selectedLocations)
+        );
 
         displaySelectedLocations(selectedLocations);
       }
