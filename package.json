@@ -21,6 +21,7 @@
     "@types/alpinejs": "^3.13.11",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
+    "accented": "^1.2.0",
     "alpinejs": "^3.14.9",
     "astro": "^5.1.7",
     "astro-seo": "^0.8.4",
