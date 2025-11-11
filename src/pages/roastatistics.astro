@@ -120,12 +120,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
           roastStatistics.map((post, index) => (
             <li class="heading">
               <h3>
-                <a href={post?.slug} rel="noopener noreferrer">
+                <a
+                  href={post?.slug.replace("/roastatistics/", "/")}
+                  rel="noopener noreferrer"
+                >
                   <Fragment set:html={post?.title} />
                 </a>
               </h3>
               <a
-                href={post?.slug}
+                href={post?.slug.replace("/roastatistics/", "/")}
                 rel="noopener noreferrer"
                 class="featured-image"
               >
