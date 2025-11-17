@@ -1,0 +1,7 @@
+# robots.txt
+
+User-agent: *
+Disallow: /404.html
+
+# Allow all other pages
+Allow: /

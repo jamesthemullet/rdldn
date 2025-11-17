@@ -1,8 +1,16 @@
 ---
+export const prerender = true;
+
+export const response = {
+  headers: {
+    "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=31536000"
+  }
+};
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import type { Comments as CommentsType } from "../types";
 
-    import "../styles/post.css";
+import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
