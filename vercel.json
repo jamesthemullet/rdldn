@@ -2,8 +2,7 @@
   "images": {
     "sizes": [],
     "domains": [],
-    "remotePatterns": [],
-    "disable": true
+    "remotePatterns": []
   },
   "headers": [
     {
