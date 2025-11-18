@@ -11,6 +11,7 @@ import { EnumChangefreq } from "sitemap";
 
 // https://astro.build/config
 export default defineConfig({
+  output: "static",
   site: "https://rdldn.co.uk",
   integrations: [
     partytown({
