@@ -1,6 +1,15 @@
 ---
+export const prerender = true;
+
+export const response = {
+  headers: {
+    "Cache-Control": "public, max-age=3153600, immutable",
+  },
+};
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/post.css";
+import { Image } from "astro:assets";
 import v1 from "../images/v1.jpg";
 import v2 from "../images/v2.jpg";
 import v3 from "../images/v3.jpg";
@@ -23,13 +32,13 @@ const veganImages = [
   description="Welcome to Vegan Roast Dinners in London - Page not found"
 >
   <div class="image-container">
-    <img
-      src={veganImages[0].src.src}
+    <Image
+      src={veganImages[0].src}
       alt={veganImages[0].alt}
-      width={5000}
-      height={5000}
+      width={800}
+      height={800}
       class="featured-image"
-      loading="eager"
+      loading="lazy"
     />
     <div class="copyright-overlay">
       &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
