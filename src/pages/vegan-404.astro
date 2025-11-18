@@ -1,12 +1,6 @@
 ---
 export const prerender = true;
 
-export const response = {
-  headers: {
-    "Cache-Control": "public, max-age=3153600, immutable",
-  },
-};
-
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/post.css";
 import { Image } from "astro:assets";
@@ -44,9 +38,11 @@ const veganImages = [
       &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
     </div>
   </div>
+
   <section class="post-title">
     <h2>Welcome to Vegan Roast Dinners in London</h2>
   </section>
+
   <div class="container">
     <div class="entry-content container">
       <p class="vegan-intro">
@@ -56,7 +52,7 @@ const veganImages = [
 
       <div class="vegan-gallery">
         {
-          veganImages.map((image, index) => (
+          veganImages.map((image) => (
             <div class="vegan-image-container">
               <img
                 src={image.src.src}

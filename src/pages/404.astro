@@ -1,70 +1,35 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import "../styles/post.css";
-import v1 from "../images/v1.jpg";
-import v2 from "../images/v2.jpg";
-import v3 from "../images/v3.jpg";
-import v4 from "../images/v4.jpg";
-import v5 from "../images/v5.jpg";
-import v6 from "../images/v6.jpg";
+export const prerender = true;
 
-const veganImages = [
-  { src: v1, alt: "Vegan Roast Dinner 1" },
-  { src: v2, alt: "Vegan Roast Dinner 2" },
-  { src: v3, alt: "Vegan Roast Dinner 3" },
-  { src: v4, alt: "Vegan Roast Dinner 4" },
-  { src: v5, alt: "Vegan Roast Dinner 5" },
-  { src: v6, alt: "Vegan Roast Dinner 6" },
-];
+export const response = {
+  status: 404,
+  headers: {
+    "Cache-Control": "public, max-age=31536000, immutable",
+  },
+};
 ---
 
-<BaseLayout
-  pageTitle="404 - Page Not Found"
-  description="Welcome to Vegan Roast Dinners in London - Page not found"
->
-  <div class="image-container">
-    <img
-      src={veganImages[0].src.src}
-      alt={veganImages[0].alt}
-      width={5000}
-      height={5000}
-      class="featured-image"
-      loading="eager"
-    />
-    <div class="copyright-overlay">
-      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
-    </div>
-  </div>
-  <section class="post-title">
-    <h2>Welcome to Vegan Roast Dinners in London</h2>
-  </section>
-  <div class="container">
-    <div class="entry-content container">
-      <p class="vegan-intro">
-        Oops! Looks like you've wandered into our secret vegan section. Yes...it
-        looks like hell.
-      </p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>404 – Page Not Found</title>
+    <meta name="description" content="Page not found" />
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 3rem;
+        text-align: center;
+      }
+      a {
+        font-weight: bold;
+      }
+    </style>
+  </head>
 
-      <div class="vegan-gallery">
-        {
-          veganImages.map((image, index) => (
-            <div class="vegan-image-container">
-              <img
-                src={image.src.src}
-                alt={image.alt}
-                loading="lazy"
-                class="vegan-image"
-              />
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="return-to-safety">
-        <a href="/" class="safety-link">
-          🥩 Return to Safety (Real Roast Dinners) 🥩
-        </a>
-      </div>
-    </div>
-  </div>
-</BaseLayout>
+  <body>
+    <h1>404 – Page Not Found</h1>
+    <p>Oops! Nothing here.</p>
+    <p><a href="/vegan-404">Check out our vegan 404 page 👀</a></p>
+  </body>
+</html>
