@@ -1,9 +1,4 @@
 {
-  "images": {
-    "sizes": [],
-    "domains": [],
-    "remotePatterns": []
-  },
   "headers": [
     {
       "source": "/~partytown/(.*)",
