@@ -78,10 +78,16 @@ const filtered = allPosts
     const rating = Number.parseFloat(post.ratings?.nodes[0]?.name || "");
     const isClosed = (post.closedDowns?.nodes?.length ?? 0) > 0;
     const isRoastDinner =
-      post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner") ??
-      false;
+      post.typesOfPost?.nodes?.some(
+        (node: { name: string }) => node.name === "Roast Dinner"
+      ) ?? false;
 
-    return loved.includes("beef") && !Number.isNaN(rating) && !isClosed && isRoastDinner;
+    return (
+      loved.includes("beef") &&
+      !Number.isNaN(rating) &&
+      !isClosed &&
+      isRoastDinner
+    );
   })
   .sort(
     (a, b) =>
@@ -122,7 +128,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         <div class="best-container">
           <div class="best-container-details">
             <h2>
-              <a href={post.slug}>{post.title}</a>
+              <a href={`/${post.slug}`}>{post.title}</a>
             </h2>
 
             {post.highlights?.loved && (
@@ -139,7 +145,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             )}
 
             <p>
-              <strong>Rating:</strong> {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
+              <strong>Rating:</strong>{" "}
+              {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
             </p>
 
             {post.yearsOfVisit?.nodes?.[0]?.name && (
@@ -153,7 +160,9 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             <div class="best-container-image">
               <img
                 src={post.featuredImage.node.sourceUrl}
-                alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+                alt={
+                  post.featuredImage.node.altText || `Image for ${post.title}`
+                }
               />
             </div>
           )}

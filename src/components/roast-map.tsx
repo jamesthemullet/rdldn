@@ -52,6 +52,7 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 };
 
 export default function RoastMap({ markers }: Props) {
+  console.log(20, markers)
   const mapRef = useRef<HTMLDivElement>(null);
   const [showClosed, setShowClosed] = useState(false);
 
@@ -79,7 +80,7 @@ export default function RoastMap({ markers }: Props) {
       const icon = createColouredIcon(colour, backgroundColour, rating);
       L.marker([lat, lng], { icon })
         .addTo(map)
-        .bindPopup(`<a href="${slug}">${label}</a> - ${rating}/10`);
+        .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
 
     return () => {

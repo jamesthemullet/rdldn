@@ -59,7 +59,7 @@ export async function getStaticPaths() {
     endCursor = data.posts.pageInfo.endCursor;
   }
 
-  // Fetch all pages
+
   hasNextPage = true;
   endCursor = null;
   
@@ -271,6 +271,10 @@ const singleResponse = await fetch("https://blog.rdldn.co.uk/graphql", {
 const { data } = await singleResponse.json();
 
 const singlePost = contentType === 'page' ? data.page : data.post;
+
+if (!singlePost) {
+  return Astro.redirect("/404", 302);
+}
 
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();

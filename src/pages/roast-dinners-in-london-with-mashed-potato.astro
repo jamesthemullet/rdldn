@@ -62,10 +62,14 @@ while (hasNextPage) {
 
   allRoastPosts.push(
     ...posts.nodes
-      .filter((post: Post) => post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner"))
+      .filter((post: Post) =>
+        post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner")
+      )
       .filter(
         (post: Post) =>
-          !post.closedDowns?.nodes.some((closedDown) => closedDown.name !== "Closed Down")
+          !post.closedDowns?.nodes.some(
+            (closedDown) => closedDown.name !== "Closed Down"
+          )
       )
   );
   hasNextPage = posts.pageInfo.hasNextPage;
@@ -114,7 +118,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
           <div class="best-container">
             <div class="best-container-details">
               <h2>
-                <a href={post.slug}>{post.title}</a>
+                <a href={`/${post.slug}`}>{post.title}</a>
               </h2>
 
               {post.highlights?.loved && (
@@ -131,12 +135,14 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
               )}
 
               <p>
-                <strong>Rating:</strong> {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
+                <strong>Rating:</strong>{" "}
+                {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
               </p>
 
               {post.yearsOfVisit?.nodes?.[0]?.name && (
                 <p>
-                  <strong>Year visited:</strong> {post.yearsOfVisit.nodes[0].name}
+                  <strong>Year visited:</strong>{" "}
+                  {post.yearsOfVisit.nodes[0].name}
                 </p>
               )}
             </div>
@@ -145,7 +151,9 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
               <div class="best-container-image">
                 <img
                   src={post.featuredImage.node.sourceUrl}
-                  alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+                  alt={
+                    post.featuredImage.node.altText || `Image for ${post.title}`
+                  }
                 />
               </div>
             )}
