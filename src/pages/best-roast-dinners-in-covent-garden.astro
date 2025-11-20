@@ -59,7 +59,12 @@ export async function getTopRatedRoasts(): Promise<Post[]> {
       const tags = post.tags?.nodes?.map((tag) => tag.name) || [];
       const isClosed = post.closedDowns?.nodes[0]?.name || "";
       const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
-      return tags.includes("Covent Garden") && !isClosed && !Number.isNaN(rating) && rating > 7.5;
+      return (
+        tags.includes("Covent Garden") &&
+        !isClosed &&
+        !Number.isNaN(rating) &&
+        rating > 7.5
+      );
     });
 
     allPosts.push(...filtered);
@@ -108,7 +113,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         <div class="best-container">
           <div class="best-container-details">
             <h2>
-              <a href={post.slug}>{post.title}</a>
+              <a href={`/${post.slug}`}>{post.title}</a>
             </h2>
             {post.highlights?.loved && (
               <div class="post-summary-block highlight-block">
@@ -123,7 +128,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
               </div>
             )}
             <p>
-              <strong>Rating:</strong> {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
+              <strong>Rating:</strong>{" "}
+              {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
             </p>
             {post.yearsOfVisit?.nodes?.[0]?.name && (
               <p>
@@ -135,7 +141,9 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             <div class="best-container-image">
               <img
                 src={post.featuredImage.node.sourceUrl}
-                alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+                alt={
+                  post.featuredImage.node.altText || `Image for ${post.title}`
+                }
               />
             </div>
           )}

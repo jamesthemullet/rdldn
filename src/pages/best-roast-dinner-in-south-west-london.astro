@@ -59,13 +59,21 @@ export async function getTopRatedRoasts(): Promise<Post[]> {
     const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
     const filtered = posts.nodes.filter((post: Post) => {
-      const southWestLondonBoroughs = ["Merton", "Richmond upon Thames", "Kingston", "Wandsworth"];
+      const southWestLondonBoroughs = [
+        "Merton",
+        "Richmond upon Thames",
+        "Kingston",
+        "Wandsworth",
+      ];
       const borough = post.boroughs?.nodes?.[0]?.name;
       const isClosed = post.closedDowns?.nodes[0]?.name || "";
       const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
 
       return (
-        borough && southWestLondonBoroughs.includes(borough) && !isClosed && !Number.isNaN(rating)
+        borough &&
+        southWestLondonBoroughs.includes(borough) &&
+        !isClosed &&
+        !Number.isNaN(rating)
       );
     });
 
@@ -117,7 +125,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         <div class="best-container">
           <div class="best-container-details">
             <h2>
-              <a href={post.slug}>{post.title}</a>
+              <a href={`/${post.slug}`}>{post.title}</a>
             </h2>
 
             {post.highlights?.loved && (
@@ -134,7 +142,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             )}
 
             <p>
-              <strong>Rating:</strong> {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
+              <strong>Rating:</strong>{" "}
+              {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
             </p>
 
             {post.yearsOfVisit?.nodes?.[0]?.name && (
@@ -148,7 +157,9 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             <div class="best-container-image">
               <img
                 src={post.featuredImage.node.sourceUrl}
-                alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+                alt={
+                  post.featuredImage.node.altText || `Image for ${post.title}`
+                }
               />
             </div>
           )}
