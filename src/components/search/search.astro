@@ -1,8 +1,12 @@
 ---
+export interface Props {
+  resultLimit: number;
+}
 
+const { resultLimit = 4 } = Astro.props;
 ---
 
-<div x-data="searchComponent()">
+<div x-data="searchComponent" data-result-limit={resultLimit}>
   <form @submit.prevent="handleSearch">
     <input
       type="text"
@@ -43,48 +47,47 @@
   </p>
 </div>
 
-<script>
+<script is:inline>
   document.addEventListener("alpine:init", () => {
     Alpine.data("searchComponent", () => ({
       searchTerm: "",
       searchResults: [],
       searchPerformed: false,
+      resultLimit: 4,
+
+      init() {
+        const limit = this.$el.dataset.resultLimit;
+        this.resultLimit = Number(limit) || 4;
+      },
+
       async handleSearch() {
-        try {
-          this.searchPerformed = false;
-          const GRAPHQL_ENDPOINT = "https://blog.rdldn.co.uk/graphql";
-          const SEARCH_QUERY = `
-            query SearchPosts($search: String!) {
-              posts(where: { search: $search }, first: 4) {
-                nodes {
-                  title
+        const response = await fetch("https://blog.rdldn.co.uk/graphql", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: `
+              query SearchPosts($search: String!, $first: Int!) {
+                posts(where: { search: $search }, first: $first) {
+                  nodes { title
                   slug
                   featuredImage {
                     node {
                       sourceUrl
                     }
-                  }
+                  } }
                 }
               }
-            }
-          `;
+            `,
+            variables: {
+              search: this.searchTerm,
+              first: this.resultLimit,
+            },
+          }),
+        });
 
-          const response = await fetch(GRAPHQL_ENDPOINT, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              query: SEARCH_QUERY,
-              variables: { search: this.searchTerm },
-            }),
-          });
-
-          const json = await response.json();
-          this.searchResults = json?.data?.posts?.nodes || [];
-        } catch (error) {
-          console.error("Error fetching search results:", error);
-        } finally {
-          this.searchPerformed = true;
-        }
+        const json = await response.json();
+        this.searchResults = json.data.posts.nodes || [];
+        this.searchPerformed = true;
       },
     }));
   });

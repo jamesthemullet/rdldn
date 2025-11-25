@@ -8,4 +8,12 @@ footer {
   padding: 10px 0;
   font-family: "Loved by the King", sans-serif;
   font-size: 1.5em;
+  display: flex;
+  flex-direction: column;
+
+  .footer-link {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+  }
 }

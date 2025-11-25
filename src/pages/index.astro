@@ -104,10 +104,7 @@ try {
     .map((response) => {
       if (!response?.page) return null;
 
-      console.log(15, response.page);
-
       const featuredImage = response.page.featuredImage?.node;
-      console.log(20, featuredImage);
       const smallImage =
         featuredImage?.mediaDetails.sizes.find(
           (size: Size) => size.name === "homepage"

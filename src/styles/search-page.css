@@ -1,0 +1,32 @@
+.search-page {
+  max-width: 1664px;
+  margin: 120px 0;
+  width: 100%;
+
+  .home-list {
+    margin: 0 10px;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+    }
+
+    input,
+    button {
+      margin-left: 0 !important;
+      width: 200px;
+      margin: 10px;
+    }
+  }
+}
