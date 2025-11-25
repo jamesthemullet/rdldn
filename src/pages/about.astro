@@ -22,14 +22,12 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);

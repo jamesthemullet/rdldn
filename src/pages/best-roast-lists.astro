@@ -47,7 +47,7 @@ try {
     (page: Page) => page?.highlights?.tag === "best"
   );
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   bestRoasts = allBestListPages.map((page: Page) => ({
     ...page,
     featuredImage: page.featuredImage?.node?.sourceUrl || "",
@@ -59,14 +59,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);

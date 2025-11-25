@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -62,7 +62,7 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const year = post.yearsOfVisit?.nodes[0]?.name;
     const price = post.prices?.nodes[0]?.name;
@@ -84,7 +84,9 @@ const yearStats = new Map();
 for (const post of roastPricePosts) {
   const year = post.year;
   const match = post.price.match(/[\d,.]+/);
-  const cleanedPrice = match ? Number.parseFloat(match[0].replace(",", "")) : null;
+  const cleanedPrice = match
+    ? Number.parseFloat(match[0].replace(",", ""))
+    : null;
 
   if (!cleanedPrice || Number.isNaN(cleanedPrice)) continue;
 
@@ -95,7 +97,9 @@ for (const post of roastPricePosts) {
 }
 
 const averagePrices = [...yearStats.entries()].map(([year, prices]) => {
-  const average = prices.reduce((sum: number, price: string) => sum + price, 0) / prices.length;
+  const average =
+    prices.reduce((sum: number, price: string) => sum + price, 0) /
+    prices.length;
   return {
     year,
     average: average.toFixed(2),

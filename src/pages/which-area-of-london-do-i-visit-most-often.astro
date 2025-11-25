@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -59,7 +59,7 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const year = post.yearsOfVisit?.nodes[0]?.name;
     const areas = post.areas?.nodes.map((a) => a.name);
@@ -73,7 +73,7 @@ while (hasNextPage) {
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     const yearMap = areaCountsByYear.get(year)!;
 
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // b: <explanation>
     areas.forEach((area) => {
       yearMap[area] = (yearMap[area] || 0) + 1;
       totalAreaCounts[area] = (totalAreaCounts[area] || 0) + 1;
@@ -154,7 +154,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         preferredOrder.map((area) =>
           totalAreaCounts[area] ? (
             <li>
-              {area}: {totalAreaCounts[area]} roast{totalAreaCounts[area] === 1 ? "" : "s"}
+              {area}: {totalAreaCounts[area]} roast
+              {totalAreaCounts[area] === 1 ? "" : "s"}
             </li>
           ) : null
         )

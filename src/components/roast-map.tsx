@@ -64,7 +64,7 @@ export default function RoastMap({ markers }: Props) {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // biome-ignore lint/complexity/noForEach: <explanation>
+
     markers.forEach(({ lat, lng, label, rating, slug, closed }) => {
       if (!showClosed && closed) {
         return;

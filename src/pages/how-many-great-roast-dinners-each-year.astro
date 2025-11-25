@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -69,7 +69,7 @@ const roastDinnerPosts = allRoastPosts.filter((post) =>
 
 const greatRoastsByYear: Record<string, { great: number; total: number }> = {};
 
-// biome-ignore lint/complexity/noForEach: <explanation>
+// b: <explanation>
 roastDinnerPosts.forEach((post) => {
   const yearTerm = post.yearsOfVisit?.nodes[0]?.name;
   if (!yearTerm) return;
@@ -118,12 +118,14 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         Object.entries(greatRoastsByYear)
           .sort(([a], [b]) => b.localeCompare(a))
           .map(([year, { great, total }]) => {
-            const wasOrIs = year === String(new Date().getFullYear()) ? "is" : "was";
-            const percentage = total > 0 ? Math.round((great / total) * 100) : 0;
+            const wasOrIs =
+              year === String(new Date().getFullYear()) ? "is" : "was";
+            const percentage =
+              total > 0 ? Math.round((great / total) * 100) : 0;
             return (
               <li>
-                The number of really good roast dinners in {year} {wasOrIs} {great} ({percentage}%
-                of roasts).
+                The number of really good roast dinners in {year} {wasOrIs}{" "}
+                {great} ({percentage}% of roasts).
               </li>
             );
           })

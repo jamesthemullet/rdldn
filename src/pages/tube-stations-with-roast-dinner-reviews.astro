@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -69,10 +69,10 @@ while (hasNextPage) {
 
 const stationToBestPost = new Map<string, Post>();
 
-// biome-ignore lint/complexity/noForEach: <explanation>
+// b: <explanation>
 allRoastPosts.forEach((post) => {
   if (post.tubeStations?.nodes) {
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // b: <explanation>
     post.tubeStations.nodes.forEach((station) => {
       const stationName = station.name;
       const currentBest = stationToBestPost.get(stationName);
@@ -658,16 +658,19 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
     <div class="entry-content container">
       <p>
-        Which tube stations have I visited on my adventures through the roast dinners of London?
+        Which tube stations have I visited on my adventures through the roast
+        dinners of London?
       </p>
       <p>
-        This is based solely on the tube station I used to get there – so will be skewed by what is
-        easiest for me
+        This is based solely on the tube station I used to get there – so will
+        be skewed by what is easiest for me
       </p>
 
       {
         tubeLines.map((line) => {
-          const visited = line.stations.filter((station) => visitedStations.includes(station));
+          const visited = line.stations.filter((station) =>
+            visitedStations.includes(station)
+          );
           return (
             <div>
               <h3 class={`heading-underline ${line.class}`}>{line.name}</h3>
@@ -700,7 +703,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                 })}
               </ul>
               <p>
-                {line.name} Line stations visited – {visited.length} out of {line.stations.length}
+                {line.name} Line stations visited – {visited.length} out of{" "}
+                {line.stations.length}
               </p>
             </div>
           );
@@ -748,7 +752,9 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         So I've currently used {
           Array.from(
             new Set(
-              tubeLines.flatMap((line) => line.stations).filter((s) => visitedStations.includes(s))
+              tubeLines
+                .flatMap((line) => line.stations)
+                .filter((s) => visitedStations.includes(s))
             )
           ).length
         } tube stations out of {

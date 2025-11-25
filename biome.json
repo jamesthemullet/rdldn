@@ -40,6 +40,9 @@
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
         "noUselessElse": "error"
+      },
+      "complexity": {
+        "noForEach": "off"
       }
     }
   },

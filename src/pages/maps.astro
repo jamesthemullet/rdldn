@@ -41,14 +41,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -83,7 +83,10 @@ const markers = allPosts
   }));
 ---
 
-<BaseLayout pageTitle={singlePage.title} description={singlePage?.seo?.opengraphDescription}>
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+>
   <div class="image-container">
     <img
       src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
@@ -105,7 +108,10 @@ const markers = allPosts
       <RoastMap client:only="react" markers={markers} />
 
       <Newsletter />
-      <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+      <Comments
+        threadedComments={threadedComments}
+        postId={singlePage.pageId}
+      />
     </div>
   </div>
 </BaseLayout>

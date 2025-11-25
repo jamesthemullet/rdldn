@@ -189,7 +189,7 @@ try {
     (page: Page) => page?.highlights?.tag === "roastatistics"
   );
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   allFeaturesPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     features.push({
@@ -198,7 +198,7 @@ try {
     } as PageWithFeaturedImage);
   });
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   allRoastStatisticsPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     roastStatistics.push({

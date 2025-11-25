@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -58,7 +58,7 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const borough = post.boroughs?.nodes[0]?.name;
     const priceStr = post.prices?.nodes[0]?.name;
@@ -83,7 +83,11 @@ const boroughStats = Object.entries(boroughPrices)
   .filter(([, prices]) => prices.length >= 5)
   .map(([name, prices]) => {
     const avg = prices.reduce((s, p) => s + p, 0) / prices.length;
-    return { name, average: Number.parseFloat(avg.toFixed(2)), count: prices.length };
+    return {
+      name,
+      average: Number.parseFloat(avg.toFixed(2)),
+      count: prices.length,
+    };
   })
   .sort((a, b) => a.average - b.average);
 
@@ -123,7 +127,10 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         ))
       }
     </ul>
-    <p>Do note that I am only including boroughs where I've had 5 roast dinners or more.</p>
+    <p>
+      Do note that I am only including boroughs where I've had 5 roast dinners
+      or more.
+    </p>
     <Newsletter />
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
