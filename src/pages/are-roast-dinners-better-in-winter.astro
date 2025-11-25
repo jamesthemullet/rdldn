@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -65,7 +65,7 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const typeOfPost = post.typesOfPost?.nodes?.[0]?.name ?? "";
     if (typeOfPost.toLowerCase() !== "roast dinner") return;
@@ -96,7 +96,10 @@ while (hasNextPage) {
   endCursor = posts.pageInfo.endCursor;
 }
 
-const totalReviews = Object.values(seasonStats).reduce((acc, s) => acc + s.count, 0);
+const totalReviews = Object.values(seasonStats).reduce(
+  (acc, s) => acc + s.count,
+  0
+);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
@@ -130,8 +133,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
           const avg = count > 0 ? (totalRatings / count).toFixed(2) : "N/A";
           return (
             <li>
-              In {season}, the average roast dinner rating is <strong>{avg}</strong> based on{" "}
-              {count} reviews.
+              In {season}, the average roast dinner rating is{" "}
+              <strong>{avg}</strong> based on {count} reviews.
             </li>
           );
         })

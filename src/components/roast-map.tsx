@@ -52,7 +52,6 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 };
 
 export default function RoastMap({ markers }: Props) {
-  console.log(20, markers)
   const mapRef = useRef<HTMLDivElement>(null);
   const [showClosed, setShowClosed] = useState(false);
 
@@ -65,7 +64,7 @@ export default function RoastMap({ markers }: Props) {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
-    // biome-ignore lint/complexity/noForEach: <explanation>
+
     markers.forEach(({ lat, lng, label, rating, slug, closed }) => {
       if (!showClosed && closed) {
         return;

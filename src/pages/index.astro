@@ -104,10 +104,7 @@ try {
     .map((response) => {
       if (!response?.page) return null;
 
-      console.log(15, response.page);
-
       const featuredImage = response.page.featuredImage?.node;
-      console.log(20, featuredImage);
       const smallImage =
         featuredImage?.mediaDetails.sizes.find(
           (size: Size) => size.name === "homepage"
@@ -192,7 +189,7 @@ try {
     (page: Page) => page?.highlights?.tag === "roastatistics"
   );
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   allFeaturesPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     features.push({
@@ -201,7 +198,7 @@ try {
     } as PageWithFeaturedImage);
   });
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   allRoastStatisticsPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     roastStatistics.push({
@@ -361,7 +358,7 @@ try {
 
   <section class="home">
     <h2>Search:</h2>
-    <Search />
+    <Search resultLimit={4} />
   </section>
   <section class="home-list">
     <h2>A few of the best roasts:</h2>

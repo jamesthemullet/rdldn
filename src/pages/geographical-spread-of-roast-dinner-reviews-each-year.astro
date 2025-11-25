@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -58,7 +58,7 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const year = post.yearsOfVisit?.nodes?.[0]?.name;
     const areas = post.areas?.nodes ?? [];
@@ -69,7 +69,7 @@ while (hasNextPage) {
       adventureMap[year] = {};
     }
 
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // b: <explanation>
     areas.forEach((area) => {
       const areaName = area.name;
       adventureMap[year][areaName] = (adventureMap[year][areaName] || 0) + 1;
@@ -81,7 +81,13 @@ while (hasNextPage) {
 }
 
 const orderedYears = Object.keys(adventureMap).sort(); // ensure chronological order
-const areaOrder = ["Central London", "North London", "West London", "East London", "South London"];
+const areaOrder = [
+  "Central London",
+  "North London",
+  "West London",
+  "East London",
+  "South London",
+];
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---

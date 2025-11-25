@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -57,7 +57,7 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const area = post.areas?.nodes[0]?.name;
     const ratingStr = post.ratings?.nodes[0]?.name;
@@ -122,8 +122,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         areaStats.map((area) => (
           <li>
-            The average rating in {area.name} is {area.average.toFixed(2)} ({area.count}{" "}
-            {area.count === 1 ? "review" : "reviews"})
+            The average rating in {area.name} is {area.average.toFixed(2)} (
+            {area.count} {area.count === 1 ? "review" : "reviews"})
           </li>
         ))
       }

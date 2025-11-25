@@ -24,14 +24,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -61,7 +61,9 @@ while (hasNextPage) {
 
   allRoastPosts.push(
     ...posts.nodes.filter((post: Post) =>
-      post.typesOfPost?.nodes.some((node: { name: string }) => node.name === "Roast Dinner")
+      post.typesOfPost?.nodes.some(
+        (node: { name: string }) => node.name === "Roast Dinner"
+      )
     )
   );
   hasNextPage = posts.pageInfo.hasNextPage;
@@ -102,7 +104,10 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       </div>
     </div>
 
-    <div class="sort-posts-container" style="opacity: 0; position: absolute; visibility: hidden;">
+    <div
+      class="sort-posts-container"
+      style="opacity: 0; position: absolute; visibility: hidden;"
+    >
       <SortPosts client:visible posts={allRoastPosts} />
     </div>
 
@@ -113,9 +118,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
         const checkForComponent = () => {
           attempts++;
-          const sortPostsElement = document.querySelector(".sort-posts-container > div");
-          const loadingElement = document.getElementById("sort-posts-loading") as HTMLElement;
-          const containerElement = document.querySelector(".sort-posts-container") as HTMLElement;
+          const sortPostsElement = document.querySelector(
+            ".sort-posts-container > div"
+          );
+          const loadingElement = document.getElementById(
+            "sort-posts-loading"
+          ) as HTMLElement;
+          const containerElement = document.querySelector(
+            ".sort-posts-container"
+          ) as HTMLElement;
 
           if (sortPostsElement && loadingElement && containerElement) {
             loadingElement.style.display = "none";

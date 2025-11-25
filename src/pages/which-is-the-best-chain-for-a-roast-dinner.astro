@@ -23,14 +23,14 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
@@ -58,14 +58,14 @@ while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
 
-  // biome-ignore lint/complexity/noForEach: <explanation>
+  // b: <explanation>
   posts.nodes.forEach((post: Post) => {
     const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "NaN");
     const owners = post.owners?.nodes?.map((o) => o.name) ?? [];
 
     if (Number.isNaN(rating) || !owners.length) return;
 
-    // biome-ignore lint/complexity/noForEach: <explanation>
+    // b: <explanation>
     owners.forEach((owner) => {
       if (owner.toLowerCase() === "independent") return;
 
