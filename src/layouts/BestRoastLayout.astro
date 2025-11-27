@@ -1,0 +1,113 @@
+---
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
+import type { Post } from "../types";
+import BaseLayout from "./BaseLayout.astro";
+
+const {
+  pageTitle,
+  description,
+  opengraphImage,
+  content,
+  topRated,
+  highRated,
+  threadedComments,
+  postId,
+} = Astro.props;
+
+console.log(8, pageTitle);
+console.log(9, content);
+console.log(10, topRated);
+console.log(11, highRated);
+---
+
+<BaseLayout
+  pageTitle={pageTitle}
+  description={description}
+  opengraphImage={opengraphImage}
+>
+  <div class="image-container">
+    <img
+      src={opengraphImage}
+      alt={pageTitle}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{pageTitle}</h2>
+  </section>
+
+  <div class="container">
+    <div set:html={content} />
+
+    {
+      topRated.map((post: Post) => (
+        <div class="best-container">
+          <div class="best-container-details">
+            <h2>
+              <a href={`/${post.slug}`}>{post.title}</a>
+            </h2>
+
+            {post.highlights?.loved && (
+              <div class="post-summary-block highlight-block">
+                <p>
+                  <strong>Loved:</strong> {post.highlights.loved}
+                </p>
+                {post.highlights.loathed && (
+                  <p>
+                    <strong>Loathed:</strong> {post.highlights.loathed}
+                  </p>
+                )}
+              </div>
+            )}
+
+            <p>
+              <strong>Rating:</strong>{" "}
+              {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
+            </p>
+
+            {post.yearsOfVisit?.nodes?.[0]?.name && (
+              <p>
+                <strong>Year visited:</strong> {post.yearsOfVisit.nodes[0].name}
+              </p>
+            )}
+          </div>
+
+          {post.featuredImage?.node?.sourceUrl && (
+            <div class="best-container-image">
+              <img
+                src={post.featuredImage.node.sourceUrl}
+                alt={
+                  post.featuredImage.node.altText || `Image for ${post.title}`
+                }
+              />
+            </div>
+          )}
+        </div>
+      ))
+    }
+
+    <section class="also-worth-a-try">
+      <h3>Also Worth a Try</h3>
+      <ul>
+        {
+          highRated.map((roast: { slug: string; name: string; rating?: number }) => (
+            <li>
+              <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={postId} />
+  </div>
+</BaseLayout>
