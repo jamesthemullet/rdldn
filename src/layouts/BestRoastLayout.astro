@@ -1,9 +1,9 @@
 ---
 import "../styles/post.css";
-import BaseLayout from "./BaseLayout.astro";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
 import type { Post } from "../types";
+import BaseLayout from "./BaseLayout.astro";
 
 const {
   pageTitle,
@@ -11,11 +11,15 @@ const {
   opengraphImage,
   content,
   topRated,
+  highRated,
   threadedComments,
   postId,
 } = Astro.props;
 
-console.log(10, opengraphImage);
+console.log(8, pageTitle);
+console.log(9, content);
+console.log(10, topRated);
+console.log(11, highRated);
 ---
 
 <BaseLayout
@@ -89,6 +93,19 @@ console.log(10, opengraphImage);
         </div>
       ))
     }
+
+    <section class="also-worth-a-try">
+      <h3>Also Worth a Try</h3>
+      <ul>
+        {
+          highRated.map((roast) => (
+            <li>
+              <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={postId} />

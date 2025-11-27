@@ -1,4 +1,4 @@
-import { Comments as CommentsType } from "../types";
+import type { Comments as CommentsType } from "../types";
 
 export const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
