@@ -9,6 +9,7 @@
     "astro": "astro",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "lint:errors": "biome check . | findstr error",
     "ts-check": "astro check"
   },
   "dependencies": {

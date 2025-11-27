@@ -98,7 +98,7 @@ console.log(11, highRated);
       <h3>Also Worth a Try</h3>
       <ul>
         {
-          highRated.map((roast) => (
+          highRated.map((roast: { slug: string; name: string; rating?: number }) => (
             <li>
               <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
             </li>

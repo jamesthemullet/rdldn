@@ -111,7 +111,7 @@ export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any
     .map((post) => ({
       name: post.title,
       slug: post.slug,
-      rating: Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0"),
+      rating: Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0").toFixed(2),
     }));
 
   return { topRated, highRated };
