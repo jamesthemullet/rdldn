@@ -1,0 +1,101 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { fetchPostsByDate } from "../lib/graphql";
+import "../styles/index.css";
+import type { Post } from "../types";
+
+export const prerender = false;
+
+const startDate = new Date("2016-12-01");
+const endDate = new Date();
+const months = [];
+
+for (let d = new Date(startDate); d <= endDate; d.setMonth(d.getMonth() + 1)) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  if (!(year === 2017 && d.getMonth() === 1)) {
+    months.push({ year, month });
+  }
+}
+
+const url = new URL(Astro.request.url);
+const selectedDate =
+  url.searchParams.get("date") ||
+  `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, "0")}`;
+
+console.log("Selected Date:", selectedDate);
+
+let posts = [];
+try {
+  posts = await fetchPostsByDate(selectedDate);
+  console.log("Fetched Posts:", posts);
+} catch (error) {
+  console.error("Error fetching posts:", error);
+}
+---
+
+<BaseLayout pageTitle="Archive">
+  <div class="no-image-container">
+    <section class="post-title">
+      <h2>Gravy Archives</h2>
+    </section>
+    <label for="archive-date">Select Month/Year:</label>
+    <form id="archive-dropdown" method="get">
+      <select
+        id="archive-date"
+        name="date"
+        value={selectedDate}
+        onchange="this.form.submit()"
+      >
+        {
+          months.map(({ year, month }) => (
+            <option
+              value={`${year}-${month}`}
+              selected={selectedDate === `${year}-${month}`}
+            >
+              {new Date(`${year}-${month}-01`).toLocaleString("default", {
+                month: "long",
+              })}{" "}
+              {year}
+            </option>
+          ))
+        }
+      </select>
+    </form>
+  </div>
+
+  <section class="home-list">
+    {
+      posts.length > 0 ? (
+        <ul>
+          {posts.map((post: Post) => (
+            <li class="heading">
+              <h2>
+                <a href={`/${post?.slug}`} rel="noopener noreferrer">
+                  <Fragment set:html={post?.title} />
+                </a>
+              </h2>
+              <a
+                href={`/${post?.slug}`}
+                rel="noopener noreferrer"
+                class="featured-image"
+              >
+                <img
+                  src={post?.featuredImage?.node?.sourceUrl || ""}
+                  alt={
+                    post?.featuredImage?.node?.altText ||
+                    `Photo of the roast dinner at ${post?.title}`
+                  }
+                  width="400"
+                  height="300"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No posts found for the selected date.</p>
+      )
+    }
+  </section>
+</BaseLayout>

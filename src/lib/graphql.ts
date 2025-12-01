@@ -1,4 +1,5 @@
 import { fetchGraphQL } from "../lib/api";
+import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
 
 const GET_ALL_POSTS = `
   query GetAllPosts($after: String) {
@@ -121,4 +122,16 @@ export const fetchPageData = async (id: string): Promise<any> => {
   const variables: Record<string, any> = { id };
   const { page }: { page: any } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
   return page;
+}
+
+export const fetchPostsByDate = async (date: string) => {
+  const [year, month] = date.split("-");
+  const variables = { year: Number.parseInt(year), month: Number.parseInt(month) };
+
+  const response = await fetchGraphQL(GET_POSTS_BY_DATE, variables);
+  if (!response || !response.posts) {
+    throw new Error("Failed to fetch posts by date");
+  }
+
+  return response.posts.nodes;
 }

@@ -326,10 +326,7 @@ p {
   53%,
   57%,
   100% {
-    text-shadow:
-      0 0 4px #fff,
-      0 0 11px #fff,
-      0 0 19px #fff;
+    text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff;
   }
 
   20%,
