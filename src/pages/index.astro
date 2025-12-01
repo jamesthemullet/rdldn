@@ -189,7 +189,6 @@ try {
     (page: Page) => page?.highlights?.tag === "roastatistics"
   );
 
-  // b: <explanation>
   allFeaturesPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     features.push({
@@ -198,7 +197,6 @@ try {
     } as PageWithFeaturedImage);
   });
 
-  // b: <explanation>
   allRoastStatisticsPages.forEach((page: Page) => {
     const featuredImage = page.featuredImage?.node?.sourceUrl || "";
     roastStatistics.push({

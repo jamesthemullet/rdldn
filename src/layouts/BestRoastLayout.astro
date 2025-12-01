@@ -15,11 +15,6 @@ const {
   threadedComments,
   postId,
 } = Astro.props;
-
-console.log(8, pageTitle);
-console.log(9, content);
-console.log(10, topRated);
-console.log(11, highRated);
 ---
 
 <BaseLayout
@@ -98,11 +93,13 @@ console.log(11, highRated);
       <h3>Also Worth a Try</h3>
       <ul>
         {
-          highRated.map((roast: { slug: string; name: string; rating?: number }) => (
-            <li>
-              <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
-            </li>
-          ))
+          highRated.map(
+            (roast: { slug: string; name: string; rating?: number }) => (
+              <li>
+                <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
+              </li>
+            )
+          )
         }
       </ul>
     </section>
