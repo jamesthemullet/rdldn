@@ -43,11 +43,20 @@ try {
     })
     .filter(Boolean);
 
-  allBestListPages = allPages.filter(
+  const bestAreaPages = allPages.filter(
+    (page: Page) => page?.highlights?.tag === "best-area"
+  );
+
+  const bestLocationPages = allPages.filter(
+    (page: Page) => page?.highlights?.tag === "best-location"
+  );
+
+  const bestPages = allPages.filter(
     (page: Page) => page?.highlights?.tag === "best"
   );
 
-  // b: <explanation>
+  allBestListPages = [...bestAreaPages, ...bestLocationPages, ...bestPages];
+
   bestRoasts = allBestListPages.map((page: Page) => ({
     ...page,
     featuredImage: page.featuredImage?.node?.sourceUrl || "",
@@ -59,14 +68,13 @@ try {
 const organiseComments = (comments: CommentsType) => {
   const commentMap = new Map();
 
-  // b: <explanation>
   comments?.forEach((comment) => {
     comment.replies = [];
     commentMap.set(comment.id, comment);
   });
 
   const topLevelComments: CommentsType = [];
-  // b: <explanation>
+
   comments?.forEach((comment) => {
     if (comment.parentId) {
       const parent = commentMap.get(comment.parentId);
