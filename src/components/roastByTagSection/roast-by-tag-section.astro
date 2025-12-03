@@ -6,50 +6,54 @@ import type { Post, Size } from "../../types";
 const { tag } = Astro.props;
 let locationPosts: Post[] = [];
 
-try {
-  const data = await fetchGraphQL(GET_POSTS_BY_TAG, {
-    tag,
-  });
+if (tag) {
+  try {
+    const data = await fetchGraphQL(GET_POSTS_BY_TAG, {
+      tag,
+    });
 
-  locationPosts = data?.posts?.nodes
-    ?.map((edge: Post) => ({
-      ...edge,
-      featuredImageUrl:
-        edge.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || edge.featuredImage?.node?.sourceUrl,
-    }))
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3);
-} catch (error) {
-  console.error("Error fetching other posts:", error);
+    locationPosts = data?.posts?.nodes
+      ?.map((edge: Post) => ({
+        ...edge,
+        featuredImageUrl:
+          edge.featuredImage?.node?.mediaDetails?.sizes?.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || edge.featuredImage?.node?.sourceUrl,
+      }))
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3);
+  } catch (error) {
+    console.error("Error fetching other posts:", error);
+  }
 }
 ---
 
-<section class="roast-by-tag">
-  <h3>Roasts in {tag}:</h3>
-  <ul>
-    {
-      locationPosts.map((post) => (
-        <li class="heading">
-          <h3>
+{
+  tag && locationPosts.length > 0 && (
+    <section class="roast-by-tag">
+      <h3>Roasts in {tag}:</h3>
+      <ul>
+        {locationPosts.map((post) => (
+          <li class="heading">
+            <h3>
+              <a href={`/${post?.slug}`} rel="noopener noreferrer">
+                <Fragment set:html={post?.title} />
+              </a>
+            </h3>
             <a href={`/${post?.slug}`} rel="noopener noreferrer">
-              <Fragment set:html={post?.title} />
+              <img
+                src={post?.featuredImageUrl}
+                alt={`Photo of the roast dinner at ${post?.title}`}
+                width={400}
+                height={300}
+                loading="lazy"
+              />
             </a>
-          </h3>
-          <a href={`/${post?.slug}`} rel="noopener noreferrer">
-            <img
-              src={post?.featuredImageUrl}
-              alt={`Photo of the roast dinner at ${post?.title}`}
-              width={400}
-              height={300}
-              loading="lazy"
-            />
-          </a>
-          <p>Rating: {post?.ratings?.nodes[0]?.name}</p>
-          <p>Year Visited: {post?.yearsOfVisit?.nodes[0]?.name}</p>
-        </li>
-      ))
-    }
-  </ul>
-</section>
+            <p>Rating: {post?.ratings?.nodes[0]?.name}</p>
+            <p>Year Visited: {post?.yearsOfVisit?.nodes[0]?.name}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
