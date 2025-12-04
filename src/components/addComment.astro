@@ -32,7 +32,7 @@ const messageColor = "black";
   <p style={`color: ${messageColor};`}>{message}</p>
 </form>
 
-<script type="module">
+<script is:inline>
   document.addEventListener("DOMContentLoaded", () => {
     const forms = document.querySelectorAll("form[data-post-id]");
 
