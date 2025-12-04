@@ -71,8 +71,7 @@ const formatDate = (dateString: string): string => {
   }
 </li>
 
-<!-- @ts-ignore -->
-<script type="module" client:load>
+<script is:inline>
   document.addEventListener("DOMContentLoaded", () => {
     const replyButtons = Array.from(document.querySelectorAll(".reply-btn"));
     const commentElements = document.querySelectorAll("[data-comment-id]");
