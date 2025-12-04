@@ -1748,10 +1748,10 @@ astro-seo@^0.8.4:
   dependencies:
     "@astrojs/check" "^0.5.4"
 
-astro@5.16.3:
-  version "5.16.3"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-5.16.3.tgz#80c94a816a735fa171e94897743c3e1f2323377e"
-  integrity sha512-KzDk41F9Dspf5fM/Ls4XZhV4/csjJcWBrlenbnp5V3NGwU1zEaJz/HIyrdKdf5yw+FgwCeD2+Yos1Xkx9gnI0A==
+astro@5.16.4:
+  version "5.16.4"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-5.16.4.tgz#203eff42bb860a7ba3f3e68c23930ec4a39d2a2a"
+  integrity sha512-rgXI/8/tnO3Y9tfAaUyg/8beKhlIMltbiC8Q6jCoAfEidOyaue4KYKzbe0gJIb6qEdEaG3Kf3BY3EOSLkbWOLg==
   dependencies:
     "@astrojs/compiler" "^2.13.0"
     "@astrojs/internal-helpers" "0.7.5"
