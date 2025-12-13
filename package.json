@@ -28,8 +28,8 @@
     "astro": "5.16.5",
     "astro-seo": "^0.8.4",
     "leaflet": "^1.9.4",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "typescript": "5.9.3"
   },
   "devDependencies": {
