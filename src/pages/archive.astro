@@ -39,6 +39,14 @@ try {
     <section class="post-title">
       <h2>Gravy Archives</h2>
     </section>
+    <p class="container">
+      Welcome to the Roast Dinners London archive! Browse every review by month,
+      or discover hidden gems from years past. Use the dropdown to select a
+      month and see all posts from that period. If you’re not sure where to
+      start, check out our <a href="/best-roast-lists">Best Roast Lists</a> or <a
+        href="/about">About</a
+      > page.
+    </p>
     <label for="archive-date">Select Month/Year:</label>
     <form id="archive-dropdown" method="get">
       <select
@@ -94,7 +102,14 @@ try {
           ))}
         </ul>
       ) : (
-        <p>No posts found for the selected date.</p>
+        <div>
+          <p>No posts found for the selected date.</p>
+          <p>
+            Try another month, or explore our{" "}
+            <a href="/best-roast-lists">Best Roast Lists</a> for top
+            recommendations.
+          </p>
+        </div>
       )
     }
   </section>
