@@ -14,6 +14,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   const [boroughFilter, setBoroughFilter] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
   const [closedDownFilter, setClosedDownFilter] = useState("");
+  const [yearFilter, setYearFilter] = useState("");
 
   const [showOptions, setShowOptions] = useState(false);
 
@@ -117,6 +118,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
             ? !post.closedDowns?.nodes[0]?.name
             : post.closedDowns?.nodes[0]?.name === closedDownFilter
           : true)
+        && (yearFilter ? post.yearsOfVisit?.nodes[0]?.name === yearFilter : true)
       );
     });
   };
@@ -137,6 +139,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     boroughFilter,
     ownerFilter,
     closedDownFilter,
+    yearFilter,
   ]);
 
   const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -190,6 +193,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     if (name === "borough") setBoroughFilter(value);
     if (name === "owner") setOwnerFilter(value);
     if (name === "closedDown") setClosedDownFilter(value);
+    if (name === "year") setYearFilter(value);
   };
 
   const clearFilters = () => {
@@ -200,6 +204,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     setBoroughFilter("");
     setOwnerFilter("");
     setClosedDownFilter("");
+    setYearFilter("");
   };
 
   const uniqueMeats = [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))];
@@ -215,12 +220,12 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
         className="show-hide-button"
         onClick={() => setShowOptions((prev) => !prev)}
       >
-        {showOptions ? "Hide options" : "Show all options"}
+        {showOptions ? "Hide options" : "Show all options / filters"}
       </button>
       {showOptions && (
         <div>
           <div className="toggle-columns">
-            <h4>Show/hide columns:</h4>
+            <h3>Show/hide columns:</h3>
             <div>
               <input
                 type="checkbox"
@@ -401,6 +406,20 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
                   .map((closedDown) => (
                     <option key={closedDown} value={closedDown}>
                       {closedDown}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="year-filter">Filter by Year: </label>
+              <select id="year-filter" name="year" onChange={handleFilterChange}>
+                <option value="">All</option>
+                <option value="open">Open</option>
+                {Array.from(new Set(posts.map((post) => post.yearsOfVisit?.nodes[0]?.name)))
+                  .filter(Boolean)
+                  .map((year) => (
+                    <option key={year} value={year}>
+                      {year}
                     </option>
                   ))}
               </select>
