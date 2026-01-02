@@ -407,7 +407,7 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
       </>
     )}
     
-    <div set:html={singlePost.content} />
+    <div set:html={singlePost.content?.replace(/i\d+\.wp\.com\/rdldn\.co\.uk/g, 'blog.rdldn.co.uk')} />
 
     <Newsletter />
     
