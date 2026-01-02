@@ -1,9 +1,6 @@
 ---
-export const prerender = true;
-
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/post.css";
-import { Image } from "astro:assets";
 import v1 from "../images/v1.jpg";
 import v2 from "../images/v2.jpg";
 import v3 from "../images/v3.jpg";
@@ -26,23 +23,21 @@ const veganImages = [
   description="Welcome to Vegan Roast Dinners in London - Page not found"
 >
   <div class="image-container">
-    <Image
-      src={veganImages[0].src}
+    <img
+      src={veganImages[0].src.src}
       alt={veganImages[0].alt}
-      width={800}
-      height={800}
+      width={5000}
+      height={5000}
       class="featured-image"
-      loading="lazy"
+      loading="eager"
     />
     <div class="copyright-overlay">
       &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
     </div>
   </div>
-
   <section class="post-title">
     <h2>Welcome to Vegan Roast Dinners in London</h2>
   </section>
-
   <div class="container">
     <div class="entry-content container">
       <p class="vegan-intro">
@@ -52,7 +47,7 @@ const veganImages = [
 
       <div class="vegan-gallery">
         {
-          veganImages.map((image) => (
+          veganImages.map((image, index) => (
             <div class="vegan-image-container">
               <img
                 src={image.src.src}

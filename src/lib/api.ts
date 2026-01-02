@@ -8,7 +8,10 @@ export async function fetchGraphQL(query: string, variables = {}) {
   const json = await response.json();
 
   if (!response.ok || json.errors) {
-    throw new Error(`GraphQL Error: ${JSON.stringify(json.errors)}`);
+    const errorMsg = json.errors
+      ? `GraphQL Error: ${JSON.stringify(json.errors)}`
+      : `GraphQL Error: Unknown error. Response: ${JSON.stringify(json)}`;
+    throw new Error(errorMsg);
   }
 
   return json.data;
