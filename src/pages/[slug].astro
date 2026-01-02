@@ -52,11 +52,17 @@ export async function getStaticPaths() {
     );
 
     const { data } = await response.json();
-    const posts = data.posts.nodes;
-    allPosts.push(...posts);
+    const posts = data.posts?.nodes;
 
-    hasNextPage = data.posts.pageInfo.hasNextPage;
-    endCursor = data.posts.pageInfo.endCursor;
+    if (Array.isArray(posts)) {
+      allPosts.push(...posts);
+    } else {
+      console.warn('Warning: posts is not an array', posts, data);
+    }
+
+    hasNextPage = data.posts?.pageInfo?.hasNextPage ?? false;
+    endCursor = data.posts?.pageInfo?.endCursor ?? null;
+
   }
 
 
