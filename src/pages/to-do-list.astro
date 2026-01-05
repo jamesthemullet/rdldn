@@ -6,6 +6,8 @@ import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
 import { fetchGraphQL } from "../lib/api";
+
+export const prerender = true;
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
 const variables = { id: "17" };
