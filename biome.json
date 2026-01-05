@@ -8,12 +8,14 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "**",
+      "src/**",
+      "public/**",
       "!**/.astro",
       "!**/.git",
       "!**/.cache",
       "!**/dist",
-      "!**/node_modules"
+      "!**/node_modules",
+      "!**/.vercel"
     ]
   },
   "formatter": {
