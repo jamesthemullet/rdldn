@@ -73,12 +73,39 @@ while (hasNextPage) {
 }
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
+
+// Exclude closed down posts, sort by rating (descending), then limit to top 20 for structured data
+const openRoasts = allRoastPosts.filter(
+  (post) => !post.closedDowns?.nodes[0]?.name
+);
+const sortedByRating = [...openRoasts].sort((a, b) => {
+  const aRating = Number(a.ratings?.nodes[0]?.name) || 0;
+  const bRating = Number(b.ratings?.nodes[0]?.name) || 0;
+  if (bRating === aRating) return 0;
+  return bRating - aRating;
+});
+
+const roastListStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: singlePage?.title || "League of Roasts",
+  description:
+    singlePage?.seo?.opengraphDescription ||
+    "Best roast dinners in London, in a league table.",
+  itemListElement: sortedByRating.slice(0, 20).map((post, idx) => ({
+    "@type": "ListItem",
+    position: idx + 1,
+    name: post.title,
+    url: post.slug ? `https://roastdinners.london/${post.slug}` : undefined,
+  })),
+};
 ---
 
 <BaseLayout
   pageTitle={singlePage.title}
   description={singlePage?.seo?.opengraphDescription}
   opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+  structuredData={roastListStructuredData}
 >
   <div class="image-container">
     <img
