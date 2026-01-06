@@ -2,7 +2,8 @@
 import Footer from "../components/footer/footer.astro";
 import Header from "../components/header/header.astro";
 
-const { pageTitle, description, opengraphImage, halloween } = Astro.props;
+const { pageTitle, description, opengraphImage, halloween, structuredData } =
+  Astro.props;
 import "./layout.css";
 import { SEO } from "astro-seo";
 import logo1 from "../images/logo-1.png";
@@ -68,6 +69,14 @@ import logo1 from "../images/logo-1.png";
         },
       }}
     />
+    {
+      structuredData && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(structuredData)}
+        />
+      )
+    }
     <!-- Google tag (gtag.js) -->
     <script
       is:inline
