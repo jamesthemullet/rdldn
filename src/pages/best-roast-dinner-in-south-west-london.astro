@@ -1,5 +1,7 @@
 ---
 import BestRoastLayout from "../layouts/BestRoastLayout.astro";
+export const prerender = true;
+
 import { fetchGraphQL } from "../lib/api";
 import { fetchPageData } from "../lib/graphql";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
@@ -16,7 +18,12 @@ const getSouthWestTopRatedRoasts = async () => {
 
   while (hasNextPage) {
     const variables = endCursor ? { after: endCursor } : {};
-    let postsResponse: { posts: { nodes: Post[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } } } | null;
+    let postsResponse: {
+      posts: {
+        nodes: Post[];
+        pageInfo: { hasNextPage: boolean; endCursor: string | null };
+      };
+    } | null;
 
     try {
       postsResponse = await fetchGraphQL(GET_ALL_POSTS, variables);
