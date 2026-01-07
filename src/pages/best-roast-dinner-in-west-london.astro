@@ -1,5 +1,7 @@
 ---
 import BestRoastLayout from "../layouts/BestRoastLayout.astro";
+export const prerender = true;
+
 import { fetchPageData, fetchTopRatedRoasts } from "../lib/graphql";
 import { organiseComments } from "../lib/utils";
 
