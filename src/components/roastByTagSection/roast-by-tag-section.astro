@@ -12,8 +12,9 @@ if (tag) {
       tag,
     });
 
-    locationPosts = data?.posts?.nodes
-      ?.map((edge: Post) => ({
+    locationPosts = (data?.posts?.nodes ?? [])
+      .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0)
+      .map((edge: Post) => ({
         ...edge,
         featuredImageUrl:
           edge.featuredImage?.node?.mediaDetails?.sizes?.find(
