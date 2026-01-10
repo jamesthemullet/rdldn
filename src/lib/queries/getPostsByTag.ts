@@ -25,6 +25,11 @@ const GET_POSTS_BY_TAG = `
             name
           }
         }
+        closedDowns {
+          nodes {
+            name
+          }
+        }
       }
     }
   }
