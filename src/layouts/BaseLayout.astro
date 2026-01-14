@@ -72,6 +72,7 @@ import logo1 from "../images/logo-1.png";
     {
       structuredData && (
         <script
+          is:inline
           type="application/ld+json"
           set:html={JSON.stringify(structuredData)}
         />

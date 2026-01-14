@@ -59,11 +59,11 @@
   margin-top: 0.5rem;
   padding: 0.75rem;
   background: #eef2f7;
-  border-left: 3px solid var(----roast-new-blue);
+  border-left: 3px solid var(--roast-new-blue);
   border-radius: 4px;
 }
 
 textarea {
   height: 100px;
-  border: 3px solid var(----roast-new-blue);
+  border: 3px solid var(--roast-new-blue);
 }

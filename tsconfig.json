@@ -7,6 +7,7 @@
   "exclude": [
     "dist",
     "node_modules",
+    "coverage",
     "src/content.config.ts"
   ],
   "compilerOptions": {
@@ -19,7 +20,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": [
-      "astro/client"
+      "astro/client",
+      "vitest/globals"
     ],
     "plugins": [
       {

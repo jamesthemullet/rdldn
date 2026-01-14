@@ -59,10 +59,6 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
+## 🧪 Testing
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+The project uses [Vitest](https://vitest.dev/) for unit tests. After installing dependencies, run your preferred package manager's test script, for example `yarn test` (continuous mode with `yarn test:watch`). Generate code coverage with `yarn test:coverage` (HTML and lcov output lands in `/coverage`).
