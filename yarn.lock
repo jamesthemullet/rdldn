@@ -1788,9 +1788,9 @@
     undici-types "~6.21.0"
 
 "@types/node@^24.10.0":
-  version "24.10.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.10.7.tgz#516502e408f6d00afd230f291bfe3ad38105a73e"
-  integrity sha512-+054pVMzVTmRQV8BhpGv3UyfZ2Llgl8rdpDTon+cUH9+na0ncBVXj3wTUKh14+Kiz18ziM3b4ikpP5/Pc0rQEQ==
+  version "24.10.8"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.10.8.tgz#9b529d32e7e5adb74b13d1fc9b83615e9a12a701"
+  integrity sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ==
   dependencies:
     undici-types "~7.16.0"
 
@@ -2138,12 +2138,12 @@ abbrev@^3.0.0:
   integrity sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==
 
 accented@^1.2.0:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/accented/-/accented-1.2.2.tgz#dae0afe307a04ae37d06a828fe63f7844de09138"
-  integrity sha512-UGEZa72Xp4bK3rFWg8AgFgXBzvwnhjxIFefvcD7otcvUc2r+ygwp3uBWfnk7GOUq3eYzyxsefRvhjlKjyTHAow==
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/accented/-/accented-1.2.3.tgz#0bf7960660ac8580928e7674b819734803a385c6"
+  integrity sha512-/DASn2gWqko0kLpsP7eNtPSNytARw99EETgpnLvEe1Nw92WXLhvLmJ7TOSUNhHpi8jPDEethW3UXmFw4VjKePA==
   dependencies:
     "@preact/signals-core" "^1.12.1"
-    axe-core "^4.11.0"
+    axe-core "^4.11.1"
 
 acorn-import-attributes@^1.9.5:
   version "1.9.5"
@@ -2191,9 +2191,9 @@ ajv@^8.11.0, ajv@^8.17.1:
     require-from-string "^2.0.2"
 
 alpinejs@^3.14.9:
-  version "3.15.3"
-  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.15.3.tgz#667bce66914f8a11a786bffba9081c25ee3692d8"
-  integrity sha512-fSI6F5213FdpMC4IWaup92KhuH3jBX0VVqajRJ6cOTCy1cL6888KyXdGO+seAAkn+g6fnrxBqQEx6gRpQ5EZoQ==
+  version "3.15.4"
+  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.15.4.tgz#c66fd08a0b1aab51f0758e21bce5d442652013dc"
+  integrity sha512-lDpOdoVo0bhFjgl310k1qw3kbpUYwM/v0WByvAchsO93bl3o1rrgr0P/ssx3CimwEtNfXbmwKbtHbqTRCTTH9g==
   dependencies:
     "@vue/reactivity" "~3.1.1"
 
@@ -2356,10 +2356,10 @@ async-sema@^3.1.1:
   resolved "https://registry.yarnpkg.com/async-sema/-/async-sema-3.1.1.tgz#e527c08758a0f8f6f9f15f799a173ff3c40ea808"
   integrity sha512-tLRNUXati5MFePdAk8dw7Qt7DpxPB60ofAgn8WRhW6a2rcimZnYBP9oxHiv0OHy+Wz7kPMG+t4LGdt31+4EmGg==
 
-axe-core@^4.11.0:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.11.0.tgz#16f74d6482e343ff263d4f4503829e9ee91a86b6"
-  integrity sha512-ilYanEU8vxxBexpJd8cWM4ElSQq4QctCLKih0TSfjIfCQTeyH/6zVrmIJfLPrKTKJRbiG+cfnZbQIjAlJmF1jQ==
+axe-core@^4.11.1:
+  version "4.11.1"
+  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.11.1.tgz#052ff9b2cbf543f5595028b583e4763b40c78ea7"
+  integrity sha512-BASOg+YwO2C+346x3LZOeoovTIoTrRqEsqMa6fmfAV0P+U9mFr9NsyOEpiYvFjbc64NMrSswhV50WdXzdb/Z5A==
 
 axobject-query@^4.1.0:
   version "4.1.0"
