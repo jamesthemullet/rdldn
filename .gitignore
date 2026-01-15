@@ -8,6 +8,11 @@ node_modules/
 
 # test coverage artifacts
 coverage/
+test-results/
+playwright-report/
+
+# playwright cache
+playwright/.cache
 
 # logs
 npm-debug.log*
