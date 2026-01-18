@@ -439,21 +439,33 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <a
                 href={`/${post.slug}`}
                 className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}
+                data-test-id="roast-link"
               >
                 {post.title}
               </a>
-              <span className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}>
+              <span
+                className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}
+                data-test-id="roast-rating"
+              >
                 {post.ratings?.nodes[0]?.name}
               </span>
-              {showPrice && <span>{post.prices?.nodes[0]?.name || ""}</span>}
-              {showMeat && <span>{post.meats?.nodes[0]?.name}</span>}
-              {showYearVisited && <span>{post.yearsOfVisit?.nodes[0]?.name}</span>}
-              {showTubeStation && <span>{post.tubeStations?.nodes[0]?.name}</span>}
-              {showArea && <span>{post.areas?.nodes[0]?.name}</span>}
-              {showBorough && <span>{post.boroughs?.nodes[0]?.name}</span>}
-              {showOwner && <span>{post.owners?.nodes[0]?.name}</span>}
+              {showPrice && <span data-test-id="roast-price">{post.prices?.nodes[0]?.name || ""}</span>}
+              {showMeat && <span data-test-id="roast-meat">{post.meats?.nodes[0]?.name}</span>}
+              {showYearVisited && (
+                <span data-test-id="roast-year">{post.yearsOfVisit?.nodes[0]?.name}</span>
+              )}
+              {showTubeStation && (
+                <span data-test-id="roast-tube">{post.tubeStations?.nodes[0]?.name}</span>
+              )}
+              {showArea && <span data-test-id="roast-area">{post.areas?.nodes[0]?.name}</span>}
+              {showBorough && (
+                <span data-test-id="roast-borough">{post.boroughs?.nodes[0]?.name}</span>
+              )}
+              {showOwner && <span data-test-id="roast-owner">{post.owners?.nodes[0]?.name}</span>}
               {showClosedDown && (
-                <span>{translateClosedDown(post.closedDowns?.nodes[0]?.name, post.newSlugs?.nodes[0]?.name)}</span>
+                <span data-test-id="roast-status">
+                  {translateClosedDown(post.closedDowns?.nodes[0]?.name, post.newSlugs?.nodes[0]?.name)}
+                </span>
               )}
             </li>
           );
