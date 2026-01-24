@@ -14,6 +14,12 @@ type MockOptions = {
   expectedLimit?: number;
 };
 
+const waitForAlpine = async (page: Page) => {
+  await page.waitForFunction(() => {
+    return typeof (window as typeof window & { Alpine?: unknown }).Alpine !== "undefined";
+  });
+};
+
 const mockSearchResponse = async (page: Page, options: MockOptions) => {
   await page.route(SEARCH_ENDPOINT, async (route) => {
     const payload = route.request().postDataJSON() as {
@@ -66,9 +72,13 @@ test.describe("search page", () => {
 
     await page.goto("/search");
     await expect(page.locator("section.search-page h2")).toHaveText("Search");
+    await waitForAlpine(page);
 
     await page.getByPlaceholder("Search...").fill(searchTerm);
+
+    const responsePromise = page.waitForResponse(SEARCH_ENDPOINT);
     await page.getByRole("button", { name: /search/i }).click();
+    await responsePromise;
 
     const results = page.locator("section.search-container li.heading");
     await expect(results).toHaveCount(mockNodes.length);
@@ -97,8 +107,13 @@ test.describe("search page", () => {
     });
 
     await page.goto("/search");
+    await waitForAlpine(page);
+
     await page.getByPlaceholder("Search...").fill(searchTerm);
+
+    const responsePromise = page.waitForResponse(SEARCH_ENDPOINT);
     await page.getByRole("button", { name: /search/i }).click();
+    await responsePromise;
 
     await expect(page.getByText("No results found.")).toBeVisible();
     await expect(page.locator("section.search-container li.heading")).toHaveCount(0);
