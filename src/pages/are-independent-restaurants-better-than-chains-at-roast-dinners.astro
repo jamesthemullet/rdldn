@@ -1,9 +1,7 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import type { Comments as CommentsType, Page, Post } from "../types";
-
-
 import { organiseComments } from "../lib/utils";
+import type { Page, Post } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
@@ -21,7 +19,6 @@ try {
 } catch (error) {
   console.error("Error fetching GraphQL data:", error);
 }
-
 
 if (!singlePage) {
   throw new Error("No single page data found");
@@ -103,5 +100,3 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
-
-
