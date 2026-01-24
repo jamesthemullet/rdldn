@@ -9,7 +9,6 @@ export const response = {
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
-import type { Comments as CommentsType } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
@@ -22,7 +21,6 @@ export async function getStaticPaths() {
   let hasNextPage = true;
   let endCursor = null;
 
-  // Fetch all posts
   while (hasNextPage) {
     const response: Response = await fetch(
       "https://blog.rdldn.co.uk/graphql",
