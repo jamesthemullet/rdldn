@@ -1,5 +1,7 @@
----
+﻿---
 import BestRoastLayout from "../layouts/BestRoastLayout.astro";
+
+import { organiseComments } from "../lib/comments";
 export const prerender = true;
 
 import { fetchPageData, fetchTopRatedRoasts } from "../lib/graphql";
@@ -22,3 +24,4 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   threadedComments={threadedComments}
   postId={singlePage.pageId}
 />
+

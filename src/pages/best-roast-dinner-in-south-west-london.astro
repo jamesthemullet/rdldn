@@ -1,4 +1,4 @@
----
+﻿---
 import BestRoastLayout from "../layouts/BestRoastLayout.astro";
 export const prerender = true;
 
@@ -8,6 +8,8 @@ import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { organiseComments } from "../lib/utils";
 import type { Post } from "../types";
 
+
+import { organiseComments } from "../lib/comments";
 const pageId = "5612";
 const singlePage = await fetchPageData(pageId);
 
@@ -94,3 +96,4 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   threadedComments={threadedComments}
   postId={singlePage?.pageId}
 />
+
