@@ -1,9 +1,7 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import type { Comments as CommentsType, Page, Post } from "../types";
-
-
 import { organiseComments } from "../lib/utils";
+import type { Page } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
@@ -12,7 +10,7 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 
 const variables = { id: "9887" };
@@ -25,30 +23,8 @@ try {
   console.error("Error fetching GraphQL data:", error);
 }
 
-
 if (!singlePage) {
   throw new Error("No single page data found");
-}
-
-export async function getAllRoastDinnerPosts(): Promise<Post[]> {
-  let hasNextPage = true;
-  let endCursor: string | null = null;
-  const allPosts: Post[] = [];
-
-  while (hasNextPage) {
-    const variables = endCursor ? { after: endCursor } : {};
-    const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
-
-    // b: <explanation>
-    posts.nodes.forEach((post: Post) => {
-      allPosts.push(post);
-    });
-
-    hasNextPage = posts.pageInfo.hasNextPage;
-    endCursor = posts.pageInfo.endCursor;
-  }
-
-  return allPosts;
 }
 
 const allPosts = await getAllRoastDinnerPosts();
@@ -160,5 +136,3 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
-
-
