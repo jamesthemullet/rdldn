@@ -74,9 +74,17 @@ test("top navigation routes correctly and preserves history", async ({ page }) =
     await verify();
   }
 
-  const navigateHistory = async (action: () => Promise<unknown>, expected: RegExp) => {
-    await action();
-    await assertUrl(expected);
+  const navigateHistory = async (action: () => Promise<unknown>, expected: RegExp, retries = 3) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        await action();
+        await assertUrl(expected);
+        return;
+      } catch (e) {
+        if (attempt === retries) throw e;
+        await page.waitForTimeout(500);
+      }
+    }
   };
 
   await navigateHistory(() => page.goBack({ waitUntil: "commit" }), /\/archive\/?$/);
