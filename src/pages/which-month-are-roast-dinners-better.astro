@@ -1,7 +1,9 @@
----
+﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import type { Comments as CommentsType, Page, Post } from "../types";
 
+
+import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
@@ -23,30 +25,6 @@ try {
   console.error("Error fetching GraphQL data:", error);
 }
 
-const organiseComments = (comments: CommentsType) => {
-  const commentMap = new Map();
-
-  // b: <explanation>
-  comments?.forEach((comment) => {
-    comment.replies = [];
-    commentMap.set(comment.id, comment);
-  });
-
-  const topLevelComments: CommentsType = [];
-  // b: <explanation>
-  comments?.forEach((comment) => {
-    if (comment.parentId) {
-      const parent = commentMap.get(comment.parentId);
-      if (parent) {
-        parent.replies.push(comment);
-      }
-    } else {
-      topLevelComments.push(comment);
-    }
-  });
-
-  return topLevelComments;
-};
 
 if (!singlePage) {
   throw new Error("No single page data found");
@@ -166,3 +144,5 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
+
+

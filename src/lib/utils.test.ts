@@ -42,4 +42,29 @@ describe("organiseComments", () => {
   it("returns an empty array when there are no comments", () => {
     expect(organiseComments(null)).toEqual([]);
   });
+
+  it("preserves the original order of top-level comments", () => {
+    const comments: Comments = [
+      createComment("1"),
+      createComment("2"),
+      createComment("3"),
+      createComment("4", { parentId: "1" })
+    ];
+
+    const result = organiseComments(comments);
+
+    expect(result.map((comment) => comment.id)).toEqual(["1", "2", "3"]);
+    expect(result[0].replies?.[0].id).toBe("4");
+  });
+
+  it("treats replies with missing parents as top-level comments", () => {
+    const comments: Comments = [
+      createComment("orphan", { parentId: "missing" })
+    ];
+
+    const result = organiseComments(comments);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("orphan");
+  });
 });
