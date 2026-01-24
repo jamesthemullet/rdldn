@@ -50,7 +50,7 @@ jobs:
         run: yarn install
       - name: Run Astro Type Check
         run: yarn ts-check
-  lighthouse:
+  unit-tests:
     needs: [lint, typecheck]
     runs-on: ubuntu-latest
     steps:
@@ -59,7 +59,6 @@ jobs:
         id: vercel_action
         uses: amondnet/vercel-action@v25
         with:
-<<<<<<< Updated upstream
           vercel-token: ${{ secrets.RDLDN_VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
@@ -77,35 +76,27 @@ jobs:
       - name: Format lighthouse score
         id: format_lighthouse_score
         uses: actions/github-script@v8
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v6
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const result = ${{ steps.lighthouse_audit.outputs.manifest }}[0].summary
-            const formatResult = (res) => Math.round((res * 100))
-            Object.keys(result).forEach(key => result[key] = formatResult(result[key]))
-            const score = res => res >= 90 ? '🟢' : res >= 50 ? '🟠' : '🔴'
-            const comment = [
-                `⚡️ [Lighthouse report] for the changes in this PR:`,
-                '| Category | Score |',
-                '| --- | --- |',
-                `| ${score(result.performance)} Performance | ${result.performance} |`,
-                `| ${score(result.accessibility)} Accessibility | ${result.accessibility} |`,
-                `| ${score(result['best-practices'])} Best practices | ${result['best-practices']} |`,
-                `| ${score(result.seo)} SEO | ${result.seo} |`,
-                `| ${score(result.pwa)} PWA | ${result.pwa} |`,
-                ' ',
-            ].join('\n')
-             core.setOutput("comment", comment);
-      - name: Add comment to PR
-        id: comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v2
+          node-version: 24.x
+      - name: Install dependencies
+        run: yarn install
+      - name: Run unit tests
+        run: yarn test
+  e2e-tests:
+    needs: [lint, typecheck, unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v6
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ github.event.issue.number }}
           header: lighthouse
           message: |
             ${{ steps.format_lighthouse_score.outputs.comment }}
-=======
           node-version: 24.x
       - name: Cache node_modules
         uses: actions/cache@v4
@@ -145,15 +136,15 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
+          node-version: 24.x
       - name: Install dependencies
         run: yarn install
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
       - name: Run end-to-end tests
         run: yarn test:e2e
->>>>>>> Stashed changes
   axe:
-    needs: [lint, typecheck]
+    needs: [lint, typecheck, unit-tests]
     runs-on: ubuntu-latest
     env:
       GITHUB_API_SECRET: ${{ secrets.PIPELINE_GITHUB_API_SECRET }}
