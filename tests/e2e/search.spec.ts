@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const SEARCH_ENDPOINT = "https://blog.rdldn.co.uk/graphql";
+const SEARCH_ENDPOINT = /https:\/\/blog\.rdldn\.co\.uk\/graphql\/?/;
 
 type SearchNode = {
   title: string;
