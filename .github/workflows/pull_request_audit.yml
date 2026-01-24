@@ -15,6 +15,15 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Install dependencies
         run: yarn install
       - name: Run Biome lint
@@ -28,6 +37,15 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Install dependencies
         run: yarn install
       - name: Run Astro Type Check
@@ -41,6 +59,7 @@ jobs:
         id: vercel_action
         uses: amondnet/vercel-action@v25
         with:
+<<<<<<< Updated upstream
           vercel-token: ${{ secrets.RDLDN_VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID}}
@@ -86,6 +105,53 @@ jobs:
           header: lighthouse
           message: |
             ${{ steps.format_lighthouse_score.outputs.comment }}
+=======
+          node-version: 24.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: yarn install
+      - name: Run unit tests
+        run: yarn test
+  e2e-tests:
+    needs: [lint, typecheck]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      - name: Install dependencies
+        run: yarn install
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      - name: Run end-to-end tests
+        run: yarn test:e2e
+>>>>>>> Stashed changes
   axe:
     needs: [lint, typecheck]
     runs-on: ubuntu-latest
@@ -97,6 +163,15 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - run: yarn install
       - name: Get Chromium version 🌐
         run: |
@@ -113,11 +188,18 @@ jobs:
           echo "Installing chromedriver version: $CHROMIUM_VERSION"
           yarn add chromedriver@$CHROMIUM_VERSION
           echo "chromedriver version: $(chromedriver --version)"
-      - run: yarn run build
       - run: yarn dev & npx wait-on http://localhost:4321
       - name: Run axe
         run: |
           yarn add @axe-core/cli
           CHROMIUM_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1)
           yarn add chromedriver@$CHROMIUM_VERSION
-          npx axe --chromedriver-path $(yarn bin)/chromedriver http://localhost:4321/ --load-delay=1500 --exit
+          PAGES=(
+            "http://localhost:4321/"
+            "http://localhost:4321/league-of-roasts"
+            "http://localhost:4321/archive"
+            "http://localhost:4321/search"
+          )
+          for page in "${PAGES[@]}"; do
+            npx axe --chromedriver-path $(yarn bin)/chromedriver "$page" --load-delay=1500 --exit
+          done
