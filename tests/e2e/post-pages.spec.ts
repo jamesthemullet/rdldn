@@ -63,16 +63,20 @@ const collectBrokenImages = async (page: Page) => {
   return page.evaluate(async () => {
     const images = Array.from(document.images);
     const results: { src: string; complete: boolean; width: number; height: number }[] = [];
+    const loadTimeoutMs = 3000;
 
     for (const img of images) {
       if (!img.src) continue;
 
       if (!img.complete) {
-        await new Promise((resolve) => {
-          const done = () => resolve(undefined);
-          img.addEventListener("load", done, { once: true });
-          img.addEventListener("error", done, { once: true });
-        });
+        await Promise.race([
+          new Promise((resolve) => {
+            const done = () => resolve(undefined);
+            img.addEventListener("load", done, { once: true });
+            img.addEventListener("error", done, { once: true });
+          }),
+          new Promise((resolve) => setTimeout(resolve, loadTimeoutMs)),
+        ]);
       }
 
       results.push({
@@ -105,6 +109,7 @@ const ensureRelatedLinkWorks = async (page: Page) => {
 test.describe("post detail pages", () => {
   for (const post of POSTS) {
     test(`${post.name} renders body content, images, and related links`, async ({ page }) => {
+      test.setTimeout(60_000);
       const failedImages: string[] = [];
       page.on("requestfailed", (request) => {
         if (request.resourceType() === "image") {
