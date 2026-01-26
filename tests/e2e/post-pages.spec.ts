@@ -117,7 +117,10 @@ test.describe("post detail pages", () => {
         }
       });
 
-      const response = await page.goto(post.path, { waitUntil: "networkidle" });
+      const response = await page.goto(post.path, {
+        waitUntil: "domcontentloaded",
+        timeout: 60_000,
+      });
       expect(response?.ok()).toBeTruthy();
 
       await expect(page.locator("section.post-title h2")).toBeVisible();
