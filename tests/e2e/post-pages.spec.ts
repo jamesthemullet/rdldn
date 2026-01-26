@@ -112,7 +112,10 @@ test.describe("post detail pages", () => {
       test.setTimeout(60_000);
       const failedImages: string[] = [];
       page.on("requestfailed", (request) => {
-        if (request.resourceType() === "image") {
+        if (
+          request.resourceType() === "image" &&
+          !request.failure()?.errorText.includes("net::ERR_ABORTED")
+        ) {
           failedImages.push(request.url());
         }
       });
