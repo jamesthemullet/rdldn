@@ -86,6 +86,11 @@ const GET_ALL_POSTS = `
             name
           }
         }
+        zones {
+          nodes {
+            name
+          }
+        }
         newSlugs {
           nodes {
             name

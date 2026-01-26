@@ -95,6 +95,11 @@ export type Post = {
       name: string;
     }[];
   };
+  zones?: {
+    nodes: {
+      name: string;
+    }[];
+  };
   newSlugs?: {
     nodes: {
       name: string;
