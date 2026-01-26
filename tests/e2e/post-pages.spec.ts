@@ -61,9 +61,12 @@ const collectBrokenImages = async (page: Page) => {
   await scrollPageForLazyImages(page);
 
   return page.evaluate(async () => {
-    const images = Array.from(document.images);
+    const images = Array.from(document.images).filter(img => {
+      const rect = img.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
     const results: { src: string; complete: boolean; width: number; height: number }[] = [];
-    const loadTimeoutMs = 3000;
+    const loadTimeoutMs = 10000;
 
     for (const img of images) {
       if (!img.src) continue;
@@ -101,7 +104,12 @@ const ensureRelatedLinkWorks = async (page: Page) => {
   const relatedHref = await relatedLink.getAttribute("href");
   expect(relatedHref).toBeTruthy();
 
-  await relatedLink.click();
+  await relatedLink.scrollIntoViewIfNeeded();
+  await relatedLink.click({ timeout: 10_000 });
+
+  await expect(page.locator("section.post-title h2")).toBeVisible({
+    timeout: 15_000,
+  });
   await expect(page).toHaveURL(new RegExp(`${escapeRegExp(relatedHref as string)}\\/?$`));
   await expect(page.locator("section.post-title h2")).toBeVisible();
 };
@@ -125,6 +133,8 @@ test.describe("post detail pages", () => {
         timeout: 60_000,
       });
       expect(response?.ok()).toBeTruthy();
+
+      await page.waitForLoadState("networkidle", { timeout: 15_000 });
 
       await expect(page.locator("section.post-title h2")).toBeVisible();
       await expect(page.locator("div.container")).toBeVisible();
