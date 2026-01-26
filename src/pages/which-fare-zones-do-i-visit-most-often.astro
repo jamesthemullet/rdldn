@@ -1,0 +1,149 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { organiseComments } from "../lib/utils";
+import type { Page, Post } from "../types";
+import "../styles/post.css";
+import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import { fetchGraphQL } from "../lib/api";
+
+export const prerender = true;
+
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+
+const variables = { id: "11705" };
+let singlePage: Page | null = null;
+
+try {
+  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  singlePage = page;
+} catch (error) {
+  console.error("Error fetching GraphQL data:", error);
+}
+
+if (!singlePage) {
+  throw new Error("No single page data found");
+}
+
+const zoneCountsByYear = new Map<string, Record<string, number>>();
+const totalZoneCounts: Record<string, number> = {};
+
+const getZoneNumber = (zoneName: string) => {
+  const match = zoneName.match(/\d+/);
+  return match ? Number.parseInt(match[0], 10) : Number.POSITIVE_INFINITY;
+};
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+
+  // b: <explanation>
+  posts.nodes.forEach((post: Post) => {
+    const year = post.yearsOfVisit?.nodes[0]?.name;
+    const fareZones = post.zones?.nodes.map((zone) => zone.name);
+
+    if (!year || !fareZones?.length) return;
+
+    if (!zoneCountsByYear.has(year)) {
+      zoneCountsByYear.set(year, {});
+    }
+
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const yearMap = zoneCountsByYear.get(year)!;
+
+    // b: <explanation>
+    fareZones.forEach((zone) => {
+      yearMap[zone] = (yearMap[zone] || 0) + 1;
+      totalZoneCounts[zone] = (totalZoneCounts[zone] || 0) + 1;
+    });
+  });
+
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+const sortZones = (a: [string, number], b: [string, number]) => {
+  const aNum = getZoneNumber(a[0]);
+  const bNum = getZoneNumber(b[0]);
+  if (aNum !== bNum) return aNum - bNum;
+  return a[0].localeCompare(b[0]);
+};
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <div class="image-container">
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+  <div class="container">
+    <div set:html={singlePage.content} />
+
+    {
+      Array.from(zoneCountsByYear.entries())
+        .sort(([a], [b]) => Number.parseInt(a) - Number.parseInt(b))
+        .map(([year, zones]) => {
+          const sortedZones = Object.entries(zones).sort(sortZones);
+
+          return (
+            <section>
+              <h3>{year}</h3>
+              <ul>
+                {sortedZones.map(([zone, count]) => (
+                  <li>
+                    {zone}: {count} roast{count === 1 ? "" : "s"}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })
+    }
+
+    <hr />
+    <h3>Total visits by fare zone across all years</h3>
+    <ul>
+      {
+        Object.entries(totalZoneCounts)
+          .sort(sortZones)
+          .map(([zone, count]) => (
+            <li>
+              {zone}: {count} roast{count === 1 ? "" : "s"}
+            </li>
+          ))
+      }
+    </ul>
+
+    <p>
+      Well, of course I go to zones 1 and 2 a lot. Try persuading people to go
+      to Watford when they can just go to Soho or Hackney.
+    </p>
+    <p>Know a pub in zone 98 or 157 that's worth visiting? Let me know!</p>
+
+    <Newsletter />
+
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>
