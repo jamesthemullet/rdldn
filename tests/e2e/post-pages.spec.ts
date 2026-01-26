@@ -127,11 +127,13 @@ test.describe("post detail pages", () => {
       expect(bodyText.length).toBeGreaterThan(80);
 
       const brokenImages = await collectBrokenImages(page);
-      expect(
+      expect.soft(
         brokenImages,
         `Broken images: ${brokenImages.map((img) => img.src).join(", ")}`
       ).toEqual([]);
-      expect(failedImages).toEqual([]);
+      expect.soft(failedImages, `Image request failures: ${failedImages.join(", ")}`).toEqual(
+        []
+      );
 
       if (post.expectsRelated) {
         await ensureRelatedLinkWorks(page);
