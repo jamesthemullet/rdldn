@@ -405,7 +405,12 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
           ?.map((line: { name: string }) => line.name)
           .join(", ")}
       </p>
-      <p>Price (in {singlePost.yearsOfVisit?.nodes?.[0]?.name}): {singlePost.prices?.nodes?.[0]?.name}</p>
+      <p>
+        Price Paid{Number(singlePost.yearsOfVisit?.nodes?.[0]?.name) !== currentYear
+          ? ` (in ${singlePost.yearsOfVisit?.nodes?.[0]?.name})`
+          : ""}:
+        {" "}{singlePost.prices?.nodes?.[0]?.name}
+      </p>
       <p>Year of Visit: {singlePost.yearsOfVisit?.nodes?.[0]?.name}</p>
     </section>
     <section>

@@ -27,6 +27,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   const [showOwner, setShowOwner] = useState(false);
   const [showClosedDown, setShowClosedDown] = useState(true);
 
+
   type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
 
   const handleCheckboxChange = (setter: BooleanStateSetter) => () => {
@@ -414,7 +415,6 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <label htmlFor="year-filter">Filter by Year: </label>
               <select id="year-filter" name="year" onChange={handleFilterChange}>
                 <option value="">All</option>
-                <option value="open">Open</option>
                 {Array.from(new Set(posts.map((post) => post.yearsOfVisit?.nodes[0]?.name)))
                   .filter(Boolean)
                   .map((year) => (

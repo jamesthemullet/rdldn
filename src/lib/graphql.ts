@@ -100,7 +100,6 @@ export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any
     .sort((a, b) => Number.parseFloat(b.ratings?.nodes?.[0]?.name || "") - Number.parseFloat(a.ratings?.nodes?.[0]?.name || ""))
     .slice(0, 5);
 
-  console.log(20, topRated);
 
   const topRatedSlugs = new Set(topRated.map((post) => post.slug));
 
