@@ -8,6 +8,8 @@ export const response = {
 };
 
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SINGLE_PAGE_QUERY from "../lib/queries/singlePageBySlug";
+import SINGLE_POST_QUERY from "../lib/queries/singlePostBySlug";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
@@ -20,6 +22,33 @@ export async function getStaticPaths() {
   const allPages = [];
   let hasNextPage = true;
   let endCursor = null;
+  const ALL_POST_SLUGS_QUERY = `
+  query AllSlugs($first: Int!, $after: String) {
+    posts(first: $first, after: $after) {
+      nodes {
+        slug
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+const ALL_PAGE_SLUGS_QUERY = `
+  query AllPageSlugs($first: Int!, $after: String) {
+    pages(first: $first, after: $after) {
+      nodes {
+        slug
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
 
   while (hasNextPage) {
     const response: Response = await fetch(
@@ -28,19 +57,7 @@ export async function getStaticPaths() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `
-          query AllSlugs($first: Int!, $after: String) {
-            posts(first: $first, after: $after) {
-              nodes {
-                slug
-              }
-              pageInfo {
-                hasNextPage
-                endCursor
-              }
-            }
-          }
-        `,
+          query: ALL_POST_SLUGS_QUERY,
           variables: {
             first: 100,
             after: endCursor,
@@ -52,10 +69,11 @@ export async function getStaticPaths() {
     const { data } = await response.json();
     const posts = data.posts?.nodes;
 
-    if (Array.isArray(posts)) {
-      allPosts.push(...posts);
+
+    if (!Array.isArray(posts)) {
+      console.warn("Warning: posts is not an array", posts, data);
     } else {
-      console.warn('Warning: posts is not an array', posts, data);
+      allPosts.push(...posts);
     }
 
     hasNextPage = data.posts?.pageInfo?.hasNextPage ?? false;
@@ -74,19 +92,7 @@ export async function getStaticPaths() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `
-          query AllPageSlugs($first: Int!, $after: String) {
-            pages(first: $first, after: $after) {
-              nodes {
-                slug
-              }
-              pageInfo {
-                hasNextPage
-                endCursor
-              }
-            }
-          }
-        `,
+          query: ALL_PAGE_SLUGS_QUERY,
           variables: {
             first: 100,
             after: endCursor,
@@ -105,12 +111,12 @@ export async function getStaticPaths() {
 
   const postPaths = allPosts.map((post) => ({
     params: { slug: post.slug },
-    props: { contentType: 'post' }
+    props: { contentType: "post" }
   }));
 
   const pagePaths = allPages.map((page) => ({
     params: { slug: page.slug },
-    props: { contentType: 'page' }
+    props: { contentType: "page" }
   }));
 
   return [...postPaths, ...pagePaths];
@@ -123,198 +129,55 @@ const singleResponse = await fetch("https://blog.rdldn.co.uk/graphql", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    query: contentType === 'page' ? `
-        query SinglePage($id: ID = "${slug}") {
-          page(idType: URI, id: $id) {
-            pageId
-            date
-            content
-            title
-            featuredImage {
-              node {
-                sourceUrl
-              }
-            }
-            seo {
-              opengraphTitle
-              opengraphDescription
-              opengraphSiteName
-              opengraphImage {
-                uri
-                altText
-                mediaDetails {
-                  file
-                  height
-                  width
-                }
-                mediaItemUrl
-                sourceUrl
-                srcSet
-              }
-            }
-            comments(where: { order: DESC }) {
-              nodes {
-                id
-                content
-                parentId
-                author {
-                  node {
-                    name
-                  }
-                }
-                date
-              }
-            }
-          }
-        }
-        ` : `
-        query SinglePost($id: ID = "${slug}") {
-          post(idType: SLUG, id: $id) {
-            postId
-            date
-            content
-            title
-            featuredImage {
-              node {
-                sourceUrl
-              }
-            }
-            seo {
-              opengraphTitle
-              opengraphDescription
-              opengraphSiteName
-              opengraphImage {
-                uri
-                altText
-                mediaDetails {
-                  file
-                  height
-                  width
-                }
-                mediaItemUrl
-                sourceUrl
-                srcSet
-              }
-            }
-            areas {
-              nodes {
-                name
-              }
-            }
-            boroughs {
-              nodes {
-                name
-              }
-            }
-            tubeStations {
-              nodes {
-                name
-              }
-            }
-            tubeLines {
-              nodes {
-                name
-              }
-            }
-            prices {
-              nodes {
-                name
-              }
-            }
-            ratings {
-              nodes {
-                name
-              }
-            }
-            yearsOfVisit {
-              nodes {
-                name
-              }
-            }
-            typesOfPost {
-              nodes {
-                name
-              }
-            }
-            closedDowns {
-              nodes {
-                name
-              }
-            }
-            nSFWs {
-              nodes {
-                name
-              }
-            }
-            highlights {
-              loathed
-              loved
-              website
-              locationPost
-              instagram
-            }
-            comments(where: { order: DESC }) {
-              nodes {
-                id
-                content
-                parentId
-                author {
-                  node {
-                    name
-                  }
-                }
-                date
-              }
-            }
-          }
-        }
-        `,
+    query: contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug),
   }),
 });
 
 const { data } = await singleResponse.json();
 
-const singlePost = contentType === 'page' ? data.page : data.post;
+const singlePost = contentType === "page" ? data.page : data.post;
 
 if (!singlePost) {
   return Astro.redirect("/404", 302);
 }
 
+const CLOSED_STATUS_LABELS: Record<string, string> = {
+  closeddown: "Closed Down",
+  newmanagement: "Under New Management",
+  newowners: "Under New Owners",
+  popupmoved: "Popup Now Trading Elsewhere",
+  popupstopped: "Popup Stopped Trading",
+  tempclosed: "Temporarily Closed",
+};
+
+const closedDownId = singlePost.closedDowns?.nodes?.[0]?.name;
+
 const getClosedMessage = () => {
-  const closedDownId = singlePost.closedDowns?.nodes[0]?.name;
+  if (!closedDownId) return "";
 
-
-  if (!closedDownId) return '';
-  
-  if (closedDownId === "closeddown") {
-    return "Closed Down";
-  }
-  if (closedDownId === "newmanagement") {
-    return "Under New Management";
-  }
-  if (closedDownId === "newowners") {
-    return "Under New Owners";
-  }
-  if (closedDownId === "popupmoved") {
-    return "Popup Now Trading Elsewhere";
-  }
-  if (closedDownId === "popupstopped") {
-    return "Popup Stopped Trading";
-  }
-  if (closedDownId === "tempclosed") {
-    return "Temporarily Closed";
-  }
   if (closedDownId.includes("re-reviewed")) {
     return `Re-reviewed: ${closedDownId.replace("re-reviewed-", "").trim()}`;
   }
-  return 'Closed Down'
+
+  return CLOSED_STATUS_LABELS[closedDownId] ?? "Closed Down";
 };
 
 const currentYear = new Date().getFullYear();
 const postYear = new Date(singlePost.date).getFullYear();
 const postMoreThanTwoYearsOld = postYear < currentYear - 2;
+const yearOfVisit = singlePost.yearsOfVisit?.nodes?.[0]?.name;
+const price = singlePost.prices?.nodes?.[0]?.name;
+const rating = singlePost.ratings?.nodes?.[0]?.name;
+const tubeStation = singlePost.tubeStations?.nodes?.[0]?.name;
+const tubeLines = singlePost.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
+const isRoastDinner = singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
+const isRereviewed = closedDownId?.startsWith("re-reviewed");
+/* istanbul ignore next */
+const featuredImageUrl = singlePost.featuredImage?.node?.sourceUrl || logo3;
 
-const threadedComments = organiseComments(contentType === 'page' ? data.page.comments.nodes : data.post.comments.nodes);
+const threadedComments = organiseComments(
+  contentType === "page" ? data.page.comments.nodes : data.post.comments.nodes
+);
 ---
 
 <BaseLayout
@@ -325,7 +188,7 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
 >
   <div class="image-container">
     <img
-      src={singlePost.featuredImage?.node?.sourceUrl || logo3}
+      src={featuredImageUrl}
       alt={singlePost.title}
       width={5000}
       height={5000}
@@ -354,7 +217,7 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
     </p>
   </section>
   <div class="container">
-    {contentType === 'post' && (
+    {contentType === "post" && (
       <>
         <button
           class="skip"
@@ -385,7 +248,7 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
 
     <Newsletter />
     
-    {contentType === 'post' && singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner") && (
+    {contentType === "post" && isRoastDinner && (
     <section id="summary" class="summary">
               <h3>Summary:</h3>
 
@@ -395,23 +258,21 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
         </p>
       )}
         <p>{singlePost.title}</p>
-      <p class={singlePost.closedDowns?.nodes?.[0]?.name?.startsWith("re-reviewed") ? "re-reviewed-rating" : ""}>
-        Rating: {singlePost.ratings?.nodes?.[0]?.name}
+      <p class={isRereviewed ? "re-reviewed-rating" : ""}>
+        Rating: {rating}
       </p>
-      {singlePost.tubeStations?.nodes?.[0]?.name && <p>Tube Station: {singlePost.tubeStations.nodes[0]?.name}</p> }
+      {tubeStation && <p>Tube Station: {tubeStation}</p> }
               <p>
         Tube Lines:{" "}
-        {singlePost.tubeLines?.nodes
-          ?.map((line: { name: string }) => line.name)
-          .join(", ")}
+        {tubeLines}
       </p>
       <p>
-        Price Paid{Number(singlePost.yearsOfVisit?.nodes?.[0]?.name) !== currentYear
-          ? ` (in ${singlePost.yearsOfVisit?.nodes?.[0]?.name})`
+        Price Paid{Number(yearOfVisit) !== currentYear
+          ? ` (in ${yearOfVisit})`
           : ""}:
-        {" "}{singlePost.prices?.nodes?.[0]?.name}
+        {" "}{price}
       </p>
-      <p>Year of Visit: {singlePost.yearsOfVisit?.nodes?.[0]?.name}</p>
+      <p>Year of Visit: {yearOfVisit}</p>
     </section>
     <section>
       <h3>Loved & Loathed:</h3>
@@ -448,7 +309,7 @@ const threadedComments = organiseComments(contentType === 'page' ? data.page.com
 
     )}
 
-    {contentType === 'page' && (
+    {contentType === "page" && (
       <Comments threadedComments={threadedComments} postId={singlePost.pageId} />
     )}
   </div>
