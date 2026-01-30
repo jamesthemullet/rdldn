@@ -54,6 +54,12 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 export default function RoastMap({ markers }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [showClosed, setShowClosed] = useState(false);
+  const visibleMarkers = markers.filter(({ lat, lng, closed }) => {
+    if (!showClosed && closed) return false;
+    return Boolean(lat && lng);
+  }).length;
+  const closedMarkers = markers.filter(({ closed }) => Boolean(closed)).length;
+  const totalMarkers = markers.length;
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -77,8 +83,14 @@ export default function RoastMap({ markers }: Props) {
 
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
-      L.marker([lat, lng], { icon })
+      const markerLabel = label ? `${label} (${rating.toFixed(1)}/10)` : `Roast location (${rating.toFixed(1)}/10)`;
+      L.marker([lat, lng], {
+        icon,
+        title: markerLabel,
+        alt: markerLabel,
+      })
         .addTo(map)
+        .bindTooltip(markerLabel, { direction: "top", opacity: 0.9 })
         .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
 
@@ -100,6 +112,13 @@ export default function RoastMap({ markers }: Props) {
       </label>
       <br />
       <br />
+      <div
+        data-test-id="map-marker-counts"
+        data-total-markers={totalMarkers}
+        data-visible-markers={visibleMarkers}
+        data-closed-markers={closedMarkers}
+        hidden
+      />
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
       <div id="map" ref={mapRef} style={{ height: "600px" }} />
     </>
