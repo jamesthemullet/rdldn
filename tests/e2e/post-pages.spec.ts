@@ -130,6 +130,13 @@ test.describe("post detail pages", () => {
       const bodyText = (await page.locator("div.container").innerText()).trim();
       expect(bodyText.length).toBeGreaterThan(80);
 
+      const newsletterLink = page.locator("a.substack-signup-link");
+      await expect(newsletterLink).toBeVisible();
+      await expect(newsletterLink).toHaveAttribute(
+        "href",
+        "https://rdldn.substack.com/?r=601k45&utm_campaign=pub-share-checklist"
+      );
+
       const brokenImages = await collectBrokenImages(page);
       if (brokenImages.length > 0) {
         console.warn(
