@@ -1,5 +1,7 @@
 import { fetchGraphQL } from "../lib/api";
+import type { Page } from "../types";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
+import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
 
 const GET_ALL_POSTS = `
   query GetAllPosts($after: String) {
@@ -46,33 +48,6 @@ const GET_ALL_POSTS = `
   }
 `;
 
-const SINGLE_PAGE_QUERY_PREVIEW = `
-  query SinglePageQueryPreview($id: ID!) {
-    page(id: $id, idType: DATABASE_ID) {
-      title
-      content
-      pageId
-      seo {
-        opengraphDescription
-        opengraphImage {
-          sourceUrl
-        }
-      }
-      featuredImage {
-        node {
-          sourceUrl
-        }
-      }
-      comments {
-        nodes {
-          id
-          content
-          parentId
-        }
-      }
-    }
-  }
-`;
 
 export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any[]; highRated: any[] }> => {
   const allPosts: any[] = [];
@@ -117,10 +92,22 @@ export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any
   return { topRated, highRated };
 }
 
-export const fetchPageData = async (id: string): Promise<any> => {
-  const variables: Record<string, any> = { id };
-  const { page }: { page: any } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
-  return page;
+export const fetchPageData = async (id: string): Promise<Page> => {
+  try {
+    const { page }: { page: Page | null } = await fetchGraphQL(
+      SINGLE_PAGE_QUERY_PREVIEW,
+      { id }
+    );
+
+    if (!page) {
+      throw new Error("No single page data found");
+    }
+
+    return page;
+  } catch (error) {
+    console.error("Error fetching GraphQL data:", error);
+    throw error;
+  }
 }
 
 export const fetchPostsByDate = async (date: string) => {
