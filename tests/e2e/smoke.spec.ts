@@ -1,5 +1,24 @@
 import { expect, test } from "@playwright/test";
 
+const normalizePathname = (value: string) => (value.endsWith("/") ? value : `${value}/`);
+
+const assertSeoBasics = async (page: { title: () => Promise<string>; url: () => string; locator: (selector: string) => any }, expectedPathname: string) => {
+  const title = (await page.title()).trim();
+  expect(title.length).toBeGreaterThan(0);
+
+  const description = page.locator('meta[name="description"]');
+  await expect(description).toHaveAttribute("content", /.+/);
+
+  const canonical = page.locator('link[rel="canonical"]');
+  const canonicalFirst = canonical.first();
+  await expect(canonicalFirst).toHaveAttribute("href", /.+/);
+  const canonicalHref = await canonicalFirst.getAttribute("href");
+  expect(canonicalHref).toBeTruthy();
+
+  const canonicalUrl = new URL(canonicalHref as string, page.url());
+  expect(normalizePathname(canonicalUrl.pathname)).toBe(normalizePathname(expectedPathname));
+};
+
 test("home page renders key hero elements without console errors", async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on("console", (msg) => {
@@ -19,6 +38,28 @@ test("home page renders key hero elements without console errors", async ({ page
   await expect(firstPostLink).toBeVisible();
 
   expect(consoleErrors).toEqual([]);
+});
+
+test("SEO basics are present on home page", async ({ page }) => {
+  const response = await page.goto("/");
+  expect(response?.ok()).toBeTruthy();
+
+  await assertSeoBasics(page, "/");
+});
+
+test("custom 404 page renders and home link works", async ({ page }) => {
+  const randomSlug = `/this-page-does-not-exist-${Date.now()}`;
+  await page.goto(randomSlug);
+
+  await expect(page.locator("section.post-title h2")).toHaveText(
+    "Welcome to Vegan Roast Dinners in London"
+  );
+
+  const homeLink = page.getByRole("link", { name: /return to safety/i });
+  await expect(homeLink).toBeVisible();
+  await homeLink.click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Roast Dinners in London" })).toBeVisible();
 });
 
 test("top navigation routes correctly and preserves history", async ({ page }) => {
