@@ -8,12 +8,6 @@ import "./layout.css";
 import { SEO } from "astro-seo";
 import logo1 from "../images/logo-1.png";
 
-const siteOrigin = Astro.site?.toString() ?? "https://rdldn.co.uk";
-const canonicalHref = new URL(
-  `${Astro.url.pathname}${Astro.url.search}`,
-  siteOrigin
-).toString();
-
 // import logo3 from "/images/logo-3.png";
 ---
 
@@ -57,7 +51,6 @@ const canonicalHref = new URL(
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="canonical" href={canonicalHref} />
     <SEO
       title={pageTitle || "Roast Dinners In London"}
       description={description ||

@@ -78,6 +78,25 @@ const collectBrokenImages = async (page: Page) => {
   });
 };
 
+const normalizePathname = (value: string) => (value.endsWith("/") ? value : `${value}/`);
+
+const assertSeoBasics = async (page: Page, expectedPathname: string) => {
+  const title = (await page.title()).trim();
+  expect(title.length).toBeGreaterThan(0);
+
+  const description = page.locator('meta[name="description"]');
+  await expect(description).toHaveAttribute("content", /.+/);
+
+  const canonical = page.locator('link[rel="canonical"]');
+  const canonicalFirst = canonical.first();
+  await expect(canonicalFirst).toHaveAttribute("href", /.+/);
+  const canonicalHref = await canonicalFirst.getAttribute("href");
+  expect(canonicalHref).toBeTruthy();
+
+  const canonicalUrl = new URL(canonicalHref as string, page.url());
+  expect(normalizePathname(canonicalUrl.pathname)).toBe(normalizePathname(expectedPathname));
+};
+
 
 const ensureRelatedLinkWorks = async (page: Page) => {
   const relatedSection = page.locator("section.roast-by-tag, section.also-worth-a-try");
@@ -124,6 +143,8 @@ test.describe("post detail pages", () => {
       await expect(page.locator("section.post-title h2")).toBeVisible({
         timeout: 15_000,
       });
+
+      await assertSeoBasics(page, post.path);
 
       await expect(page.locator("div.container")).toBeVisible();
 
