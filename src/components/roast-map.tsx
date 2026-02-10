@@ -75,7 +75,7 @@ export default function RoastMap({ markers }: Props) {
     }).addTo(map);
 
 
-    filteredMarkers.forEach(({ lat, lng, label, rating, slug, closed }) => {
+    filteredMarkers.forEach(({ lat, lng, label, rating, slug }) => {
 
       if (!lat || !lng) {
         console.warn("Invalid marker coordinates:", { lat, lng, slug });
