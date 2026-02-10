@@ -64,4 +64,31 @@ test.describe("maps page", () => {
     await expect(page).toHaveURL(expectedUrl);
     await expect(page.locator("section.post-title h2")).toBeVisible();
   });
+
+  test("minimum rating filter narrows visible markers", async ({ page }) => {
+    await page.goto("/maps");
+    await waitForMapTiles(page);
+
+    const initialCounts = await getMarkerCounts(page);
+    const initialRendered = await getRenderedMarkerCount(page);
+    expect(initialRendered).toBe(initialCounts.visible);
+
+    const minRatingInput = page.getByLabel(/Minimum rating/i);
+    await expect(minRatingInput).toBeVisible();
+
+    await minRatingInput.evaluate((element) => {
+      const input = element as HTMLInputElement;
+      input.value = "9.5";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    await expect.poll(async () => (await getMarkerCounts(page)).visible).toBeLessThanOrEqual(
+      initialCounts.visible
+    );
+
+    const filteredCounts = await getMarkerCounts(page);
+    const filteredRendered = await getRenderedMarkerCount(page);
+    expect(filteredRendered).toBe(filteredCounts.visible);
+  });
 });

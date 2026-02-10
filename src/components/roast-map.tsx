@@ -54,10 +54,14 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 export default function RoastMap({ markers }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [showClosed, setShowClosed] = useState(false);
-  const visibleMarkers = markers.filter(({ lat, lng, closed }) => {
+  const [minRating, setMinRating] = useState(0);
+  const filteredMarkers = markers.filter(({ lat, lng, closed, rating }) => {
     if (!showClosed && closed) return false;
+    if (!Number.isFinite(rating)) return false;
+    if (rating < minRating) return false;
     return Boolean(lat && lng);
-  }).length;
+  });
+  const visibleMarkers = filteredMarkers.length;
   const closedMarkers = markers.filter(({ closed }) => Boolean(closed)).length;
   const totalMarkers = markers.length;
 
@@ -71,10 +75,7 @@ export default function RoastMap({ markers }: Props) {
     }).addTo(map);
 
 
-    markers.forEach(({ lat, lng, label, rating, slug, closed }) => {
-      if (!showClosed && closed) {
-        return;
-      }
+    filteredMarkers.forEach(({ lat, lng, label, rating, slug }) => {
 
       if (!lat || !lng) {
         console.warn("Invalid marker coordinates:", { lat, lng, slug });
@@ -97,7 +98,7 @@ export default function RoastMap({ markers }: Props) {
     return () => {
       map.remove();
     };
-  }, [markers, showClosed]);
+  }, [filteredMarkers]);
 
   return (
     <>
@@ -110,6 +111,21 @@ export default function RoastMap({ markers }: Props) {
         />
         Show closed places
       </label>
+      <br />
+      <br />
+      <label htmlFor="min-rating">
+        Minimum rating: <strong>{minRating.toFixed(1)}</strong>
+      </label>
+      <br />
+      <input
+        id="min-rating"
+        type="range"
+        min={0}
+        max={10}
+        step={0.1}
+        value={minRating}
+        onChange={(e) => setMinRating(Number(e.target.value))}
+      />
       <br />
       <br />
       <div
