@@ -98,7 +98,7 @@ export default function RoastMap({ markers }: Props) {
     return () => {
       map.remove();
     };
-  }, [filteredMarkers, showClosed]);
+  }, [filteredMarkers]);
 
   return (
     <>
