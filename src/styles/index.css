@@ -71,6 +71,25 @@ section {
           max-width: calc(25% - 1rem);
         }
 
+        @media (min-width: 1200px) {
+          &:first-child:nth-last-child(1) {
+            flex: 100%;
+            max-width: 100%;
+          }
+
+          &:first-child:nth-last-child(2),
+          &:first-child:nth-last-child(2) ~ li {
+            flex: 50%;
+            max-width: calc(50% - 1rem);
+          }
+
+          &:first-child:nth-last-child(3),
+          &:first-child:nth-last-child(3) ~ li {
+            flex: 33%;
+            max-width: calc(33% - 1rem);
+          }
+        }
+
         &.heading {
           display: flex;
           flex-direction: column;
