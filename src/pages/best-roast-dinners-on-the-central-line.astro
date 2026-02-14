@@ -10,21 +10,10 @@ import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
-import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import { getSinglePageData } from "../lib/getSinglePageData";
 
 const variables = { id: "7165" };
-let singlePage: Page | null = null;
-
-try {
-  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
-  singlePage = page;
-} catch (error) {
-  console.error("Error fetching GraphQL data:", error);
-}
-
-if (!singlePage) {
-  throw new Error("No single page data found");
-}
+const singlePage = await getSinglePageData({ variables });
 
 const centralLineStations = [
   "West Ruislip",
