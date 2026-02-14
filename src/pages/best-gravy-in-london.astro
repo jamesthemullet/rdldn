@@ -9,22 +9,11 @@ import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
-import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
+import { getSinglePageData } from "../lib/getSinglePageData";
 import { organiseComments } from "../lib/utils";
 
 const variables = { id: "5992" };
-let singlePage: Page | null = null;
-
-try {
-  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
-  singlePage = page;
-} catch (error) {
-  console.error("Error fetching GraphQL data:", error);
-}
-
-if (!singlePage) {
-  throw new Error("No single page data found");
-}
+const singlePage = await getSinglePageData({ variables });
 
 const allPosts = await getAllRoastDinnerPosts();
 
