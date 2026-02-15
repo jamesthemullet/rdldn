@@ -10,36 +10,16 @@ import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
-import { organiseComments } from "../lib/utils";
+import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
 
 const variables = { id: "6841" };
 const singlePage = await getSinglePageData({ variables });
 
 const allPosts = await getAllRoastDinnerPosts();
 
-const filtered = allPosts
-  .filter((post) => {
-    const loved = post.highlights?.loved?.toLowerCase() ?? "";
-    const rating = Number.parseFloat(post.ratings?.nodes[0]?.name || "");
-    const isClosed = (post.closedDowns?.nodes?.length ?? 0) > 0;
-    const isRoastDinner =
-      post.typesOfPost?.nodes?.some(
-        (node: { name: string }) => node.name === "Roast Dinner"
-      ) ?? false;
-
-    return (
-      loved.includes("pork belly") &&
-      !Number.isNaN(rating) &&
-      !isClosed &&
-      isRoastDinner
-    );
-  })
-  .sort(
-    (a, b) =>
-      Number.parseFloat(b?.ratings?.nodes[0].name || "") -
-      Number.parseFloat(a?.ratings?.nodes[0].name || "")
-  )
-  .slice(0, 5);
+const filtered = getTopRoastDinnerPosts(allPosts, {
+  lovedIncludesAny: ["pork belly"],
+});
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
@@ -51,7 +31,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 >
   <div class="image-container">
     <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      src={singlePage?.featuredImage?.node?.sourceUrl}
       alt={singlePage.title}
       width={5000}
       height={5000}
