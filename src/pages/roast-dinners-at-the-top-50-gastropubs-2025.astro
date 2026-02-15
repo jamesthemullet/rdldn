@@ -1,6 +1,6 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { organiseComments } from "../lib/utils";
+import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
 import type { Page } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
@@ -18,29 +18,12 @@ const singlePage = await getSinglePageData({ variables });
 
 const allPosts = await getAllRoastDinnerPosts();
 
-const filtered = allPosts
-  .filter((post) => {
-    const rating = Number.parseFloat(post.ratings?.nodes[0]?.name || "");
-    const isClosed = (post.closedDowns?.nodes?.length ?? 0) > 0;
-    const isRoastDinner =
-      post.typesOfPost?.nodes?.some(
-        (node: { name: string }) => node.name === "Roast Dinner"
-      ) ?? false;
-    const isTop50Gastropub =
-      post.features?.nodes.some(
-        (feature: { name: string }) => feature.name === "top-50-gastropub-2025"
-      ) ?? false;
-
-    return (
-      !Number.isNaN(rating) && !isClosed && isRoastDinner && isTop50Gastropub
-    );
-  })
-  .sort(
-    (a, b) =>
-      Number.parseFloat(b?.ratings?.nodes[0].name || "") -
-      Number.parseFloat(a?.ratings?.nodes[0].name || "")
-  )
-  .slice(0, 5);
+const filtered = getTopRoastDinnerPosts(allPosts, {
+  extraPredicate: (post) =>
+    post.features?.nodes.some(
+      (feature) => feature.name === "top-50-gastropub-2025"
+    ) ?? false,
+});
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
