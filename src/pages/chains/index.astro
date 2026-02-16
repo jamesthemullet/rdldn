@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
+import { toOwnerSlug } from "../../lib/ownerSlug";
+import "../../styles/index.css";
+
+export const prerender = true;
+
+const allPosts = await getAllRoastDinnerPosts();
+const chains = new Map<string, { name: string; count: number }>();
+
+allPosts.forEach((post) => {
+  const chainNames =
+    post.owners?.nodes?.map((owner) => owner.name).filter(Boolean) ?? [];
+
+  chainNames.forEach((chainName) => {
+    if (chainName.trim().toLowerCase() === "independent") {
+      return;
+    }
+
+    const chainSlug = toOwnerSlug(chainName);
+    if (!chainSlug) {
+      return;
+    }
+
+    const existing = chains.get(chainSlug);
+
+    if (existing) {
+      existing.count += 1;
+      return;
+    }
+
+    chains.set(chainSlug, { name: chainName, count: 1 });
+  });
+});
+
+const sortedChains = [...chains.entries()]
+  .map(([slug, data]) => ({ slug, name: data.name, count: data.count }))
+  .filter((chain) => chain.count >= 2)
+  .sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<BaseLayout pageTitle="Chains">
+  <div class="no-image-container">
+    <section class="post-title">
+      <h2>Chains</h2>
+    </section>
+    <p class="container centre-with-padding">
+      Browse all roast dinner reviews by chain. Pick a chain from the dropdown
+      to see every review.
+    </p>
+    <label for="chain-select">Select Chain:</label>
+    <form id="chain-dropdown">
+      <select
+        id="chain-select"
+        name="chain"
+        onchange="if (this.value) window.location.href = `/chains/${this.value}`"
+      >
+        <option value="">Choose a chain</option>
+        {
+          sortedChains.map((chain) => (
+            <option value={chain.slug}>{chain.name}</option>
+          ))
+        }
+      </select>
+    </form>
+  </div>
+</BaseLayout>

@@ -94,6 +94,7 @@ section {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          max-width: 400px;
 
           h3 {
             font-family: "Loved by the King", sans-serif;
@@ -239,4 +240,9 @@ section {
       margin-top: 10px;
     }
   }
+}
+
+.centre-with-padding {
+  text-align: center;
+  padding: 0 1rem;
 }
