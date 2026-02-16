@@ -7,11 +7,12 @@ import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
+import { toOwnerSlug } from "../lib/ownerSlug";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
 const variables = { id: "8441" };
 const singlePage = await getSinglePageData({ variables });
@@ -89,7 +90,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         chainStats.map((chain) => (
           <li>
-            {chain.name} – {chain.average.toFixed(2)} ({chain.count} visits)
+            <a href={`/chains/${toOwnerSlug(chain.name)}`}>{chain.name}</a> –{" "}
+            {chain.average.toFixed(2)} ({chain.count} visits)
           </li>
         ))
       }
