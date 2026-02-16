@@ -16,6 +16,7 @@ import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import logo3 from "../images/logo-3.png";
+import { toOwnerSlug } from "../lib/ownerSlug";
 
 export async function getStaticPaths() {
   const allPosts = [];
@@ -273,6 +274,17 @@ const threadedComments = organiseComments(
         {" "}{price}
       </p>
       <p>Year of Visit: {yearOfVisit}</p>
+      {singlePost.owners?.nodes?.length > 0 && (
+        <p>
+          Chain{singlePost.owners.nodes.length > 1 ? "s" : ""}:{" "}
+          {singlePost.owners.nodes.map((owner: { name: string }, index: number) => (
+            <>
+              <a href={`/chains/${toOwnerSlug(owner.name)}`}>{owner.name}</a>
+              {index < singlePost.owners.nodes.length - 1 ? ", " : ""}
+            </>
+          ))}
+        </p>
+      )}
     </section>
     <section>
       <h3>Loved & Loathed:</h3>

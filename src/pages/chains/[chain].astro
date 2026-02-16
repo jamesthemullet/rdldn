@@ -1,0 +1,135 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
+import { toOwnerSlug } from "../../lib/ownerSlug";
+import "../../styles/index.css";
+import type { Post } from "../../types";
+
+export const prerender = true;
+
+type OwnerPageProps = {
+  chainName: string;
+  posts: Post[];
+};
+
+const CLOSED_STATUS_LABELS: Record<string, string> = {
+  closeddown: "Closed Down",
+  newmanagement: "Under New Management",
+  newowners: "Under New Owners",
+  popupmoved: "Popup Now Trading Elsewhere",
+  popupstopped: "Popup Stopped Trading",
+  tempclosed: "Temporarily Closed",
+};
+
+const getClosedStatusLabel = (status?: string): string => {
+  if (!status) return "";
+
+  if (status.includes("re-reviewed")) {
+    return `Re-reviewed: ${status.replace("re-reviewed-", "").trim()}`;
+  }
+
+  return CLOSED_STATUS_LABELS[status] ?? status;
+};
+
+export async function getStaticPaths() {
+  const allPosts = await getAllRoastDinnerPosts();
+  const postsByChain = new Map<string, OwnerPageProps>();
+
+  allPosts.forEach((post) => {
+    const owners =
+      post.owners?.nodes?.map((owner) => owner.name).filter(Boolean) ?? [];
+
+    owners.forEach((chainName) => {
+      if (chainName.trim().toLowerCase() === "independent") {
+        return;
+      }
+
+      const chainSlug = toOwnerSlug(chainName);
+
+      if (!chainSlug) {
+        return;
+      }
+
+      const current = postsByChain.get(chainSlug) ?? { chainName, posts: [] };
+      current.posts.push(post);
+      postsByChain.set(chainSlug, current);
+    });
+  });
+
+  return [...postsByChain.entries()].map(([chain, data]) => ({
+    params: { chain },
+    props: {
+      chainName: data.chainName,
+      posts: [...data.posts].sort((a, b) => {
+        const aRating = Number.parseFloat(a.ratings?.nodes?.[0]?.name || "");
+        const bRating = Number.parseFloat(b.ratings?.nodes?.[0]?.name || "");
+        const ratingDiff = bRating - aRating;
+
+        if (!Number.isNaN(ratingDiff) && ratingDiff !== 0) {
+          return ratingDiff;
+        }
+
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }),
+    },
+  }));
+}
+
+const { chainName, posts } = Astro.props as OwnerPageProps;
+---
+
+<BaseLayout pageTitle={`Roast Dinner Reviews by ${chainName}`}>
+  <div class="no-image-container">
+    <section class="post-title centre-with-padding">
+      <h2>Reviews of venues owned by {chainName}</h2>
+    </section>
+  </div>
+
+  <section class="home-list">
+    {
+      posts.length > 0 ? (
+        <ul>
+          {posts.map((post) => (
+            <li class="heading">
+              <h2>
+                <a href={`/${post.slug}`} rel="noopener noreferrer">
+                  <Fragment set:html={post.title} />
+                </a>
+              </h2>
+              <a
+                href={`/${post.slug}`}
+                rel="noopener noreferrer"
+                class="featured-image"
+              >
+                <img
+                  src={post.featuredImage?.node?.sourceUrl}
+                  alt={
+                    post.featuredImage?.node?.altText ||
+                    `Photo of the roast dinner at ${post.title}`
+                  }
+                  width="400"
+                  height="300"
+                />
+              </a>
+              <p>
+                <strong>Rating:</strong>{" "}
+                {post.ratings?.nodes?.[0]?.name || "N/A"}
+              </p>
+              {post.yearsOfVisit?.nodes?.[0]?.name && (
+                <p>
+                  <strong>Year visited:</strong>{" "}
+                  {post.yearsOfVisit.nodes[0].name}
+                </p>
+              )}
+              {post.closedDowns?.nodes?.[0]?.name && (
+                <p>{getClosedStatusLabel(post.closedDowns.nodes[0].name)}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No reviews found for this chain.</p>
+      )
+    }
+  </section>
+</BaseLayout>
