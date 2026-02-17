@@ -48,7 +48,7 @@ const getSouthWestTopRatedRoasts = async () => {
       ];
       const borough = post.boroughs?.nodes?.[0]?.name;
       const isClosed = post.closedDowns?.nodes[0]?.name || "";
-      const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
+      const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "");
 
       return (
         borough &&
@@ -73,7 +73,7 @@ const getSouthWestTopRatedRoasts = async () => {
 
   const highRated = allPosts.filter(
     (post) =>
-      Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0") >= 8 &&
+      Number.parseFloat(post.ratings?.nodes?.[0]?.name || "") >= 8 &&
       !topRated.some((topPost) => topPost.slug === post.slug)
   );
 
