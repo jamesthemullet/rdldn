@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
 import type { Page } from "../types";
 import "../styles/post.css";
+import BestPostsList from "../components/best-posts-list.astro";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
@@ -50,52 +51,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
 
-    {
-      filtered.map((post) => (
-        <div class="best-container">
-          <div class="best-container-details">
-            <h2>
-              <a href={`/${post.slug}`}>{post.title}</a>
-            </h2>
-
-            {post.highlights?.loved && (
-              <div class="post-summary-block highlight-block">
-                <p>
-                  <strong>Loved:</strong> {post.highlights.loved}
-                </p>
-                {post.highlights.loathed && (
-                  <p>
-                    <strong>Loathed:</strong> {post.highlights.loathed}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <p>
-              <strong>Rating:</strong>{" "}
-              {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
-            </p>
-
-            {post.yearsOfVisit?.nodes?.[0]?.name && (
-              <p>
-                <strong>Year visited:</strong> {post.yearsOfVisit.nodes[0].name}
-              </p>
-            )}
-          </div>
-
-          {post.featuredImage?.node?.sourceUrl && (
-            <div class="best-container-image">
-              <img
-                src={post.featuredImage.node.sourceUrl}
-                alt={
-                  post.featuredImage.node.altText || `Image for ${post.title}`
-                }
-              />
-            </div>
-          )}
-        </div>
-      ))
-    }
+    <BestPostsList posts={filtered} />
 
     <p>
       Know any other Indian roast dinners in London? Do let me know in the

@@ -2,12 +2,10 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 export const prerender = true;
 
-import type { Page } from "../types";
 import "../styles/post.css";
+import BestPostsList from "../components/best-posts-list.astro";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
-import logo3 from "../images/logo-3.png";
-import { fetchGraphQL } from "../lib/api";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
 import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
@@ -31,7 +29,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 >
   <div class="image-container">
     <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      src={singlePage?.featuredImage?.node?.sourceUrl}
       alt={singlePage.title}
       width={5000}
       height={5000}
@@ -48,52 +46,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
 
-    {
-      filtered.map((post) => (
-        <div class="best-container">
-          <div class="best-container-details">
-            <h2>
-              <a href={`/${post.slug}`}>{post.title}</a>
-            </h2>
-
-            {post.highlights?.loved && (
-              <div class="post-summary-block highlight-block">
-                <p>
-                  <strong>Loved:</strong> {post.highlights.loved}
-                </p>
-                {post.highlights.loathed && (
-                  <p>
-                    <strong>Loathed:</strong> {post.highlights.loathed}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <p>
-              <strong>Rating:</strong>{" "}
-              {parseFloat(post?.ratings?.nodes[0].name || "").toFixed(2)}
-            </p>
-
-            {post.yearsOfVisit?.nodes?.[0]?.name && (
-              <p>
-                <strong>Year visited:</strong> {post.yearsOfVisit.nodes[0].name}
-              </p>
-            )}
-          </div>
-
-          {post.featuredImage?.node?.sourceUrl && (
-            <div class="best-container-image">
-              <img
-                src={post.featuredImage.node.sourceUrl}
-                alt={
-                  post.featuredImage.node.altText || `Image for ${post.title}`
-                }
-              />
-            </div>
-          )}
-        </div>
-      ))
-    }
+    <BestPostsList posts={filtered} />
 
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
