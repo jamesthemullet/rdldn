@@ -74,7 +74,7 @@ describe("best-roast-dinner-in-south-west-london page", () => {
     expect(html).toContain("South West Star");
     expect(html).not.toContain("Wrong Borough Roast");
     expect(html).not.toContain("Closed South West Roast");
-    expect(html).toContain("Also Worth a Try");
+    expect(html).not.toContain("Also Worth a Try");
     expect(html).toContain("Any comments?");
   });
 });
