@@ -11,7 +11,7 @@ const {
   opengraphImage,
   content,
   topRated,
-  highRated,
+  highRated = [],
   threadedComments,
   postId,
 } = Astro.props;
@@ -89,20 +89,22 @@ const {
       ))
     }
 
-    <section class="also-worth-a-try">
-      <h3>Also Worth a Try</h3>
-      <ul>
-        {
-          highRated.map(
-            (roast: { slug: string; name: string; rating?: number }) => (
-              <li>
-                <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
-              </li>
-            )
-          )
-        }
-      </ul>
-    </section>
+    {
+      highRated.length > 0 && (
+        <section class="also-worth-a-try">
+          <h3>Also Worth a Try</h3>
+          <ul>
+            {highRated.map(
+              (roast: { slug: string; name: string; rating?: number }) => (
+                <li>
+                  <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
+                </li>
+              )
+            )}
+          </ul>
+        </section>
+      )
+    }
 
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={postId} />

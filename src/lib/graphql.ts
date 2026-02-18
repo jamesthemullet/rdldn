@@ -1,69 +1,54 @@
 import { fetchGraphQL } from "../lib/api";
-import type { Page } from "../types";
+import type { Page, Post } from "../types";
+import GET_ALL_POSTS from "./queries/getAllPosts";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
 import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
 
-const GET_ALL_POSTS = `
-  query GetAllPosts($after: String) {
-    posts(after: $after, first: 10) {
-      nodes {
-        title
-        slug
-        areas {
-          nodes {
-            name
-          }
-        }
-        closedDowns {
-          nodes {
-            name
-          }
-        }
-        ratings {
-          nodes {
-            name
-          }
-        }
-        featuredImage {
-          node {
-            sourceUrl
-            altText
-          }
-        }
-        highlights {
-          loved
-          loathed
-        }
-        yearsOfVisit {
-          nodes {
-            name
-          }
-        }
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
+type PostsConnection = {
+  nodes: Post[];
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor: string | null;
+  };
+};
 
+type FetchAllPostsResponse = {
+  posts: PostsConnection;
+};
 
-export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any[]; highRated: any[] }> => {
-  const allPosts: any[] = [];
+type HighRatedRoast = {
+  name: string;
+  slug: string;
+  rating: string;
+};
+
+const getPostRating = (post: Post): number =>
+  Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
+
+const isPostOpen = (post: Post): boolean =>
+  !(post.closedDowns?.nodes?.[0]?.name || "");
+
+const fetchFilteredRoasts = async ({
+  minRating,
+  matcher,
+}: {
+  minRating: number;
+  matcher: (post: Post) => boolean;
+}): Promise<Post[]> => {
+  const allPosts: Post[] = [];
   let hasNextPage = true;
   let endCursor: string | null = null;
 
   while (hasNextPage) {
-    const variables: Record<string, any> = endCursor ? { after: endCursor } : {};
-    const { posts }: { posts: any } = await fetchGraphQL(GET_ALL_POSTS, variables);
+    const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+    const { posts } = await fetchGraphQL(
+      GET_ALL_POSTS,
+      variables
+    ) as FetchAllPostsResponse;
 
-    const filtered = posts.nodes.filter((post: any) => {
-      const postArea = post.areas?.nodes?.[0]?.name;
-      const isClosed = post.closedDowns?.nodes[0]?.name || "";
-      const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
-
-      return postArea === area && !isClosed && !isNaN(rating);
+    const filtered = posts.nodes.filter((post) => {
+      const rating = getPostRating(post);
+      return matcher(post) && isPostOpen(post) && !Number.isNaN(rating) && rating > minRating;
     });
 
     allPosts.push(...filtered);
@@ -71,8 +56,33 @@ export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any
     endCursor = posts.pageInfo.endCursor;
   }
 
+  return allPosts.sort(
+    (a, b) => getPostRating(b) - getPostRating(a)
+  );
+};
+
+export const fetchTopRatedRoastsByFilter = async ({
+  matcher,
+  minRating = 0,
+  limit = 5,
+}: {
+  matcher: (post: Post) => boolean;
+  minRating?: number;
+  limit?: number;
+}): Promise<Post[]> => {
+  const filteredRoasts = await fetchFilteredRoasts({ matcher, minRating });
+  return filteredRoasts.slice(0, limit);
+};
+
+export const fetchTopRatedRoasts = async (
+  area: string
+): Promise<{ topRated: Post[]; highRated: HighRatedRoast[] }> => {
+  const allPosts = await fetchFilteredRoasts({
+    matcher: (post) => post.areas?.nodes?.[0]?.name === area,
+    minRating: 0,
+  });
+
   const topRated = allPosts
-    .sort((a, b) => Number.parseFloat(b.ratings?.nodes?.[0]?.name || "") - Number.parseFloat(a.ratings?.nodes?.[0]?.name || ""))
     .slice(0, 5);
 
 
@@ -80,13 +90,13 @@ export const fetchTopRatedRoasts = async (area: string): Promise<{ topRated: any
 
   const highRated = allPosts
     .filter((post) => {
-      const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
+      const rating = getPostRating(post);
       return rating >= 8 && !topRatedSlugs.has(post.slug);
     })
     .map((post) => ({
-      name: post.title,
-      slug: post.slug,
-      rating: Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0").toFixed(2),
+      name: post.title || "",
+      slug: post.slug || "",
+      rating: getPostRating(post).toFixed(2),
     }));
 
   return { topRated, highRated };
