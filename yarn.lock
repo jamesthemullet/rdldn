@@ -2020,10 +2020,15 @@ acorn-jsx@^5.0.0:
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
 
-acorn@^8.0.0, acorn@^8.15.0, acorn@^8.6.0:
+acorn@^8.0.0, acorn@^8.6.0:
   version "8.15.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.15.0.tgz#a360898bc415edaac46c8241f6383975b930b816"
   integrity sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==
+
+acorn@^8.15.0:
+  version "8.16.0"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.16.0.tgz#4ce79c89be40afe7afe8f3adb902a1f1ce9ac08a"
+  integrity sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==
 
 agent-base@^7.1.2:
   version "7.1.4"
@@ -2146,9 +2151,9 @@ astro-seo@^1.0.0:
     "@astrojs/check" "^0.9.0"
 
 astro@^5.16.9:
-  version "5.17.2"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-5.17.2.tgz#f3c26a71927f05706d964e70918dd6927fad8907"
-  integrity sha512-7jnMqGo53hOQNwo1N/wqeOvUp8wwW/p+DeerSjSkHNx8L/1mhy6P7rVo7EhdmF8DpKqw0tl/B5Fx1WcIzg1ysA==
+  version "5.17.3"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-5.17.3.tgz#dd0d3fd659b280d7ff20fc5fc37277675ebd2e82"
+  integrity sha512-69dcfPe8LsHzklwj+hl+vunWUbpMB6pmg35mACjetxbJeUNNys90JaBM8ZiwsPK689SAj/4Zqb1ayaANls9/MA==
   dependencies:
     "@astrojs/compiler" "^2.13.0"
     "@astrojs/internal-helpers" "0.7.5"
@@ -2173,7 +2178,7 @@ astro@^5.16.9:
     dlv "^1.1.3"
     dset "^3.1.4"
     es-module-lexer "^1.7.0"
-    esbuild "^0.27.0"
+    esbuild "^0.27.3"
     estree-walker "^3.0.3"
     flattie "^1.1.1"
     fontace "~0.4.0"
@@ -2549,9 +2554,9 @@ deterministic-object-hash@^2.0.2:
     base-64 "^1.0.0"
 
 devalue@^5.6.2:
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/devalue/-/devalue-5.6.2.tgz#931e2bb1cc2b299e0f0fb9e4e5be8ebf521a25b8"
-  integrity sha512-nPRkjWzzDQlsejL1WVifk5rvcFi/y1onBRxjaFMjZeR9mFpqu2gmAZ9xUB9/IEanEP/vBtGeGganC/GO1fmufg==
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/devalue/-/devalue-5.6.3.tgz#fee7b50bf072f4a4cdf18d1f27de3ce92131f699"
+  integrity sha512-nc7XjUU/2Lb+SvEFVGcWLiKkzfw8+qHI7zn8WYXKkLMgfGSHbgCEaR6bJpev8Cm6Rmrb19Gfd/tZvGqx9is3wg==
 
 devlop@^1.0.0, devlop@^1.1.0:
   version "1.1.0"
@@ -2715,7 +2720,7 @@ esbuild@^0.25.0:
     "@esbuild/win32-ia32" "0.25.12"
     "@esbuild/win32-x64" "0.25.12"
 
-esbuild@^0.27.0:
+esbuild@^0.27.0, esbuild@^0.27.3:
   version "0.27.3"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.27.3.tgz#5859ca8e70a3af956b26895ce4954d7e73bd27a8"
   integrity sha512-8VwMnyGCONIs6cWue2IdpHxHnAjzxnw2Zr7MkVxB2vjmQ2ivqGFb4LEG3SMnv0Gb2F/G/2yA8zUaiL1gywDCCg==
@@ -2943,9 +2948,9 @@ get-caller-file@^2.0.5:
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
 
 get-east-asian-width@^1.0.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/get-east-asian-width/-/get-east-asian-width-1.4.0.tgz#9bc4caa131702b4b61729cb7e42735bc550c9ee6"
-  integrity sha512-QZjmEOC+IT1uk6Rx0sX22V6uHWVwbdbxf1faPqJ1QhLdGgsRGCZoyaQBm/piRdJy/D2um6hM1UP7ZEeQ4EkP+Q==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/get-east-asian-width/-/get-east-asian-width-1.5.0.tgz#ce7008fe345edcf5497a6f557cfa54bc318a9ce7"
+  integrity sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==
 
 github-slugger@^2.0.0:
   version "2.0.0"
