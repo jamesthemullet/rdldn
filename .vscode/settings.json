@@ -1,5 +1,10 @@
 {
-  "cSpell.words": ["figcaption", "nsfw", "yorkie"],
+  "cSpell.words": [
+    "bakerloo",
+    "figcaption",
+    "nsfw",
+    "yorkie"
+  ],
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit"

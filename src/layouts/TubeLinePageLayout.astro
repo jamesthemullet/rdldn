@@ -1,0 +1,103 @@
+---
+import Comments from "../components/comments.astro";
+import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import type { Page, Post, Comments as ThreadedComments } from "../types";
+import BaseLayout from "./BaseLayout.astro";
+
+import "../styles/post.css";
+
+interface Props {
+  singlePage: Page;
+  lineName: string;
+  headingClass: string;
+  stations: string[];
+  roastPosts: Post[];
+  threadedComments: ThreadedComments;
+}
+
+const {
+  singlePage,
+  lineName,
+  headingClass,
+  stations,
+  roastPosts,
+  threadedComments,
+} = Astro.props;
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <div class="image-container">
+    <img
+      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      alt={singlePage.title}
+      width={5000}
+      height={5000}
+      class="featured-image"
+      loading="eager"
+    />
+    <div class="copyright-overlay">
+      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+    </div>
+  </div>
+  <section class="post-title">
+    <h2>{singlePage.title}</h2>
+  </section>
+
+  <div class="container">
+    <div set:html={singlePage.content} />
+    <section>
+      <h3 class={`heading-underline ${headingClass}`}>
+        Roast Dinners On The {lineName} Line
+      </h3>
+
+      <p>Where can you find good roast dinners on the {lineName} Line?</p>
+      <p>This is based solely on the tube station I used to get there.</p>
+
+      <ul class="station-list">
+        {
+          stations.map((station, index) => {
+            const postsForStation = roastPosts.filter((post) =>
+              post.tubeStations?.nodes.some(
+                (tubeStation) => tubeStation.name === station
+              )
+            );
+
+            const topPost = postsForStation[0];
+            return (
+              <li class="station-list-item">
+                <span class="tube-circle-wrapper">
+                  {index === 0 && <span class="tube-connector invisible" />}
+                  {index !== 0 && <span class="tube-connector" />}
+                  <span class="tube-circle" />
+                  {index !== stations.length - 1 && (
+                    <span class="tube-connector" />
+                  )}
+                  {index === stations.length - 1 && (
+                    <span class="tube-connector invisible" />
+                  )}
+                </span>
+                <span class="station-name">{station}</span>
+                {topPost && (
+                  <span class="station-post">
+                    <a href={`/${topPost.slug}`}>{topPost.title}</a>
+                    <span class="station-rating">
+                      {topPost?.ratings?.nodes[0].name}
+                    </span>
+                  </span>
+                )}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+  </div>
+
+  <Newsletter />
+  <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+</BaseLayout>
