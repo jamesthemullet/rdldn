@@ -1,13 +1,10 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
-import type { Page } from "../types";
 import "../styles/post.css";
 import BestPostsList from "../components/best-posts-list.astro";
 import Comments from "../components/comments.astro";
 import Newsletter from "../components/newsletter.astro";
-import logo3 from "../images/logo-3.png";
-import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
@@ -34,7 +31,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 >
   <div class="image-container">
     <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      src={singlePage?.featuredImage?.node?.sourceUrl}
       alt={singlePage.title}
       width={5000}
       height={5000}
