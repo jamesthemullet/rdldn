@@ -16,6 +16,11 @@
     "lint:errors": "biome check . | findstr error",
     "ts-check": "astro check"
   },
+  "resolutions": {
+    "minimatch": "^10.2.1",
+    "path-to-regexp": "^6.3.0",
+    "tar": "^7.5.8"
+  },
   "dependencies": {
     "@astrojs/alpinejs": "^0.4.3",
     "@astrojs/check": "^0.9.4",
