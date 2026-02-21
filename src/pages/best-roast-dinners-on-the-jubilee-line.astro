@@ -1,16 +1,10 @@
 ﻿---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import TubeLinePageLayout from "../layouts/TubeLinePageLayout.astro";
 export const prerender = true;
 
-import { organiseComments } from "../lib/utils";
-import type { Page, Post } from "../types";
-import "../styles/post.css";
-import Comments from "../components/comments.astro";
-import Newsletter from "../components/newsletter.astro";
-import logo3 from "../images/logo-3.png";
-import { fetchGraphQL } from "../lib/api";
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import { getTubeLineRoastPosts } from "../lib/getTubeLineRoastPosts";
+import { organiseComments } from "../lib/utils";
 
 const variables = { id: "6980" };
 const singlePage = await getSinglePageData({ variables });
@@ -45,109 +39,16 @@ const jubileeLineStations = [
   "Stratford",
 ];
 
-const roastPosts: Post[] = [];
-let hasNextPage = true;
-let endCursor: string | null = null;
-
-while (hasNextPage) {
-  const variables = endCursor ? { after: endCursor } : {};
-  const data = await fetchGraphQL(GET_ALL_POSTS, variables);
-  const posts = data.posts;
-
-  // b: <explanation>
-  posts.nodes.forEach((post: Post) => {
-    const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
-
-    if (
-      rating >= 7.5 &&
-      post.tubeStations?.nodes.some((station) =>
-        jubileeLineStations.includes(station.name)
-      ) &&
-      post.closedDowns?.nodes.length === 0
-    ) {
-      roastPosts.push(post);
-    }
-  });
-
-  hasNextPage = posts.pageInfo.hasNextPage;
-  endCursor = posts.pageInfo.endCursor;
-}
+const roastPosts = await getTubeLineRoastPosts(jubileeLineStations);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
 
-<BaseLayout
-  pageTitle={singlePage.title}
-  description={singlePage?.seo?.opengraphDescription}
-  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
->
-  <div class="image-container">
-    <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
-      alt={singlePage.title}
-      width={5000}
-      height={5000}
-      class="featured-image"
-      loading="eager"
-    />
-    <div class="copyright-overlay">
-      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
-    </div>
-  </div>
-  <section class="post-title">
-    <h2>{singlePage.title}</h2>
-  </section>
-
-  <div class="container">
-    <div set:html={singlePage.content} />
-    <section>
-      <h3 class="heading-underline jubilee">
-        Roast Dinners On The Jubilee Line
-      </h3>
-
-      <p>Where can you find good roast dinners on the Jubilee Line?</p>
-      <p>This is based solely on the tube station I used to get there.</p>
-
-      <ul class="station-list">
-        {
-          jubileeLineStations.map((station, index) => {
-            const postsForStation = roastPosts.filter((post) =>
-              post.tubeStations?.nodes.some(
-                (tubeStation) => tubeStation.name === station
-              )
-            );
-
-            const topPost = postsForStation[0];
-            return (
-              <li class="station-list-item">
-                <span class="tube-circle-wrapper">
-                  {index === 0 && <span class="tube-connector invisible" />}
-                  {index !== 0 && <span class="tube-connector" />}
-                  <span class="tube-circle" />
-                  {index !== jubileeLineStations.length - 1 && (
-                    <span class="tube-connector" />
-                  )}
-                  {index === jubileeLineStations.length - 1 && (
-                    <span class="tube-connector invisible" />
-                  )}
-                </span>
-                <span class="station-name">{station}</span>
-                {topPost && (
-                  <span class="station-post">
-                    <a href={`/${topPost.slug}`}>{topPost.title}</a>
-                    <span class="station-rating">
-                      {topPost?.ratings?.nodes[0].name}
-                    </span>
-                  </span>
-                )}
-              </li>
-            );
-          })
-        }
-      </ul>
-    </section>
-  </div>
-
-  <Newsletter />
-  <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
-</BaseLayout>
+<TubeLinePageLayout
+  singlePage={singlePage}
+  lineName="Jubilee"
+  headingClass="jubilee"
+  stations={jubileeLineStations}
+  roastPosts={roastPosts}
+  threadedComments={threadedComments}
+/>
