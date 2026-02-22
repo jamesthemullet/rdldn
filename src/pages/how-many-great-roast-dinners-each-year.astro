@@ -10,48 +10,18 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import { buildYearlyRoastStats, fetchAllPosts } from "../lib/yearlyRoastStats";
 
 const variables = { id: "9145" };
 const singlePage = await getSinglePageData({ variables });
 
-const allRoastPosts: Post[] = [];
-
-let hasNextPage = true;
-let endCursor: string | null = null;
-
-while (hasNextPage) {
-  const variables = endCursor ? { after: endCursor } : {};
-  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
-
-  allRoastPosts.push(...posts.nodes);
-  hasNextPage = posts.pageInfo.hasNextPage;
-  endCursor = posts.pageInfo.endCursor;
-}
-
-const roastDinnerPosts = allRoastPosts.filter((post) =>
-  post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner")
+const allRoastPosts = await fetchAllPosts(fetchGraphQL, GET_ALL_POSTS);
+const greatRoastsByYear = buildYearlyRoastStats(
+  allRoastPosts,
+  (rating) => rating >= 8
 );
-
-const greatRoastsByYear: Record<string, { great: number; total: number }> = {};
-
-// b: <explanation>
-roastDinnerPosts.forEach((post) => {
-  const yearTerm = post.yearsOfVisit?.nodes[0]?.name;
-  if (!yearTerm) return;
-
-  if (!greatRoastsByYear[yearTerm]) {
-    greatRoastsByYear[yearTerm] = { great: 0, total: 0 };
-  }
-
-  greatRoastsByYear[yearTerm].total++;
-
-  const ratingTerm = post.ratings?.nodes[0]?.name;
-  if (ratingTerm && Number.parseFloat(ratingTerm) >= 8) {
-    greatRoastsByYear[yearTerm].great++;
-  }
-});
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
@@ -63,7 +33,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 >
   <div class="image-container">
     <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      src={singlePage?.featuredImage?.node?.sourceUrl}
       alt={singlePage.title}
       width={5000}
       height={5000}
@@ -84,15 +54,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         Object.entries(greatRoastsByYear)
           .sort(([a], [b]) => b.localeCompare(a))
-          .map(([year, { great, total }]) => {
+          .map(([year, { matching, total }]) => {
             const wasOrIs =
               year === String(new Date().getFullYear()) ? "is" : "was";
             const percentage =
-              total > 0 ? Math.round((great / total) * 100) : 0;
+              total > 0 ? Math.round((matching / total) * 100) : 0;
             return (
               <li>
                 The number of really good roast dinners in {year} {wasOrIs}{" "}
-                {great} ({percentage}% of roasts).
+                {matching} ({percentage}% of roasts).
               </li>
             );
           })
