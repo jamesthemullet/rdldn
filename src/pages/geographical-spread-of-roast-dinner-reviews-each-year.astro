@@ -10,8 +10,8 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
 const variables = { id: "10606" };
 const singlePage = await getSinglePageData({ variables });
@@ -66,7 +66,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 >
   <div class="image-container">
     <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+      src={singlePage?.featuredImage?.node?.sourceUrl}
       alt={singlePage.title}
       width={5000}
       height={5000}
