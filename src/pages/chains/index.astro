@@ -1,4 +1,5 @@
 ---
+import Dropdown from "../../components/dropdown.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
@@ -38,6 +39,11 @@ const sortedChains = [...chains.entries()]
   .map(([slug, data]) => ({ slug, name: data.name, count: data.count }))
   .filter((chain) => chain.count >= 2)
   .sort((a, b) => a.name.localeCompare(b.name));
+
+const chainOptions = sortedChains.map((chain) => ({
+  value: chain.slug,
+  label: chain.name,
+}));
 ---
 
 <BaseLayout pageTitle="Chains">
@@ -49,20 +55,16 @@ const sortedChains = [...chains.entries()]
       Browse all roast dinner reviews by chain. Pick a chain from the dropdown
       to see every review.
     </p>
-    <label for="chain-select">Select Chain:</label>
-    <form id="chain-dropdown">
-      <select
-        id="chain-select"
-        name="chain"
-        onchange="if (this.value) window.location.href = `/chains/${this.value}`"
-      >
-        <option value="">Choose a chain</option>
-        {
-          sortedChains.map((chain) => (
-            <option value={chain.slug}>{chain.name}</option>
-          ))
-        }
-      </select>
-    </form>
+    <Dropdown
+      label="Select Chain:"
+      id="chain-select"
+      name="chain"
+      formId="chain-dropdown"
+      selectedValue=""
+      options={chainOptions}
+      defaultOptionLabel="Choose a chain"
+      maxOptionLabelLength={24}
+      onChange="if (this.value) window.location.href = `/chains/${this.value}`"
+    />
   </div>
 </BaseLayout>

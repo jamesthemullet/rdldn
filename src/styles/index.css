@@ -236,8 +236,15 @@ section {
     }
 
     select {
-      width: 220px;
+      width: 260px;
       margin-top: 10px;
+      font: inherit;
+      font-size: inherit;
+    }
+
+    option {
+      font: inherit;
+      font-size: inherit;
     }
   }
 }
