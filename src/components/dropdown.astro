@@ -1,0 +1,58 @@
+---
+type DropdownOption = {
+  value: string;
+  label: string;
+};
+
+interface Props {
+  label: string;
+  id: string;
+  name: string;
+  options: DropdownOption[];
+  selectedValue?: string;
+  formId?: string;
+  formMethod?: "get" | "post";
+  onChange?: string;
+  defaultOptionLabel?: string;
+  maxOptionLabelLength?: number;
+}
+
+const {
+  label,
+  id,
+  name,
+  options,
+  selectedValue = "",
+  formId,
+  formMethod = "get",
+  onChange = "this.form.submit()",
+  defaultOptionLabel,
+  maxOptionLabelLength,
+} = Astro.props;
+
+const getDisplayLabel = (labelToFormat: string) => {
+  if (!maxOptionLabelLength || labelToFormat.length <= maxOptionLabelLength) {
+    return labelToFormat;
+  }
+
+  return `${labelToFormat.slice(0, maxOptionLabelLength - 1).trimEnd()}…`;
+};
+---
+
+<label for={id}>{label}</label>
+<form id={formId} method={formMethod}>
+  <select id={id} name={name} value={selectedValue} onchange={onChange}>
+    {defaultOptionLabel && <option value="">{defaultOptionLabel}</option>}
+    {
+      options.map((option) => (
+        <option
+          value={option.value}
+          selected={selectedValue === option.value}
+          title={option.label}
+        >
+          {getDisplayLabel(option.label)}
+        </option>
+      ))
+    }
+  </select>
+</form>

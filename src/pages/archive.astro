@@ -1,4 +1,5 @@
 ---
+import Dropdown from "../components/dropdown.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchPostsByDate } from "../lib/graphql";
 import "../styles/index.css";
@@ -23,6 +24,13 @@ const selectedDate =
   url.searchParams.get("date") ||
   `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, "0")}`;
 
+const monthOptions = months.map(({ year, month }) => ({
+  value: `${year}-${month}`,
+  label: `${new Date(`${year}-${month}-01`).toLocaleString("default", {
+    month: "long",
+  })} ${year}`,
+}));
+
 let posts = [];
 try {
   posts = await fetchPostsByDate(selectedDate);
@@ -44,29 +52,15 @@ try {
         href="/about">About</a
       > page.
     </p>
-    <label for="archive-date">Select Month/Year:</label>
-    <form id="archive-dropdown" method="get">
-      <select
-        id="archive-date"
-        name="date"
-        value={selectedDate}
-        onchange="this.form.submit()"
-      >
-        {
-          months.map(({ year, month }) => (
-            <option
-              value={`${year}-${month}`}
-              selected={selectedDate === `${year}-${month}`}
-            >
-              {new Date(`${year}-${month}-01`).toLocaleString("default", {
-                month: "long",
-              })}{" "}
-              {year}
-            </option>
-          ))
-        }
-      </select>
-    </form>
+    <Dropdown
+      label="Select Month/Year:"
+      id="archive-date"
+      name="date"
+      formId="archive-dropdown"
+      formMethod="get"
+      selectedValue={selectedDate}
+      options={monthOptions}
+    />
   </div>
 
   <section class="home-list">
