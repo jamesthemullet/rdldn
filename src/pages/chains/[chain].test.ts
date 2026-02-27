@@ -70,8 +70,8 @@ describe("chains detail page", () => {
     expect(alpha).toBeDefined();
     expect(beta).toBeDefined();
     expect(independent).toBeUndefined();
-    expect(alpha.props.chainName).toBe("Alpha & Co");
-    expect(alpha.props.posts.map((post: any) => post.slug)).toEqual([
+    expect(alpha?.props.chainName).toBe("Alpha & Co");
+    expect(alpha?.props.posts.map((post: any) => post.slug)).toEqual([
       "alpha-high",
       "alpha-newer",
       "alpha-older",
