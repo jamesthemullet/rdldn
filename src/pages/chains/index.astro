@@ -20,9 +20,6 @@ allPosts.forEach((post) => {
     }
 
     const chainSlug = toOwnerSlug(chainName);
-    if (!chainSlug) {
-      return;
-    }
 
     const existing = chains.get(chainSlug);
 
