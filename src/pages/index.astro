@@ -48,14 +48,13 @@ if (recentPostCursor) {
     const data = await fetchGraphQL(OTHER_POSTS_AFTER_FIRST_QUERY, {
       after: recentPostCursor,
     });
-    otherPosts =
-      data?.posts?.nodes?.map((post: Post) => ({
-        ...post,
-        featuredImageUrl:
-          post.featuredImage?.node?.mediaDetails?.sizes?.find(
-            (size) => size.name === "homepage"
-          )?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
-      })) || [];
+    otherPosts = data?.posts?.nodes?.map((post: Post) => ({
+      ...post,
+      featuredImageUrl:
+        post.featuredImage?.node?.mediaDetails?.sizes?.find(
+          (size) => size.name === "homepage"
+        )?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
+    }));
   } catch (error) {
     console.error("Error fetching other posts:", error);
   }
