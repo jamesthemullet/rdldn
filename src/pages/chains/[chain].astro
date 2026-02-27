@@ -21,9 +21,7 @@ const CLOSED_STATUS_LABELS: Record<string, string> = {
   tempclosed: "Temporarily Closed",
 };
 
-const getClosedStatusLabel = (status?: string): string => {
-  if (!status) return "";
-
+const getClosedStatusLabel = (status: string): string => {
   if (status.includes("re-reviewed")) {
     return `Re-reviewed: ${status.replace("re-reviewed-", "").trim()}`;
   }
@@ -45,10 +43,6 @@ export async function getStaticPaths() {
       }
 
       const chainSlug = toOwnerSlug(chainName);
-
-      if (!chainSlug) {
-        return;
-      }
 
       const current = postsByChain.get(chainSlug) ?? { chainName, posts: [] };
       current.posts.push(post);
