@@ -1,6 +1,7 @@
 ---
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header.astro";
 import Newsletter from "../components/newsletter.astro";
 import type { Post } from "../types";
 import BaseLayout from "./BaseLayout.astro";
@@ -22,22 +23,7 @@ const {
   description={description}
   opengraphImage={opengraphImage}
 >
-  <div class="image-container">
-    <img
-      src={opengraphImage}
-      alt={pageTitle}
-      width={5000}
-      height={5000}
-      class="featured-image"
-      loading="eager"
-    />
-    <div class="copyright-overlay">
-      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
-    </div>
-  </div>
-  <section class="post-title">
-    <h2>{pageTitle}</h2>
-  </section>
+  <FeaturedPostHeader imageSrc={opengraphImage} title={pageTitle} />
 
   <div class="container">
     <div set:html={content} />
