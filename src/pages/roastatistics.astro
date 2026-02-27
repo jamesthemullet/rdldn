@@ -4,6 +4,7 @@ import { organiseComments } from "../lib/utils";
 import type { Page, Size } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header.astro";
 import Newsletter from "../components/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
@@ -74,22 +75,10 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   description={singlePage?.seo?.opengraphDescription}
   opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
 >
-  <div class="image-container">
-    <img
-      src={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
-      alt={singlePage.title}
-      width={5000}
-      height={5000}
-      class="featured-image"
-      loading="eager"
-    />
-    <div class="copyright-overlay">
-      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
-    </div>
-  </div>
-  <section class="post-title">
-    <h2>{singlePage.title}</h2>
-  </section>
+  <FeaturedPostHeader
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+    title={singlePage.title}
+  />
   <div class="container">
     <div set:html={singlePage.content} />
     <section class="other-list">

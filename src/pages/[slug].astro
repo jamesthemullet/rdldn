@@ -13,6 +13,7 @@ import SINGLE_POST_QUERY from "../lib/queries/singlePostBySlug";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header.astro";
 import Newsletter from "../components/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import logo3 from "../images/logo-3.png";
@@ -187,27 +188,13 @@ const threadedComments = organiseComments(
   opengraphImage={singlePost.seo?.opengraphImage?.sourceUrl}
   halloween={singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
 >
-  <div class="image-container">
-    <img
-      src={featuredImageUrl}
-      alt={singlePost.title}
-      width={5000}
-      height={5000}
-      class="featured-image"
-      loading="eager"
-    />
+  <FeaturedPostHeader imageSrc={featuredImageUrl} title={singlePost.title}>
     {singlePost.closedDowns?.nodes?.length > 0 && (
-      <div class="closed-overlay">
+      <div slot="overlay" class="closed-overlay">
         {getClosedMessage()}
       </div>
     )}
-    <div class="copyright-overlay">
-      &copy; {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
-    </div>
-  </div>
-  <section class="post-title">
-    <h2>{singlePost.title}</h2>
-    <p>
+    <p slot="meta">
       Published: {
         new Date(singlePost.date).toLocaleDateString("en-UK", {
           year: "numeric",
@@ -216,7 +203,7 @@ const threadedComments = organiseComments(
         })
       }
     </p>
-  </section>
+  </FeaturedPostHeader>
   <div class="container">
     {contentType === "post" && (
       <>

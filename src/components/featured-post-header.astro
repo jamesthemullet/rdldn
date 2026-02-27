@@ -1,0 +1,28 @@
+---
+interface Props {
+  imageSrc: string;
+  title: string;
+  imageAlt?: string;
+}
+
+const { imageSrc, title, imageAlt = title }: Props = Astro.props;
+---
+
+<div class="image-container">
+  <img
+    src={imageSrc}
+    alt={imageAlt}
+    width={5000}
+    height={5000}
+    class="featured-image"
+    loading="eager"
+  />
+  <slot name="overlay" />
+  <div class="copyright-overlay">
+    © {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
+  </div>
+</div>
+<section class="post-title">
+  <h2>{title}</h2>
+  <slot name="meta" />
+</section>
