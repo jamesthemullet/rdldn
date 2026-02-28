@@ -21,8 +21,12 @@ afterEach(() => {
 });
 
 const createContainer = async () => {
+  const renderer = getReactContainerRenderer() as any;
+  if (renderer && typeof renderer === "object" && !("ssr" in renderer)) {
+    renderer.ssr = true;
+  }
   const container = await AstroContainer.create({
-    renderers: [getReactContainerRenderer()]
+    renderers: [renderer]
   });
   return container;
 };
@@ -126,7 +130,7 @@ describe("maps page", () => {
   test("throws when single page data cannot be loaded", async () => {
     const { fetchGraphQL } = await import("../lib/api");
     const fetchGraphQLMock = vi.mocked(fetchGraphQL);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { });
 
     fetchGraphQLMock.mockImplementation(async (_query: string, variables: Record<string, unknown> = {}) => {
       if ("id" in variables) {
@@ -145,7 +149,7 @@ describe("maps page", () => {
     });
 
     const container = await createContainer();
-    const { default: Page } = await import("./maps.astro?single-page-missing");
+    const { default: Page } = await import("./maps.astro");
 
     await expect(container.renderToString(Page)).rejects.toThrow("No single page data found");
     expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -157,7 +161,7 @@ describe("maps page", () => {
   test("renders when post-locations fetch fails and logs the posts catch", async () => {
     const { fetchGraphQL } = await import("../lib/api");
     const fetchGraphQLMock = vi.mocked(fetchGraphQL);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { });
 
     fetchGraphQLMock.mockImplementation(async (_query: string, variables: Record<string, unknown> = {}) => {
       if ("id" in variables) {
@@ -188,7 +192,7 @@ describe("maps page", () => {
     });
 
     const container = await createContainer();
-    const { default: Page } = await import("./maps.astro?posts-fetch-failure");
+    const { default: Page } = await import("./maps.astro");
     const html = await container.renderToString(Page);
 
     expect(html).toContain("Roast Map");
