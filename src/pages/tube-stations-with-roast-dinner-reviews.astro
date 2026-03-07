@@ -1,7 +1,7 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
-import type { Page, Post } from "../types";
+import type { Post } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header.astro";
@@ -11,8 +11,8 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
 const variables = { id: "6781" };
 const singlePage = await getSinglePageData({ variables });
