@@ -11,8 +11,8 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
 const variables = { id: "9289" };
 const singlePage = await getSinglePageData({ variables });
@@ -98,7 +98,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
 >
   <FeaturedPostHeader
-    imageSrc={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl}
     title={singlePage.title}
   />
   <div class="container">

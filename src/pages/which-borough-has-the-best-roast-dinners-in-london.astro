@@ -11,8 +11,8 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
-import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
 const variables = { id: "6277" };
 const singlePage = await getSinglePageData({ variables });
@@ -69,7 +69,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
 >
   <FeaturedPostHeader
-    imageSrc={singlePage?.featuredImage?.node?.sourceUrl || logo3.src}
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl}
     title={singlePage.title}
   />
   <div class="container">
@@ -79,8 +79,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         districtStats.map((district) => (
           <li>
             The average rating in {district.name} is{" "}
-            {district.average.toFixed(2)} ({district.count}{" "}
-            {district.count === 1 ? "review" : "reviews"})
+            {district.average.toFixed(2)} ({district.count} reviews)
           </li>
         ))
       }
