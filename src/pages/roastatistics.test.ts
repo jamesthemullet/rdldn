@@ -31,11 +31,11 @@ const createFeaturedImageNode = ({
     mediaDetails: {
       sizes: homepageUrl
         ? [
-            {
-              name: "homepage",
-              sourceUrl: homepageUrl,
-            },
-          ]
+          {
+            name: "homepage",
+            sourceUrl: homepageUrl,
+          },
+        ]
         : [],
     },
   },
