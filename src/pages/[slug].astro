@@ -20,6 +20,11 @@ import logo3 from "../images/logo-3.png";
 import { toOwnerSlug } from "../lib/ownerSlug";
 
 export async function getStaticPaths() {
+  const dedicatedPageSlugs = new Set([
+    "annual-roastatistics",
+    "are-independent-restaurants-better-than-chains-at-roast-dinners",
+  ]);
+
   const allPosts = [];
   const allPages = [];
   let hasNextPage = true;
@@ -111,15 +116,19 @@ const ALL_PAGE_SLUGS_QUERY = `
     endCursor = data.pages.pageInfo.endCursor;
   }
 
-  const postPaths = allPosts.map((post) => ({
-    params: { slug: post.slug },
-    props: { contentType: "post" }
-  }));
+  const postPaths = allPosts
+    .filter((post) => post?.slug && !dedicatedPageSlugs.has(post.slug))
+    .map((post) => ({
+      params: { slug: post.slug },
+      props: { contentType: "post" }
+    }));
 
-  const pagePaths = allPages.map((page) => ({
-    params: { slug: page.slug },
-    props: { contentType: "page" }
-  }));
+  const pagePaths = allPages
+    .filter((page) => page?.slug && !dedicatedPageSlugs.has(page.slug))
+    .map((page) => ({
+      params: { slug: page.slug },
+      props: { contentType: "page" }
+    }));
 
   return [...postPaths, ...pagePaths];
 }

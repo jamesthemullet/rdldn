@@ -11,6 +11,8 @@ import { fetchGraphQL } from "../lib/api";
 import { getSinglePageData } from "../lib/getSinglePageData";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
+export const prerender = true;
+
 const singlePage = await getSinglePageData({ variables: { id: "10608" } });
 
 let hasNextPage = true;

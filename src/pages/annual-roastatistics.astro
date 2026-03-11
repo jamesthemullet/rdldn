@@ -3,6 +3,7 @@ import Comments from "../components/comments.astro";
 import Dropdown from "../components/dropdown.astro";
 import FeaturedPostHeader from "../components/featured-post-header.astro";
 import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchGraphQL } from "../lib/api";
 import { getSinglePageData } from "../lib/getSinglePageData";
@@ -12,12 +13,7 @@ import { fetchAllPosts } from "../lib/yearlyRoastStats";
 import type { Post } from "../types";
 import "../styles/post.css";
 
-export const prerender = false;
-export const response = {
-  headers: {
-    "Cache-Control": "no-store",
-  },
-};
+export const prerender = true;
 
 const variables = { id: "11910" };
 const singlePage = await getSinglePageData({ variables });
@@ -143,8 +139,6 @@ const topMeats = Array.from(meatCounts.entries())
   .slice(0, 10);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
-
-console.log(10, singlePage);
 ---
 
 <BaseLayout
