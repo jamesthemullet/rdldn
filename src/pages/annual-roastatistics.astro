@@ -14,6 +14,11 @@ import type { Post } from "../types";
 import "../styles/post.css";
 
 export const prerender = false;
+export const response = {
+  headers: {
+    "Cache-Control": "no-store",
+  },
+};
 
 const variables = { id: "11910" };
 const singlePage = await getSinglePageData({ variables });
@@ -151,7 +156,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    {singlePage.content ? <div set:html={singlePage.content} /> : null}
     <p>
       Select a year to see your roast dinner averages and where in London you
       reviewed roasts.
