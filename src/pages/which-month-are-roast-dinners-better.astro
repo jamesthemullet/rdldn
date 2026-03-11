@@ -1,12 +1,11 @@
 ﻿---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
-import type { Page, Post } from "../types";
+import type { Post } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header.astro";
 import Newsletter from "../components/newsletter.astro";
-import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;

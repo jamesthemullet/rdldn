@@ -1,0 +1,267 @@
+---
+import Comments from "../components/comments.astro";
+import Dropdown from "../components/dropdown.astro";
+import FeaturedPostHeader from "../components/featured-post-header.astro";
+import Newsletter from "../components/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { fetchGraphQL } from "../lib/api";
+import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import { organiseComments } from "../lib/utils";
+import { fetchAllPosts } from "../lib/yearlyRoastStats";
+import type { Post } from "../types";
+import "../styles/post.css";
+
+export const prerender = false;
+
+const variables = { id: "11910" };
+const singlePage = await getSinglePageData({ variables });
+
+const parseFirstNumericValue = (rawValue?: string): number | null => {
+  if (!rawValue) return null;
+  const match = rawValue.match(/[\d,.]+/);
+  if (!match) return null;
+
+  const parsedValue = Number.parseFloat(match[0].replace(/,/g, ""));
+  return Number.isNaN(parsedValue) ? null : parsedValue;
+};
+
+const parsePriceValue = (rawValue?: string): number | null => {
+  if (!rawValue) return null;
+  const matches = rawValue.match(/[\d,.]+/g);
+  if (!matches || matches.length === 0) return null;
+
+  const parsedValues = matches
+    .map((value) => Number.parseFloat(value.replace(/,/g, "")))
+    .filter((value) => !Number.isNaN(value));
+
+  if (parsedValues.length === 0) return null;
+
+  const total = parsedValues.reduce((sum, value) => sum + value, 0);
+  return total / parsedValues.length;
+};
+
+const allPosts = await fetchAllPosts(fetchGraphQL, GET_ALL_POSTS);
+
+const roastPosts = allPosts.filter((post: Post) =>
+  post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner")
+);
+
+const years = Array.from(
+  new Set(
+    roastPosts
+      .map((post) => post.yearsOfVisit?.nodes?.[0]?.name)
+      .filter(Boolean) as string[]
+  )
+).sort((a, b) => Number.parseInt(b, 10) - Number.parseInt(a, 10));
+
+const url = new URL(Astro.request.url);
+const requestedYear = url.searchParams.get("year");
+const selectedYear =
+  requestedYear && years.includes(requestedYear)
+    ? requestedYear
+    : (years[0] ?? "");
+
+const yearOptions = years.map((year) => ({
+  value: year,
+  label: year,
+}));
+
+const selectedYearPosts = roastPosts.filter(
+  (post) => post.yearsOfVisit?.nodes?.[0]?.name === selectedYear
+);
+
+const ratingValues = selectedYearPosts
+  .map((post) => parseFirstNumericValue(post.ratings?.nodes?.[0]?.name))
+  .filter((value): value is number => value !== null);
+
+const priceValues = selectedYearPosts
+  .map((post) => parsePriceValue(post.prices?.nodes?.[0]?.name))
+  .filter((value): value is number => value !== null);
+
+const averageRating =
+  ratingValues.length > 0
+    ? ratingValues.reduce((sum, value) => sum + value, 0) / ratingValues.length
+    : null;
+
+const highestRating =
+  ratingValues.length > 0 ? Math.max(...ratingValues) : null;
+const lowestRating = ratingValues.length > 0 ? Math.min(...ratingValues) : null;
+
+const averagePrice =
+  priceValues.length > 0
+    ? priceValues.reduce((sum, value) => sum + value, 0) / priceValues.length
+    : null;
+
+const mostExpensive = priceValues.length > 0 ? Math.max(...priceValues) : null;
+const leastExpensive = priceValues.length > 0 ? Math.min(...priceValues) : null;
+
+const areaCounts = new Map<string, number>();
+const boroughCounts = new Map<string, number>();
+const meatCounts = new Map<string, number>();
+
+selectedYearPosts.forEach((post) => {
+  const area = post.areas?.nodes?.[0]?.name;
+  const borough = post.boroughs?.nodes?.[0]?.name;
+  const normalisedBorough = borough?.trim().toLowerCase();
+
+  if (area) {
+    areaCounts.set(area, (areaCounts.get(area) ?? 0) + 1);
+  }
+
+  if (
+    borough &&
+    normalisedBorough !== "n/a" &&
+    normalisedBorough !== "na" &&
+    normalisedBorough !== "none"
+  ) {
+    boroughCounts.set(borough, (boroughCounts.get(borough) ?? 0) + 1);
+  }
+
+  post.meats?.nodes?.forEach((meat) => {
+    if (meat.name) {
+      meatCounts.set(meat.name, (meatCounts.get(meat.name) ?? 0) + 1);
+    }
+  });
+});
+
+const topAreas = Array.from(areaCounts.entries())
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 5);
+
+const topBoroughs = Array.from(boroughCounts.entries())
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 10);
+
+const topMeats = Array.from(meatCounts.entries())
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 10);
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <FeaturedPostHeader
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl}
+    title={singlePage.title}
+  />
+  <div class="container">
+    <div set:html={singlePage.content} />
+    <p>
+      Select a year to see your roast dinner averages and where in London you
+      reviewed roasts.
+    </p>
+
+    {
+      years.length > 0 ? (
+        <Dropdown
+          label="Select Year:"
+          id="yearly-stats-year"
+          name="year"
+          formId="yearly-stats-dropdown"
+          formMethod="get"
+          selectedValue={selectedYear}
+          options={yearOptions}
+          center={true}
+        />
+      ) : null
+    }
+
+    {
+      selectedYear ? (
+        <section>
+          <h2>{selectedYear} overview</h2>
+          <h3>Main roastatistics for {selectedYear} so far</h3>
+          <ul>
+            <li>
+              Average rating:{" "}
+              {averageRating !== null
+                ? averageRating.toFixed(2)
+                : "No rating data"}
+            </li>
+            <li>
+              Highest rating:{" "}
+              {highestRating !== null
+                ? highestRating.toFixed(2)
+                : "No rating data"}
+            </li>
+            <li>
+              Lowest rating:{" "}
+              {lowestRating !== null
+                ? lowestRating.toFixed(2)
+                : "No rating data"}
+            </li>
+            <li>
+              Average price:{" "}
+              {averagePrice !== null
+                ? `£${averagePrice.toFixed(2)}`
+                : "No price data"}
+            </li>
+            <li>
+              Most expensive:{" "}
+              {mostExpensive !== null
+                ? `£${mostExpensive.toFixed(2)}`
+                : "No price data"}
+            </li>
+            <li>
+              Least expensive:{" "}
+              {leastExpensive !== null
+                ? `£${leastExpensive.toFixed(2)}`
+                : "No price data"}
+            </li>
+            <li>Roasts reviewed: {selectedYearPosts.length}</li>
+          </ul>
+
+          <h3>Most visited areas</h3>
+          {topAreas.length > 0 ? (
+            <ul>
+              {topAreas.map(([area, count]) => (
+                <li>
+                  {area}: {count}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No area data for this year.</p>
+          )}
+
+          <h3>Most visited boroughs</h3>
+          {topBoroughs.length > 0 ? (
+            <ul>
+              {topBoroughs.map(([borough, count]) => (
+                <li>
+                  {borough}: {count}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No borough data for this year.</p>
+          )}
+
+          <h3>Most eaten meats</h3>
+          {topMeats.length > 0 ? (
+            <ul>
+              {topMeats.map(([meat, count]) => (
+                <li>
+                  {meat}: {count}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No meat data for this year.</p>
+          )}
+        </section>
+      ) : (
+        <p>No roast dinner reviews with year data were found.</p>
+      )
+    }
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>

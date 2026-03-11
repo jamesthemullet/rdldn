@@ -15,6 +15,7 @@ interface Props {
   onChange?: string;
   defaultOptionLabel?: string;
   maxOptionLabelLength?: number;
+  center?: boolean;
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   onChange = "this.form.submit()",
   defaultOptionLabel,
   maxOptionLabelLength,
+  center = false,
 } = Astro.props;
 
 const getDisplayLabel = (labelToFormat: string) => {
@@ -39,9 +41,23 @@ const getDisplayLabel = (labelToFormat: string) => {
 };
 ---
 
-<label for={id}>{label}</label>
-<form id={formId} method={formMethod}>
-  <select id={id} name={name} value={selectedValue} onchange={onChange}>
+<label
+  for={id}
+  style={center ? "display: block; text-align: center;" : undefined}
+  >{label}</label
+>
+<form
+  id={formId}
+  method={formMethod}
+  style={center ? "display: flex; justify-content: center;" : undefined}
+>
+  <select
+    id={id}
+    name={name}
+    value={selectedValue}
+    onchange={onChange}
+    style="min-width: 200px;"
+  >
     {defaultOptionLabel && <option value="">{defaultOptionLabel}</option>}
     {
       options.map((option) => (
