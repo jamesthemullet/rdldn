@@ -3,7 +3,6 @@ import Comments from "../components/comments.astro";
 import Dropdown from "../components/dropdown.astro";
 import FeaturedPostHeader from "../components/featured-post-header.astro";
 import Newsletter from "../components/newsletter.astro";
-import logo3 from "../images/logo-3.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchGraphQL } from "../lib/api";
 import { getSinglePageData } from "../lib/getSinglePageData";
@@ -14,6 +13,11 @@ import type { Post } from "../types";
 import "../styles/post.css";
 
 export const prerender = false;
+export const response = {
+  headers: {
+    "Cache-Control": "no-store",
+  },
+};
 
 const variables = { id: "11910" };
 const singlePage = await getSinglePageData({ variables });
@@ -139,6 +143,8 @@ const topMeats = Array.from(meatCounts.entries())
   .slice(0, 10);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
+
+console.log(10, singlePage);
 ---
 
 <BaseLayout
@@ -151,7 +157,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    {singlePage.content ? <div set:html={singlePage.content} /> : null}
     <p>
       Select a year to see your roast dinner averages and where in London you
       reviewed roasts.
