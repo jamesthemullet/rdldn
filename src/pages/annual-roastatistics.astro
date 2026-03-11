@@ -13,7 +13,12 @@ import { fetchAllPosts } from "../lib/yearlyRoastStats";
 import type { Post } from "../types";
 import "../styles/post.css";
 
-export const prerender = true;
+export const prerender = false;
+export const response = {
+  headers: {
+    "Cache-Control": "no-store",
+  },
+};
 
 const variables = { id: "11910" };
 const singlePage = await getSinglePageData({ variables });
