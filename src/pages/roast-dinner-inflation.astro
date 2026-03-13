@@ -94,7 +94,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
           .sort((a, b) => parseInt(a.year) - parseInt(b.year))
           .map(({ year, average, count }) => (
             <li>
-              The average price in {year} is £{average} ({count} reviews)
+              The average price in {year} is Â£{average} ({count} reviews)
             </li>
           ))
       }
