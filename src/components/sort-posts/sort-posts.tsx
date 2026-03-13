@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
 import { type ChangeEvent, type SetStateAction, useEffect, useState } from "react";
-import type { Post } from "../types";
+import type { Post } from "../../types";
 
 const SortPosts = ({ posts }: { posts: Post[] }) => {
   const [sortOrder, setSortOrder] = useState("desc");
