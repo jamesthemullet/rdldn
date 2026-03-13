@@ -1,11 +1,11 @@
-﻿---
+---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
 import type { Post } from "../types";
 import "../styles/post.css";
-import Comments from "../components/comments.astro";
-import FeaturedPostHeader from "../components/featured-post-header.astro";
-import Newsletter from "../components/newsletter.astro";
+import Comments from "../components/comments/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import Newsletter from "../components/newsletter/newsletter.astro";
 import { fetchGraphQL } from "../lib/api";
 import { toOwnerSlug } from "../lib/ownerSlug";
 
@@ -78,7 +78,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         chainStats.map((chain) => (
           <li>
-            <a href={`/chains/${toOwnerSlug(chain.name)}`}>{chain.name}</a> –{" "}
+            <a href={`/chains/${toOwnerSlug(chain.name)}`}>{chain.name}</a> �{" "}
             {chain.average.toFixed(2)} ({chain.count} visits)
           </li>
         ))

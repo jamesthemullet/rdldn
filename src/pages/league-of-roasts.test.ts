@@ -12,7 +12,7 @@ vi.mock("../lib/getSinglePageData", () => ({
   getSinglePageData: getSinglePageDataMock,
 }));
 
-vi.mock("../components/sortPosts.tsx", () => ({
+vi.mock("../components/sort-posts/sort-posts.tsx", () => ({
   default: (() => {
     const SortPostsComponent = () =>
       '<div class="sort-posts-mock">Sort posts component</div>';

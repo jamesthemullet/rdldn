@@ -4,9 +4,9 @@ interface Props {
   postId: string;
 }
 
-import type { Comments as CommentsType } from "../types";
-import Comment from "./comment.astro";
-import "../styles/comments.css";
+import type { Comments as CommentsType } from "../../types";
+import Comment from "../comment/comment.astro";
+import "../../styles/comments.css";
 
 const { threadedComments, postId } = Astro.props as Props;
 ---

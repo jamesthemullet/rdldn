@@ -1,9 +1,9 @@
 ---
-import type { Comment as CommentType } from "../types";
+import type { Comment as CommentType } from "../../types";
 // Parent Astro File
-import AddComment from "./addComment.astro";
+import AddComment from "../add-comment/add-comment.astro";
 // @ts-expect-error
-import Comment from "./comment.astro";
+import Comment from "../comment/comment.astro";
 
 type Props = {
   comment: CommentType;

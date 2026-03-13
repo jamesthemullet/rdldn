@@ -1,12 +1,12 @@
-﻿---
+---
 import BaseLayout from "../layouts/BaseLayout.astro";
 export const prerender = true;
 
 import "../styles/post.css";
-import BestPostsList from "../components/best-posts-list.astro";
-import Comments from "../components/comments.astro";
-import FeaturedPostHeader from "../components/featured-post-header.astro";
-import Newsletter from "../components/newsletter.astro";
+import BestPostsList from "../components/best-posts-list/best-posts-list.astro";
+import Comments from "../components/comments/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import Newsletter from "../components/newsletter/newsletter.astro";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
 import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
