@@ -12,7 +12,9 @@ type PostsResponse = {
   };
 };
 
-export async function getAllRoastDinnerPosts(): Promise<Post[]> {
+let allRoastDinnerPostsPromise: Promise<Post[]> | null = null;
+
+async function fetchAllRoastDinnerPosts(): Promise<Post[]> {
   let hasNextPage = true;
   let endCursor: string | null = null;
   const allPosts: Post[] = [];
@@ -29,4 +31,19 @@ export async function getAllRoastDinnerPosts(): Promise<Post[]> {
   }
 
   return allPosts;
+}
+
+export function resetGetAllRoastDinnerPostsCache(): void {
+  allRoastDinnerPostsPromise = null;
+}
+
+export async function getAllRoastDinnerPosts(): Promise<Post[]> {
+  if (!allRoastDinnerPostsPromise) {
+    allRoastDinnerPostsPromise = fetchAllRoastDinnerPosts().catch((error) => {
+      allRoastDinnerPostsPromise = null;
+      throw error;
+    });
+  }
+
+  return allRoastDinnerPostsPromise;
 }

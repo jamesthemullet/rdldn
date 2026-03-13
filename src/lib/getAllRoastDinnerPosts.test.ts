@@ -2,7 +2,10 @@ import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Post } from "../types";
 import { fetchGraphQL } from "./api";
-import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
+import {
+  getAllRoastDinnerPosts,
+  resetGetAllRoastDinnerPostsCache
+} from "./getAllRoastDinnerPosts";
 import GET_ALL_POSTS from "./queries/getAllPosts";
 
 vi.mock("./api", () => ({
@@ -14,6 +17,7 @@ const mockFetchGraphQL = fetchGraphQL as unknown as Mock;
 describe("getAllRoastDinnerPosts", () => {
   beforeEach(() => {
     mockFetchGraphQL.mockReset();
+    resetGetAllRoastDinnerPostsCache();
   });
 
   it("paginates through all posts until there are no more pages", async () => {
@@ -60,5 +64,30 @@ describe("getAllRoastDinnerPosts", () => {
 
     expect(result).toEqual([]);
     expect(mockFetchGraphQL).toHaveBeenCalledWith(GET_ALL_POSTS, {});
+  });
+
+  it("reuses one shared Promise across repeated calls", async () => {
+    const firstPagePost: Post = {
+      slug: "first",
+      date: "2024-01-01",
+      ratings: { nodes: [{ name: "8" }] },
+      yearsOfVisit: { nodes: [{ name: "2024" }] }
+    } as Post;
+
+    mockFetchGraphQL.mockResolvedValueOnce({
+      posts: {
+        nodes: [firstPagePost],
+        pageInfo: { hasNextPage: false, endCursor: null }
+      }
+    });
+
+    const [firstResult, secondResult] = await Promise.all([
+      getAllRoastDinnerPosts(),
+      getAllRoastDinnerPosts()
+    ]);
+
+    expect(firstResult).toEqual([firstPagePost]);
+    expect(secondResult).toEqual([firstPagePost]);
+    expect(mockFetchGraphQL).toHaveBeenCalledTimes(1);
   });
 });
