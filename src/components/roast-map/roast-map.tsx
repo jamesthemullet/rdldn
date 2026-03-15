@@ -77,11 +77,6 @@ export default function RoastMap({ markers }: Props) {
 
     filteredMarkers.forEach(({ lat, lng, label, rating, slug }) => {
 
-      if (!lat || !lng) {
-        console.warn("Invalid marker coordinates:", { lat, lng, slug });
-        return;
-      }
-
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
       const markerLabel = label ? `${label} (${rating.toFixed(1)}/10)` : `Roast location (${rating.toFixed(1)}/10)`;
