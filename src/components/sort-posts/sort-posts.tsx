@@ -48,10 +48,8 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
         case "price":
           aValue = a.prices?.nodes[0]?.name ?? "";
           bValue = b.prices?.nodes[0]?.name ?? "";
-          if (typeof aValue === "string") {
-            aValue = Number(aValue.replace(/[£,]/g, ""));
-            bValue = Number(bValue.replace(/[£,]/g, ""));
-          }
+          aValue = Number(aValue.replace(/[£,]/g, ""));
+          bValue = Number(bValue.replace(/[£,]/g, ""));
           break;
 
         case "yearVisited":
@@ -73,18 +71,22 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           aValue = a.areas?.nodes[0]?.name ?? "";
           bValue = b.areas?.nodes[0]?.name ?? "";
           break;
+
         case "borough":
           aValue = a.boroughs?.nodes[0]?.name ?? "";
           bValue = b.boroughs?.nodes[0]?.name ?? "";
           break;
+
         case "owner":
           aValue = a.owners?.nodes[0]?.name ?? "";
           bValue = b.owners?.nodes[0]?.name ?? "";
           break;
+
         case "closedDown":
           aValue = a.closedDowns?.nodes[0]?.name ?? "";
           bValue = b.closedDowns?.nodes[0]?.name ?? "";
           break;
+          
         case "title":
           aValue = a.title ?? "";
           bValue = b.title ?? "";
