@@ -1,6 +1,6 @@
-import { kv } from "../../lib/kv";
-import type { APIRoute } from "astro";
 import { createHmac } from "node:crypto";
+import type { APIRoute } from "astro";
+import { kv } from "../../lib/kv";
 
 const TOKEN_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
 
@@ -12,7 +12,7 @@ function verifyToken(token: string): boolean {
   if (parts.length !== 3) return false;
 
   const [nonce, timestamp, sig] = parts;
-  const age = Date.now() - parseInt(timestamp, 10);
+  const age = Date.now() - Number.parseInt(timestamp, 10);
   if (isNaN(age) || age > TOKEN_MAX_AGE_MS || age < 0) return false;
 
   const expected = createHmac("sha256", secret)

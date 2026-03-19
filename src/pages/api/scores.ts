@@ -1,5 +1,5 @@
-import { kv } from "../../lib/kv";
 import type { APIRoute } from "astro";
+import { kv } from "../../lib/kv";
 
 export const GET: APIRoute = async () => {
   const results = await kv.zrange("leaderboard", 0, 9, { rev: true });

@@ -18,14 +18,14 @@ const gamePosts: GamePost[] = allPosts
     const ratingName = post.ratings?.nodes?.[0]?.name;
     const imageUrl = post.featuredImage?.node?.sourceUrl;
     if (!ratingName || !imageUrl) return false;
-    const rating = parseFloat(ratingName);
+    const rating = Number.parseFloat(ratingName);
     return !isNaN(rating) && rating >= 0 && rating <= 10;
   })
   .map((post) => ({
     title: post.title || "Unknown",
     slug: post.slug || "",
     imageUrl: post.featuredImage!.node.sourceUrl,
-    rating: parseFloat(post.ratings!.nodes[0].name),
+    rating: Number.parseFloat(post.ratings!.nodes[0].name),
   }));
 
 const secret = import.meta.env.SCORE_SECRET || "dev-secret";
