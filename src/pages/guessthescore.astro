@@ -1,0 +1,333 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
+import "../styles/game.css";
+import { createHmac, randomUUID } from "node:crypto";
+
+const allPosts = await getAllRoastDinnerPosts();
+
+type GamePost = {
+  title: string;
+  slug: string;
+  imageUrl: string;
+  rating: number;
+};
+
+const gamePosts: GamePost[] = allPosts
+  .filter((post) => {
+    const ratingName = post.ratings?.nodes?.[0]?.name;
+    const imageUrl = post.featuredImage?.node?.sourceUrl;
+    if (!ratingName || !imageUrl) return false;
+    const rating = Number.parseFloat(ratingName);
+    return !isNaN(rating) && rating >= 0 && rating <= 10;
+  })
+  .map((post) => ({
+    title: post.title || "Unknown",
+    slug: post.slug || "",
+    imageUrl: post.featuredImage!.node.sourceUrl,
+    rating: Number.parseFloat(post.ratings!.nodes[0].name),
+  }));
+
+const secret = import.meta.env.SCORE_SECRET || "dev-secret";
+const nonce = randomUUID();
+const timestamp = Date.now().toString();
+const sig = createHmac("sha256", secret)
+  .update(`${nonce}:${timestamp}`)
+  .digest("hex");
+const submitToken = `${nonce}:${timestamp}:${sig}`;
+---
+
+<BaseLayout
+  pageTitle="Guess The Score | Roast Dinners In London"
+  description="Can you guess Lord Gravy's roast dinner scores? Play the rating game — see 10 roast dinner photos and guess the score out of 10!"
+>
+  <section class="game-container">
+    <h2>Guess The Score!</h2>
+    <p class="game-intro">
+      Lord Gravy has reviewed hundreds of roast dinners across London. Can you
+      guess what score he gave each one? You'll see 10 photos — slide to your
+      rating and see how close you are.
+    </p>
+
+    <div x-data="roastGame" class="game">
+      <!-- Progress -->
+      <div x-show="!gameOver" class="progress">
+        <span x-text="`Round ${currentIndex + 1} of 10`"></span>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            :style="`width: ${currentIndex * 10}%`"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Current round -->
+      <div x-show="!gameOver" class="round">
+        <h3
+          class="restaurant-name"
+          x-text="currentPost.title"
+          x-show="revealed"
+        >
+        </h3>
+
+        <div class="image-wrapper" :class="revealed ? 'revealed' : ''">
+          <img
+            :src="currentPost.imageUrl"
+            :alt="`Roast dinner at ${currentPost.title}`"
+            width="600"
+            height="450"
+          />
+          <div x-show="revealed" class="score-badge" :class="scoreClass">
+            <span x-text="currentPost.rating"></span><small>/10</small>
+          </div>
+        </div>
+
+        <!-- Guess input -->
+        <div x-show="!revealed" class="guess-section">
+          <p class="guess-prompt">What score did Lord Gravy give this roast?</p>
+          <div class="slider-display">
+            <span x-text="parseFloat(guess).toFixed(2)"></span><span>/10</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="10"
+            step="0.01"
+            x-model="guess"
+            class="score-slider"
+          />
+          <div class="slider-labels">
+            <span>0</span>
+            <span>5</span>
+            <span>10</span>
+          </div>
+          <button @click="submitGuess" class="submit-btn">Submit Guess</button>
+        </div>
+
+        <!-- Reveal -->
+        <div x-show="revealed" class="reveal-section">
+          <div class="score-comparison">
+            <div class="score-item">
+              <span class="score-label">Your guess</span>
+              <span
+                class="score-number"
+                x-text="parseFloat(guess).toFixed(2)"
+              ></span>
+            </div>
+            <div class="score-item">
+              <span class="score-label">Lord Gravy's score</span>
+              <span
+                class="score-number actual"
+                x-text="currentPost.rating"
+              ></span>
+            </div>
+            <div class="score-item points">
+              <span class="score-label">Points earned</span>
+              <span class="score-number" x-text="`${roundPoints}/10`"></span>
+            </div>
+          </div>
+          <p x-text="roundFeedback" class="round-feedback"></p>
+          <button
+            @click="nextRound"
+            class="submit-btn"
+            x-text="currentIndex >= 9 ? 'See Your Results' : 'Next Roast'"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Game over -->
+      <div x-show="gameOver" class="game-over">
+        <h2 class="final-title">Game Over!</h2>
+        <div class="final-score">
+          <span x-text="totalScore"></span><span>/100</span>
+        </div>
+        <p x-text="endMessage" class="end-message"></p>
+
+        <!-- Score submission -->
+        <div x-show="!scoreSubmitted" class="score-submit">
+          <p class="score-submit-prompt">Enter your name for the leaderboard:</p>
+          <div class="score-submit-row">
+            <input
+              type="text"
+              x-model="playerName"
+              placeholder="Your name"
+              maxlength="30"
+              class="name-input"
+              @keydown.enter="submitScore"
+            />
+            <button
+              @click="submitScore"
+              class="submit-btn"
+              :disabled="submitting"
+              x-text="submitting ? 'Saving...' : 'Submit Score'"
+            ></button>
+          </div>
+          <p x-show="submitError" x-text="submitError" class="submit-error"></p>
+        </div>
+
+        <!-- Leaderboard -->
+        <div x-show="scoreSubmitted || leaderboard.length > 0" class="leaderboard">
+          <h3 class="leaderboard-title">Top Scores</h3>
+          <template x-if="leaderboard.length === 0">
+            <p class="leaderboard-empty">Loading...</p>
+          </template>
+          <ol class="leaderboard-list">
+            <template x-for="(entry, i) in leaderboard" :key="i">
+              <li :class="entry.name === playerName && entry.score === totalScore ? 'leaderboard-you' : ''">
+                <span class="leaderboard-name" x-text="entry.name"></span>
+                <span class="leaderboard-score" x-text="`${entry.score}/100`"></span>
+              </li>
+            </template>
+          </ol>
+        </div>
+
+        <button @click="restartGame" class="submit-btn">Play Again</button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ gamePosts, submitToken }}>
+  window.__roastGamePosts = gamePosts;
+  window.__roastSubmitToken = submitToken;
+</script>
+
+<script is:inline>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("roastGame", () => ({
+      allPosts: window.__roastGamePosts || [],
+      gamePosts: [],
+      currentIndex: 0,
+      guess: 5,
+      revealed: false,
+      gameOver: false,
+      totalScore: 0,
+      roundPoints: 0,
+      playerName: "",
+      submitting: false,
+      scoreSubmitted: false,
+      submitError: "",
+      leaderboard: [],
+
+      init() {
+        this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+      },
+
+      get currentPost() {
+        return this.gamePosts[this.currentIndex] || { title: "", imageUrl: "", rating: 0 };
+      },
+
+      get roundFeedback() {
+        if (this.roundPoints === 10) return "Spot on! Are you Lord Gravy in disguise?";
+        if (this.roundPoints >= 8) return "Very close! You've got a keen eye for gravy.";
+        if (this.roundPoints >= 6) return "Not bad! You clearly know your roasts.";
+        if (this.roundPoints >= 4) return "Getting there... keep practising.";
+        if (this.roundPoints >= 2) return "A bit off, but we've all had worse Sundays.";
+        return "Ouch. That's a long way off the mark. Lord Gravy is judging you.";
+      },
+
+      get scoreClass() {
+        if (this.roundPoints >= 8) return "good";
+        if (this.roundPoints >= 4) return "okay";
+        return "bad";
+      },
+
+      get endMessage() {
+        if (this.totalScore >= 90)
+          return "Perfect taste! You are the Gravy Whisperer. Lord Gravy bows before thee.";
+        if (this.totalScore >= 70)
+          return "Impressive stuff! You clearly have strong opinions about Yorkshire puddings.";
+        if (this.totalScore >= 50)
+          return "Not bad! The Yorkshire pudding of scores — technically fine, but nobody's getting wildly excited.";
+        if (this.totalScore >= 30)
+          return "A bit hit and miss. Like a roast with slightly crispy potatoes — some highs, some very concerning lows.";
+        if (this.totalScore >= 10)
+          return "Lord Gravy is weeping into his gravy boat. Have you ever actually eaten a roast dinner?";
+        return "Did you even look at the pictures? You couldn't tell a roast dinner from a bowl of cereal. Disgraceful. Utterly disgraceful.";
+      },
+
+      submitGuess() {
+        const actual = this.currentPost.rating;
+        const guessNum = parseFloat(this.guess);
+        this.roundPoints = Math.max(0, Math.round(10 - Math.abs(guessNum - actual) * 2));
+        this.totalScore += this.roundPoints;
+        this.revealed = true;
+      },
+
+      nextRound() {
+        if (this.currentIndex >= 9) {
+          this.gameOver = true;
+          this.fetchLeaderboard();
+        } else {
+          this.currentIndex++;
+          this.guess = 5;
+          this.revealed = false;
+        }
+      },
+
+      async submitScore() {
+        if (!this.playerName.trim()) {
+          this.submitError = "Please enter your name.";
+          return;
+        }
+        this.submitting = true;
+        this.submitError = "";
+        try {
+          const res = await fetch("/api/submit-score", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: this.playerName.trim(),
+              score: this.totalScore,
+              token: window.__roastSubmitToken,
+            }),
+          });
+          if (!res.ok) {
+            const data = await res.json();
+            this.submitError = data.error || "Something went wrong.";
+          } else {
+            this.scoreSubmitted = true;
+            await this.fetchLeaderboard();
+          }
+        } catch {
+          this.submitError = "Could not connect. Please try again.";
+        } finally {
+          this.submitting = false;
+        }
+      },
+
+      async fetchLeaderboard() {
+        try {
+          const res = await fetch("/api/scores");
+          const data = await res.json();
+          this.leaderboard = data;
+        } catch {
+          // silently fail — leaderboard is a nice-to-have
+        }
+      },
+
+      restartGame() {
+        this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+        this.currentIndex = 0;
+        this.guess = 5;
+        this.revealed = false;
+        this.gameOver = false;
+        this.totalScore = 0;
+        this.roundPoints = 0;
+        this.playerName = "";
+        this.submitting = false;
+        this.scoreSubmitted = false;
+        this.submitError = "";
+        this.leaderboard = [];
+      },
+
+      shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      },
+    }));
+  });
+</script>

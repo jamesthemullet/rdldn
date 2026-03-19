@@ -1,0 +1,428 @@
+.game-container {
+  margin: 80px 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    margin-top: 120px;
+  }
+
+  > h2 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-intro {
+    max-width: 600px;
+    text-align: center;
+    color: #555;
+    margin-bottom: 2rem;
+  }
+}
+
+.game {
+  width: 100%;
+  max-width: 620px;
+}
+
+/* Progress */
+
+.progress {
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  span {
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    color: var(--roast-new-blue);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--roast-light);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--roast-new-blue);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* Round */
+
+.round {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.restaurant-name {
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 1.4rem;
+  margin: 0;
+  text-decoration: none;
+
+  @media (min-width: 769px) {
+    font-size: 1.8rem;
+  }
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  border: 4px solid transparent;
+  transition: border-color 0.3s ease;
+
+  &.revealed {
+    border-color: var(--roast-new-blue);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.score-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: var(--roast-new-blue);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  font-family: "Loved by the King", sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  border-radius: 4px;
+
+  small {
+    font-size: 1rem;
+    opacity: 0.85;
+  }
+
+  &.good {
+    background: #1a7f37;
+  }
+
+  &.okay {
+    background: #b76e00;
+  }
+
+  &.bad {
+    background: var(--blood);
+  }
+}
+
+/* Guess section */
+
+.guess-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.guess-prompt {
+  text-align: center;
+  font-size: 1.1rem;
+  margin: 0;
+  color: #444;
+}
+
+.slider-display {
+  font-family: "Loved by the King", sans-serif;
+  font-size: 3rem;
+  color: var(--roast-new-blue);
+  line-height: 1;
+  text-align: center;
+
+  span:last-child {
+    font-size: 1.5rem;
+    color: #888;
+  }
+}
+
+.score-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--roast-light);
+  outline: none;
+  border: none;
+  margin: 0;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--roast-new-blue);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+
+  &::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--roast-new-blue);
+    cursor: pointer;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.slider-labels {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: -0.5rem;
+}
+
+.submit-btn {
+  margin: 0;
+  padding: 0 2rem;
+  height: 3.2rem;
+  font-size: 1.2rem;
+  background: var(--roast-new-blue);
+  color: white;
+  border: none;
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--roast-pink);
+  }
+}
+
+/* Reveal section */
+
+.reveal-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.score-comparison {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--roast-light);
+  padding: 1rem 1.5rem;
+  min-width: 120px;
+  border-radius: 4px;
+
+  &.points {
+    background: var(--roast-new-blue);
+    color: white;
+
+    .score-label,
+    .score-number {
+      color: white;
+    }
+  }
+}
+
+.score-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 0.25rem;
+}
+
+.score-number {
+  font-family: "Loved by the King", sans-serif;
+  font-size: 2.5rem;
+  color: var(--roast-new-blue);
+  line-height: 1;
+
+  &.actual {
+    color: #1a7f37;
+  }
+}
+
+.round-feedback {
+  text-align: center;
+  font-style: italic;
+  color: #555;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Game over */
+
+.game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.final-title {
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+  font-size: 2.5rem;
+  margin: 0;
+  text-decoration: none;
+}
+
+.final-score {
+  font-family: "Loved by the King", sans-serif;
+  font-size: 5rem;
+  color: var(--roast-new-blue);
+  line-height: 1;
+
+  span:last-child {
+    font-size: 2.5rem;
+    color: #888;
+  }
+}
+
+.end-message {
+  font-size: 1.2rem;
+  max-width: 500px;
+  line-height: 1.6;
+  color: #444;
+  margin: 0;
+}
+
+/* Score submission */
+
+.score-submit {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.score-submit-prompt {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.score-submit-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.name-input {
+  flex: 1;
+  max-width: 240px;
+  height: 3rem;
+  padding: 0 0.75rem;
+  font-size: 1rem;
+  border: 2px solid var(--roast-new-blue);
+  margin: 0;
+
+  &:focus {
+    outline: none;
+    border-color: var(--roast-pink);
+  }
+}
+
+.submit-error {
+  color: var(--blood);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Leaderboard */
+
+.leaderboard {
+  width: 100%;
+  max-width: 500px;
+}
+
+.leaderboard-title {
+  font-family: "Loved by the King", sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+  text-decoration: none;
+}
+
+.leaderboard-empty {
+  text-align: center;
+  color: #888;
+  margin: 0;
+}
+
+.leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--roast-light);
+    font-size: 1rem;
+
+    &:first-child {
+      background: var(--roast-light);
+      font-weight: bold;
+    }
+
+    &.leaderboard-you {
+      background: #e8f0fe;
+      font-weight: bold;
+    }
+  }
+}
+
+.leaderboard-name {
+  color: #333;
+}
+
+.leaderboard-score {
+  font-family: "Loved by the King", sans-serif;
+  font-size: 1.2rem;
+  color: var(--roast-new-blue);
+}
