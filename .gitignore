@@ -34,3 +34,4 @@ pnpm-debug.log*
 .vercel
 
 yarn.lock
+.env.local
