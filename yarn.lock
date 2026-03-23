@@ -7,7 +7,7 @@
   resolved "https://registry.yarnpkg.com/@astrojs/alpinejs/-/alpinejs-0.5.0.tgz#55f58af5ec8fe902231e7c28605e2c668323233f"
   integrity sha512-mORFY/ljzz6LPqkBPBd4v2i6yMhTkySgopIpVyKODEoJegp1PuX2Hri589P1oJzICGHSY8Q28OIyF/50Cf/lMQ==
 
-"@astrojs/check@^0.9.0", "@astrojs/check@^0.9.4":
+"@astrojs/check@0.9.8", "@astrojs/check@^0.9.0":
   version "0.9.8"
   resolved "https://registry.yarnpkg.com/@astrojs/check/-/check-0.9.8.tgz#d70dcab429a91cc830ded9bfadc716ec0ebd6983"
   integrity sha512-LDng8446QLS5ToKjRHd3bgUdirvemVVExV7nRyJfW2wV36xuv7vDxwy5NWN9zqeSEDgg0Tv84sP+T3yEq+Zlkw==
@@ -84,7 +84,7 @@
     unist-util-visit-parents "^6.0.2"
     vfile "^6.0.3"
 
-"@astrojs/mdx@^5.0.0":
+"@astrojs/mdx@5.0.2":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-5.0.2.tgz#fef8ac598160bda84d8396bc2b4758aced9bae52"
   integrity sha512-0as6odPH9ZQhS3pdH9dWmVOwgXuDtytJiE4VvYgR0lSFBvF4PSTyE0HdODHm/d7dBghvWTPc2bQaBm4y4nTBNw==
@@ -103,7 +103,7 @@
     unist-util-visit "^5.1.0"
     vfile "^6.0.3"
 
-"@astrojs/partytown@^2.1.3":
+"@astrojs/partytown@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@astrojs/partytown/-/partytown-2.1.5.tgz#e70ecde54ec5aeeb838698cb9d876010bf341537"
   integrity sha512-Uo2Uqmvjh/5w08wGoVAspdj14hUoE28uQH8SkzaBMw9bTBNIviEkPi3VkJi+tj1ZYAY9oX7OSkRDJ48QRtMhlw==
@@ -118,7 +118,7 @@
   dependencies:
     prismjs "^1.30.0"
 
-"@astrojs/react@^5.0.0":
+"@astrojs/react@5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@astrojs/react/-/react-5.0.1.tgz#535b1a06ffad77905a435d1842e9e93127cde3dc"
   integrity sha512-gJgQfDUxyePk+UIzwCEtAq04SGbziwRNwOMYvkxLHEtZScSMvRnvQhDWAEMCjLwwEomoT92Tfm34xpD7XAAzOg==
@@ -129,7 +129,7 @@
     ultrahtml "^1.6.0"
     vite "^7.3.1"
 
-"@astrojs/sitemap@^3.2.1":
+"@astrojs/sitemap@3.7.1":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@astrojs/sitemap/-/sitemap-3.7.1.tgz#7fca8dd1bac09ff26d8e124bb57f0e7a73647691"
   integrity sha512-IzQqdTeskaMX+QDZCzMuJIp8A8C1vgzMBp/NmHNnadepHYNHcxQdGLQZYfkbd2EbRXUfOS+UDIKx8sKg0oWVdw==
@@ -151,7 +151,7 @@
     is-wsl "^3.1.0"
     which-pm-runs "^1.1.0"
 
-"@astrojs/vercel@^10.0.0":
+"@astrojs/vercel@10.0.2":
   version "10.0.2"
   resolved "https://registry.yarnpkg.com/@astrojs/vercel/-/vercel-10.0.2.tgz#9b4ed24cfa1d382686330ffb06af9dd563514d5e"
   integrity sha512-l3TzsOnlEr9j0lMy/KhXnWaZh199tqIs3dd7FoQIm8HxMbbcmfMd5nUWCSU2+pXdfIUnsCmrlP0txDvlV5Vqxw==
@@ -2050,7 +2050,7 @@ astro-seo@^1.0.0:
   dependencies:
     "@astrojs/check" "^0.9.0"
 
-astro@^6.0.0:
+astro@6.0.8:
   version "6.0.8"
   resolved "https://registry.yarnpkg.com/astro/-/astro-6.0.8.tgz#043e003510e4c0c6129cecb8d5bd45d81a82abed"
   integrity sha512-DCPeb8GKOoFWh+8whB7Qi/kKWD/6NcQ9nd1QVNzJFxgHkea3WYrNroQRq4whmBdjhkYPTLS/1gmUAl2iA2Es2g==
