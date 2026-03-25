@@ -47,10 +47,10 @@
     "@playwright/test": "1.58.2",
     "@types/leaflet": "^1.9.18",
     "@types/node": "^24.10.0",
-    "@vitest/coverage-istanbul": "4.1.0",
-    "@vitest/coverage-v8": "4.1.0",
+    "@vitest/coverage-istanbul": "4.1.1",
+    "@vitest/coverage-v8": "4.1.1",
     "happy-dom": "^20.1.0",
     "knip": "^6.0.0",
-    "vitest": "4.1.0"
+    "vitest": "4.1.1"
   }
 }
