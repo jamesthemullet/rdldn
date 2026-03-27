@@ -1,5 +1,9 @@
 const graphQLRequestCache = new Map<string, Promise<unknown>>();
 
+export function resetGraphQLRequestCache(): void {
+  graphQLRequestCache.clear();
+}
+
 const stableStringify = (value: unknown): string => {
   if (value === null || typeof value !== "object") {
     return JSON.stringify(value);
