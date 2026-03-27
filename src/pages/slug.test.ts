@@ -1,20 +1,28 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
+import { resetGraphQLRequestCache } from "../lib/api";
 
 vi.mock("astro:assets", () => ({
   Image: (() => {
-    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
+    type AstroImageComponent = ((
+      _result: unknown,
+      props: { src: string; alt?: string }
+    ) => string) & { isAstroComponentFactory: boolean };
+
+    const ImageComponent: AstroImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
       `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
-    (ImageComponent as any).isAstroComponentFactory = true;
+    ImageComponent.isAstroComponentFactory = true;
     return ImageComponent;
   })()
 }));
 
 const makeResponse = (data: unknown) => ({
+  ok: true,
   json: async () => ({ data })
 });
 
 afterEach(() => {
+  resetGraphQLRequestCache();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   vi.useRealTimers();
@@ -22,19 +30,25 @@ afterEach(() => {
 
 describe("[slug] getStaticPaths", () => {
   test("returns combined post and page paths", async () => {
-    const fetchMock = vi.fn()
-      .mockResolvedValueOnce(makeResponse({
-        posts: {
-          nodes: [{ slug: "post-1" }],
-          pageInfo: { hasNextPage: false, endCursor: null }
-        }
-      }))
-      .mockResolvedValueOnce(makeResponse({
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+
+      if (body.query.includes("query AllSlugs")) {
+        return makeResponse({
+          posts: {
+            nodes: [{ slug: "post-1" }],
+            pageInfo: { hasNextPage: false, endCursor: null }
+          }
+        });
+      }
+
+      return makeResponse({
         pages: {
           nodes: [{ slug: "page-1" }],
           pageInfo: { hasNextPage: false, endCursor: null }
         }
-      }));
+      });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -50,31 +64,43 @@ describe("[slug] getStaticPaths", () => {
   });
 
   test("paginates posts and pages", async () => {
-    const fetchMock = vi.fn()
-      .mockResolvedValueOnce(makeResponse({
-        posts: {
-          nodes: [{ slug: "post-1" }],
-          pageInfo: { hasNextPage: true, endCursor: "cursor-post" }
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+
+      if (body.query.includes("query AllSlugs")) {
+        if (body.variables.after === null) {
+          return makeResponse({
+            posts: {
+              nodes: [{ slug: "post-1" }],
+              pageInfo: { hasNextPage: true, endCursor: "cursor-post" }
+            }
+          });
         }
-      }))
-      .mockResolvedValueOnce(makeResponse({
-        posts: {
-          nodes: [{ slug: "post-2" }],
-          pageInfo: { hasNextPage: false, endCursor: null }
-        }
-      }))
-      .mockResolvedValueOnce(makeResponse({
-        pages: {
-          nodes: [{ slug: "page-1" }],
-          pageInfo: { hasNextPage: true, endCursor: "cursor-page" }
-        }
-      }))
-      .mockResolvedValueOnce(makeResponse({
+
+        return makeResponse({
+          posts: {
+            nodes: [{ slug: "post-2" }],
+            pageInfo: { hasNextPage: false, endCursor: null }
+          }
+        });
+      }
+
+      if (body.variables.after === null) {
+        return makeResponse({
+          pages: {
+            nodes: [{ slug: "page-1" }],
+            pageInfo: { hasNextPage: true, endCursor: "cursor-page" }
+          }
+        });
+      }
+
+      return makeResponse({
         pages: {
           nodes: [{ slug: "page-2" }],
           pageInfo: { hasNextPage: false, endCursor: null }
         }
-      }));
+      });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -122,35 +148,31 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          post: {
-            postId: "1",
-            date: "2025-02-02",
-            content: "<p>Review content</p>",
-            title: "Test Roast",
-            featuredImage: { node: { sourceUrl: "https://example.com/img.jpg" } },
-            seo: {
-              opengraphDescription: "Desc",
-              opengraphImage: { sourceUrl: "https://example.com/og.jpg" }
-            },
-            areas: { nodes: [{ name: "Central" }] },
-            boroughs: { nodes: [{ name: "Camden" }] },
-            tubeStations: { nodes: [{ name: "Bank" }] },
-            tubeLines: { nodes: [{ name: "Central" }] },
-            prices: { nodes: [{ name: "£20" }] },
-            ratings: { nodes: [{ name: "8.5" }] },
-            yearsOfVisit: { nodes: [{ name: "2024" }] },
-            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
-            closedDowns: { nodes: [{ name: "re-reviewed-2024" }] },
-            nSFWs: { nodes: [] },
-            highlights: { loved: "Yorkies", loathed: "None" },
-            comments: { nodes: [] }
-          }
-        }
-      })
-    });
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+      post: {
+        postId: "1",
+        date: "2025-02-02",
+        content: "<p>Review content</p>",
+        title: "Test Roast",
+        featuredImage: { node: { sourceUrl: "https://example.com/img.jpg" } },
+        seo: {
+          opengraphDescription: "Desc",
+          opengraphImage: { sourceUrl: "https://example.com/og.jpg" }
+        },
+        areas: { nodes: [{ name: "Central" }] },
+        boroughs: { nodes: [{ name: "Camden" }] },
+        tubeStations: { nodes: [{ name: "Bank" }] },
+        tubeLines: { nodes: [{ name: "Central" }] },
+        prices: { nodes: [{ name: "£20" }] },
+        ratings: { nodes: [{ name: "8.5" }] },
+        yearsOfVisit: { nodes: [{ name: "2024" }] },
+        typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+        closedDowns: { nodes: [{ name: "re-reviewed-2024" }] },
+        nSFWs: { nodes: [] },
+        highlights: { loved: "Yorkies", loathed: "None" },
+        comments: { nodes: [] }
+      }
+    }));
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -171,35 +193,31 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          post: {
-            postId: "2",
-            date: "2026-01-01",
-            content: "<p>Another review</p>",
-            title: "Current Roast",
-            featuredImage: { node: { sourceUrl: "https://example.com/img2.jpg" } },
-            seo: {
-              opengraphDescription: "Desc",
-              opengraphImage: { sourceUrl: "https://example.com/og2.jpg" }
-            },
-            areas: { nodes: [{ name: "West" }] },
-            boroughs: { nodes: [{ name: "Hackney" }] },
-            tubeStations: { nodes: [{ name: "Aldgate" }] },
-            tubeLines: { nodes: [{ name: "Circle" }] },
-            prices: { nodes: [{ name: "£25" }] },
-            ratings: { nodes: [{ name: "7.0" }] },
-            yearsOfVisit: { nodes: [{ name: "2026" }] },
-            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
-            closedDowns: { nodes: [{ name: "newowners" }] },
-            nSFWs: { nodes: [] },
-            highlights: { loved: "Gravy", loathed: "None" },
-            comments: { nodes: [] }
-          }
-        }
-      })
-    });
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+      post: {
+        postId: "2",
+        date: "2026-01-01",
+        content: "<p>Another review</p>",
+        title: "Current Roast",
+        featuredImage: { node: { sourceUrl: "https://example.com/img2.jpg" } },
+        seo: {
+          opengraphDescription: "Desc",
+          opengraphImage: { sourceUrl: "https://example.com/og2.jpg" }
+        },
+        areas: { nodes: [{ name: "West" }] },
+        boroughs: { nodes: [{ name: "Hackney" }] },
+        tubeStations: { nodes: [{ name: "Aldgate" }] },
+        tubeLines: { nodes: [{ name: "Circle" }] },
+        prices: { nodes: [{ name: "£25" }] },
+        ratings: { nodes: [{ name: "7.0" }] },
+        yearsOfVisit: { nodes: [{ name: "2026" }] },
+        typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+        closedDowns: { nodes: [{ name: "newowners" }] },
+        nSFWs: { nodes: [] },
+        highlights: { loved: "Gravy", loathed: "None" },
+        comments: { nodes: [] }
+      }
+    }));
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -220,35 +238,31 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          post: {
-            postId: "3",
-            date: "2025-12-12",
-            content: "<p>Spicy review</p>",
-            title: "Naughty Roast",
-            featuredImage: { node: { sourceUrl: "https://example.com/img3.jpg" } },
-            seo: {
-              opengraphDescription: "Desc",
-              opengraphImage: { sourceUrl: "https://example.com/og3.jpg" }
-            },
-            areas: { nodes: [{ name: "North" }] },
-            boroughs: { nodes: [{ name: "Islington" }] },
-            tubeStations: { nodes: [{ name: "Angel" }] },
-            tubeLines: { nodes: [{ name: "Northern" }] },
-            prices: { nodes: [{ name: "£30" }] },
-            ratings: { nodes: [{ name: "6.5" }] },
-            yearsOfVisit: { nodes: [{ name: "2025" }] },
-            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
-            closedDowns: { nodes: [] },
-            nSFWs: { nodes: [{ name: "sweary" }, { name: "rude" }] },
-            highlights: { loved: "Roasties", loathed: "None" },
-            comments: { nodes: [] }
-          }
-        }
-      })
-    });
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+      post: {
+        postId: "3",
+        date: "2025-12-12",
+        content: "<p>Spicy review</p>",
+        title: "Naughty Roast",
+        featuredImage: { node: { sourceUrl: "https://example.com/img3.jpg" } },
+        seo: {
+          opengraphDescription: "Desc",
+          opengraphImage: { sourceUrl: "https://example.com/og3.jpg" }
+        },
+        areas: { nodes: [{ name: "North" }] },
+        boroughs: { nodes: [{ name: "Islington" }] },
+        tubeStations: { nodes: [{ name: "Angel" }] },
+        tubeLines: { nodes: [{ name: "Northern" }] },
+        prices: { nodes: [{ name: "£30" }] },
+        ratings: { nodes: [{ name: "6.5" }] },
+        yearsOfVisit: { nodes: [{ name: "2025" }] },
+        typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+        closedDowns: { nodes: [] },
+        nSFWs: { nodes: [{ name: "sweary" }, { name: "rude" }] },
+        highlights: { loved: "Roasties", loathed: "None" },
+        comments: { nodes: [] }
+      }
+    }));
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -267,35 +281,31 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          post: {
-            postId: "4",
-            date: "2025-11-11",
-            content: "<p>No image review</p>",
-            title: "Logo Roast",
-            featuredImage: null,
-            seo: {
-              opengraphDescription: "Desc",
-              opengraphImage: { sourceUrl: "https://example.com/og4.jpg" }
-            },
-            areas: { nodes: [{ name: "East" }] },
-            boroughs: { nodes: [{ name: "Hackney" }] },
-            tubeStations: { nodes: [{ name: "Bethnal Green" }] },
-            tubeLines: { nodes: [{ name: "Central" }] },
-            prices: { nodes: [{ name: "£18" }] },
-            ratings: { nodes: [{ name: "7.5" }] },
-            yearsOfVisit: { nodes: [{ name: "2025" }] },
-            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
-            closedDowns: { nodes: [] },
-            nSFWs: { nodes: [] },
-            highlights: { loved: "Roasties", loathed: "None" },
-            comments: { nodes: [] }
-          }
-        }
-      })
-    });
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+      post: {
+        postId: "4",
+        date: "2025-11-11",
+        content: "<p>No image review</p>",
+        title: "Logo Roast",
+        featuredImage: null,
+        seo: {
+          opengraphDescription: "Desc",
+          opengraphImage: { sourceUrl: "https://example.com/og4.jpg" }
+        },
+        areas: { nodes: [{ name: "East" }] },
+        boroughs: { nodes: [{ name: "Hackney" }] },
+        tubeStations: { nodes: [{ name: "Bethnal Green" }] },
+        tubeLines: { nodes: [{ name: "Central" }] },
+        prices: { nodes: [{ name: "£18" }] },
+        ratings: { nodes: [{ name: "7.5" }] },
+        yearsOfVisit: { nodes: [{ name: "2025" }] },
+        typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+        closedDowns: { nodes: [] },
+        nSFWs: { nodes: [] },
+        highlights: { loved: "Roasties", loathed: "None" },
+        comments: { nodes: [] }
+      }
+    }));
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -314,24 +324,20 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          page: {
-            pageId: "99",
-            date: "2025-05-05",
-            content: "<p>About content</p>",
-            title: "About Page",
-            featuredImage: { node: { sourceUrl: "https://example.com/page.jpg" } },
-            seo: {
-              opengraphDescription: "Desc",
-              opengraphImage: { sourceUrl: "https://example.com/og-page.jpg" }
-            },
-            comments: { nodes: [] }
-          }
-        }
-      })
-    });
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+      page: {
+        pageId: "99",
+        date: "2025-05-05",
+        content: "<p>About content</p>",
+        title: "About Page",
+        featuredImage: { node: { sourceUrl: "https://example.com/page.jpg" } },
+        seo: {
+          opengraphDescription: "Desc",
+          opengraphImage: { sourceUrl: "https://example.com/og-page.jpg" }
+        },
+        comments: { nodes: [] }
+      }
+    }));
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -350,9 +356,7 @@ describe("[slug] render", () => {
   });
 
   test("redirects to 404 when post is missing", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({ data: { post: null } })
-    });
+    const fetchMock = vi.fn().mockResolvedValue(makeResponse({ post: null }));
 
     vi.stubGlobal("fetch", fetchMock);
 

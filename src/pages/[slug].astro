@@ -8,6 +8,8 @@ export const response = {
 };
 
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { fetchGraphQL } from "../lib/api";
+import { fetchAllSlugs } from "../lib/fetchAllSlugs";
 import SINGLE_PAGE_QUERY from "../lib/queries/singlePageBySlug";
 import SINGLE_POST_QUERY from "../lib/queries/singlePostBySlug";
 import { organiseComments } from "../lib/utils";
@@ -25,10 +27,6 @@ export async function getStaticPaths() {
     "are-independent-restaurants-better-than-chains-at-roast-dinners",
   ]);
 
-  const allPosts = [];
-  const allPages = [];
-  let hasNextPage = true;
-  let endCursor = null;
   const ALL_POST_SLUGS_QUERY = `
   query AllSlugs($first: Int!, $after: String) {
     posts(first: $first, after: $after) {
@@ -43,7 +41,7 @@ export async function getStaticPaths() {
   }
 `;
 
-const ALL_PAGE_SLUGS_QUERY = `
+  const ALL_PAGE_SLUGS_QUERY = `
   query AllPageSlugs($first: Int!, $after: String) {
     pages(first: $first, after: $after) {
       nodes {
@@ -57,64 +55,10 @@ const ALL_PAGE_SLUGS_QUERY = `
   }
 `;
 
-  while (hasNextPage) {
-    const response: Response = await fetch(
-      "https://blog.rdldn.co.uk/graphql",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: ALL_POST_SLUGS_QUERY,
-          variables: {
-            first: 100,
-            after: endCursor,
-          },
-        }),
-      }
-    );
-
-    const { data } = await response.json();
-    const posts = data.posts?.nodes;
-
-
-    if (!Array.isArray(posts)) {
-      console.warn("Warning: posts is not an array", posts, data);
-    } else {
-      allPosts.push(...posts);
-    }
-
-    hasNextPage = data.posts?.pageInfo?.hasNextPage ?? false;
-    endCursor = data.posts?.pageInfo?.endCursor ?? null;
-
-  }
-
-
-  hasNextPage = true;
-  endCursor = null;
-  
-  while (hasNextPage) {
-    const response: Response = await fetch(
-      "https://blog.rdldn.co.uk/graphql",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: ALL_PAGE_SLUGS_QUERY,
-          variables: {
-            first: 100,
-            after: endCursor,
-          },
-        }),
-      }
-    );
-
-    const { data } = await response.json();
-    const pages = data.pages.nodes;
-    allPages.push(...pages);
-
-    hasNextPage = data.pages.pageInfo.hasNextPage;
-    endCursor = data.pages.pageInfo.endCursor;
-  }
+  const [allPosts, allPages] = await Promise.all([
+    fetchAllSlugs("posts", ALL_POST_SLUGS_QUERY),
+    fetchAllSlugs("pages", ALL_PAGE_SLUGS_QUERY),
+  ]);
 
   const postPaths = allPosts
     .filter((post) => post?.slug && !dedicatedPageSlugs.has(post.slug))
@@ -136,15 +80,9 @@ const ALL_PAGE_SLUGS_QUERY = `
     const { slug } = Astro.params;
     const { contentType } = Astro.props;
 
-const singleResponse = await fetch("https://blog.rdldn.co.uk/graphql", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    query: contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug),
-  }),
-});
-
-const { data } = await singleResponse.json();
+const data = await fetchGraphQL(
+  contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug)
+);
 
 const singlePost = contentType === "page" ? data.page : data.post;
 
