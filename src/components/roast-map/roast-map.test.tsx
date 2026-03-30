@@ -261,4 +261,34 @@ describe("roast-map component", () => {
       root.unmount();
     });
   });
+
+  test("skips Leaflet initialisation when the map ref is unavailable", async () => {
+    vi.resetModules();
+
+    vi.doMock("react", async () => {
+      const actual = await vi.importActual<typeof import("react")>("react");
+      return {
+        ...actual,
+        useRef: () => ({ current: null }),
+        useState: <T,>(initialValue: T) => [initialValue, vi.fn()],
+        useEffect: (callback: () => void | (() => void)) => {
+          callback();
+        }
+      };
+    });
+
+    const leafletModule = await import("leaflet");
+    const mockedLeaflet = leafletModule.default as unknown as {
+      map: ReturnType<typeof vi.fn>;
+    };
+    mockedLeaflet.map.mockClear();
+
+    const { default: RoastMapWithoutRef } = await import("./roast-map");
+    RoastMapWithoutRef({ markers: sampleMarkers });
+
+    expect(mockedLeaflet.map).not.toHaveBeenCalled();
+
+    vi.doUnmock("react");
+    vi.resetModules();
+  });
 });
