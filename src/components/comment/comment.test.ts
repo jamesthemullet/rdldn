@@ -92,6 +92,8 @@ describe("comment component", () => {
   });
 
   test.each([
+    ["2024-06-21T12:00:00", "June 21st, 2024 at 12:00 PM"],
+    ["2024-06-22T12:00:00", "June 22nd, 2024 at 12:00 PM"],
     ["2024-06-23T12:00:00", "June 23rd, 2024 at 12:00 PM"],
     ["2024-06-24T12:00:00", "June 24th, 2024 at 12:00 PM"],
   ])("formats comment dates with the expected ordinal suffix for %s", async (date, expectedDate) => {

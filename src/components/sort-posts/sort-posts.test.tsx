@@ -443,6 +443,56 @@ describe("sort-posts component", () => {
     });
   });
 
+  test("renders blank prices when the price column is enabled for sparse posts", async () => {
+    const sparsePricePosts: Post[] = [
+      {
+        date: "2026-01-01",
+        title: "No Price",
+        slug: "no-price",
+        ratings: { nodes: [{ name: "8.1" }] }
+      },
+      {
+        date: "2026-01-01",
+        title: "Empty Price",
+        slug: "empty-price",
+        ratings: { nodes: [{ name: "7.4" }] },
+        prices: { nodes: [{ name: "" }] }
+      }
+    ];
+
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<SortPosts posts={sparsePricePosts} />);
+    });
+    await waitForRender();
+
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
+    const priceCheckbox = host.querySelector('input[id="price"]') as HTMLInputElement;
+    await act(async () => {
+      priceCheckbox.click();
+    });
+    await waitForRender();
+
+    const prices = Array.from(host.querySelectorAll('[data-test-id="roast-price"]')).map((el) =>
+      (el.textContent ?? "").trim()
+    );
+
+    expect(prices).toEqual(["", ""]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
   test("covers title nullish fallback and unknown sort default branch", async () => {
     const titleSparsePosts: Post[] = [
       {
