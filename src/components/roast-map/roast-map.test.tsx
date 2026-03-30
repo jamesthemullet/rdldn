@@ -271,7 +271,7 @@ describe("roast-map component", () => {
         ...actual,
         useRef: () => ({ current: null }),
         useState: <T,>(initialValue: T) => [initialValue, vi.fn()],
-        useEffect: (callback: () => void | (() => void)) => {
+        useEffect: (callback: () => unknown) => {
           callback();
         }
       };
