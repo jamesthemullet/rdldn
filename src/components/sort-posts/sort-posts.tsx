@@ -1,20 +1,47 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
-import { type ChangeEvent, type SetStateAction, useEffect, useState } from "react";
+import { type ChangeEvent, type SetStateAction, useReducer, useState } from "react";
 import type { Post } from "../../types";
+
+type FilterState = {
+  meat: string;
+  score: string;
+  price: string;
+  area: string;
+  borough: string;
+  owner: string;
+  closedDown: string;
+  year: string;
+};
+
+type FilterAction =
+  | { type: "SET_FILTER"; name: keyof FilterState; value: string }
+  | { type: "CLEAR_FILTERS" };
+
+const initialFilterState: FilterState = {
+  meat: "",
+  score: "",
+  price: "",
+  area: "",
+  borough: "",
+  owner: "",
+  closedDown: "",
+  year: "",
+};
+
+function filterReducer(state: FilterState, action: FilterAction): FilterState {
+  switch (action.type) {
+    case "SET_FILTER":
+      return { ...state, [action.name]: action.value };
+    case "CLEAR_FILTERS":
+      return initialFilterState;
+  }
+}
 
 const SortPosts = ({ posts }: { posts: Post[] }) => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortColumn, setSortColumn] = useState("rating");
-  const [sortedPosts, setSortedPosts] = useState([...posts]);
 
-  const [meatFilter, setMeatFilter] = useState("");
-  const [scoreFilter, setScoreFilter] = useState("");
-  const [priceFilter, setPriceFilter] = useState("");
-  const [areaFilter, setAreaFilter] = useState("");
-  const [boroughFilter, setBoroughFilter] = useState("");
-  const [ownerFilter, setOwnerFilter] = useState("");
-  const [closedDownFilter, setClosedDownFilter] = useState("");
-  const [yearFilter, setYearFilter] = useState("");
+  const [filters, dispatch] = useReducer(filterReducer, initialFilterState);
 
   const [showOptions, setShowOptions] = useState(false);
 
@@ -110,40 +137,23 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
       const price = post.prices?.nodes[0]?.name || "0";
 
       return (
-        (meatFilter ? meat === meatFilter : true) &&
-        (scoreFilter ? Number(rating) >= Number(scoreFilter) : true) &&
-        (priceFilter ? Number(price.replace(/[£,]/g, "")) <= Number(priceFilter) : true) &&
-        (areaFilter ? post.areas?.nodes[0]?.name === areaFilter : true) &&
-        (boroughFilter ? post.boroughs?.nodes[0]?.name === boroughFilter : true) &&
-        (ownerFilter ? post.owners?.nodes[0]?.name === ownerFilter : true) &&
-        (closedDownFilter
-          ? closedDownFilter === "open"
+        (filters.meat ? meat === filters.meat : true) &&
+        (filters.score ? Number(rating) >= Number(filters.score) : true) &&
+        (filters.price ? Number(price.replace(/[£,]/g, "")) <= Number(filters.price) : true) &&
+        (filters.area ? post.areas?.nodes[0]?.name === filters.area : true) &&
+        (filters.borough ? post.boroughs?.nodes[0]?.name === filters.borough : true) &&
+        (filters.owner ? post.owners?.nodes[0]?.name === filters.owner : true) &&
+        (filters.closedDown
+          ? filters.closedDown === "open"
             ? !post.closedDowns?.nodes[0]?.name
-            : post.closedDowns?.nodes[0]?.name === closedDownFilter
-          : true)
-        && (yearFilter ? post.yearsOfVisit?.nodes[0]?.name === yearFilter : true)
+            : post.closedDowns?.nodes[0]?.name === filters.closedDown
+          : true) &&
+        (filters.year ? post.yearsOfVisit?.nodes[0]?.name === filters.year : true)
       );
     });
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally omitting filterPosts function
-  useEffect(() => {
-    const filteredPosts = filterPosts(posts);
-
-    setSortedPosts(sortedByColumn(filteredPosts, sortColumn, sortOrder));
-  }, [
-    sortColumn,
-    sortOrder,
-    posts,
-    meatFilter,
-    scoreFilter,
-    priceFilter,
-    areaFilter,
-    boroughFilter,
-    ownerFilter,
-    closedDownFilter,
-    yearFilter,
-  ]);
+  const sortedPosts = sortedByColumn(filterPosts(posts), sortColumn, sortOrder);
 
   const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newSortColumn = e.target.value;
@@ -188,26 +198,11 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
   const handleFilterChange = (
     e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>
   ) => {
-    const { name, value } = e.target;
-    if (name === "meat") setMeatFilter(value);
-    if (name === "score") setScoreFilter(value);
-    if (name === "price") setPriceFilter(value);
-    if (name === "area") setAreaFilter(value);
-    if (name === "borough") setBoroughFilter(value);
-    if (name === "owner") setOwnerFilter(value);
-    if (name === "closedDown") setClosedDownFilter(value);
-    if (name === "year") setYearFilter(value);
+    dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
   };
 
   const clearFilters = () => {
-    setMeatFilter("");
-    setScoreFilter("");
-    setPriceFilter("");
-    setAreaFilter("");
-    setBoroughFilter("");
-    setOwnerFilter("");
-    setClosedDownFilter("");
-    setYearFilter("");
+    dispatch({ type: "CLEAR_FILTERS" });
   };
 
   const uniqueMeats = [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))];
@@ -331,7 +326,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
           <div className="filter-posts">
             <div>
               <label htmlFor="meat-filter">Filter by Meat: </label>
-              <select id="meat-filter" name="meat" value={meatFilter} onChange={handleFilterChange}>
+              <select id="meat-filter" name="meat" value={filters.meat} onChange={handleFilterChange}>
                 <option value="">All</option>
                 {uniqueMeats.map((meat) => (
                   <option key={meat} value={meat}>
@@ -346,7 +341,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
                 type="number"
                 id="score-filter"
                 name="score"
-                value={scoreFilter}
+                value={filters.score}
                 onChange={handleFilterChange}
               />
             </div>{" "}
@@ -356,7 +351,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
                 type="number"
                 id="price-filter"
                 name="price"
-                value={priceFilter}
+                value={filters.price}
                 onChange={handleFilterChange}
               />
             </div>{" "}
