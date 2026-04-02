@@ -1,6 +1,6 @@
 import { createHmac } from "node:crypto";
 import type { APIRoute } from "astro";
-import { kv } from "../../lib/kv";
+import { kv } from "../../../lib/kv";
 
 const TOKEN_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
 
