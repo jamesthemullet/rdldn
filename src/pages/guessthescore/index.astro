@@ -1,7 +1,7 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
-import "../styles/game.css";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
+import "./game.css";
 import { createHmac, randomUUID } from "node:crypto";
 
 const allPosts = await getAllRoastDinnerPosts();
@@ -54,10 +54,8 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       <div x-show="!gameOver" class="progress">
         <span x-text="`Round ${currentIndex + 1} of 10`"></span>
         <div class="progress-bar">
-          <div
-            class="progress-fill"
-            :style="`width: ${currentIndex * 10}%`"
-          ></div>
+          <div class="progress-fill" :style="`width: ${currentIndex * 10}%`">
+          </div>
         </div>
       </div>
 
@@ -109,16 +107,12 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
           <div class="score-comparison">
             <div class="score-item">
               <span class="score-label">Your guess</span>
-              <span
-                class="score-number"
-                x-text="parseFloat(guess).toFixed(2)"
+              <span class="score-number" x-text="parseFloat(guess).toFixed(2)"
               ></span>
             </div>
             <div class="score-item">
               <span class="score-label">Lord Gravy's score</span>
-              <span
-                class="score-number actual"
-                x-text="currentPost.rating"
+              <span class="score-number actual" x-text="currentPost.rating"
               ></span>
             </div>
             <div class="score-item points">
@@ -145,7 +139,9 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
 
         <!-- Score submission -->
         <div x-show="!scoreSubmitted" class="score-submit">
-          <p class="score-submit-prompt">Enter your name for the leaderboard:</p>
+          <p class="score-submit-prompt">
+            Enter your name for the leaderboard:
+          </p>
           <div class="score-submit-row">
             <input
               type="text"
@@ -159,23 +155,28 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
               @click="submitScore"
               class="submit-btn"
               :disabled="submitting"
-              x-text="submitting ? 'Saving...' : 'Submit Score'"
-            ></button>
+              x-text="submitting ? 'Saving...' : 'Submit Score'"></button>
           </div>
           <p x-show="submitError" x-text="submitError" class="submit-error"></p>
         </div>
 
         <!-- Leaderboard -->
-        <div x-show="scoreSubmitted || leaderboard.length > 0" class="leaderboard">
+        <div
+          x-show="scoreSubmitted || leaderboard.length > 0"
+          class="leaderboard"
+        >
           <h3 class="leaderboard-title">Top Scores</h3>
           <template x-if="leaderboard.length === 0">
             <p class="leaderboard-empty">Loading...</p>
           </template>
           <ol class="leaderboard-list">
             <template x-for="(entry, i) in leaderboard" :key="i">
-              <li :class="entry.name === playerName && entry.score === totalScore ? 'leaderboard-you' : ''">
+              <li
+                :class="entry.name === playerName && entry.score === totalScore ? 'leaderboard-you' : ''"
+              >
                 <span class="leaderboard-name" x-text="entry.name"></span>
-                <span class="leaderboard-score" x-text="`${entry.score}/100`"></span>
+                <span class="leaderboard-score" x-text="`${entry.score}/100`"
+                ></span>
               </li>
             </template>
           </ol>
@@ -214,15 +215,25 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       },
 
       get currentPost() {
-        return this.gamePosts[this.currentIndex] || { title: "", imageUrl: "", rating: 0 };
+        return (
+          this.gamePosts[this.currentIndex] || {
+            title: "",
+            imageUrl: "",
+            rating: 0,
+          }
+        );
       },
 
       get roundFeedback() {
-        if (this.roundPoints === 10) return "Spot on! Are you Lord Gravy in disguise?";
-        if (this.roundPoints >= 8) return "Very close! You've got a keen eye for gravy.";
-        if (this.roundPoints >= 6) return "Not bad! You clearly know your roasts.";
+        if (this.roundPoints === 10)
+          return "Spot on! Are you Lord Gravy in disguise?";
+        if (this.roundPoints >= 8)
+          return "Very close! You've got a keen eye for gravy.";
+        if (this.roundPoints >= 6)
+          return "Not bad! You clearly know your roasts.";
         if (this.roundPoints >= 4) return "Getting there... keep practising.";
-        if (this.roundPoints >= 2) return "A bit off, but we've all had worse Sundays.";
+        if (this.roundPoints >= 2)
+          return "A bit off, but we've all had worse Sundays.";
         return "Ouch. That's a long way off the mark. Lord Gravy is judging you.";
       },
 
@@ -249,7 +260,10 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       submitGuess() {
         const actual = this.currentPost.rating;
         const guessNum = parseFloat(this.guess);
-        this.roundPoints = Math.max(0, Math.round(10 - Math.abs(guessNum - actual) * 2));
+        this.roundPoints = Math.max(
+          0,
+          Math.round(10 - Math.abs(guessNum - actual) * 2)
+        );
         this.totalScore += this.roundPoints;
         this.revealed = true;
       },
@@ -273,7 +287,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         this.submitting = true;
         this.submitError = "";
         try {
-          const res = await fetch("/api/submit-score", {
+          const res = await fetch("/guessthescore/api/submit-score", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -298,7 +312,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
 
       async fetchLeaderboard() {
         try {
-          const res = await fetch("/api/scores");
+          const res = await fetch("/guessthescore/api/scores");
           const data = await res.json();
           this.leaderboard = data;
         } catch {
