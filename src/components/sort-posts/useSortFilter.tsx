@@ -131,7 +131,7 @@ const filterPosts = (posts: Post[], filters: FilterState): Post[] => {
 export const translateClosedDown = (
   closedDown: string | undefined,
   newSlug: string | undefined
-): string | JSX.Element | undefined => {
+) => {
   switch (closedDown) {
     case "closeddown":
       return "Closed Down";
@@ -153,7 +153,7 @@ export const translateClosedDown = (
             <a href={`/${newSlug}`}>
               Re-reviewed in {year}
             </a>
-          ) as JSX.Element;
+          );
         }
         return `Re-reviewed in ${year}`;
       }
