@@ -41,6 +41,7 @@
     "leaflet": "^1.9.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "sanitize-html": "^2.17.2",
     "typescript": "6.0.2"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "@playwright/test": "1.59.1",
     "@types/leaflet": "^1.9.18",
     "@types/node": "^24.10.0",
+    "@types/sanitize-html": "^2.16.1",
     "@vitest/coverage-istanbul": "4.1.2",
     "@vitest/coverage-v8": "4.1.2",
     "happy-dom": "^20.1.0",
