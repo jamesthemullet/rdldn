@@ -26,6 +26,43 @@
   max-width: 620px;
 }
 
+/* Pre-game */
+
+.pre-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.pre-game-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.high-scores-btn {
+  background: transparent;
+  color: var(--roast-new-blue);
+  border: 2px solid var(--roast-new-blue);
+
+  &:hover {
+    background: var(--roast-light);
+    color: var(--roast-new-blue);
+  }
+}
+
+.pre-game-leaderboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
 /* Progress */
 
 .progress {
