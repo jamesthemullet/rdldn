@@ -2,15 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 export const prerender = true;
 
-import type { Page } from "../types";
-
 import "../styles/post.css";
 import BestPostsList from "../components/best-posts-list/best-posts-list.astro";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
-import logo3 from "../images/logo-3.png";
-import { fetchGraphQL } from "../lib/api";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
 import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";

@@ -1,4 +1,5 @@
 ---
+import sanitizeHtml from "sanitize-html";
 import type { Comment as CommentType } from "../../types";
 // Parent Astro File
 import AddComment from "../add-comment/add-comment.astro";
@@ -12,6 +13,15 @@ type Props = {
 };
 
 const { comment, postId, commentId } = Astro.props as Props;
+
+const safeContent = sanitizeHtml(comment.content, {
+  allowedTags: ["p", "br", "strong", "em", "a", "ul", "ol", "li", "blockquote"],
+  allowedAttributes: { a: ["href", "rel", "target"] },
+  allowedSchemes: ["http", "https", "mailto"],
+  transformTags: {
+    a: sanitizeHtml.simpleTransform("a", { rel: "nofollow noopener noreferrer", target: "_blank" }),
+  },
+});
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -51,7 +61,7 @@ const formatDate = (dateString: string): string => {
   <p>
     By <strong>{comment.author.node.name}</strong> on {formatDate(comment.date)}:
   </p>
-  <p set:html={comment.content} />
+  <p set:html={safeContent} />
 
   <!-- Reply Button for comment -->
   <button class="reply-btn" data-target-id={comment.id}> Reply </button>
