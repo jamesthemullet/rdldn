@@ -50,8 +50,37 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
     </p>
 
     <div x-data="roastGame" class="game">
+      <!-- Pre-game screen -->
+      <div x-show="!gameStarted" class="pre-game">
+        <div x-show="!showingHighScores" class="pre-game-actions">
+          <button @click="startGame" class="submit-btn">Start Game</button>
+          <button @click="showHighScores" class="submit-btn high-scores-btn">High Scores</button>
+        </div>
+
+        <div x-show="showingHighScores" class="pre-game-leaderboard">
+          <div class="leaderboard">
+            <h3 class="leaderboard-title">Top Scores</h3>
+            <template x-if="leaderboard.length === 0 && !leaderboardLoaded">
+              <p class="leaderboard-empty">Loading...</p>
+            </template>
+            <template x-if="leaderboard.length === 0 && leaderboardLoaded">
+              <p class="leaderboard-empty">No scores yet — be the first!</p>
+            </template>
+            <ol class="leaderboard-list">
+              <template x-for="(entry, i) in leaderboard" :key="i">
+                <li>
+                  <span class="leaderboard-name" x-text="entry.name"></span>
+                  <span class="leaderboard-score" x-text="`${entry.score}/100`"></span>
+                </li>
+              </template>
+            </ol>
+          </div>
+          <button @click="startGame" class="submit-btn">Start Game</button>
+        </div>
+      </div>
+
       <!-- Progress -->
-      <div x-show="!gameOver" class="progress">
+      <div x-show="gameStarted && !gameOver" class="progress">
         <span x-text="`Round ${currentIndex + 1} of 10`"></span>
         <div class="progress-bar">
           <div class="progress-fill" :style="`width: ${currentIndex * 10}%`">
@@ -60,7 +89,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       </div>
 
       <!-- Current round -->
-      <div x-show="!gameOver" class="round">
+      <div x-show="gameStarted && !gameOver" class="round">
         <h3
           class="restaurant-name"
           x-text="currentPost.title"
@@ -183,6 +212,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         </div>
 
         <button @click="restartGame" class="submit-btn">Play Again</button>
+        <button @click="backToStart" class="submit-btn high-scores-btn">Back to Start</button>
       </div>
     </div>
   </section>
@@ -202,6 +232,9 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       guess: 5,
       revealed: false,
       gameOver: false,
+      gameStarted: false,
+      showingHighScores: false,
+      leaderboardLoaded: false,
       totalScore: 0,
       roundPoints: 0,
       playerName: "",
@@ -212,6 +245,36 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
 
       init() {
         this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+      },
+
+      startGame() {
+        this.gameStarted = true;
+        this.showingHighScores = false;
+      },
+
+      async showHighScores() {
+        this.showingHighScores = true;
+        this.leaderboardLoaded = false;
+        await this.fetchLeaderboard();
+        this.leaderboardLoaded = true;
+      },
+
+      backToStart() {
+        this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+        this.currentIndex = 0;
+        this.guess = 5;
+        this.revealed = false;
+        this.gameOver = false;
+        this.gameStarted = false;
+        this.showingHighScores = false;
+        this.leaderboardLoaded = false;
+        this.totalScore = 0;
+        this.roundPoints = 0;
+        this.playerName = "";
+        this.submitting = false;
+        this.scoreSubmitted = false;
+        this.submitError = "";
+        this.leaderboard = [];
       },
 
       get currentPost() {
