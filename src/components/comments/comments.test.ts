@@ -46,7 +46,7 @@ describe("comments component", () => {
               },
             },
             date: "2024-06-16T12:00:00.000Z",
-            content: "<p>Threaded comment</p>",
+            content: { rendered: "<p>Threaded comment</p>" },
             replies: [],
           },
         ],
