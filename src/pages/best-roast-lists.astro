@@ -6,7 +6,6 @@ import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
-import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import { getSinglePageData } from "../lib/getSinglePageData";
 
@@ -83,7 +82,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         {
           bestRoasts
             .filter((post) => !post.title?.toLowerCase().includes("line"))
-            .map((post, index) => (
+            .map((post) => (
               <li class="heading">
                 <h3>
                   <a href={`/${post?.slug}`} rel="noopener noreferrer">

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
-import type { Page, Post } from "../types";
+import type { Post } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
@@ -93,7 +93,7 @@ const roastListStructuredData = {
       <SortPosts client:visible posts={allRoastPosts} />
     </div>
 
-    <script lang="ts">
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         let attempts = 0;
         const maxAttempts = 20; // 2 seconds max
