@@ -9,9 +9,11 @@ export type Sizes = {
 }[];
 
 export type Post = {
+  postId?: number;
   title?: string;
   slug?: string;
   date: string;
+  content?: string;
   featuredImage?: {
     node: {
       sourceUrl: string;
@@ -76,6 +78,16 @@ export type Post = {
       name: string;
     }[];
   };
+  tubeLines?: {
+    nodes: {
+      name: string;
+    }[];
+  };
+  nSFWs?: {
+    nodes: {
+      name: string;
+    }[];
+  };
   closedDowns?: {
     nodes: {
       name: string;
@@ -89,6 +101,9 @@ export type Post = {
   highlights?: {
     loved: string;
     loathed: string;
+    website?: string;
+    locationPost?: string;
+    instagram?: string;
   };
   tags?: {
     nodes: {
@@ -147,7 +162,7 @@ export type Comment = {
   author: {
     node: {
       name: string;
-      avatar: {
+      avatar?: {
         url: string;
       };
     };

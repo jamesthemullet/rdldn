@@ -7,8 +7,8 @@ type TopRoastPostOptions = {
   limit?: number;
 };
 
-const getPostRating = (post: Post): number =>
-  Number.parseFloat(post.ratings?.nodes?.[0]?.name || "");
+export const getPostRating = (post: Post): number =>
+  Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
 
 const isRoastDinnerPost = (post: Post): boolean =>
   post.typesOfPost?.nodes?.some((node) => node.name === "Roast Dinner") ?? false;
