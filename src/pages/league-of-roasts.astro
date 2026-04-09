@@ -103,12 +103,10 @@ const roastListStructuredData = {
           const sortPostsElement = document.querySelector(
             ".sort-posts-container > div"
           );
-          const loadingElement = document.getElementById(
-            "sort-posts-loading"
-          ) as HTMLElement;
+          const loadingElement = document.getElementById("sort-posts-loading");
           const containerElement = document.querySelector(
             ".sort-posts-container"
-          ) as HTMLElement;
+          );
 
           if (sortPostsElement && loadingElement && containerElement) {
             loadingElement.style.display = "none";
