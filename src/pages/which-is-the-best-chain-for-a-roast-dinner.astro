@@ -78,7 +78,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         chainStats.map((chain) => (
           <li>
-            <a href={`/chains/${toOwnerSlug(chain.name)}`}>{chain.name}</a> –{" "}
+            <a href={`/chains/${toOwnerSlug(chain.name)}`}>{chain.name}</a> â€“{" "}
             {chain.average.toFixed(2)} ({chain.count} visits)
           </li>
         ))

@@ -153,9 +153,7 @@ export type Comment = {
     };
   };
   date: string;
-  content: {
-    rendered: string;
-  };
+  content: string;
   replies?: Comment[];
   parentId?: string;
 };

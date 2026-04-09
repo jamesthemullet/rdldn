@@ -13,9 +13,7 @@ const createComment = (id: string, overrides: Partial<Comment> = {}): Comment =>
     }
   },
   date: "2024-01-01T00:00:00.000Z",
-  content: {
-    rendered: `Comment ${id}`
-  },
+  content: `Comment ${id}`,
   replies: [],
   ...overrides
 });

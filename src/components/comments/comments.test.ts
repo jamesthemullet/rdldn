@@ -46,7 +46,7 @@ describe("comments component", () => {
               },
             },
             date: "2024-06-16T12:00:00.000Z",
-            content: { rendered: "<p>Threaded comment</p>" },
+            content: "<p>Threaded comment</p>",
             replies: [],
           },
         ],
@@ -61,6 +61,6 @@ describe("comments component", () => {
 
     expect(html).toContain('id="comment-form"');
     expect(html).toContain("Comment submitted! Awaiting moderation.");
-    expect(html).toContain("comments.astro?astro&type=script");
+    expect(html).toContain("https://blog.rdldn.co.uk/graphql");
   });
 });

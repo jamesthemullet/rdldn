@@ -6,7 +6,6 @@ import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
-import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
@@ -71,7 +70,7 @@ const tubeLines = [
       "Harlesden",
       "Willesden Junction",
       "Kensal Green",
-      "Queen’s Park",
+      "Queenâ€™s Park",
       "Kilburn Park",
       "Maida Vale",
       "Warwick Avenue",
@@ -79,7 +78,7 @@ const tubeLines = [
       "Edgware Road",
       "Marylebone",
       "Baker Street",
-      "Regent’s Park",
+      "Regentâ€™s Park",
       "Oxford Circus",
       "Piccadilly Circus",
       "Charing Cross",
@@ -105,7 +104,7 @@ const tubeLines = [
       "North Acton",
       "East Acton",
       "White City",
-      "Shepherd’s Bush",
+      "Shepherdâ€™s Bush",
       "Holland Park",
       "Notting Hill Gate",
       "Queensway",
@@ -116,7 +115,7 @@ const tubeLines = [
       "Tottenham Court Road",
       "Holborn",
       "Chancery Lane",
-      "St. Paul’s",
+      "St. Paulâ€™s",
       "Bank",
       "Liverpool Street",
       "Bethnal Green",
@@ -157,7 +156,7 @@ const tubeLines = [
       "Temple",
       "Embankment",
       "Westminster",
-      "St. James’ Park",
+      "St. Jamesâ€™ Park",
       "Victoria",
       "Sloane Square",
       "South Kensington",
@@ -170,7 +169,7 @@ const tubeLines = [
       "Baker Street",
       "Great Portland Street",
       "Euston Square",
-      "King’s Cross St. Pancras",
+      "Kingâ€™s Cross St. Pancras",
       "Farringdon",
       "Barbican",
       "Moorgate",
@@ -218,7 +217,7 @@ const tubeLines = [
       "Bayswater",
       "Notting Hill Gate",
       "High Street Kensington",
-      "Earl’s Court",
+      "Earlâ€™s Court",
       "Kensington (Olympia)",
       "West Brompton",
       "Fulham Broadway",
@@ -249,7 +248,7 @@ const tubeLines = [
     stations: [
       "Hammersmith",
       "Goldhawk Road",
-      "Shepherd’s Bush Market",
+      "Shepherdâ€™s Bush Market",
       "Wood Lane",
       "Latimer Road",
       "Ladbroke Grove",
@@ -260,7 +259,7 @@ const tubeLines = [
       "Baker Street",
       "Great Portland Street",
       "Euston Square",
-      "King’s Cross St. Pancras",
+      "Kingâ€™s Cross St. Pancras",
       "Farringdon",
       "Barbican",
       "Moorgate",
@@ -293,7 +292,7 @@ const tubeLines = [
       "West Hampstead",
       "Finchley Road",
       "Swiss Cottage",
-      "St. John’s Wood",
+      "St. Johnâ€™s Wood",
       "Baker Street",
       "Bond Street",
       "Green Park",
@@ -431,7 +430,7 @@ const tubeLines = [
       "Turnham Green",
       "Hammersmith",
       "Barons Court",
-      "Earl’s Court",
+      "Earlâ€™s Court",
       "Gloucester Road",
       "South Kensington",
       "Knightsbridge",
@@ -442,7 +441,7 @@ const tubeLines = [
       "Covent Garden",
       "Holborn",
       "Russell Square",
-      "King’s Cross St. Pancras",
+      "Kingâ€™s Cross St. Pancras",
       "Caledonian Road",
       "Holloway Road",
       "Arsenal",
@@ -467,7 +466,7 @@ const tubeLines = [
       "Seven Sisters",
       "Finsbury Park",
       "Highbury & Islington",
-      "King’s Cross St. Pancras",
+      "Kingâ€™s Cross St. Pancras",
       "Euston",
       "Warren Street",
       "Oxford Circus",
@@ -618,7 +617,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         dinners of London?
       </p>
       <p>
-        This is based solely on the tube station I used to get there – so will
+        This is based solely on the tube station I used to get there â€“ so will
         be skewed by what is easiest for me
       </p>
 
@@ -659,7 +658,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                 })}
               </ul>
               <p>
-                {line.name} Line stations visited – {visited.length} out of{" "}
+                {line.name} Line stations visited â€“ {visited.length} out of{" "}
                 {line.stations.length}
               </p>
             </div>
@@ -699,7 +698,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
         }
       </ul>
       <p>
-        Overground stations visited – {
+        Overground stations visited â€“ {
           overgroundStations.filter((s) => visitedStations.includes(s)).length
         } out of {overgroundStations.length}
       </p>

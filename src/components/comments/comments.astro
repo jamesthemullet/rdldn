@@ -43,21 +43,18 @@ const { threadedComments, postId } = Astro.props as Props;
   </form>
 </section>
 
-<script>
+<script lang="ts">
   document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("comment-form") as HTMLFormElement;
+    const form = document.getElementById("comment-form");
     const message = document.getElementById("message");
 
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const authorName = (form.querySelector("#authorName") as HTMLInputElement)
-        ?.value;
+      const authorName = form.querySelector("#authorName")?.value;
 
-      const email = (form.querySelector("#email") as HTMLInputElement)?.value;
-      const commentText = (
-        form.querySelector("#commentText") as HTMLTextAreaElement
-      )?.value;
+      const email = form.querySelector("#email")?.value;
+      const commentText = form.querySelector("#commentText")?.value;
 
       const postId = form?.getAttribute("data-post-id");
 
