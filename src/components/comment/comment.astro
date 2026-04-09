@@ -14,7 +14,7 @@ type Props = {
 
 const { comment, postId, commentId } = Astro.props as Props;
 
-const safeContent = sanitizeHtml(comment.content.rendered, {
+const safeContent = sanitizeHtml(comment.content, {
   allowedTags: ["p", "br", "strong", "em", "a", "ul", "ol", "li", "blockquote"],
   allowedAttributes: { a: ["href", "rel", "target"] },
   allowedSchemes: ["http", "https", "mailto"],
