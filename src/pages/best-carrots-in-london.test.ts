@@ -19,7 +19,7 @@ const mockPage = {
         parentId: undefined,
         author: { node: { name: "Alice", avatar: { url: "https://example.com/a.png" } } },
         date: "2024-01-01",
-        content: { rendered: "Parent comment" },
+        content: "Parent comment",
         replies: []
       },
       {
@@ -27,7 +27,7 @@ const mockPage = {
         parentId: "c1",
         author: { node: { name: "Bob", avatar: { url: "https://example.com/b.png" } } },
         date: "2024-01-02",
-        content: { rendered: "Child comment" },
+        content: "Child comment",
         replies: []
       }
     ]

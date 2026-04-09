@@ -27,7 +27,7 @@ const mockPage = {
           }
         },
         date: "2025-01-12T12:00:00.000Z",
-        content: { rendered: "<p>Top-level comment</p>" }
+        content: "<p>Top-level comment</p>"
       },
       {
         id: "c2",
@@ -39,7 +39,7 @@ const mockPage = {
           }
         },
         date: "2025-01-13T12:00:00.000Z",
-        content: { rendered: "<p>Reply comment</p>" }
+        content: "<p>Reply comment</p>"
       }
     ]
   },

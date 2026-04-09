@@ -19,7 +19,7 @@ const mockPage = {
         parentId: undefined,
         author: { node: { name: "Alice", avatar: { url: "https://example.com/a.png" } } },
         date: "2024-01-01",
-        content: { rendered: "Parent comment" },
+        content: "Parent comment",
         replies: []
       }
     ]
