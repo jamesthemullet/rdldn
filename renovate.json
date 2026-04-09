@@ -4,7 +4,7 @@
   ],
   "timezone": "Europe/London",
   "schedule": [
-    "once a day"
+    "after 4am and before 5am"
   ],
   "minimumReleaseAge": "1 day",
   "packageRules": [
