@@ -2,6 +2,9 @@
 import type { Post } from "../../types";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
 
+const getUniqueValues = (posts: Post[], accessor: (post: Post) => string | undefined): string[] =>
+  Array.from(new Set(posts.map(accessor))).filter((v): v is string => v !== undefined && v !== "");
+
 const SortPosts = ({ posts }: { posts: Post[] }) => {
   const {
     sortOrder,
@@ -186,39 +189,33 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <label htmlFor="area-filter">Filter by Area: </label>
               <select id="area-filter" name="area" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {Array.from(new Set(posts.map((post) => post.areas?.nodes[0]?.name)))
-                  .filter(Boolean)
-                  .map((area) => (
-                    <option key={area} value={area}>
-                      {area}
-                    </option>
-                  ))}
+                {getUniqueValues(posts, (post) => post.areas?.nodes[0]?.name).map((area) => (
+                  <option key={area} value={area}>
+                    {area}
+                  </option>
+                ))}
               </select>
             </div>{" "}
             <div>
               <label htmlFor="borough-filter">Filter by Borough: </label>
               <select id="borough-filter" name="borough" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {Array.from(new Set(posts.map((post) => post.boroughs?.nodes[0]?.name)))
-                  .filter(Boolean)
-                  .map((borough) => (
-                    <option key={borough} value={borough}>
-                      {borough}
-                    </option>
-                  ))}
+                {getUniqueValues(posts, (post) => post.boroughs?.nodes[0]?.name).map((borough) => (
+                  <option key={borough} value={borough}>
+                    {borough}
+                  </option>
+                ))}
               </select>
             </div>{" "}
             <div>
               <label htmlFor="owner-filter">Filter by Owner: </label>
               <select id="owner-filter" name="owner" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {Array.from(new Set(posts.map((post) => post.owners?.nodes[0]?.name)))
-                  .filter(Boolean)
-                  .map((owner) => (
-                    <option key={owner} value={owner}>
-                      {owner}
-                    </option>
-                  ))}
+                {getUniqueValues(posts, (post) => post.owners?.nodes[0]?.name).map((owner) => (
+                  <option key={owner} value={owner}>
+                    {owner}
+                  </option>
+                ))}
               </select>
             </div>{" "}
             <div>
@@ -226,26 +223,22 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <select id="closed-down-filter" name="closedDown" onChange={handleFilterChange}>
                 <option value="">All</option>
                 <option value="open">Open</option>
-                {Array.from(new Set(posts.map((post) => post.closedDowns?.nodes[0]?.name)))
-                  .filter(Boolean)
-                  .map((closedDown) => (
-                    <option key={closedDown} value={closedDown}>
-                      {closedDown}
-                    </option>
-                  ))}
+                {getUniqueValues(posts, (post) => post.closedDowns?.nodes[0]?.name).map((closedDown) => (
+                  <option key={closedDown} value={closedDown}>
+                    {closedDown}
+                  </option>
+                ))}
               </select>
             </div>
             <div>
               <label htmlFor="year-filter">Filter by Year: </label>
               <select id="year-filter" name="year" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {Array.from(new Set(posts.map((post) => post.yearsOfVisit?.nodes[0]?.name)))
-                  .filter(Boolean)
-                  .map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
+                {getUniqueValues(posts, (post) => post.yearsOfVisit?.nodes[0]?.name).map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

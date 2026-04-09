@@ -3,6 +3,7 @@ import type { Page, Post } from "../types";
 import GET_ALL_POSTS from "./queries/getAllPosts";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
 import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
+import { getPostRating } from "./utils";
 
 type PostsConnection = {
   nodes: Post[];
@@ -21,9 +22,6 @@ type HighRatedRoast = {
   slug: string;
   rating: string;
 };
-
-const getPostRating = (post: Post): number =>
-  Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
 
 const isPostOpen = (post: Post): boolean =>
   !(post.closedDowns?.nodes?.[0]?.name || "");
