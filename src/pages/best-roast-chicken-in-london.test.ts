@@ -81,7 +81,7 @@ vi.mock("astro:assets", () => ({
   })()
 }));
 
-describe("best-roast-chicken-in-london page", () => {
+describe("best-roast-chicken-in-london  page", () => {
   test("renders top roast-chicken posts and comments block", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import("./best-roast-chicken-in-london.astro");
