@@ -18,11 +18,14 @@
   },
   "resolutions": {
     "defu": ">=6.1.5",
+    "h3": "^1.15.9",
     "minimatch": "^10.2.1",
     "path-to-regexp": "^8.0.0",
     "picomatch": ">=2.3.2",
+    "smol-toml": ">=1.6.1",
     "tar": "^7.5.8",
-    "vite": ">=8.0.5"
+    "vite": ">=8.0.5",
+    "yaml": ">=2.8.3"
   },
   "dependencies": {
     "@astrojs/alpinejs": "^0.5.0",
