@@ -273,7 +273,8 @@ describe("roast-map component", () => {
         useState: <T,>(initialValue: T) => [initialValue, vi.fn()],
         useEffect: (callback: () => unknown) => {
           callback();
-        }
+        },
+        useMemo: <T,>(factory: () => T) => factory()
       };
     });
 

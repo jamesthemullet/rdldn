@@ -53,20 +53,13 @@ describe("getSinglePageData", () => {
     expect(mockFetchGraphQL).toHaveBeenCalledWith(customQuery, { id: "42" });
   });
 
-  it("logs and throws when GraphQL request fails", async () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+  it("propagates the original error when GraphQL request fails", async () => {
     const error = new Error("Network down");
 
     mockFetchGraphQL.mockRejectedValueOnce(error);
 
     await expect(getSinglePageData({ variables: { id: "10608" } })).rejects.toThrow(
-      "No single page data found"
-    );
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching GraphQL data:",
-      error
+      "Network down"
     );
   });
 

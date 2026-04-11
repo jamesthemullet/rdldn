@@ -15,18 +15,11 @@ export async function getSinglePageData({
   variables,
   query = SINGLE_PAGE_QUERY_PREVIEW
 }: SinglePageDataOptions): Promise<Page> {
-  let singlePage: Page | null = null;
+  const { page } = (await fetchGraphQL(query, variables)) as SinglePageResponse;
 
-  try {
-    const { page } = (await fetchGraphQL(query, variables)) as SinglePageResponse;
-    singlePage = page;
-  } catch (error) {
-    console.error("Error fetching GraphQL data:", error);
-  }
-
-  if (!singlePage) {
+  if (!page) {
     throw new Error("No single page data found");
   }
 
-  return singlePage;
+  return page;
 }
