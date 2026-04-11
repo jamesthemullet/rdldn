@@ -18,12 +18,12 @@ import SocialLinks from "../social-links/social-links.astro";
 
       <SocialLinks className="socials header-socials" />
 
-      <button id="nav-toggle" aria-label="Toggle Navigation Menu"
+      <button id="nav-toggle" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="nav-menu"
         ><span></span></button
       >
     </div>
 
-    <nav id="nav-menu">
+    <nav id="nav-menu" aria-label="Main navigation">
       <a href="/league-of-roasts">League Of Roasts</a>
       <a href="/best-roast-lists">Best Roasts Lists</a>
       <a href="/maps">Maps</a>
@@ -31,8 +31,8 @@ import SocialLinks from "../social-links/social-links.astro";
       <a href="/search">Search</a>
       <a href="/archive">Archive</a>
       <div class="dropdown">
-        <a href="/about" class="dropdown-toggle"
-          >About <span class="dropdown-arrow">▼</span></a
+        <a href="/about" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"
+          >About <span class="dropdown-arrow" aria-hidden="true">▼</span></a
         >
         <div class="dropdown-menu">
           <a href="/advertise-with-us">Advertise With Us</a>
@@ -49,7 +49,8 @@ import SocialLinks from "../social-links/social-links.astro";
 
       // Main nav toggle
       navToggle?.addEventListener("click", () => {
-        navToggle.classList.toggle("open");
+        const isOpen = navToggle.classList.toggle("open");
+        navToggle.setAttribute("aria-expanded", isOpen.toString());
         navContainer?.classList.toggle("open");
       });
 
@@ -58,7 +59,8 @@ import SocialLinks from "../social-links/social-links.astro";
         // Only prevent default and toggle on mobile
         if (window.innerWidth < 1024) {
           e.preventDefault();
-          dropdown?.classList.toggle("open");
+          const isOpen = dropdown?.classList.toggle("open");
+          dropdownToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
         }
       });
     });
