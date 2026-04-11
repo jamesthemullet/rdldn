@@ -47,6 +47,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
         type="button"
         className="show-hide-button"
         onClick={() => setShowOptions((prev) => !prev)}
+        aria-expanded={showOptions}
       >
         {showOptions ? "Hide options" : "Show all options / filters"}
       </button>

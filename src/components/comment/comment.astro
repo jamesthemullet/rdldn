@@ -69,7 +69,7 @@ const formatDate = (dateString: string): string => {
   <p set:html={safeContent} />
 
   <!-- Reply Button for comment -->
-  <button class="reply-btn" data-target-id={comment.id}> Reply </button>
+  <button class="reply-btn" data-target-id={comment.id} aria-expanded="false" aria-controls={`reply-form-${comment.id}`}> Reply </button>
 
   <div
     class="reply-form-container"
@@ -115,8 +115,9 @@ const formatDate = (dateString: string): string => {
           );
 
           if (formContainer) {
-            formContainer.style.display =
-              formContainer.style.display === "none" ? "block" : "none";
+            const isVisible = formContainer.style.display !== "none";
+            formContainer.style.display = isVisible ? "none" : "block";
+            event.target.setAttribute("aria-expanded", (!isVisible).toString());
           }
         });
       });
