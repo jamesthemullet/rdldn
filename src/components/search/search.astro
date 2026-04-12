@@ -8,7 +8,9 @@ const { resultLimit = 4 } = Astro.props;
 
 <div x-data="searchComponent" data-result-limit={resultLimit}>
   <form @submit.prevent="handleSearch">
+    <label for="search-input" class="sr-only">Search posts</label>
     <input
+      id="search-input"
       type="text"
       placeholder="Search..."
       x-model="searchTerm"
@@ -18,7 +20,7 @@ const { resultLimit = 4 } = Astro.props;
     <button type="submit">Search</button>
   </form>
 
-  <section class="home-list search-container" x-show="searchResults.length > 0">
+  <section class="home-list search-container" aria-label="Search results" x-show="searchResults.length > 0">
     <ul>
       <template x-for="post in searchResults" :key="post.slug">
         <li class="heading">

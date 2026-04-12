@@ -1,14 +1,18 @@
 ---
 import Footer from "../components/footer/footer.astro";
 import Header from "../components/header/header.astro";
-
-const { pageTitle, description, opengraphImage, halloween, structuredData } =
-  Astro.props;
 import "./layout.css";
 import { SEO } from "astro-seo";
 import logo1 from "../images/logo-1.png";
 
 // import logo3 from "/images/logo-3.png";
+
+const { pageTitle, description, opengraphImage, halloween, structuredData } =
+  Astro.props;
+
+const canonicalURL = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : Astro.url.href;
 ---
 
 <html lang="en">
@@ -50,11 +54,12 @@ import logo1 from "../images/logo-1.png";
     <link rel="manifest" href="/favicon/site.webmanifest" />
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="theme-color" content="#ffffff" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <SEO
       title={pageTitle || "Roast Dinners In London"}
       description={description ||
         "Lord Gravy bringing you a guide to the best and worst roast dinners in London."}
+      canonical={canonicalURL}
       openGraph={{
         basic: {
           title: pageTitle || "Roast Dinners In London",
