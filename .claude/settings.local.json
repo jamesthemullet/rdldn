@@ -5,7 +5,14 @@
       "Bash(yarn test:e2e tests/e2e/guessthescore.spec.ts --reporter=list)",
       "Bash(yarn test:e2e tests/e2e/guessthescore.spec.ts --project=chromium --reporter=list)",
       "Skill(schedule)",
-      "Bash(gh pr:*)"
+      "Bash(gh pr:*)",
+      "Bash(ls:*)",
+      "Bash(git checkout:*)",
+      "Bash(yarn tsc:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(yarn vitest:*)"
     ]
   }
 }

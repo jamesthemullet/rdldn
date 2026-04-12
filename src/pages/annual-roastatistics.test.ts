@@ -140,6 +140,8 @@ describe("annual-roastatistics page", () => {
     expect(html).toMatch(/Most expensive:\s*£\s*30\.00/);
     expect(html).toMatch(/Least expensive:\s*£\s*20\.00/);
     expect(html).toContain("Roasts reviewed: 3");
+    expect(html).toContain("Excellent roasts: 1");
+    expect(html).toContain("Crap roasts: 0");
     expect(html).toContain("South London: 2");
     expect(html).toContain("North London: 1");
     expect(html).toContain("Lambeth: 2");
@@ -164,6 +166,8 @@ describe("annual-roastatistics page", () => {
     expect(html).toMatch(/Most expensive:\s*£\s*40\.00/);
     expect(html).toMatch(/Least expensive:\s*£\s*40\.00/);
     expect(html).toContain("Roasts reviewed: 1");
+    expect(html).toContain("Excellent roasts: 1");
+    expect(html).toContain("Crap roasts: 0");
     expect(html).toContain("East London");
     expect(html).toContain("Tower Hamlets: 1");
   });
@@ -305,5 +309,7 @@ describe("annual-roastatistics page", () => {
     expect((html.match(/No rating data/g) ?? []).length).toBe(3);
     expect(html).toMatch(/Average price:\s*£\s*20\.00/);
     expect(html).toContain("Roasts reviewed: 2");
+    expect(html).toContain("Excellent roasts: 0");
+    expect(html).toContain("Crap roasts: 0");
   });
 });

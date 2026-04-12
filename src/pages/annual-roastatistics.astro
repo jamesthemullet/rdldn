@@ -93,6 +93,9 @@ const highestRating =
   ratingValues.length > 0 ? Math.max(...ratingValues) : null;
 const lowestRating = ratingValues.length > 0 ? Math.min(...ratingValues) : null;
 
+const excellentRoasts = ratingValues.filter((value) => value >= 8).length;
+const crapRoasts = ratingValues.filter((value) => value < 6).length;
+
 const averagePrice =
   priceValues.length > 0
     ? priceValues.reduce((sum, value) => sum + value, 0) / priceValues.length
@@ -219,6 +222,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                 : "No price data"}
             </li>
             <li>Roasts reviewed: {selectedYearPosts.length}</li>
+            <li>Excellent roasts: {excellentRoasts}</li>
+            <li>Crap roasts: {crapRoasts}</li>
           </ul>
 
           <h3>Most visited areas</h3>
