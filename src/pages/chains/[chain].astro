@@ -76,7 +76,13 @@ const averageRating =
   <div class="no-image-container">
     <section class="post-title centre-with-padding">
       <h2>Reviews of venues owned by {chainName}</h2>
-      {averageRating && <p><strong>Average rating:</strong> {averageRating}</p>}
+      {
+        averageRating && (
+          <p>
+            <strong>Average rating:</strong> {averageRating}
+          </p>
+        )
+      }
     </section>
   </div>
 
@@ -167,8 +173,8 @@ const averageRating =
 
 <script>
   const list = document.getElementById("chains-post-list");
-  const fieldSelect = document.getElementById("sort-field") as HTMLSelectElement | null;
-  const directionSelect = document.getElementById("sort-direction") as HTMLSelectElement | null;
+  const fieldSelect = document.getElementById("sort-field");
+  const directionSelect = document.getElementById("sort-direction");
 
   function sortPosts() {
     if (!list || !fieldSelect || !directionSelect) return;
@@ -178,17 +184,17 @@ const averageRating =
     const items = [...list.querySelectorAll("li")];
 
     items.sort((a, b) => {
-      let aVal: number;
-      let bVal: number;
+      let aVal;
+      let bVal;
 
       if (field === "rating") {
-        const aRating = Number.parseFloat((a as HTMLElement).dataset.rating ?? "");
-        const bRating = Number.parseFloat((b as HTMLElement).dataset.rating ?? "");
+        const aRating = Number.parseFloat(a.dataset.rating ?? "");
+        const bRating = Number.parseFloat(b.dataset.rating ?? "");
         aVal = Number.isNaN(aRating) ? (direction === "desc" ? -Infinity : Infinity) : aRating;
         bVal = Number.isNaN(bRating) ? (direction === "desc" ? -Infinity : Infinity) : bRating;
       } else {
-        aVal = new Date((a as HTMLElement).dataset.date ?? "").getTime();
-        bVal = new Date((b as HTMLElement).dataset.date ?? "").getTime();
+        aVal = new Date(a.dataset.date ?? "").getTime();
+        bVal = new Date(b.dataset.date ?? "").getTime();
       }
 
       return direction === "desc" ? bVal - aVal : aVal - bVal;
@@ -197,6 +203,6 @@ const averageRating =
     items.forEach((item) => list.appendChild(item));
   }
 
-  fieldSelect?.addEventListener("change", sortPosts);
-  directionSelect?.addEventListener("change", sortPosts);
+  fieldSelect.addEventListener("change", sortPosts);
+  directionSelect.addEventListener("change", sortPosts);
 </script>
