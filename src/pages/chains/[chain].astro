@@ -55,14 +55,6 @@ export async function getStaticPaths() {
     props: {
       chainName: data.chainName,
       posts: [...data.posts].sort((a, b) => {
-        const aRating = Number.parseFloat(a.ratings?.nodes?.[0]?.name || "");
-        const bRating = Number.parseFloat(b.ratings?.nodes?.[0]?.name || "");
-        const ratingDiff = bRating - aRating;
-
-        if (!Number.isNaN(ratingDiff) && ratingDiff !== 0) {
-          return ratingDiff;
-        }
-
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       }),
     },
@@ -88,72 +80,90 @@ const averageRating =
     </section>
   </div>
 
-  <section class="home-list">
+  {
+    posts.length > 0 && (
+      <div class="chains-sort-controls">
+        <label for="sort-field">Sort by:</label>
+        <select id="sort-field">
+          <option value="date">Date</option>
+          <option value="rating">Rating</option>
+        </select>
+        <label for="sort-direction">Order:</label>
+        <select id="sort-direction">
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </div>
+    )
+  }
+
+  <section class="home-list chains-list">
     {
       posts.length > 0 ? (
-        <>
-          <div class="sort-posts">
-            <label for="sort-field">Sort by:</label>
-            <select id="sort-field">
-              <option value="rating">Rating</option>
-              <option value="date">Date</option>
-            </select>
-            <label for="sort-direction">Order:</label>
-            <select id="sort-direction">
-              <option value="desc">Descending</option>
-              <option value="asc">Ascending</option>
-            </select>
-          </div>
-          <ul id="chains-post-list">
-            {posts.map((post) => (
-              <li
-                class="heading"
-                data-date={post.date}
-                data-rating={post.ratings?.nodes?.[0]?.name || ""}
-              >
-                <h2>
-                  <a href={`/${post.slug}`} rel="noopener noreferrer">
-                    <Fragment set:html={post.title} />
-                  </a>
-                </h2>
-                <a
-                  href={`/${post.slug}`}
-                  rel="noopener noreferrer"
-                  class="featured-image"
-                >
-                  <img
-                    src={post.featuredImage?.node?.sourceUrl}
-                    alt={
-                      post.featuredImage?.node?.altText ||
-                      `Photo of the roast dinner at ${post.title}`
-                    }
-                    width="400"
-                    height="300"
-                  />
+        <ul id="chains-post-list">
+          {posts.map((post) => (
+            <li
+              class="heading"
+              data-date={post.date}
+              data-rating={post.ratings?.nodes?.[0]?.name || ""}
+            >
+              <h2>
+                <a href={`/${post.slug}`} rel="noopener noreferrer">
+                  <Fragment set:html={post.title} />
                 </a>
+              </h2>
+              <a
+                href={`/${post.slug}`}
+                rel="noopener noreferrer"
+                class="featured-image"
+              >
+                <img
+                  src={post.featuredImage?.node?.sourceUrl}
+                  alt={
+                    post.featuredImage?.node?.altText ||
+                    `Photo of the roast dinner at ${post.title}`
+                  }
+                  width="400"
+                  height="300"
+                />
+              </a>
+              <p>
+                <strong>Rating:</strong>{" "}
+                {post.ratings?.nodes?.[0]?.name || "N/A"}
+              </p>
+              {post.yearsOfVisit?.nodes?.[0]?.name && (
                 <p>
-                  <strong>Rating:</strong>{" "}
-                  {post.ratings?.nodes?.[0]?.name || "N/A"}
+                  <strong>Year visited:</strong>{" "}
+                  {post.yearsOfVisit.nodes[0].name}
                 </p>
-                {post.yearsOfVisit?.nodes?.[0]?.name && (
-                  <p>
-                    <strong>Year visited:</strong>{" "}
-                    {post.yearsOfVisit.nodes[0].name}
-                  </p>
-                )}
-                {post.closedDowns?.nodes?.[0]?.name && (
-                  <p>{getClosedStatusLabel(post.closedDowns.nodes[0].name)}</p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </>
+              )}
+              {post.closedDowns?.nodes?.[0]?.name && (
+                <p>{getClosedStatusLabel(post.closedDowns.nodes[0].name)}</p>
+              )}
+            </li>
+          ))}
+        </ul>
       ) : (
         <p>No reviews found for this chain.</p>
       )
     }
   </section>
 </BaseLayout>
+
+<style>
+  .chains-sort-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 0 0;
+  }
+
+  .chains-list {
+    margin-top: 1rem !important;
+  }
+</style>
 
 <script>
   const list = document.getElementById("chains-post-list");

@@ -26,7 +26,7 @@ afterEach(() => {
 });
 
 describe("chains detail page", () => {
-  test("getStaticPaths groups by chain, excludes independent, and sorts posts by rating then date", async () => {
+  test("getStaticPaths groups by chain, excludes independent, and sorts posts by date descending", async () => {
     vi.mocked(getAllRoastDinnerPosts).mockResolvedValue([
       {
         slug: "alpha-newer",
@@ -72,9 +72,9 @@ describe("chains detail page", () => {
     expect(independent).toBeUndefined();
     expect(alpha?.props.chainName).toBe("Alpha & Co");
     expect(alpha?.props.posts.map((post: any) => post.slug)).toEqual([
-      "alpha-high",
       "alpha-newer",
       "alpha-older",
+      "alpha-high",
     ]);
   });
 
@@ -176,8 +176,8 @@ describe("chains detail page", () => {
 
     expect(html).toContain('id="sort-field"');
     expect(html).toContain('id="sort-direction"');
-    expect(html).toContain('value="rating"');
     expect(html).toContain('value="date"');
+    expect(html).toContain('value="rating"');
     expect(html).toContain('value="desc"');
     expect(html).toContain('value="asc"');
     expect(html).toContain('data-date="2025-01-01T00:00:00.000Z"');
