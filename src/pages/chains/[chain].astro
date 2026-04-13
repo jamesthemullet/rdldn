@@ -55,14 +55,6 @@ export async function getStaticPaths() {
     props: {
       chainName: data.chainName,
       posts: [...data.posts].sort((a, b) => {
-        const aRating = Number.parseFloat(a.ratings?.nodes?.[0]?.name || "");
-        const bRating = Number.parseFloat(b.ratings?.nodes?.[0]?.name || "");
-        const ratingDiff = bRating - aRating;
-
-        if (!Number.isNaN(ratingDiff) && ratingDiff !== 0) {
-          return ratingDiff;
-        }
-
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       }),
     },
@@ -70,12 +62,21 @@ export async function getStaticPaths() {
 }
 
 const { chainName, posts } = Astro.props as OwnerPageProps;
+
+const ratings = posts
+  .map((p) => Number.parseFloat(p.ratings?.nodes?.[0]?.name || ""))
+  .filter((r) => !Number.isNaN(r));
+const averageRating =
+  ratings.length > 0
+    ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
+    : null;
 ---
 
 <BaseLayout pageTitle={`Roast Dinner Reviews by ${chainName}`}>
   <div class="no-image-container">
     <section class="post-title centre-with-padding">
       <h2>Reviews of venues owned by {chainName}</h2>
+      {averageRating && <p><strong>Average rating:</strong> {averageRating}</p>}
     </section>
   </div>
 
