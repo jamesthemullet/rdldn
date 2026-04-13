@@ -55,14 +55,6 @@ export async function getStaticPaths() {
     props: {
       chainName: data.chainName,
       posts: [...data.posts].sort((a, b) => {
-        const aRating = Number.parseFloat(a.ratings?.nodes?.[0]?.name || "");
-        const bRating = Number.parseFloat(b.ratings?.nodes?.[0]?.name || "");
-        const ratingDiff = bRating - aRating;
-
-        if (!Number.isNaN(ratingDiff) && ratingDiff !== 0) {
-          return ratingDiff;
-        }
-
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       }),
     },
@@ -70,26 +62,66 @@ export async function getStaticPaths() {
 }
 
 const { chainName, posts } = Astro.props as OwnerPageProps;
+
+const ratings = posts
+  .map((p) => Number.parseFloat(p.ratings?.nodes?.[0]?.name || ""))
+  .filter((r) => !Number.isNaN(r));
+const averageRating =
+  ratings.length > 0
+    ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
+    : null;
 ---
 
 <BaseLayout pageTitle={`Roast Dinner Reviews by ${chainName}`}>
   <div class="no-image-container">
     <section class="post-title centre-with-padding">
       <h2>Reviews of venues owned by {chainName}</h2>
+      {
+        averageRating && (
+          <p>
+            <strong>Average rating:</strong> {averageRating}
+          </p>
+        )
+      }
     </section>
   </div>
 
-  <section class="home-list">
+  {
+    posts.length > 0 && (
+      <div class="chains-sort-controls">
+        <div class="sort-group">
+          <label for="sort-field">Sort by:</label>
+          <select id="sort-field">
+            <option value="date">Date</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+        <div class="sort-group">
+          <label for="sort-direction">Order:</label>
+          <select id="sort-direction">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+        </div>
+      </div>
+    )
+  }
+
+  <section class="home-list chains-list">
     {
       posts.length > 0 ? (
-        <ul>
+        <ul id="chains-post-list">
           {posts.map((post) => (
-            <li class="heading">
-              <h2>
+            <li
+              class="heading"
+              data-date={post.date}
+              data-rating={post.ratings?.nodes?.[0]?.name || ""}
+            >
+              <h3>
                 <a href={`/${post.slug}`} rel="noopener noreferrer">
                   <Fragment set:html={post.title} />
                 </a>
-              </h2>
+              </h3>
               <a
                 href={`/${post.slug}`}
                 rel="noopener noreferrer"
@@ -127,3 +159,61 @@ const { chainName, posts } = Astro.props as OwnerPageProps;
     }
   </section>
 </BaseLayout>
+
+<style>
+  .chains-sort-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 1rem 0;
+  }
+
+  .sort-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .chains-sort-controls select {
+    width: 140px;
+  }
+
+</style>
+
+<script>
+  const list = document.getElementById("chains-post-list");
+  const fieldSelect = document.getElementById("sort-field");
+  const directionSelect = document.getElementById("sort-direction");
+
+  if (list && fieldSelect instanceof HTMLSelectElement && directionSelect instanceof HTMLSelectElement) {
+    const sortPosts = () => {
+      const field = fieldSelect.value;
+      const direction = directionSelect.value;
+      const items = [...list.querySelectorAll("li")];
+
+      items.sort((a, b) => {
+        let aVal;
+        let bVal;
+
+        if (field === "rating") {
+          const aRating = Number.parseFloat(a.dataset.rating ?? "");
+          const bRating = Number.parseFloat(b.dataset.rating ?? "");
+          aVal = Number.isNaN(aRating) ? (direction === "desc" ? -Infinity : Infinity) : aRating;
+          bVal = Number.isNaN(bRating) ? (direction === "desc" ? -Infinity : Infinity) : bRating;
+        } else {
+          aVal = new Date(a.dataset.date ?? "").getTime();
+          bVal = new Date(b.dataset.date ?? "").getTime();
+        }
+
+        return direction === "desc" ? bVal - aVal : aVal - bVal;
+      });
+
+      items.forEach((item) => list.appendChild(item));
+    };
+
+    fieldSelect.addEventListener("change", sortPosts);
+    directionSelect.addEventListener("change", sortPosts);
+  }
+</script>
