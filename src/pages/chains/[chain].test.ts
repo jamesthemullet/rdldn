@@ -154,4 +154,95 @@ describe("chains detail page", () => {
 
     expect(html).toContain("No reviews found for this chain.");
   });
+
+  test("renders sort controls when posts are present", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./[chain].astro");
+
+    const html = await container.renderToString(Page, {
+      props: {
+        chainName: "Alpha & Co",
+        posts: [
+          {
+            slug: "alpha-a",
+            title: "Alpha A",
+            featuredImage: { node: { sourceUrl: "https://example.com/a.jpg", altText: "" } },
+            ratings: { nodes: [{ name: "9.0" }] },
+            date: "2025-01-01T00:00:00.000Z",
+          },
+        ],
+      },
+    });
+
+    expect(html).toContain('id="sort-field"');
+    expect(html).toContain('id="sort-direction"');
+    expect(html).toContain('value="rating"');
+    expect(html).toContain('value="date"');
+    expect(html).toContain('value="desc"');
+    expect(html).toContain('value="asc"');
+    expect(html).toContain('data-date="2025-01-01T00:00:00.000Z"');
+    expect(html).toContain('data-rating="9.0"');
+  });
+
+  test("does not render sort controls when no posts", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./[chain].astro");
+
+    const html = await container.renderToString(Page, {
+      props: { chainName: "No Chain", posts: [] },
+    });
+
+    expect(html).not.toContain('id="sort-field"');
+  });
+
+  test("renders average rating below the title", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./[chain].astro");
+
+    const html = await container.renderToString(Page, {
+      props: {
+        chainName: "Alpha & Co",
+        posts: [
+          {
+            slug: "alpha-a",
+            title: "Alpha A",
+            featuredImage: { node: { sourceUrl: "https://example.com/a.jpg", altText: "" } },
+            ratings: { nodes: [{ name: "9.0" }] },
+            date: "2025-01-01T00:00:00.000Z",
+          },
+          {
+            slug: "alpha-b",
+            title: "Alpha B",
+            featuredImage: { node: { sourceUrl: "https://example.com/b.jpg", altText: "" } },
+            ratings: { nodes: [{ name: "7.0" }] },
+            date: "2024-01-01T00:00:00.000Z",
+          },
+        ],
+      },
+    });
+
+    expect(html).toMatch(/Average rating:<\/strong>\s*8\.0/);
+  });
+
+  test("does not render average rating when no posts have ratings", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./[chain].astro");
+
+    const html = await container.renderToString(Page, {
+      props: {
+        chainName: "No Ratings Chain",
+        posts: [
+          {
+            slug: "no-rating",
+            title: "No Rating",
+            featuredImage: { node: { sourceUrl: "https://example.com/nr.jpg", altText: "" } },
+            ratings: { nodes: [{ name: "" }] },
+            date: "2025-01-01T00:00:00.000Z",
+          },
+        ],
+      },
+    });
+
+    expect(html).not.toContain("Average rating:");
+  });
 });
