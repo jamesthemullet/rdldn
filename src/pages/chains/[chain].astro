@@ -89,16 +89,20 @@ const averageRating =
   {
     posts.length > 0 && (
       <div class="chains-sort-controls">
-        <label for="sort-field">Sort by:</label>
-        <select id="sort-field">
-          <option value="date">Date</option>
-          <option value="rating">Rating</option>
-        </select>
-        <label for="sort-direction">Order:</label>
-        <select id="sort-direction">
-          <option value="desc">Descending</option>
-          <option value="asc">Ascending</option>
-        </select>
+        <div class="sort-group">
+          <label for="sort-field">Sort by:</label>
+          <select id="sort-field">
+            <option value="date">Date</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+        <div class="sort-group">
+          <label for="sort-direction">Order:</label>
+          <select id="sort-direction">
+            <option value="desc">Descending</option>
+            <option value="asc">Ascending</option>
+          </select>
+        </div>
       </div>
     )
   }
@@ -113,11 +117,11 @@ const averageRating =
               data-date={post.date}
               data-rating={post.ratings?.nodes?.[0]?.name || ""}
             >
-              <h2>
+              <h3>
                 <a href={`/${post.slug}`} rel="noopener noreferrer">
                   <Fragment set:html={post.title} />
                 </a>
-              </h2>
+              </h3>
               <a
                 href={`/${post.slug}`}
                 rel="noopener noreferrer"
@@ -163,7 +167,13 @@ const averageRating =
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    padding: 1rem 0 0;
+    padding: 1rem 1rem 0;
+  }
+
+  .sort-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .chains-sort-controls select {
@@ -175,6 +185,11 @@ const averageRating =
     max-width: 1700px;
     margin-left: auto !important;
     margin-right: auto !important;
+  }
+
+  li {
+    justify-content: flex-start !important;
+    gap: 0.5rem;
   }
 </style>
 
