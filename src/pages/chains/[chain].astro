@@ -187,33 +187,33 @@ const averageRating =
   const fieldSelect = document.getElementById("sort-field");
   const directionSelect = document.getElementById("sort-direction");
 
-  function sortPosts() {
-    if (!list || !fieldSelect || !directionSelect) return;
+  if (list && fieldSelect instanceof HTMLSelectElement && directionSelect instanceof HTMLSelectElement) {
+    const sortPosts = () => {
+      const field = fieldSelect.value;
+      const direction = directionSelect.value;
+      const items = [...list.querySelectorAll("li")];
 
-    const field = fieldSelect.value;
-    const direction = directionSelect.value;
-    const items = [...list.querySelectorAll("li")];
+      items.sort((a, b) => {
+        let aVal;
+        let bVal;
 
-    items.sort((a, b) => {
-      let aVal;
-      let bVal;
+        if (field === "rating") {
+          const aRating = Number.parseFloat(a.dataset.rating ?? "");
+          const bRating = Number.parseFloat(b.dataset.rating ?? "");
+          aVal = Number.isNaN(aRating) ? (direction === "desc" ? -Infinity : Infinity) : aRating;
+          bVal = Number.isNaN(bRating) ? (direction === "desc" ? -Infinity : Infinity) : bRating;
+        } else {
+          aVal = new Date(a.dataset.date ?? "").getTime();
+          bVal = new Date(b.dataset.date ?? "").getTime();
+        }
 
-      if (field === "rating") {
-        const aRating = Number.parseFloat(a.dataset.rating ?? "");
-        const bRating = Number.parseFloat(b.dataset.rating ?? "");
-        aVal = Number.isNaN(aRating) ? (direction === "desc" ? -Infinity : Infinity) : aRating;
-        bVal = Number.isNaN(bRating) ? (direction === "desc" ? -Infinity : Infinity) : bRating;
-      } else {
-        aVal = new Date(a.dataset.date ?? "").getTime();
-        bVal = new Date(b.dataset.date ?? "").getTime();
-      }
+        return direction === "desc" ? bVal - aVal : aVal - bVal;
+      });
 
-      return direction === "desc" ? bVal - aVal : aVal - bVal;
-    });
+      items.forEach((item) => list.appendChild(item));
+    };
 
-    items.forEach((item) => list.appendChild(item));
+    fieldSelect.addEventListener("change", sortPosts);
+    directionSelect.addEventListener("change", sortPosts);
   }
-
-  fieldSelect.addEventListener("change", sortPosts);
-  directionSelect.addEventListener("change", sortPosts);
 </script>
