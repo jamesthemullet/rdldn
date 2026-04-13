@@ -66,6 +66,7 @@ describe("archive page", () => {
       {
         slug: "best-roast-1",
         title: "First Roast",
+        date: "2025-01-01T00:00:00.000Z",
         featuredImage: {
           node: {
             sourceUrl: "https://example.com/roast-1.jpg",
@@ -76,6 +77,7 @@ describe("archive page", () => {
       {
         slug: "best-roast-2",
         title: "Second Roast",
+        date: "2025-01-15T00:00:00.000Z",
         featuredImage: {
           node: {
             sourceUrl: "https://example.com/roast-2.jpg",

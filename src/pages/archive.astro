@@ -31,7 +31,7 @@ const monthOptions = months.map(({ year, month }) => ({
   })} ${year}`,
 }));
 
-let posts = [];
+let posts: Post[] = [];
 try {
   posts = await fetchPostsByDate(selectedDate);
 } catch (error) {

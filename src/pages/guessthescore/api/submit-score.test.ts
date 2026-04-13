@@ -1,4 +1,5 @@
 import { createHmac, randomUUID } from "node:crypto";
+import type { APIContext } from "astro";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 vi.mock("../../../lib/kv", () => ({
@@ -45,7 +46,7 @@ describe("POST /guessthescore/api/submit-score", () => {
         headers: { "Content-Type": "application/json" },
         body: "not-json{{{",
       });
-      const response = await POST({ request } as any);
+      const response = await POST({ request } as unknown as APIContext);
 
       expect(response.status).toBe(400);
       const data = await response.json();
@@ -55,7 +56,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
   describe("token validation", () => {
     test("returns 403 when token is absent", async () => {
-      const response = await POST({ request: makeRequest({ name: "Alice", score: 80 }) } as any);
+      const response = await POST({ request: makeRequest({ name: "Alice", score: 80 }) } as unknown as APIContext);
 
       expect(response.status).toBe(403);
       const data = await response.json();
@@ -65,7 +66,7 @@ describe("POST /guessthescore/api/submit-score", () => {
     test("returns 403 when token has wrong format", async () => {
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 80, token: "badtoken" }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(403);
     });
@@ -77,7 +78,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 80, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(403);
     });
@@ -87,7 +88,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 80, token: expiredToken }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(403);
     });
@@ -97,7 +98,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 80, token: futureToken }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(403);
     });
@@ -108,7 +109,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 80, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(403);
     });
@@ -117,7 +118,7 @@ describe("POST /guessthescore/api/submit-score", () => {
   describe("name validation", () => {
     test("returns 400 when name is empty string", async () => {
       const token = createValidToken();
-      const response = await POST({ request: makeRequest({ name: "", score: 80, token }) } as any);
+      const response = await POST({ request: makeRequest({ name: "", score: 80, token }) } as unknown as APIContext);
 
       expect(response.status).toBe(400);
       const data = await response.json();
@@ -126,7 +127,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
     test("returns 400 when name is only whitespace", async () => {
       const token = createValidToken();
-      const response = await POST({ request: makeRequest({ name: "   ", score: 80, token }) } as any);
+      const response = await POST({ request: makeRequest({ name: "   ", score: 80, token }) } as unknown as APIContext);
 
       expect(response.status).toBe(400);
     });
@@ -135,7 +136,7 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "A".repeat(31), score: 80, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(400);
     });
@@ -144,14 +145,14 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "A".repeat(30), score: 80, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(200);
     });
 
     test("returns 400 when name is not a string", async () => {
       const token = createValidToken();
-      const response = await POST({ request: makeRequest({ name: 42, score: 80, token }) } as any);
+      const response = await POST({ request: makeRequest({ name: 42, score: 80, token }) } as unknown as APIContext);
 
       expect(response.status).toBe(400);
     });
@@ -162,7 +163,7 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "Alice", score: "80", token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(400);
       const data = await response.json();
@@ -173,7 +174,7 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "Alice", score: -1, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(400);
     });
@@ -182,7 +183,7 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 101, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(400);
     });
@@ -191,14 +192,14 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 75.5, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(400);
     });
 
     test("accepts score of 0", async () => {
       const token = createValidToken();
-      const response = await POST({ request: makeRequest({ name: "Alice", score: 0, token }) } as any);
+      const response = await POST({ request: makeRequest({ name: "Alice", score: 0, token }) } as unknown as APIContext);
 
       expect(response.status).toBe(200);
     });
@@ -207,7 +208,7 @@ describe("POST /guessthescore/api/submit-score", () => {
       const token = createValidToken();
       const response = await POST({
         request: makeRequest({ name: "Alice", score: 100, token }),
-      } as any);
+      } as unknown as APIContext);
 
       expect(response.status).toBe(200);
     });
@@ -216,7 +217,7 @@ describe("POST /guessthescore/api/submit-score", () => {
   describe("successful submission", () => {
     test("saves to KV and returns ok:true", async () => {
       const token = createValidToken();
-      const response = await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as any);
+      const response = await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
 
       expect(response.status).toBe(200);
       const data = await response.json();
@@ -229,7 +230,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
     test("trims whitespace from name before saving", async () => {
       const token = createValidToken();
-      await POST({ request: makeRequest({ name: "  Alice  ", score: 80, token }) } as any);
+      await POST({ request: makeRequest({ name: "  Alice  ", score: 80, token }) } as unknown as APIContext);
 
       const [, { member }] = vi.mocked(kv.zadd).mock.calls[0] as [string, { score: number; member: string }];
       const saved = JSON.parse(member);
@@ -238,7 +239,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
     test("stores score and date in the KV member", async () => {
       const token = createValidToken();
-      await POST({ request: makeRequest({ name: "Alice", score: 75, token }) } as any);
+      await POST({ request: makeRequest({ name: "Alice", score: 75, token }) } as unknown as APIContext);
 
       const [, { member }] = vi.mocked(kv.zadd).mock.calls[0] as [string, { score: number; member: string }];
       const saved = JSON.parse(member);
@@ -248,7 +249,7 @@ describe("POST /guessthescore/api/submit-score", () => {
 
     test("sets content-type header on success", async () => {
       const token = createValidToken();
-      const response = await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as any);
+      const response = await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
 
       expect(response.headers.get("Content-Type")).toBe("application/json");
     });

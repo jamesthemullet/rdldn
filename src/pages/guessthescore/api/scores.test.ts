@@ -1,3 +1,4 @@
+import type { APIContext } from "astro";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 vi.mock("../../../lib/kv", () => ({
@@ -21,7 +22,7 @@ describe("GET /guessthescore/api/scores", () => {
     ];
     vi.mocked(kv.zrange).mockResolvedValue(entries as any);
 
-    const response = await GET({} as any);
+    const response = await GET({} as unknown as APIContext);
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -36,7 +37,7 @@ describe("GET /guessthescore/api/scores", () => {
     const entries = [{ name: "Alice", score: 90, date: "2026-01-01T00:00:00.000Z" }];
     vi.mocked(kv.zrange).mockResolvedValue(entries as any);
 
-    const response = await GET({} as any);
+    const response = await GET({} as unknown as APIContext);
     const data = await response.json();
 
     expect(data).toEqual([{ name: "Alice", score: 90, date: "2026-01-01T00:00:00.000Z" }]);
@@ -49,7 +50,7 @@ describe("GET /guessthescore/api/scores", () => {
     ];
     vi.mocked(kv.zrange).mockResolvedValue(entries as any);
 
-    const response = await GET({} as any);
+    const response = await GET({} as unknown as APIContext);
     const data = await response.json();
 
     expect(data).toEqual([{ name: "Bob", score: 70, date: "2026-01-01T00:00:00.000Z" }]);
@@ -58,7 +59,7 @@ describe("GET /guessthescore/api/scores", () => {
   test("returns empty array when leaderboard is empty", async () => {
     vi.mocked(kv.zrange).mockResolvedValue([]);
 
-    const response = await GET({} as any);
+    const response = await GET({} as unknown as APIContext);
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -68,7 +69,7 @@ describe("GET /guessthescore/api/scores", () => {
   test("returns empty array when KV throws", async () => {
     vi.mocked(kv.zrange).mockRejectedValue(new Error("KV connection failed"));
 
-    const response = await GET({} as any);
+    const response = await GET({} as unknown as APIContext);
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -79,7 +80,7 @@ describe("GET /guessthescore/api/scores", () => {
   test("queries leaderboard top 10 in reverse order", async () => {
     vi.mocked(kv.zrange).mockResolvedValue([]);
 
-    await GET({} as any);
+    await GET({} as unknown as APIContext);
 
     expect(kv.zrange).toHaveBeenCalledWith("leaderboard", 0, 9, { rev: true });
   });
