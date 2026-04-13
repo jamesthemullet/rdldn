@@ -3,9 +3,7 @@
     "config:recommended"
   ],
   "timezone": "Europe/London",
-  "schedule": [
-    "after 4am and before 5am"
-  ],
+  "schedule": ["* 2-5 * * *"],
   "minimumReleaseAge": "1 day",
   "packageRules": [
     {
