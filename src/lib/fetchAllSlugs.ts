@@ -4,7 +4,7 @@ type SlugNode = { slug: string };
 
 type GraphEntity = "posts" | "pages";
 
-export async function fetchAllSlugs(entity: GraphEntity, query: string) {
+export async function fetchAllSlugs(entity: GraphEntity, query: string): Promise<SlugNode[]> {
   const allItems: SlugNode[] = [];
   let hasNextPage = true;
   let endCursor: string | null = null;

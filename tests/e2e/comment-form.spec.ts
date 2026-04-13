@@ -4,7 +4,7 @@ const COMMENTS_ENDPOINT = "https://blog.rdldn.co.uk/graphql";
 
 const setupCommentRoute = async (page: import("@playwright/test").Page) => {
   let requestCount = 0;
-  let lastPayload: any = null;
+  let lastPayload: unknown = null;
 
   await page.route(COMMENTS_ENDPOINT, async (route) => {
     requestCount += 1;

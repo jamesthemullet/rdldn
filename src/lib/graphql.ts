@@ -118,7 +118,7 @@ export const fetchPageData = async (id: string): Promise<Page> => {
   }
 }
 
-export const fetchPostsByDate = async (date: string) => {
+export const fetchPostsByDate = async (date: string): Promise<Post[]> => {
   const [year, month] = date.split("-");
   const variables = { year: Number.parseInt(year), month: Number.parseInt(month) };
 
