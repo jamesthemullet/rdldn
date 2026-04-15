@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
+import { useMemo } from "react";
 import type { Post } from "../../types";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
 
@@ -36,6 +37,27 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     setShowOwner,
     setShowClosedDown,
   } = useSortFilter(posts);
+
+  const uniqueAreas = useMemo(
+    () => getUniqueValues(posts, (post) => post.areas?.nodes[0]?.name),
+    [posts]
+  );
+  const uniqueBoroughs = useMemo(
+    () => getUniqueValues(posts, (post) => post.boroughs?.nodes[0]?.name),
+    [posts]
+  );
+  const uniqueOwners = useMemo(
+    () => getUniqueValues(posts, (post) => post.owners?.nodes[0]?.name),
+    [posts]
+  );
+  const uniqueClosedDowns = useMemo(
+    () => getUniqueValues(posts, (post) => post.closedDowns?.nodes[0]?.name),
+    [posts]
+  );
+  const uniqueYears = useMemo(
+    () => getUniqueValues(posts, (post) => post.yearsOfVisit?.nodes[0]?.name),
+    [posts]
+  );
 
   return (
     <div>
@@ -190,7 +212,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <label htmlFor="area-filter">Filter by Area: </label>
               <select id="area-filter" name="area" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {getUniqueValues(posts, (post) => post.areas?.nodes[0]?.name).map((area) => (
+                {uniqueAreas.map((area) => (
                   <option key={area} value={area}>
                     {area}
                   </option>
@@ -201,7 +223,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <label htmlFor="borough-filter">Filter by Borough: </label>
               <select id="borough-filter" name="borough" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {getUniqueValues(posts, (post) => post.boroughs?.nodes[0]?.name).map((borough) => (
+                {uniqueBoroughs.map((borough) => (
                   <option key={borough} value={borough}>
                     {borough}
                   </option>
@@ -212,7 +234,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <label htmlFor="owner-filter">Filter by Owner: </label>
               <select id="owner-filter" name="owner" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {getUniqueValues(posts, (post) => post.owners?.nodes[0]?.name).map((owner) => (
+                {uniqueOwners.map((owner) => (
                   <option key={owner} value={owner}>
                     {owner}
                   </option>
@@ -224,7 +246,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <select id="closed-down-filter" name="closedDown" onChange={handleFilterChange}>
                 <option value="">All</option>
                 <option value="open">Open</option>
-                {getUniqueValues(posts, (post) => post.closedDowns?.nodes[0]?.name).map((closedDown) => (
+                {uniqueClosedDowns.map((closedDown) => (
                   <option key={closedDown} value={closedDown}>
                     {closedDown}
                   </option>
@@ -235,7 +257,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
               <label htmlFor="year-filter">Filter by Year: </label>
               <select id="year-filter" name="year" onChange={handleFilterChange}>
                 <option value="">All</option>
-                {getUniqueValues(posts, (post) => post.yearsOfVisit?.nodes[0]?.name).map((year) => (
+                {uniqueYears.map((year) => (
                   <option key={year} value={year}>
                     {year}
                   </option>
