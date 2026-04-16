@@ -61,7 +61,7 @@ const roastListStructuredData = {
     "@type": "ListItem",
     position: idx + 1,
     name: post.title,
-    url: post.slug ? `https://roastdinners.london/${post.slug}` : undefined,
+    url: post.slug && Astro.site ? new URL(post.slug, Astro.site).href : undefined,
   })),
 };
 ---

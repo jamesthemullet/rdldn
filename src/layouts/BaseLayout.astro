@@ -73,6 +73,14 @@ const canonicalURL = Astro.site
           siteName: "Roast Dinners In London",
         },
       }}
+      twitter={{
+        card: "summary_large_image",
+        title: pageTitle || "Roast Dinners In London",
+        description:
+          description ||
+          "Lord Gravy bringing you a guide to the best and worst roast dinners in London.",
+        image: opengraphImage || logo1.src,
+      }}
     />
     {
       structuredData && (
