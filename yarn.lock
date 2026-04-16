@@ -4072,7 +4072,16 @@ playwright@1.59.1:
   optionalDependencies:
     fsevents "2.3.2"
 
-postcss@^8.3.11, postcss@^8.5.8:
+postcss@^8.3.11:
+  version "8.5.10"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.10.tgz#8992d8c30acf3f12169e7c09514a12fed7e48356"
+  integrity sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==
+  dependencies:
+    nanoid "^3.3.11"
+    picocolors "^1.1.1"
+    source-map-js "^1.2.1"
+
+postcss@^8.5.8:
   version "8.5.8"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.8.tgz#6230ecc8fb02e7a0f6982e53990937857e13f399"
   integrity sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==
@@ -4407,9 +4416,9 @@ run-parallel@^1.1.9:
     queue-microtask "^1.2.2"
 
 sanitize-html@^2.17.2:
-  version "2.17.2"
-  resolved "https://registry.yarnpkg.com/sanitize-html/-/sanitize-html-2.17.2.tgz#21ac893929c3259b346ae9030174658c488ae1b5"
-  integrity sha512-EnffJUl46VE9uvZ0XeWzObHLurClLlT12gsOk1cHyP2Ol1P0BnBnsXmShlBmWVJM+dKieQI68R0tsPY5m/B+Jg==
+  version "2.17.3"
+  resolved "https://registry.yarnpkg.com/sanitize-html/-/sanitize-html-2.17.3.tgz#b2f79f75afeda3a90e87d480052dfc1601b7aeee"
+  integrity sha512-Kn4srCAo2+wZyvCNKCSyB2g8RQ8IkX/gQs2uqoSRNu5t9I2qvUyAVvRDiFUVAiX3N3PNuwStY0eNr+ooBHVWEg==
   dependencies:
     deepmerge "^4.2.2"
     escape-string-regexp "^4.0.0"
