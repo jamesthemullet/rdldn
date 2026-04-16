@@ -1,4 +1,4 @@
-import { type ChangeEvent, type SetStateAction, useReducer, useState } from "react";
+import { type ChangeEvent, type SetStateAction, useMemo, useReducer, useState } from "react";
 import type { Post } from "../../types";
 
 type FilterState = {
@@ -199,8 +199,14 @@ export const useSortFilter = (posts: Post[]) => {
     dispatch({ type: "CLEAR_FILTERS" });
   };
 
-  const sortedPosts = sortedByColumn(filterPosts(posts, filters), sortColumn, sortOrder);
-  const uniqueMeats = [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))];
+  const sortedPosts = useMemo(
+    () => sortedByColumn(filterPosts(posts, filters), sortColumn, sortOrder),
+    [posts, filters, sortColumn, sortOrder]
+  );
+  const uniqueMeats = useMemo(
+    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))],
+    [posts]
+  );
 
   return {
     sortOrder,

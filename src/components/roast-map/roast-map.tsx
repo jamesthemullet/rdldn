@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 // import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 
@@ -55,14 +55,21 @@ export default function RoastMap({ markers }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [showClosed, setShowClosed] = useState(false);
   const [minRating, setMinRating] = useState(0);
-  const filteredMarkers = markers.filter(({ lat, lng, closed, rating }) => {
-    if (!showClosed && closed) return false;
-    if (!Number.isFinite(rating)) return false;
-    if (rating < minRating) return false;
-    return Boolean(lat && lng);
-  });
+  const filteredMarkers = useMemo(
+    () =>
+      markers.filter(({ lat, lng, closed, rating }) => {
+        if (!showClosed && closed) return false;
+        if (!Number.isFinite(rating)) return false;
+        if (rating < minRating) return false;
+        return Boolean(lat && lng);
+      }),
+    [markers, showClosed, minRating]
+  );
   const visibleMarkers = filteredMarkers.length;
-  const closedMarkers = markers.filter(({ closed }) => Boolean(closed)).length;
+  const closedMarkers = useMemo(
+    () => markers.filter(({ closed }) => Boolean(closed)).length,
+    [markers]
+  );
   const totalMarkers = markers.length;
 
   useEffect(() => {
