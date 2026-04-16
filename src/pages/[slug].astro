@@ -122,7 +122,7 @@ const tubeLines = singlePost.tubeLines?.nodes?.map((line: { name: string }) => l
 const isRoastDinner = singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
-const featuredImageUrl = singlePost.featuredImage?.node?.sourceUrl || logo3;
+const featuredImageUrl = singlePost.featuredImage?.node?.sourceUrl || logo3.src;
 
 const threadedComments = organiseComments(
   contentType === "page" ? data.page.comments.nodes : data.post.comments.nodes

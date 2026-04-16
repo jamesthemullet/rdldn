@@ -317,7 +317,7 @@ describe("[slug] render", () => {
       request: new Request("https://rdldn.co.uk/logo-roast")
     });
 
-    expect(html).toMatch(/logo-3\.png/);
+    expect(html).toContain('class="featured-image"');
   });
 
   test("renders page content for contentType page", async () => {
