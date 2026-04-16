@@ -127,6 +127,41 @@ const featuredImageUrl = singlePost.featuredImage?.node?.sourceUrl || logo3;
 const threadedComments = organiseComments(
   contentType === "page" ? data.page.comments.nodes : data.post.comments.nodes
 );
+
+const reviewStructuredData =
+  contentType === "post" && isRoastDinner
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Review",
+        itemReviewed: {
+          "@type": "Restaurant",
+          name: singlePost.title,
+        },
+        author: {
+          "@type": "Person",
+          name: "Lord Gravy",
+        },
+        ...(rating
+          ? {
+              reviewRating: {
+                "@type": "Rating",
+                ratingValue: rating,
+                bestRating: "10",
+                worstRating: "0",
+              },
+            }
+          : {}),
+        datePublished: singlePost.date,
+        ...(singlePost?.seo?.opengraphDescription
+          ? { description: singlePost.seo.opengraphDescription }
+          : {}),
+        publisher: {
+          "@type": "Organization",
+          name: "Roast Dinners In London",
+          url: Astro.site?.toString() ?? "https://rdldn.co.uk",
+        },
+      }
+    : undefined;
 ---
 
 <BaseLayout
@@ -134,6 +169,7 @@ const threadedComments = organiseComments(
   description={singlePost?.seo?.opengraphDescription}
   opengraphImage={singlePost.seo?.opengraphImage?.sourceUrl}
   halloween={singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
+  structuredData={reviewStructuredData}
 >
   <FeaturedPostHeader imageSrc={featuredImageUrl} title={singlePost.title}>
     {singlePost.closedDowns?.nodes?.length > 0 && (
@@ -161,6 +197,8 @@ const threadedComments = organiseComments(
             if (el) {
               const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
               window.scrollTo({ top: y, behavior: 'smooth' });
+              el.setAttribute('tabindex', '-1');
+              el.focus({ preventScroll: true });
             }
           "
         >

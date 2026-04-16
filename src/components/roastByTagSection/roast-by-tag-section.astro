@@ -36,11 +36,11 @@ if (tag) {
       <ul>
         {locationPosts.map((post) => (
           <li class="heading">
-            <h3>
+            <h4>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
                 <Fragment set:html={post?.title} />
               </a>
-            </h3>
+            </h4>
             <a href={`/${post?.slug}`} rel="noopener noreferrer">
               <img
                 src={post?.featuredImageUrl}

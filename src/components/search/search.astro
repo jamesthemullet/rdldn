@@ -20,33 +20,35 @@ const { resultLimit = 4 } = Astro.props;
     <button type="submit">Search</button>
   </form>
 
-  <section class="home-list search-container" aria-label="Search results" x-show="searchResults.length > 0">
-    <ul>
-      <template x-for="post in searchResults" :key="post.slug">
-        <li class="heading">
-          <h3>
-            <a :href="`/${post.slug}`" x-text="post.title"></a>
-          </h3>
+  <div aria-live="polite" aria-atomic="false">
+    <section class="home-list search-container" aria-label="Search results" x-show="searchResults.length > 0">
+      <ul>
+        <template x-for="post in searchResults" :key="post.slug">
+          <li class="heading">
+            <h3>
+              <a :href="`/${post.slug}`" x-text="post.title"></a>
+            </h3>
 
-          <a
-            :href="`/${post.slug}`"
-            rel="noopener noreferrer"
-            class="featured-image"
-          >
-            <img
-              :src="post.featuredImage?.node?.sourceUrl"
-              :alt="`Photo of the roast dinner at ${post.title}`"
-              width="400"
-              height="300"
-            />
-          </a>
-        </li>
-      </template>
-    </ul>
-  </section>
-  <p x-show="searchPerformed && searchResults.length === 0">
-    No results found.
-  </p>
+            <a
+              :href="`/${post.slug}`"
+              rel="noopener noreferrer"
+              class="featured-image"
+            >
+              <img
+                :src="post.featuredImage?.node?.sourceUrl"
+                :alt="`Photo of the roast dinner at ${post.title}`"
+                width="400"
+                height="300"
+              />
+            </a>
+          </li>
+        </template>
+      </ul>
+    </section>
+    <p x-show="searchPerformed && searchResults.length === 0">
+      No results found.
+    </p>
+  </div>
 </div>
 
 <script is:inline>
