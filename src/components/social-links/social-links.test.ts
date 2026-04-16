@@ -17,7 +17,7 @@ describe("social-links component", () => {
     expect(html).toContain('aria-label="Follow us on Bluesky"');
     expect(html).toContain('aria-label="Follow us on Facebook"');
     expect(html).toContain('aria-label="Follow us on Instagram"');
-    expect(html).toContain('class="fab fa-facebook"');
+    expect(html).toContain('<svg');
   });
 
   test("allows the caller to override the wrapper class name", async () => {
