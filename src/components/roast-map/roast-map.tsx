@@ -35,7 +35,8 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
   return L.divIcon({
     className: "",
     html: `
-      <svg width="32" height="48" viewBox="0 0 32 48" xmlns="http://www.w3.org/2000/svg">
+      <svg width="32" height="48" viewBox="0 0 32 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rating: ${formattedValue} out of 10">
+        <title>Rating: ${formattedValue} out of 10</title>
         <path d="
           M16 47
           C16 47, 14 36, 8 24
