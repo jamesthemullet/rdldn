@@ -135,8 +135,9 @@ input {
   border: 2px solid var(--roast-new-blue);
   box-sizing: border-box;
 
-  &:focus {
-    outline: none;
+  &:focus-visible {
+    outline: 3px solid var(--roast-pink);
+    outline-offset: 2px;
     border: 2px solid var(--roast-pink);
   }
 

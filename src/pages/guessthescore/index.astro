@@ -115,7 +115,9 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
           <div class="slider-display">
             <span x-text="parseFloat(guess).toFixed(2)"></span><span>/10</span>
           </div>
+          <label for="score-slider" class="sr-only">Your guess (0 to 10)</label>
           <input
+            id="score-slider"
             type="range"
             min="0"
             max="10"
@@ -172,7 +174,9 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
             Enter your name for the leaderboard:
           </p>
           <div class="score-submit-row">
+            <label for="player-name" class="sr-only">Your name for the leaderboard</label>
             <input
+              id="player-name"
               type="text"
               x-model="playerName"
               placeholder="Your name"

@@ -394,8 +394,9 @@
   border: 2px solid var(--roast-new-blue);
   margin: 0;
 
-  &:focus {
-    outline: none;
+  &:focus-visible {
+    outline: 3px solid var(--roast-pink);
+    outline-offset: 2px;
     border-color: var(--roast-pink);
   }
 }
