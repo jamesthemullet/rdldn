@@ -70,11 +70,12 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
         className="show-hide-button"
         onClick={() => setShowOptions((prev) => !prev)}
         aria-expanded={showOptions}
+        aria-controls="sort-options-panel"
       >
         {showOptions ? "Hide options" : "Show all options / filters"}
       </button>
       {showOptions && (
-        <div>
+        <div id="sort-options-panel">
           <div className="toggle-columns">
             <h3>Show/hide columns:</h3>
             <div>
