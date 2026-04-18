@@ -29,14 +29,14 @@ const { threadedComments, postId } = Astro.props as Props;
   <form id="comment-form" class="comment-form" data-post-id={postId}>
     <div>
       <label for="authorName">Name:</label>
-      <input type="text" id="authorName" required />
+      <input type="text" id="authorName" name="authorName" required />
     </div>
     <div>
       <label for="email">Email:</label>
-      <input type="email" id="email" required />
+      <input type="email" id="email" name="email" required />
     </div><div>
       <label for="commentText">Comment:</label>
-      <textarea id="commentText" required></textarea>
+      <textarea id="commentText" name="commentText" required></textarea>
     </div>
     <button type="submit">Post Comment</button>
     <p id="message"></p>
@@ -51,10 +51,9 @@ const { threadedComments, postId } = Astro.props as Props;
     form?.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const authorName = form.querySelector("#authorName")?.value;
-
-      const email = form.querySelector("#email")?.value;
-      const commentText = form.querySelector("#commentText")?.value;
+      const authorName = form.querySelector("[name='authorName']")?.value;
+      const email = form.querySelector("[name='email']")?.value;
+      const commentText = form.querySelector("[name='commentText']")?.value;
 
       const postId = form?.getAttribute("data-post-id");
 

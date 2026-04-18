@@ -59,7 +59,7 @@ const {
             const topPost = postsForStation[0];
             return (
               <li class="station-list-item">
-                <span class="tube-circle-wrapper">
+                <span class="tube-circle-wrapper" aria-hidden="true">
                   {index === 0 && <span class="tube-connector invisible" />}
                   {index !== 0 && <span class="tube-connector" />}
                   <span class="tube-circle" />
