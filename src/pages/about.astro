@@ -1,4 +1,5 @@
 ---
+import sanitizeHtml from "sanitize-html";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
@@ -10,6 +11,17 @@ import { fetchPageData } from "../lib/graphql";
 const singlePage = await fetchPageData("2");
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
+
+const safeContent = sanitizeHtml(singlePage.content ?? "", {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "iframe"]),
+  allowedAttributes: {
+    ...sanitizeHtml.defaults.allowedAttributes,
+    img: ["src", "srcset", "alt", "width", "height", "loading", "class"],
+    iframe: ["src", "width", "height", "allowfullscreen", "frameborder", "title"],
+    "*": ["class", "id"],
+  },
+  allowedSchemes: ["http", "https", "mailto"],
+});
 ---
 
 <BaseLayout
@@ -22,7 +34,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={safeContent} />
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
