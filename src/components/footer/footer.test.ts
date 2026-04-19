@@ -17,7 +17,7 @@ describe("footer component", () => {
     expect(html).toContain('class="socials footer-socials"');
     expect(html).toContain('href="/search"');
     expect(html).toContain("Search This Gravy Glory Hole");
-    expect(html).toContain('class="fas fa-search"');
+    expect(html).toContain('<svg');
     expect(html).toMatch(/(&copy;|©)\s*2026 Roast Dinners In London/);
   });
 });
