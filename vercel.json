@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/guessthescore/api/scores",
+      "schedule": "0 9 * * 1"
+    }
+  ],
   "headers": [
     {
       "source": "/~partytown/(.*)",
