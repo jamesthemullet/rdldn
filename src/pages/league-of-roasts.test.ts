@@ -13,21 +13,18 @@ vi.mock("../lib/getSinglePageData", () => ({
 }));
 
 vi.mock("../components/sort-posts/sort-posts.tsx", () => ({
-  default: (() => {
-    const SortPostsComponent = () =>
-      '<div class="sort-posts-mock">Sort posts component</div>';
-    (SortPostsComponent as any).isAstroComponentFactory = true;
-    return SortPostsComponent;
-  })(),
+  default: Object.assign(
+    () => '<div class="sort-posts-mock">Sort posts component</div>',
+    { isAstroComponentFactory: true }
+  ),
 }));
 
 vi.mock("astro:assets", () => ({
-  Image: (() => {
-    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
-      `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
-    (ImageComponent as any).isAstroComponentFactory = true;
-    return ImageComponent;
-  })(),
+  Image: Object.assign(
+    (_result: unknown, props: { src: string; alt?: string }) =>
+      `<img src="${props.src}" alt="${props.alt ?? ""}" />`,
+    { isAstroComponentFactory: true }
+  ),
 }));
 
 beforeEach(() => {

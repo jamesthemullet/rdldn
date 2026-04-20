@@ -1,18 +1,18 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
+import type { Post } from "../../types";
 
 vi.mock("../../lib/getAllRoastDinnerPosts", () => ({
   getAllRoastDinnerPosts: vi.fn(),
 }));
 
 vi.mock("astro:assets", () => ({
-  Image: (() => {
-    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
-      `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
-    (ImageComponent as any).isAstroComponentFactory = true;
-    return ImageComponent;
-  })(),
+  Image: Object.assign(
+    (_result: unknown, props: { src: string; alt?: string }) =>
+      `<img src="${props.src}" alt="${props.alt ?? ""}" />`,
+    { isAstroComponentFactory: true }
+  ),
 }));
 
 beforeEach(() => {
@@ -58,20 +58,20 @@ describe("chains detail page", () => {
         owners: { nodes: [{ name: "Beta Group" }] },
         ratings: { nodes: [{ name: "7.0" }] },
       },
-    ] as any);
+    ] as Post[]);
 
     const pageModule = await import("./[chain].astro");
     const paths = await pageModule.getStaticPaths();
 
-    const alpha = paths.find((entry: any) => entry.params.chain === "alpha-and-co");
-    const beta = paths.find((entry: any) => entry.params.chain === "beta-group");
-    const independent = paths.find((entry: any) => entry.params.chain === "independent");
+    const alpha = paths.find((entry) => entry.params.chain === "alpha-and-co");
+    const beta = paths.find((entry) => entry.params.chain === "beta-group");
+    const independent = paths.find((entry) => entry.params.chain === "independent");
 
     expect(alpha).toBeDefined();
     expect(beta).toBeDefined();
     expect(independent).toBeUndefined();
     expect(alpha?.props.chainName).toBe("Alpha & Co");
-    expect(alpha?.props.posts.map((post: any) => post.slug)).toEqual([
+    expect(alpha?.props.posts.map((post) => post.slug)).toEqual([
       "alpha-newer",
       "alpha-older",
       "alpha-high",

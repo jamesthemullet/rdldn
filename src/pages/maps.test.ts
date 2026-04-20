@@ -7,12 +7,11 @@ vi.mock("../lib/api", () => ({
 }));
 
 vi.mock("astro:assets", () => ({
-  Image: (() => {
-    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
-      `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
-    (ImageComponent as any).isAstroComponentFactory = true;
-    return ImageComponent;
-  })()
+  Image: Object.assign(
+    (_result: unknown, props: { src: string; alt?: string }) =>
+      `<img src="${props.src}" alt="${props.alt ?? ""}" />`,
+    { isAstroComponentFactory: true }
+  )
 }));
 
 afterEach(() => {
@@ -21,8 +20,8 @@ afterEach(() => {
 });
 
 const createContainer = async () => {
-  const renderer = getReactContainerRenderer() as any;
-  if (renderer && typeof renderer === "object" && !("ssr" in renderer)) {
+  const renderer = getReactContainerRenderer() as ReturnType<typeof getReactContainerRenderer> & { ssr?: boolean };
+  if (!("ssr" in renderer)) {
     renderer.ssr = true;
   }
   const container = await AstroContainer.create({
