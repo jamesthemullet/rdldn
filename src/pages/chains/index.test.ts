@@ -1,18 +1,18 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
+import type { Post } from "../../types";
 
 vi.mock("../../lib/getAllRoastDinnerPosts", () => ({
   getAllRoastDinnerPosts: vi.fn(),
 }));
 
 vi.mock("astro:assets", () => ({
-  Image: (() => {
-    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
-      `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
-    (ImageComponent as any).isAstroComponentFactory = true;
-    return ImageComponent;
-  })(),
+  Image: Object.assign(
+    (_result: unknown, props: { src: string; alt?: string }) =>
+      `<img src="${props.src}" alt="${props.alt ?? ""}" />`,
+    { isAstroComponentFactory: true }
+  ),
 }));
 
 beforeEach(() => {
@@ -30,25 +30,30 @@ describe("chains index page", () => {
     vi.mocked(getAllRoastDinnerPosts).mockResolvedValue([
       {
         slug: "alpha-1",
+        date: "",
         owners: { nodes: [{ name: "Alpha & Co" }] },
       },
       {
         slug: "alpha-2",
+        date: "",
         owners: { nodes: [{ name: "Alpha & Co" }, { name: "Independent" }] },
       },
       {
         slug: "beta-1",
+        date: "",
         owners: { nodes: [{ name: "Beta Group" }] },
       },
       {
         slug: "zeta-1",
+        date: "",
         owners: { nodes: [{ name: "Zeta Chain" }] },
       },
       {
         slug: "zeta-2",
+        date: "",
         owners: { nodes: [{ name: "Zeta Chain" }] },
       },
-    ] as any);
+    ] as Post[]);
 
     const container = await AstroContainer.create();
     const { default: Page } = await import("./index.astro");

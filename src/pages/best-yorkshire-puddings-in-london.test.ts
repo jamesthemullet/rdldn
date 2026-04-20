@@ -64,12 +64,11 @@ vi.mock("../lib/api", () => {
 });
 
 vi.mock("astro:assets", () => ({
-  Image: (() => {
-    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
-      `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
-    (ImageComponent as any).isAstroComponentFactory = true;
-    return ImageComponent;
-  })()
+  Image: Object.assign(
+    (_result: unknown, props: { src: string; alt?: string }) =>
+      `<img src="${props.src}" alt="${props.alt ?? ""}" />`,
+    { isAstroComponentFactory: true }
+  )
 }));
 
 describe("best-yorkshire-puddings-in-london page", () => {

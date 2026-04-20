@@ -32,7 +32,7 @@ describe("POST /guessthescore/api/submit-score", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("SCORE_SECRET", TEST_SECRET);
-    vi.mocked(kv.zadd).mockResolvedValue(1 as any);
+    vi.mocked(kv.zadd).mockResolvedValue(1);
   });
 
   afterEach(() => {

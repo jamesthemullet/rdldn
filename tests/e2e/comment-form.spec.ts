@@ -4,8 +4,7 @@ const COMMENTS_ENDPOINT = "https://blog.rdldn.co.uk/graphql";
 
 const setupCommentRoute = async (page: import("@playwright/test").Page) => {
   let requestCount = 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let lastPayload: any = null;
+  let lastPayload: { variables?: { input?: Record<string, unknown> } } | string | null = null;
 
   await page.route(COMMENTS_ENDPOINT, async (route) => {
     requestCount += 1;
@@ -97,7 +96,7 @@ test.describe("comment form", () => {
     await expect(message).toHaveText("Comment submitted! Awaiting moderation.");
 
     expect(routeInfo.getRequestCount()).toBe(1);
-    const payload = routeInfo.getLastPayload();
+    const payload = routeInfo.getLastPayload() as { variables?: { input?: Record<string, unknown> } } | null;
     expect(payload?.variables?.input?.author).toBe("Jane Doe");
     expect(payload?.variables?.input?.authorEmail).toBe("jane@example.com");
     expect(payload?.variables?.input?.content).toBe("Looks great!");
