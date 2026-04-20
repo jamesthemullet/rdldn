@@ -169,7 +169,7 @@ h4 {
 
   figcaption {
     font-size: 0.8em;
-    color: #666;
+    color: var(--roast-text-muted);
     text-align: center;
   }
 
@@ -418,7 +418,7 @@ p {
 
       a {
         text-decoration: underline;
-        color: var(--roast-main-text);
+        color: var(--roast-link);
       }
     }
 
@@ -454,7 +454,7 @@ p {
 
       label {
         font-size: 1.2rem;
-        color: var(--roast-new-blue);
+        color: var(--roast-link);
         cursor: pointer;
       }
     }
@@ -509,7 +509,7 @@ p {
 
       a {
         text-decoration: none;
-        color: #333;
+        color: var(--roast-text-secondary);
         font-size: 1.2rem;
         display: block;
         text-align: center;
@@ -576,7 +576,7 @@ p {
   transform: translateX(-50%);
   width: 50%;
   height: 1px;
-  background-color: #e5e5e5;
+  background-color: var(--roast-surface);
 }
 
 .tube-circle-wrapper {
@@ -873,6 +873,6 @@ p {
 }
 
 .re-reviewed-rating {
-  color: #888;
+  color: var(--roast-text-muted);
   text-decoration: line-through;
 }

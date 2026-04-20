@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --roast-main-text: #403b37;
   --roast-pink: #ff0f83;
   --roast-blue: #0f83ff;
@@ -19,6 +20,26 @@
   --piccadilly: #003688;
   --victoria: #0098d4;
   --overground: #ee7c0e;
+
+  --roast-bg: #fff;
+  --roast-surface: #f9f9f9;
+  --roast-surface-alt: #eef2f7;
+  --roast-body-text: #403b37;
+  --roast-text-secondary: #333;
+  --roast-text-muted: #666;
+  --roast-link: var(--roast-new-blue);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --roast-main-text: #e0dbd6;
+  --roast-bg: #1a1a1a;
+  --roast-surface: #252525;
+  --roast-surface-alt: #2e2e2e;
+  --roast-body-text: #e0dbd6;
+  --roast-text-secondary: #ccc;
+  --roast-text-muted: #999;
+  --roast-link: #7eb8ff;
 }
 
 @font-face {
@@ -38,7 +59,8 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: var(--roast-main-text);
+  color: var(--roast-body-text);
+  background-color: var(--roast-bg);
   font-size: 18px;
 }
 
@@ -123,8 +145,12 @@ ol {
   }
 }
 
+a {
+  color: var(--roast-link);
+}
+
 p {
-  color: #333;
+  color: var(--roast-text-secondary);
   padding: 0;
   line-height: 1.5;
   font-size: 1.2rem;
@@ -146,13 +172,15 @@ input {
 }
 
 select {
-  border: 1px solid #333;
+  border: 1px solid var(--roast-text-secondary);
   height: 3rem;
+  background-color: var(--roast-bg);
+  color: var(--roast-body-text);
 }
 
 option {
   padding: 0.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--roast-text-secondary);
   font-size: 1.2rem;
 }
 

@@ -1,7 +1,7 @@
 .comments-block {
   margin-top: 2rem;
   padding: 1.5rem;
-  background: #f9f9f9;
+  background: var(--roast-surface);
   border-radius: 8px;
 
   form {
@@ -36,7 +36,7 @@
 .comment {
   margin-bottom: 1rem;
   padding: 1rem;
-  background: #fff;
+  background: var(--roast-bg);
   border-left: 4px solid var(----roast-new-blue);
   border-radius: 4px;
   min-width: 100%;
@@ -58,7 +58,7 @@
 .comment-reply {
   margin-top: 0.5rem;
   padding: 0.75rem;
-  background: #eef2f7;
+  background: var(--roast-surface-alt);
   border-left: 3px solid var(--roast-new-blue);
   border-radius: 4px;
 }

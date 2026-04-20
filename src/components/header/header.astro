@@ -18,6 +18,10 @@ import SocialLinks from "../social-links/social-links.astro";
 
       <SocialLinks className="socials header-socials" />
 
+      <button id="dark-mode-toggle" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon" aria-hidden="true"></i>
+      </button>
+
       <button id="nav-toggle" aria-label="Toggle Navigation Menu" aria-expanded="false" aria-controls="nav-menu"
         ><span></span></button
       >
@@ -42,6 +46,26 @@ import SocialLinks from "../social-links/social-links.astro";
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const darkToggle = document.getElementById("dark-mode-toggle");
+      const icon = darkToggle?.querySelector("i");
+
+      function updateIcon() {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        if (icon) {
+          icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+        }
+      }
+
+      updateIcon();
+
+      darkToggle?.addEventListener("click", () => {
+        const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+        const next = isDark ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+        updateIcon();
+      });
+
       const navToggle = document.getElementById("nav-toggle");
       const navContainer = document.querySelector(".nav-container");
       const dropdownToggle = document.querySelector(".dropdown-toggle");

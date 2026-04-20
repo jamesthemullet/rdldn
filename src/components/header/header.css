@@ -48,7 +48,8 @@ header {
   }
 
   .title {
-    display: block;
+    flex: 1;
+    text-align: center;
     min-height: 4rem;
     align-content: center;
 
@@ -69,6 +70,28 @@ header {
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
+  }
+}
+
+#dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  min-width: 2rem;
+  color: var(--roast-white);
+  font-size: 1rem;
+  margin: 0;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 }
 
