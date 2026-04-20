@@ -61,7 +61,10 @@ describe("chains detail page", () => {
     ] as Post[]);
 
     const pageModule = await import("./[chain].astro");
-    const paths = await pageModule.getStaticPaths();
+    const paths = (await pageModule.getStaticPaths()) as Array<{
+      params: { chain: string };
+      props: { chainName: string; posts: Post[] };
+    }>;
 
     const alpha = paths.find((entry) => entry.params.chain === "alpha-and-co");
     const beta = paths.find((entry) => entry.params.chain === "beta-group");

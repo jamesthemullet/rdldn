@@ -25,7 +25,7 @@ const createContainer = async () => {
     renderer.ssr = true;
   }
   const container = await AstroContainer.create({
-    renderers: [renderer]
+    renderers: [renderer as unknown as import("astro").SSRLoadedRenderer]
   });
   return container;
 };

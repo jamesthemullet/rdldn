@@ -35,7 +35,7 @@ describe("GET /guessthescore/api/scores", () => {
 
   test("returns scores when members are already objects", async () => {
     const entries = [{ name: "Alice", score: 90, date: "2026-01-01T00:00:00.000Z" }];
-    vi.mocked(kv.zrange).mockResolvedValue(entries as string[]);
+    vi.mocked(kv.zrange).mockResolvedValue(entries as unknown as string[]);
 
     const response = await GET({} as unknown as APIContext);
     const data = await response.json();
