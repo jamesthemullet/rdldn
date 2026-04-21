@@ -90,4 +90,30 @@ describe("getAllRoastDinnerPosts", () => {
     expect(secondResult).toEqual([firstPagePost]);
     expect(mockFetchGraphQL).toHaveBeenCalledTimes(1);
   });
+
+  it("clears the cache on fetch failure so subsequent calls can retry", async () => {
+    const networkError = new Error("Network error");
+    const recoveryPost: Post = {
+      slug: "recovery",
+      date: "2024-03-01",
+      ratings: { nodes: [{ name: "8" }] },
+      yearsOfVisit: { nodes: [{ name: "2024" }] }
+    } as Post;
+
+    mockFetchGraphQL
+      .mockRejectedValueOnce(networkError)
+      .mockResolvedValueOnce({
+        posts: {
+          nodes: [recoveryPost],
+          pageInfo: { hasNextPage: false, endCursor: null }
+        }
+      });
+
+    await expect(getAllRoastDinnerPosts()).rejects.toThrow("Network error");
+
+    const result = await getAllRoastDinnerPosts();
+
+    expect(result).toEqual([recoveryPost]);
+    expect(mockFetchGraphQL).toHaveBeenCalledTimes(2);
+  });
 });
