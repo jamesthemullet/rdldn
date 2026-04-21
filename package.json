@@ -41,7 +41,7 @@
     "@vercel/kv": "^3.0.0",
     "accented": "^1.2.0",
     "alpinejs": "^3.14.9",
-    "astro": "6.1.7",
+    "astro": "6.1.8",
     "astro-seo": "^1.0.0",
     "leaflet": "^1.9.4",
     "react": "19.2.5",
