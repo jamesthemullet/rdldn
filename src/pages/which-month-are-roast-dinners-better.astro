@@ -102,10 +102,16 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   />
   <div class="container">
     <div set:html={singlePage.content} />
-    <ul>
+    <ul class="month-chart">
       {
         monthlyAverages.map(({ month, average, count }) => (
-          <li>
+          <li class="month-chart-row">
+            <div class="bar-track" role="presentation" aria-hidden="true">
+              <div
+                class="bar-fill"
+                style={`width: ${average !== null ? Math.round((average / 10) * 100) : 0}%`}
+              />
+            </div>
             In {month}, the average roast dinner rating is{" "}
             {average !== null ? average.toFixed(2) : "N/A"} based on {count}{" "}
             {count === 1 ? "review" : "reviews"}.
@@ -118,3 +124,35 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
+
+<style>
+  .month-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+
+  .month-chart-row {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .bar-track {
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 0.75rem;
+    overflow: hidden;
+    max-width: 400px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--roast-new-blue);
+    border-radius: 4px;
+    min-width: 2px;
+  }
+</style>
