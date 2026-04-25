@@ -170,6 +170,7 @@ const reviewStructuredData =
   opengraphImage={singlePost.seo?.opengraphImage?.sourceUrl}
   halloween={singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
   structuredData={reviewStructuredData}
+  ogType={contentType === "post" ? "article" : "website"}
 >
   <FeaturedPostHeader imageSrc={featuredImageUrl} title={singlePost.title}>
     {singlePost.closedDowns?.nodes?.length > 0 && (

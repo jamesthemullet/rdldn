@@ -7,7 +7,7 @@ import logo1 from "../images/logo-1.png";
 
 // import logo3 from "/images/logo-3.png";
 
-const { pageTitle, description, opengraphImage, halloween, structuredData } =
+const { pageTitle, description, opengraphImage, halloween, structuredData, ogType = "website" } =
   Astro.props;
 
 const canonicalURL = Astro.site
@@ -54,7 +54,7 @@ const canonicalURL = Astro.site
       openGraph={{
         basic: {
           title: pageTitle || "Roast Dinners In London",
-          type: "Article",
+          type: ogType,
           image: opengraphImage || logo1,
         },
         optional: {
@@ -106,9 +106,10 @@ const canonicalURL = Astro.site
     </script>
   </head>
   <body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
     <div class={`page-container` + (halloween ? " halloween" : "")}>
       <Header />
-      <main>
+      <main id="main-content">
         <slot />
       </main>
       <Footer />
