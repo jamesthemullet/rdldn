@@ -59,7 +59,6 @@ export async function fetchGraphQL(
   try {
     return await requestPromise;
   } catch (error) {
-    // Avoid persisting failed requests so retries can re-attempt the call.
     graphQLRequestCache.delete(cacheKey);
     throw error;
   }
