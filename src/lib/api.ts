@@ -27,7 +27,7 @@ const getRequestCacheKey = (
 export async function fetchGraphQL(
   query: string,
   variables: Record<string, unknown> = {}
-) {
+): Promise<unknown> {
   const cacheKey = getRequestCacheKey(query, variables);
   const existingRequest = graphQLRequestCache.get(cacheKey);
 
