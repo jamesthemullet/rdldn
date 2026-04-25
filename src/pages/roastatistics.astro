@@ -20,7 +20,10 @@ let singlePage: Page | null = null;
 type PageWithFeaturedImage = Page & { featuredImage: string };
 
 try {
-  const { page } = await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, variables);
+  const { page } = (await fetchGraphQL(
+    SINGLE_PAGE_QUERY_PREVIEW,
+    variables
+  )) as { page: Page | null };
   singlePage = page;
 } catch (error) {
   console.error("Error fetching GraphQL data:", error);
@@ -31,7 +34,9 @@ let allRoastStatisticsPages: Page[] = [];
 const roastStatistics: Array<PageWithFeaturedImage> = [];
 
 try {
-  const response = await fetchGraphQL(GET_ALL_PAGES);
+  const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
+    pages: { nodes: Page[] };
+  };
   allPages = response?.pages?.nodes
     ?.map((page: Page) => {
       const featuredImage = page.featuredImage?.node;

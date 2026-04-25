@@ -8,11 +8,14 @@ let locationPosts: Post[] = [];
 
 if (tag) {
   try {
-    const data = await fetchGraphQL(GET_POSTS_BY_TAG, {
-      tag,
-    });
+    const data = await fetchGraphQL<{ posts: { nodes: Post[] } }>(
+      GET_POSTS_BY_TAG,
+      {
+        tag,
+      }
+    );
 
-    locationPosts = (data?.posts?.nodes ?? [])
+    locationPosts = (data.posts.nodes ?? [])
       .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0)
       .map((edge: Post) => ({
         ...edge,

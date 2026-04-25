@@ -14,7 +14,7 @@ const singlePage = await fetchPageData(pageId);
 const getSouthWestTopRatedRoasts = async () => {
   const allPosts = [];
   let hasNextPage = true;
-  let endCursor = null;
+  let endCursor: string | null = null;
 
   while (hasNextPage) {
     const variables = endCursor ? { after: endCursor } : {};
@@ -26,7 +26,10 @@ const getSouthWestTopRatedRoasts = async () => {
     } | null;
 
     try {
-      postsResponse = await fetchGraphQL(GET_ALL_POSTS, variables);
+      postsResponse = (await fetchGraphQL(
+        GET_ALL_POSTS,
+        variables
+      )) as NonNullable<typeof postsResponse>;
     } catch (error) {
       console.error("Error fetching posts:", error);
       break;

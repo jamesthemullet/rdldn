@@ -30,7 +30,12 @@ let nonIndependentCount = 0;
 
 while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
-  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+  const { posts } = (await fetchGraphQL(GET_ALL_POSTS, variables)) as {
+    posts: {
+      nodes: Post[];
+      pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    };
+  };
 
   posts.nodes.forEach((post: Post) => {
     const ratingStr = post.ratings?.nodes?.[0]?.name ?? "";

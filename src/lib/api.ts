@@ -24,15 +24,15 @@ const getRequestCacheKey = (
   variables: Record<string, unknown>
 ): string => `${query}::${stableStringify(variables)}`;
 
-export async function fetchGraphQL(
+export async function fetchGraphQL<T = unknown>(
   query: string,
   variables: Record<string, unknown> = {}
-): Promise<unknown> {
+): Promise<T> {
   const cacheKey = getRequestCacheKey(query, variables);
   const existingRequest = graphQLRequestCache.get(cacheKey);
 
   if (existingRequest) {
-    return existingRequest;
+    return (await existingRequest) as T;
   }
 
   const requestPromise = (async () => {
@@ -57,7 +57,7 @@ export async function fetchGraphQL(
   graphQLRequestCache.set(cacheKey, requestPromise);
 
   try {
-    return await requestPromise;
+    return (await requestPromise) as T;
   } catch (error) {
     graphQLRequestCache.delete(cacheKey);
     throw error;
