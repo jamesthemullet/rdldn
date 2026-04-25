@@ -23,7 +23,12 @@ let endCursor: string | null = null;
 
 while (hasNextPage) {
   const variables = endCursor ? { after: endCursor } : {};
-  const { posts } = await fetchGraphQL(GET_ALL_POSTS, variables);
+  const { posts } = (await fetchGraphQL(GET_ALL_POSTS, variables)) as {
+    posts: {
+      nodes: Post[];
+      pageInfo: { hasNextPage: boolean; endCursor: string | null };
+    };
+  };
 
   allRoastPosts.push(
     ...posts.nodes.filter((post: Post) =>

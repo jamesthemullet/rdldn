@@ -20,6 +20,7 @@ import Newsletter from "../components/newsletter/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import logo3 from "../images/logo-3.png";
 import { toOwnerSlug } from "../lib/ownerSlug";
+import type { Page, Post } from "../types";
 
 export async function getStaticPaths() {
   const dedicatedPageSlugs = new Set([
@@ -80,9 +81,10 @@ export async function getStaticPaths() {
     const { slug } = Astro.params;
     const { contentType } = Astro.props;
 
-const data = await fetchGraphQL(
+// biome-ignore lint/suspicious/noExplicitAny: GraphQL response shape varies by content type
+const data = (await fetchGraphQL(
   contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug)
-);
+)) as { page: any; post: any };
 
 const singlePost = contentType === "page" ? data.page : data.post;
 

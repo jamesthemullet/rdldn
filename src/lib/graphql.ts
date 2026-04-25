@@ -39,10 +39,10 @@ const fetchFilteredRoasts = async ({
 
   while (hasNextPage) {
     const variables: { after?: string } = endCursor ? { after: endCursor } : {};
-    const { posts } = await fetchGraphQL(
+    const { posts } = await fetchGraphQL<FetchAllPostsResponse>(
       GET_ALL_POSTS,
       variables
-    ) as FetchAllPostsResponse;
+    );
 
     const filtered = posts.nodes.filter((post) => {
       const rating = getPostRating(post);
@@ -102,7 +102,7 @@ export const fetchTopRatedRoasts = async (
 
 export const fetchPageData = async (id: string): Promise<Page> => {
   try {
-    const { page }: { page: Page | null } = await fetchGraphQL(
+    const { page } = await fetchGraphQL<{ page: Page | null }>(
       SINGLE_PAGE_QUERY_PREVIEW,
       { id }
     );
@@ -122,7 +122,8 @@ export const fetchPostsByDate = async (date: string): Promise<Post[]> => {
   const [year, month] = date.split("-");
   const variables = { year: Number.parseInt(year), month: Number.parseInt(month) };
 
-  const response = await fetchGraphQL(GET_POSTS_BY_DATE, variables);
+  const response = await fetchGraphQL<{ posts: { nodes: Post[] } }>(GET_POSTS_BY_DATE, variables);
+
   if (!response || !response.posts) {
     throw new Error("Failed to fetch posts by date");
   }

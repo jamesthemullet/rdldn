@@ -23,7 +23,9 @@ let allBestListPages: Page[] = [];
 let bestRoasts: Array<PageWithFeaturedImage> = [];
 
 try {
-  const response = await fetchGraphQL(GET_ALL_PAGES);
+  const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
+    pages: { nodes: Page[] };
+  };
   allPages = response?.pages?.nodes
     ?.map((page: Page) => {
       const featuredImage = page.featuredImage?.node;

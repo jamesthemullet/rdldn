@@ -18,7 +18,7 @@ export async function getSinglePageData({
   let singlePage: Page | null = null;
 
   try {
-    const { page } = (await fetchGraphQL(query, variables)) as SinglePageResponse;
+    const { page } = await fetchGraphQL<SinglePageResponse>(query, variables);
     singlePage = page;
   } catch (error) {
     console.error("Error fetching GraphQL data:", error);
