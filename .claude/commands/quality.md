@@ -53,11 +53,21 @@ Identify the **single clearest, most impactful** instance of the chosen category
 
 Make the fix. Keep scope tight — one issue, one or two files. Do not refactor beyond what is needed to address the specific finding.
 
-### Step 4 — Verify
+### Step 4 — Type-check (if types changed)
+
+If the fix touched any TypeScript types (added/changed/removed type annotations, interfaces, generics, or imports from type-only files), run:
+
+```
+yarn tsc --noEmit 2>&1 | head -50
+```
+
+Fix every reported error before proceeding. Re-run until the output is clean.
+
+### Step 5 — Verify
 
 Run `yarn build 2>&1 | tail -20` to confirm TypeScript still compiles cleanly after the change. If it fails, fix the compilation error before reporting.
 
-### Step 5 — Report
+### Step 6 — Report
 
 Output exactly this structure:
 

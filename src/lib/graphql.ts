@@ -124,5 +124,9 @@ export const fetchPostsByDate = async (date: string): Promise<Post[]> => {
 
   const response = await fetchGraphQL<{ posts: { nodes: Post[] } }>(GET_POSTS_BY_DATE, variables);
 
+  if (!response || !response.posts) {
+    throw new Error("Failed to fetch posts by date");
+  }
+
   return response.posts.nodes;
 }
