@@ -81,10 +81,9 @@ export async function getStaticPaths() {
     const { slug } = Astro.params;
     const { contentType } = Astro.props;
 
-// biome-ignore lint/suspicious/noExplicitAny: GraphQL response shape varies by content type
-const data = (await fetchGraphQL(
+const data = await fetchGraphQL<{ page: Page | null; post: Post | null }>(
   contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug)
-)) as { page: any; post: any };
+);
 
 const singlePost = contentType === "page" ? data.page : data.post;
 

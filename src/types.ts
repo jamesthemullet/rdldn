@@ -122,6 +122,14 @@ export type Post = {
   };
 };
 
+export type PostsConnection = {
+  nodes: Post[];
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor: string | null;
+  };
+};
+
 export type Location = {
   name: string;
   slug: string;
