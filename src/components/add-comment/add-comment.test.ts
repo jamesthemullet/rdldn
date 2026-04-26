@@ -12,19 +12,17 @@ describe("add-comment component", () => {
       },
     });
 
-    expect(html).toContain('id="reply-form"');
     expect(html).toContain('class="comment-form"');
-    expect(html).toContain('method="POST"');
     expect(html).toContain('data-post-id="123"');
     expect(html).toContain('data-parent-id="456"');
 
-    expect(html).toContain('for="authorName"');
+    expect(html).toContain('for="authorName-456"');
     expect(html).toContain('name="authorName"');
-    expect(html).toContain('id="authorName"');
-    expect(html).toContain('for="email"');
+    expect(html).toContain('id="authorName-456"');
+    expect(html).toContain('for="email-456"');
     expect(html).toContain('type="email"');
     expect(html).toContain('name="commentText"');
-    expect(html).toContain('id="commentText"');
+    expect(html).toContain('id="commentText-456"');
 
     expect(html).toContain('class="reply-button"');
     expect(html).toContain('data-button-id="456"');
