@@ -259,7 +259,7 @@ try {
 <BaseLayout
   pageTitle="Home of Roast Dinners In London"
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
-  openGraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
+  opengraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
 >
   <section class="home-list">
     <h2>Latest Reviews:</h2>
@@ -304,7 +304,7 @@ try {
             <a href={page?.slug} rel="noopener noreferrer">
               <img
                 src={page?.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${page?.title}`}
+                alt={`Preview image for ${page?.title}`}
                 width={400}
                 height={300}
                 loading="lazy"
@@ -329,7 +329,7 @@ try {
             <a href={page?.slug} rel="noopener noreferrer">
               <img
                 src={page?.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${page?.title}`}
+                alt={`Preview image for ${page?.title}`}
                 width={400}
                 height={300}
                 loading="lazy"
@@ -423,7 +423,7 @@ try {
             >
               <img
                 src={post?.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${post?.title}`}
+                alt={`Preview image for ${post?.title}`}
                 width="400"
                 height="300"
                 loading={index === 0 ? "eager" : "lazy"}
@@ -452,7 +452,7 @@ try {
             >
               <img
                 src={post?.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${post?.title}`}
+                alt={`Preview image for ${post?.title}`}
                 width="400"
                 height="300"
                 loading={index === 0 ? "eager" : "lazy"}
