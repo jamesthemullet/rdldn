@@ -14,6 +14,7 @@ import SINGLE_PAGE_QUERY from "../lib/queries/singlePageBySlug";
 import SINGLE_POST_QUERY from "../lib/queries/singlePostBySlug";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
+import sanitizeHtml from "sanitize-html";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
@@ -126,6 +127,18 @@ const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
 const featuredImageUrl = singlePost.featuredImage?.node?.sourceUrl || logo3;
 
+const rawContent = singlePost.content?.replace(/i\d+\.wp\.com\/rdldn\.co\.uk/g, "blog.rdldn.co.uk") ?? "";
+const safeContent = sanitizeHtml(rawContent, {
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "iframe"]),
+  allowedAttributes: {
+    ...sanitizeHtml.defaults.allowedAttributes,
+    img: ["src", "srcset", "alt", "width", "height", "loading", "class"],
+    iframe: ["src", "width", "height", "allowfullscreen", "frameborder", "title"],
+    "*": ["class", "id"],
+  },
+  allowedSchemes: ["http", "https", "mailto"],
+});
+
 const threadedComments = organiseComments(
   contentType === "page" ? data.page.comments.nodes : data.post.comments.nodes
 );
@@ -219,7 +232,7 @@ const reviewStructuredData =
       </>
     )}
     
-    <div set:html={singlePost.content?.replace(/i\d+\.wp\.com\/rdldn\.co\.uk/g, 'blog.rdldn.co.uk')} />
+    <div set:html={safeContent} />
 
     <Newsletter />
     
