@@ -1,8 +1,8 @@
 ---
+import Newsletter from "../components/newsletter/newsletter.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchGraphQL } from "../lib/api";
 import type { Post } from "../types";
-import Newsletter from "../components/newsletter/newsletter.astro";
 import "../styles/post.css";
 
 export const prerender = true;
