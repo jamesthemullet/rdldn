@@ -1,0 +1,113 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { organiseComments } from "../lib/utils";
+import "../styles/post.css";
+import Comments from "../components/comments/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import Newsletter from "../components/newsletter/newsletter.astro";
+import { fetchGraphQL } from "../lib/api";
+import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import type { Post } from "../types";
+import styles from "./does-the-day-a-review-is-published-affect-the-rating.module.css";
+
+export const prerender = true;
+
+const singlePage = await getSinglePageData({ variables: { id: "12043" } });
+
+type DayStat = { name: string; total: number; count: number };
+
+const dayStats: Record<number, DayStat> = {
+  0: { name: "Sunday", total: 0, count: 0 },
+  1: { name: "Monday", total: 0, count: 0 },
+  2: { name: "Tuesday", total: 0, count: 0 },
+  3: { name: "Wednesday", total: 0, count: 0 },
+  4: { name: "Thursday", total: 0, count: 0 },
+  5: { name: "Friday", total: 0, count: 0 },
+  6: { name: "Saturday", total: 0, count: 0 },
+};
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables: Record<string, unknown> = endCursor ? { after: endCursor } : {};
+  const { posts } = (await fetchGraphQL(GET_ALL_POSTS, variables)) as {
+    posts: { nodes: Post[]; pageInfo: { hasNextPage: boolean; endCursor: string | null } };
+  };
+
+  posts.nodes.forEach((post: Post) => {
+    const dateStr = post.date;
+    const ratingStr = post.ratings?.nodes?.[0]?.name ?? "";
+    const match = ratingStr.match(/[\d.]+/);
+    const rating = match ? Number.parseFloat(match[0]) : null;
+
+    if (!dateStr || rating === null || Number.isNaN(rating)) return;
+
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return;
+
+    const dayOfWeek = d.getDay();
+    dayStats[dayOfWeek].total += rating;
+    dayStats[dayOfWeek].count += 1;
+  });
+
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+const dailyAverages = (Object.keys(dayStats) as unknown as number[]).map((day) => {
+  const stats = dayStats[day];
+  const average = stats.count > 0 ? +(stats.total / stats.count).toFixed(2) : null;
+  return { day: stats.name, average, count: stats.count };
+});
+
+const sortedByAverage = [...dailyAverages].sort(
+  (a, b) => (b.average ?? 0) - (a.average ?? 0)
+);
+
+const maxAverage = sortedByAverage[0]?.average ?? 10;
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <FeaturedPostHeader
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl}
+    title={singlePage.title}
+  />
+  <div class="container">
+    <div set:html={singlePage.content} />
+
+    <ul class={styles.dayChart} aria-label="Average roast dinner ratings by day of review publication">
+      {
+        sortedByAverage.map(({ day, average, count }) => (
+          <li class={styles.dayChartRow}>
+            <span class={styles.dayName}>{day}</span>
+            <div class={styles.barTrack} role="presentation">
+              <div
+                class={styles.barFill}
+                style={`--bar-width: ${average !== null && maxAverage > 0 ? Math.round((average / maxAverage) * 100) : 0}%`}
+                aria-hidden="true"
+              />
+            </div>
+            <span class={styles.dayStats}>
+              {average !== null ? average.toFixed(2) : "N/A"}
+              <span class={styles.reviewCount}>
+                ({count} {count === 1 ? "review" : "reviews"})
+              </span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>
+
