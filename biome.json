@@ -10,6 +10,7 @@
     "includes": [
       "src/**",
       "public/**",
+      "!src/**/*.d.ts",
       "!**/.astro",
       "!**/.git",
       "!**/.cache",
