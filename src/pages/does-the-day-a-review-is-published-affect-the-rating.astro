@@ -6,9 +6,9 @@ import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import { fetchGraphQL } from "../lib/api";
-import type { Post } from "../types";
 import { getSinglePageData } from "../lib/getSinglePageData";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import type { Post } from "../types";
 import styles from "./does-the-day-a-review-is-published-affect-the-rating.module.css";
 
 export const prerender = true;
