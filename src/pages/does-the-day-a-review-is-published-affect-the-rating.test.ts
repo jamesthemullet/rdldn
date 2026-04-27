@@ -3,16 +3,40 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const fetchGraphQLMock = vi.fn();
 
+const mockPage = {
+  pageId: "12043",
+  title: "Does The Day A Review Is Published Affect The Rating?",
+  content: "<p>An analysis of review publication day vs rating.</p>",
+  comments: { nodes: [] },
+  seo: {
+    opengraphDescription: "Does publishing day affect the score?",
+    opengraphImage: { sourceUrl: "https://example.com/day-rating-og.jpg" },
+  },
+  featuredImage: {
+    node: {
+      sourceUrl: "https://example.com/day-rating-hero.jpg",
+    },
+  },
+};
+
+vi.mock("../lib/getSinglePageData", () => ({
+  getSinglePageData: vi.fn(async () => mockPage),
+}));
+
 vi.mock("../lib/api", () => ({
   fetchGraphQL: fetchGraphQLMock,
 }));
 
 vi.mock("astro:assets", () => ({
-  Image: Object.assign(
-    (_result: unknown, props: { src: string; alt?: string }) =>
-      `<img src="${props.src}" alt="${props.alt ?? ""}" />`,
-    { isAstroComponentFactory: true }
-  ),
+  Image: (() => {
+    const ImageComponent = (_result: unknown, props: { src: string; alt?: string }) =>
+      `<img src="${props.src}" alt="${props.alt ?? ""}" />`;
+    const AstroImageComponent = ImageComponent as typeof ImageComponent & {
+      isAstroComponentFactory: boolean;
+    };
+    AstroImageComponent.isAstroComponentFactory = true;
+    return AstroImageComponent;
+  })(),
 }));
 
 beforeEach(() => {
@@ -75,22 +99,22 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("which-day-of-the-week-are-roast-dinners-better page", () => {
-  test("renders the page title and description", async () => {
+describe("does-the-day-a-review-is-published-affect-the-rating page", () => {
+  test("renders the CMS page title and content", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
-    expect(html).toContain("Which Day Of The Week Are Roast Dinners Better?");
-    expect(html).toContain("Sunday is the classic roast dinner day");
+    expect(html).toContain("Does The Day A Review Is Published Affect The Rating?");
+    expect(html).toContain("An analysis of review publication day vs rating.");
   });
 
   test("fetches posts with pagination", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     await container.renderToString(Page);
 
@@ -104,7 +128,7 @@ describe("which-day-of-the-week-are-roast-dinners-better page", () => {
   test("renders correct average for Sunday (2 reviews: 8.0 and 9.0 = 8.50)", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
@@ -116,7 +140,7 @@ describe("which-day-of-the-week-are-roast-dinners-better page", () => {
   test("renders correct average for Saturday (1 review: 7.5)", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
@@ -127,7 +151,7 @@ describe("which-day-of-the-week-are-roast-dinners-better page", () => {
   test("renders N/A for days with no reviews", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
@@ -139,19 +163,11 @@ describe("which-day-of-the-week-are-roast-dinners-better page", () => {
   test("renders all seven days of the week", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
-    const days = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     for (const day of days) {
       expect(html).toContain(day);
     }
@@ -160,29 +176,39 @@ describe("which-day-of-the-week-are-roast-dinners-better page", () => {
   test("includes bar chart elements", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
-    expect(html).toContain("bar-track");
-    expect(html).toContain("bar-fill");
+    expect(html).toContain("--bar-width");
+    expect(html).toContain('aria-label="Average roast dinner ratings by day of review publication"');
   });
 
   test("renders newsletter section", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
-    // Newsletter component should be present
     expect(html).toContain("newsletter");
+  });
+
+  test("renders comments section", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import(
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
+    );
+    const html = await container.renderToString(Page);
+
+    expect(html).toContain("Any comments?");
+    expect(html).toContain("No comments yet. Be the first to comment!");
   });
 
   test("skips posts with invalid or empty dates", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import(
-      "./which-day-of-the-week-are-roast-dinners-better.astro"
+      "./does-the-day-a-review-is-published-affect-the-rating.astro"
     );
     const html = await container.renderToString(Page);
 
