@@ -1,17 +1,9 @@
 import { fetchGraphQL } from "../lib/api";
-import type { Page, Post } from "../types";
+import type { Page, Post, PostsConnection } from "../types";
 import GET_ALL_POSTS from "./queries/getAllPosts";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
 import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
 import { getPostRating } from "./utils";
-
-type PostsConnection = {
-  nodes: Post[];
-  pageInfo: {
-    hasNextPage: boolean;
-    endCursor: string | null;
-  };
-};
 
 type FetchAllPostsResponse = {
   posts: PostsConnection;

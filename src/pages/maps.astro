@@ -2,7 +2,7 @@
 import RoastMap from "../components/roast-map/roast-map.tsx";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
-import type { Page, Post } from "../types";
+import type { Page, Post, PostsConnection } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
@@ -29,18 +29,13 @@ try {
 }
 
 try {
-  let after = null;
+  let after: string | null = null;
   let hasNextPage = true;
 
   while (hasNextPage) {
-    const { posts } = (await fetchGraphQL(GET_ALL_POST_LOCATIONS, {
+    const { posts }: { posts: PostsConnection } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POST_LOCATIONS, {
       after,
-    })) as {
-      posts: {
-        nodes: Post[];
-        pageInfo: { hasNextPage: boolean; endCursor: string | null };
-      };
-    };
+    });
 
     allPosts = allPosts.concat(posts.nodes);
 

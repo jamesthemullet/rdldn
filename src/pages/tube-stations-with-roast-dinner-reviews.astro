@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
-import type { Post } from "../types";
+import type { Post, PostsConnection } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
@@ -22,13 +22,8 @@ let hasNextPage = true;
 let endCursor: string | null = null;
 
 while (hasNextPage) {
-  const variables = endCursor ? { after: endCursor } : {};
-  const { posts } = (await fetchGraphQL(GET_ALL_POSTS, variables)) as {
-    posts: {
-      nodes: Post[];
-      pageInfo: { hasNextPage: boolean; endCursor: string | null };
-    };
-  };
+  const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
 
   allRoastPosts.push(
     ...posts.nodes.filter((post: Post) =>

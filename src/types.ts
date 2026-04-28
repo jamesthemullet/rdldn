@@ -28,6 +28,11 @@ export type Post = {
     opengraphImage?: {
       sourceUrl: string;
     };
+    opengraphDescription?: string;
+    opengraphTitle?: string;
+  };
+  comments?: {
+    nodes: Comment[];
   };
   ratings?: {
     nodes: {
@@ -119,6 +124,14 @@ export type Post = {
     nodes: {
       name: string;
     }[];
+  };
+};
+
+export type PostsConnection = {
+  nodes: Post[];
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor: string | null;
   };
 };
 
