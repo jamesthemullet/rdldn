@@ -91,6 +91,8 @@ if (!singlePost) {
   return Astro.redirect("/404", 302);
 }
 
+const post = singlePost as Post;
+
 const CLOSED_STATUS_LABELS: Record<string, string> = {
   closeddown: "Closed Down",
   newmanagement: "Under New Management",
@@ -100,7 +102,7 @@ const CLOSED_STATUS_LABELS: Record<string, string> = {
   tempclosed: "Temporarily Closed",
 };
 
-const closedDownId = singlePost.closedDowns?.nodes?.[0]?.name;
+const closedDownId = post.closedDowns?.nodes?.[0]?.name;
 
 const getClosedMessage = () => {
   if (!closedDownId) return "";
@@ -113,20 +115,20 @@ const getClosedMessage = () => {
 };
 
 const currentYear = new Date().getFullYear();
-const postYear = new Date(singlePost.date).getFullYear();
+const postYear = new Date(post.date).getFullYear();
 const postMoreThanTwoYearsOld = postYear < currentYear - 2;
-const yearOfVisit = singlePost.yearsOfVisit?.nodes?.[0]?.name;
-const price = singlePost.prices?.nodes?.[0]?.name;
-const rating = singlePost.ratings?.nodes?.[0]?.name;
-const tubeStation = singlePost.tubeStations?.nodes?.[0]?.name;
-const tubeLines = singlePost.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
-const isRoastDinner = singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
+const yearOfVisit = post.yearsOfVisit?.nodes?.[0]?.name;
+const price = post.prices?.nodes?.[0]?.name;
+const rating = post.ratings?.nodes?.[0]?.name;
+const tubeStation = post.tubeStations?.nodes?.[0]?.name;
+const tubeLines = post.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
+const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
-const featuredImageUrl = singlePost.featuredImage?.node?.sourceUrl || logo3;
+const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3) as string;
 
 const threadedComments = organiseComments(
-  contentType === "page" ? data.page.comments.nodes : data.post.comments.nodes
+  contentType === "page" ? data.page!.comments!.nodes : data.post!.comments!.nodes
 );
 
 const reviewStructuredData =
@@ -152,7 +154,7 @@ const reviewStructuredData =
               },
             }
           : {}),
-        datePublished: singlePost.date,
+        datePublished: post.date,
         ...(singlePost?.seo?.opengraphDescription
           ? { description: singlePost.seo.opengraphDescription }
           : {}),
@@ -166,21 +168,21 @@ const reviewStructuredData =
 ---
 
 <BaseLayout
-  pageTitle={singlePost.title}
+  pageTitle={singlePost.title ?? ""}
   description={singlePost?.seo?.opengraphDescription}
   opengraphImage={singlePost.seo?.opengraphImage?.sourceUrl}
-  halloween={singlePost.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
+  halloween={post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
   structuredData={reviewStructuredData}
 >
-  <FeaturedPostHeader imageSrc={featuredImageUrl} title={singlePost.title}>
-    {singlePost.closedDowns?.nodes?.length > 0 && (
+  <FeaturedPostHeader imageSrc={featuredImageUrl} title={singlePost.title ?? ""}>
+    {(post.closedDowns?.nodes?.length ?? 0) > 0 && (
       <div slot="overlay" class="closed-overlay">
         {getClosedMessage()}
       </div>
     )}
     <p slot="meta">
       Published: {
-        new Date(singlePost.date).toLocaleDateString("en-UK", {
+        new Date(post.date).toLocaleDateString("en-UK", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -210,9 +212,9 @@ const reviewStructuredData =
             This post is from {postYear}. Maybe check some other reviews on Google Maps or something before booking.  If you have been since my visit, please let me know how it was in the comments below!
           </p>
         )}
-        { singlePost.nSFWs?.nodes?.length > 0 && (
+        { (post.nSFWs?.nodes?.length ?? 0) > 0 && (
           <p class="nsfw">
-            NSFW: Warning - this review may not be safe for work due to {singlePost.nSFWs.nodes.map((nsfw: { name: string}) => nsfw.name).join(", ")}.
+            NSFW: Warning - this review may not be safe for work due to {post.nSFWs!.nodes.map((nsfw: { name: string}) => nsfw.name).join(", ")}.
           </p>
         )}
       </>
@@ -226,7 +228,7 @@ const reviewStructuredData =
     <section id="summary" class="summary">
               <h3>Summary:</h3>
 
-      {singlePost.closedDowns?.nodes?.length > 0 && (
+      {(post.closedDowns?.nodes?.length ?? 0) > 0 && (
         <p class="closed-message">
           {getClosedMessage()}
         </p>
@@ -247,13 +249,13 @@ const reviewStructuredData =
         {" "}{price}
       </p>
       <p>Year of Visit: {yearOfVisit}</p>
-      {singlePost.owners?.nodes?.length > 0 && (
+      {(post.owners?.nodes?.length ?? 0) > 0 && (
         <p>
-          Chain{singlePost.owners.nodes.length > 1 ? "s" : ""}:{" "}
-          {singlePost.owners.nodes.map((owner: { name: string }, index: number) => (
+          Chain{(post.owners?.nodes?.length ?? 0) > 1 ? "s" : ""}:{" "}
+          {post.owners?.nodes?.map((owner: { name: string }, index: number) => (
             <>
               <a href={`/chains/${toOwnerSlug(owner.name)}`}>{owner.name}</a>
-              {index < singlePost.owners.nodes.length - 1 ? ", " : ""}
+              {index < (post.owners?.nodes?.length ?? 0) - 1 ? ", " : ""}
             </>
           ))}
         </p>
@@ -261,23 +263,23 @@ const reviewStructuredData =
     </section>
     <section>
       <h3>Loved & Loathed:</h3>
-      <p>Loved: {singlePost.highlights?.loved}</p>
-      <p>Loathed: {singlePost.highlights?.loathed}</p>
+      <p>Loved: {post.highlights?.loved}</p>
+      <p>Loathed: {post.highlights?.loathed}</p>
     </section>
     <section>
-      {singlePost.closedDowns?.nodes?.length === 0 && (
+      {post.closedDowns?.nodes?.length === 0 && (
         <>
           <h3>Get Booking:</h3>
-          {singlePost.highlights?.website && (
+          {post.highlights?.website && (
             <p>
-              <a href={singlePost.highlights.website}>
+              <a href={post.highlights.website}>
                 Book {singlePost.title}
               </a>
             </p>
           )}
-          {singlePost.highlights?.instagram && (
+          {post.highlights?.instagram && (
             <p>
-              <a href={singlePost.highlights.instagram}>
+              <a href={post.highlights.instagram}>
                 Follow on Instagram
               </a>
             </p>
@@ -287,15 +289,15 @@ const reviewStructuredData =
     </section>
     <RoastByTagSection
       type="location"
-      tag={singlePost.boroughs?.nodes?.[0]?.name?.replace(/\s+/g, "-")}
+      tag={post.boroughs?.nodes?.[0]?.name?.replace(/\s+/g, "-")}
     />
 
-    <Comments threadedComments={threadedComments} postId={singlePost.postId} />
+    <Comments threadedComments={threadedComments} postId={String(post.postId ?? "")} />
 
     )}
 
     {contentType === "page" && (
-      <Comments threadedComments={threadedComments} postId={singlePost.pageId} />
+      <Comments threadedComments={threadedComments} postId={(singlePost as Page).pageId} />
     )}
   </div>
 </BaseLayout>

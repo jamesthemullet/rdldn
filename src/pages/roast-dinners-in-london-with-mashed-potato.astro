@@ -23,7 +23,7 @@ let hasNextPage = true;
 let endCursor: string | null = null;
 
 while (hasNextPage) {
-  const variables = endCursor
+  const variables: { after?: string; search: string } = endCursor
     ? { after: endCursor, search: '"Mashed Potato"' }
     : { search: '"Mashed Potato"' };
   const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);

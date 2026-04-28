@@ -29,11 +29,11 @@ try {
 }
 
 try {
-  let after = null;
+  let after: string | null = null;
   let hasNextPage = true;
 
   while (hasNextPage) {
-    const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POST_LOCATIONS, {
+    const { posts }: { posts: PostsConnection } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POST_LOCATIONS, {
       after,
     });
 

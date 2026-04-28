@@ -28,6 +28,11 @@ export type Post = {
     opengraphImage?: {
       sourceUrl: string;
     };
+    opengraphDescription?: string;
+    opengraphTitle?: string;
+  };
+  comments?: {
+    nodes: Comment[];
   };
   ratings?: {
     nodes: {

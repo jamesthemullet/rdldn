@@ -29,7 +29,7 @@ let nonIndependentTotal = 0;
 let nonIndependentCount = 0;
 
 while (hasNextPage) {
-  const variables = endCursor ? { after: endCursor } : {};
+  const variables: { after?: string } = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
 
   posts.nodes.forEach((post: Post) => {

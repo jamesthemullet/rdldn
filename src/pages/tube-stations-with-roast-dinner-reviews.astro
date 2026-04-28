@@ -22,7 +22,7 @@ let hasNextPage = true;
 let endCursor: string | null = null;
 
 while (hasNextPage) {
-  const variables = endCursor ? { after: endCursor } : {};
+  const variables: { after?: string } = endCursor ? { after: endCursor } : {};
   const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
 
   allRoastPosts.push(
