@@ -176,6 +176,7 @@ export const useSortFilter = (posts: Post[]) => {
   const [showBorough, setShowBorough] = useState(false);
   const [showOwner, setShowOwner] = useState(false);
   const [showClosedDown, setShowClosedDown] = useState(true);
+  const [showInflationPrice, setShowInflationPrice] = useState(false);
 
   const handleCheckboxChange = (setter: BooleanStateSetter) => () => {
     setter((prev) => !prev);
@@ -237,5 +238,7 @@ export const useSortFilter = (posts: Post[]) => {
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
+    showInflationPrice,
+    setShowInflationPrice,
   };
 };

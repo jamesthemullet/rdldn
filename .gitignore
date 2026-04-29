@@ -35,3 +35,4 @@ pnpm-debug.log*
 
 yarn.lock
 .env.local
+.claude/settings.local.json
