@@ -36,6 +36,8 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
+    copyShareableLink,
+    copied,
   } = useSortFilter(posts);
 
   const uniqueAreas = useMemo(
@@ -269,6 +271,9 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
 
           <button type="button" className="clear-button" onClick={clearFilters}>
             Clear All Filters
+          </button>
+          <button type="button" className="share-button" onClick={copyShareableLink}>
+            {copied ? "Copied!" : "Copy shareable link"}
           </button>
         </div>
       )}
