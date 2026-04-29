@@ -10,6 +10,7 @@ import SortPosts from "../components/sort-posts/sort-posts.tsx";
 import logo3 from "../images/logo-3.png";
 import { fetchGraphQL } from "../lib/api";
 import { getSinglePageData } from "../lib/getSinglePageData";
+import { computeInflationIndex } from "../lib/inflationIndex";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
 
 export const prerender = true;
@@ -38,6 +39,8 @@ while (hasNextPage) {
 }
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
+
+const { inflationIndex, mostRecentYear } = computeInflationIndex(allRoastPosts);
 
 // Exclude closed down posts, sort by rating (descending), then limit to top 20 for structured data
 const openRoasts = allRoastPosts.filter(
@@ -91,7 +94,7 @@ const roastListStructuredData = {
       class="sort-posts-container"
       style="opacity: 0; position: absolute; visibility: hidden;"
     >
-      <SortPosts client:visible posts={allRoastPosts} />
+      <SortPosts client:visible posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
     </div>
 
     <script lang="ts">

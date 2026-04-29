@@ -6,7 +6,15 @@ import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
 const getUniqueValues = (posts: Post[], accessor: (post: Post) => string | undefined): string[] =>
   Array.from(new Set(posts.map(accessor))).filter((v): v is string => v !== undefined && v !== "");
 
-const SortPosts = ({ posts }: { posts: Post[] }) => {
+const SortPosts = ({
+  posts,
+  inflationIndex = {},
+  mostRecentYear = "",
+}: {
+  posts: Post[];
+  inflationIndex?: Record<string, number>;
+  mostRecentYear?: string;
+}) => {
   const {
     sortOrder,
     sortColumn,
@@ -21,6 +29,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     showBorough,
     showOwner,
     showClosedDown,
+    showInflationPrice,
     handleCheckboxChange,
     handleSortChange,
     toggleSortOrder,
@@ -36,6 +45,7 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
+    setShowInflationPrice,
   } = useSortFilter(posts);
 
   const uniqueAreas = useMemo(
@@ -86,6 +96,18 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
                 onChange={handleCheckboxChange(setShowPrice)}
               />
               <label htmlFor="price">Price</label>
+            </div>
+
+            <div>
+              <input
+                type="checkbox"
+                id="inflationPrice"
+                checked={showInflationPrice}
+                onChange={handleCheckboxChange(setShowInflationPrice)}
+              />
+              <label htmlFor="inflationPrice">
+                Inflation-adjusted price {mostRecentYear ? `(${mostRecentYear} est.)` : ""}
+              </label>
             </div>
 
             <div>
@@ -291,6 +313,21 @@ const SortPosts = ({ posts }: { posts: Post[] }) => {
                 {post.ratings?.nodes[0]?.name}
               </span>
               {showPrice && <span data-test-id="roast-price">{post.prices?.nodes[0]?.name || ""}</span>}
+              {showInflationPrice && (() => {
+                const year = post.yearsOfVisit?.nodes[0]?.name ?? "";
+                const priceStr = post.prices?.nodes[0]?.name ?? "";
+                const match = priceStr.match(/[\d,.]+/);
+                const rawPrice = match ? Number.parseFloat(match[0].replace(",", "")) : null;
+                const multiplier = year ? inflationIndex[year] : undefined;
+                if (rawPrice && multiplier) {
+                  return (
+                    <span data-test-id="roast-inflation-price">
+                      ~£{(rawPrice * multiplier).toFixed(2)}
+                    </span>
+                  );
+                }
+                return <span data-test-id="roast-inflation-price" />;
+              })()}
               {showMeat && <span data-test-id="roast-meat">{post.meats?.nodes[0]?.name}</span>}
               {showYearVisited && (
                 <span data-test-id="roast-year">{post.yearsOfVisit?.nodes[0]?.name}</span>
