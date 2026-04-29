@@ -1,6 +1,6 @@
+import type { Post, PostsConnection } from "../types";
 import { fetchGraphQL } from "./api";
 import GET_ALL_POSTS from "./queries/getAllPosts";
-import type { Post, PostsConnection } from "../types";
 
 const getMedian = (arr: number[]): number => {
   const sorted = [...arr].sort((a, b) => a - b);
