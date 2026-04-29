@@ -1,4 +1,4 @@
-import { type ChangeEvent, type SetStateAction, useMemo, useReducer, useState } from "react";
+import { type ChangeEvent, type SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import type { Post } from "../../types";
 
 type FilterState = {
@@ -163,10 +163,27 @@ export const translateClosedDown = (
 
 type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
 
+const getInitialStateFromUrl = () => {
+  if (typeof window === "undefined") return null;
+  const params = new URLSearchParams(window.location.search);
+  return params;
+};
+
 export const useSortFilter = (posts: Post[]) => {
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [sortColumn, setSortColumn] = useState("rating");
-  const [filters, dispatch] = useReducer(filterReducer, initialFilterState);
+  const urlParams = getInitialStateFromUrl();
+
+  const [sortOrder, setSortOrder] = useState(urlParams?.get("order") ?? "desc");
+  const [sortColumn, setSortColumn] = useState(urlParams?.get("sort") ?? "rating");
+  const [filters, dispatch] = useReducer(filterReducer, {
+    meat: urlParams?.get("meat") ?? "",
+    score: urlParams?.get("score") ?? "",
+    price: urlParams?.get("price") ?? "",
+    area: urlParams?.get("area") ?? "",
+    borough: urlParams?.get("borough") ?? "",
+    owner: urlParams?.get("owner") ?? "",
+    closedDown: urlParams?.get("closedDown") ?? "",
+    year: urlParams?.get("year") ?? "",
+  });
   const [showOptions, setShowOptions] = useState(false);
   const [showYearVisited, setShowYearVisited] = useState(false);
   const [showMeat, setShowMeat] = useState(false);
@@ -176,6 +193,25 @@ export const useSortFilter = (posts: Post[]) => {
   const [showBorough, setShowBorough] = useState(false);
   const [showOwner, setShowOwner] = useState(false);
   const [showClosedDown, setShowClosedDown] = useState(true);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (sortColumn !== "rating") params.set("sort", sortColumn);
+    if (sortOrder !== "desc") params.set("order", sortOrder);
+    for (const [key, value] of Object.entries(filters)) {
+      if (value) params.set(key, value);
+    }
+    const query = params.toString();
+    window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
+  }, [sortColumn, sortOrder, filters]);
+
+  const copyShareableLink = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, []);
 
   const handleCheckboxChange = (setter: BooleanStateSetter) => () => {
     setter((prev) => !prev);
@@ -237,5 +273,7 @@ export const useSortFilter = (posts: Post[]) => {
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
+    copyShareableLink,
+    copied,
   };
 };
