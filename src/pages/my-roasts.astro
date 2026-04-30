@@ -92,10 +92,10 @@ try {
   document
     .getElementById("wishlist-items")
     ?.addEventListener("click", async (e) => {
-      const btn = e.target.closest("[data-slug].wishlist-item__remove");
+      const btn = (e.target as Element | null)?.closest("[data-slug].wishlist-item__remove");
       if (!btn) return;
 
-      const slug = btn.dataset.slug;
+      const slug = (btn as HTMLElement).dataset.slug;
       if (!slug) return;
 
       const res = await fetch(`/api/wishlist/${slug}`, { method: "DELETE" });
