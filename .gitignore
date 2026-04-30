@@ -36,3 +36,6 @@ pnpm-debug.log*
 yarn.lock
 .env.local
 .claude/settings.local.json
+
+# clerk configuration (can include secrets)
+/.clerk/

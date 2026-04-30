@@ -14,7 +14,9 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "lint:errors": "biome check . | findstr error",
-    "ts-check": "astro check"
+    "ts-check": "astro check",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "resolutions": {
     "defu": ">=6.1.5",
@@ -35,6 +37,8 @@
     "@astrojs/react": "5.0.4",
     "@astrojs/sitemap": "3.7.2",
     "@astrojs/vercel": "10.0.5",
+    "@clerk/astro": "^3.0.21",
+    "@neondatabase/serverless": "^1.1.0",
     "@types/alpinejs": "^3.13.11",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
@@ -43,6 +47,7 @@
     "alpinejs": "^3.14.9",
     "astro": "6.1.9",
     "astro-seo": "^1.0.0",
+    "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
     "react": "19.2.5",
     "react-dom": "19.2.5",
@@ -57,6 +62,7 @@
     "@types/sanitize-html": "^2.16.1",
     "@vitest/coverage-istanbul": "4.1.5",
     "@vitest/coverage-v8": "4.1.5",
+    "drizzle-kit": "^0.31.10",
     "happy-dom": "^20.1.0",
     "knip": "^6.0.0",
     "vitest": "4.1.5"

@@ -1,0 +1,106 @@
+---
+import { eq } from "drizzle-orm";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { db } from "../lib/db";
+import { users, wishlistItems } from "../lib/schema";
+import "../styles/post.css";
+import "./my-roasts.css";
+
+const auth = Astro.locals.auth();
+const { userId: clerkId } = auth;
+
+if (!clerkId) {
+  return Astro.redirect("/sign-in");
+}
+
+let items: (typeof wishlistItems.$inferSelect)[] = [];
+let dbError = false;
+
+try {
+  const [user] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.clerkId, clerkId))
+    .limit(1);
+
+  if (user) {
+    items = await db
+      .select()
+      .from(wishlistItems)
+      .where(eq(wishlistItems.userId, user.id))
+      .orderBy(wishlistItems.savedAt);
+  }
+} catch {
+  dbError = true;
+}
+---
+
+<BaseLayout
+  pageTitle="My Roast List"
+  description="Your saved roast dinner restaurants"
+>
+  <FeaturedPostHeader
+    imageSrc={dreamingOfRoastDinners.src}
+    title="My Roast Dinners In London"
+  />
+  <div class="container">
+    <h2>Saved Roast Reviews</h2>
+    <p>
+      You can save your favourite roast dinner reviews here, maybe for future
+      reference or to share with friends.
+    </p>
+
+    {
+      dbError ? (
+        <p>Sorry, we couldn't load your list right now. Please try again later.</p>
+      ) : items.length === 0 ? (
+        <p>
+          You haven't saved any restaurants yet. Browse reviews and click "Save
+          to your list" to add them here.
+        </p>
+      ) : (
+        <ul class="wishlist" id="wishlist-items">
+          {items.map((item) => (
+            <li class="wishlist-item" data-slug={item.postSlug}>
+              <div class="wishlist-item__info">
+                <a href={`/${item.postSlug}`}>{item.postTitle}</a>
+                {item.postRating && (
+                  <span class="wishlist-item__rating">
+                    Rating: {item.postRating}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                class="wishlist-item__remove"
+                data-slug={item.postSlug}
+                aria-label={`Remove ${item.postTitle} from your list`}
+              >
+                Remove
+              </button>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  document
+    .getElementById("wishlist-items")
+    ?.addEventListener("click", async (e) => {
+      const btn = e.target.closest("[data-slug].wishlist-item__remove");
+      if (!btn) return;
+
+      const slug = btn.dataset.slug;
+      if (!slug) return;
+
+      const res = await fetch(`/api/wishlist/${slug}`, { method: "DELETE" });
+      if (res.ok) {
+        document.querySelector(`.wishlist-item[data-slug="${slug}"]`)?.remove();
+      }
+    });
+</script>

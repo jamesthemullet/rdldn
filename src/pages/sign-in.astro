@@ -1,0 +1,11 @@
+---
+import { SignIn as ClerkSignIn } from "@clerk/astro/components";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "./sign-in.css";
+---
+
+<BaseLayout pageTitle="Sign In">
+  <div class="sign-in-container">
+    <ClerkSignIn />
+  </div>
+</BaseLayout>

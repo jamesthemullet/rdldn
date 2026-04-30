@@ -19,6 +19,7 @@ import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
+import WishlistButton from "../components/wishlist-button/wishlist-button.astro";
 import logo3 from "../images/logo-3.png";
 import { buildInflationIndex } from "../lib/inflationIndex";
 import { toOwnerSlug } from "../lib/ownerSlug";
@@ -134,6 +135,7 @@ const rating = post.ratings?.nodes?.[0]?.name;
 const tubeStation = post.tubeStations?.nodes?.[0]?.name;
 const tubeLines = post.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
 const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
+
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
 const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3) as string;
@@ -314,6 +316,12 @@ const reviewStructuredData =
         </>
       )}
     </section>
+    <WishlistButton
+      postSlug={String(slug)}
+      postTitle={singlePost.title ?? ""}
+      postRating={rating ?? null}
+    />
+
     <RoastByTagSection
       type="location"
       tag={post.boroughs?.nodes?.[0]?.name?.replace(/\s+/g, "-")}
