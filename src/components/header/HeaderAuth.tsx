@@ -7,7 +7,7 @@ export function HeaderAuthDesktop() {
         <UserButton />
       </Show>
       <Show when="signed-out">
-        <span class="header-signin-desktop">
+        <span className="header-signin-desktop">
           <SignInButton />
         </span>
       </Show>
@@ -20,7 +20,7 @@ export function HeaderAuthMobile() {
     <>
       <a href="/my-roasts">My Roasts</a>
       <Show when="signed-out">
-        <span class="header-signin-mobile">
+        <span className="header-signin-mobile">
           <SignInButton />
         </span>
       </Show>

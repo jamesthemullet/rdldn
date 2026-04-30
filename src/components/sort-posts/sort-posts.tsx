@@ -337,7 +337,7 @@ const SortPosts = ({
                 {post.ratings?.nodes[0]?.name}
                 <WishlistButton
                   postSlug={post.slug ?? ""}
-                  postTitle={post.title}
+                  postTitle={post.title ?? ""}
                   postRating={post.ratings?.nodes[0]?.name}
                   iconOnly
                   isSaved={savedSlugs.has(post.slug ?? "")}
