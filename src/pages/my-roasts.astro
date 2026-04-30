@@ -49,12 +49,14 @@ try {
     <h2>Saved Roast Reviews</h2>
     <p>
       You can save your favourite roast dinner reviews here, maybe for future
-      reference or to share with friends.
+      reference or to share with friends
     </p>
 
     {
       dbError ? (
-        <p>Sorry, we couldn't load your list right now. Please try again later.</p>
+        <p>
+          Sorry, we couldn't load your list right now. Please try again later.
+        </p>
       ) : items.length === 0 ? (
         <p>
           You haven't saved any restaurants yet. Browse reviews and click "Save
@@ -92,7 +94,9 @@ try {
   document
     .getElementById("wishlist-items")
     ?.addEventListener("click", async (e) => {
-      const btn = (e.target as Element | null)?.closest("[data-slug].wishlist-item__remove");
+      const btn = (e.target as Element | null)?.closest(
+        "[data-slug].wishlist-item__remove"
+      );
       if (!btn) return;
 
       const slug = (btn as HTMLElement).dataset.slug;
