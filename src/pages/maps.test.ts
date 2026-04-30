@@ -2,6 +2,11 @@ import { getContainerRenderer as getReactContainerRenderer } from "@astrojs/reac
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+vi.mock("../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("../lib/api", () => ({
   fetchGraphQL: vi.fn()
 }));

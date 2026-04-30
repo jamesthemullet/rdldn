@@ -8,6 +8,11 @@ const validPost = (slug: string, rating: string) => ({
   ratings: { nodes: [{ name: rating }] },
 });
 
+vi.mock("../../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("../../lib/getAllRoastDinnerPosts", () => ({
   getAllRoastDinnerPosts: vi.fn(async () => [
     ...Array.from({ length: 10 }, (_, i) => validPost(`restaurant-${i}`, String(5 + (i % 5)))),
