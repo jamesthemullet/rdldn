@@ -13,7 +13,7 @@
     "astro": "astro",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "lint:errors": "biome check . | findstr error",
+    "lint:errors": "biome check --diagnostic-level=error .",
     "ts-check": "astro check",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate"
