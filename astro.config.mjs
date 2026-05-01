@@ -26,13 +26,19 @@ const clerkVirtualConfig = {
   },
 };
 
+const isTesting = process.env.PLAYWRIGHT === "true";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
   adapter: vercel(),
   site: "https://rdldn.co.uk",
+  devToolbar: {
+    enabled: !isTesting,
+  },
   vite: {
     plugins: [clerkVirtualConfig],
+    ...(isTesting && { server: { overlay: false } }),
   },
   integrations: [
     clerk(),

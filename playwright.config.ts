@@ -14,6 +14,9 @@ export default defineConfig({
     url: "http://localhost:4321",
     reuseExistingServer: true,
     timeout: 120000,
+    env: {
+      PLAYWRIGHT: "true",
+    },
   },
   projects: [
     {
