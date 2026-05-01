@@ -20,7 +20,8 @@
       "Bash(yarn astro *)",
       "Bash(xargs grep *)",
       "Bash(yarn add *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "WebFetch(domain:clerk.com)"
     ]
   }
 }
