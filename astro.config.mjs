@@ -38,7 +38,7 @@ export default defineConfig({
   },
   vite: {
     plugins: [clerkVirtualConfig],
-    ...(isTesting && { server: { overlay: false } }),
+    ...(isTesting && { server: { hmr: { overlay: false } } }),
   },
   integrations: [
     clerk(),
