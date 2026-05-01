@@ -46,7 +46,7 @@ afterEach(() => {
 });
 
 describe("about page", () => {
-  test("renders content and comments block", async () => {
+  test("renders content and comments block ", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-02-03T00:00:00.000Z"));
 
