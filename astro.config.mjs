@@ -41,7 +41,7 @@ export default defineConfig({
     ...(isTesting && { server: { hmr: { overlay: false } } }),
   },
   integrations: [
-    clerk(),
+    ...(isTesting ? [] : [clerk()]),
     partytown({
       config: {
         forward: ["dataLayer.push"],
