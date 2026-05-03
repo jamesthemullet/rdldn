@@ -148,7 +148,12 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
       post: {
         postId: "1",
         date: "2025-02-02",
@@ -172,7 +177,8 @@ describe("[slug] render", () => {
         highlights: { loved: "Yorkies", loathed: "None" },
         comments: { nodes: [] }
       }
-    }));
+    });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -193,7 +199,12 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
       post: {
         postId: "2",
         date: "2026-01-01",
@@ -217,7 +228,8 @@ describe("[slug] render", () => {
         highlights: { loved: "Gravy", loathed: "None" },
         comments: { nodes: [] }
       }
-    }));
+    });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -238,7 +250,12 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
       post: {
         postId: "3",
         date: "2025-12-12",
@@ -262,7 +279,8 @@ describe("[slug] render", () => {
         highlights: { loved: "Roasties", loathed: "None" },
         comments: { nodes: [] }
       }
-    }));
+    });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -281,7 +299,12 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
       post: {
         postId: "4",
         date: "2025-11-11",
@@ -305,7 +328,8 @@ describe("[slug] render", () => {
         highlights: { loved: "Roasties", loathed: "None" },
         comments: { nodes: [] }
       }
-    }));
+    });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -324,7 +348,12 @@ describe("[slug] render", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
 
-    const fetchMock = vi.fn().mockResolvedValue(makeResponse({
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
       page: {
         pageId: "99",
         date: "2025-05-05",
@@ -337,7 +366,8 @@ describe("[slug] render", () => {
         },
         comments: { nodes: [] }
       }
-    }));
+    });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 
@@ -356,7 +386,13 @@ describe("[slug] render", () => {
   });
 
   test("redirects to 404 when post is missing", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(makeResponse({ post: null }));
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({ post: null });
+    });
 
     vi.stubGlobal("fetch", fetchMock);
 

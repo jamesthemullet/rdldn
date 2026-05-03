@@ -12,7 +12,12 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(yarn vitest:*)"
+      "Bash(yarn vitest:*)",
+      "Bash(yarn run *)",
+      "Bash(sed 's/:[0-9]*:[0-9]* - .*//')",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git pull *)",
+      "Bash(yarn astro *)"
     ]
   }
 }

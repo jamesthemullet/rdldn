@@ -20,6 +20,7 @@ import FeaturedPostHeader from "../components/featured-post-header/featured-post
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import logo3 from "../images/logo-3.png";
+import { buildInflationIndex } from "../lib/inflationIndex";
 import { toOwnerSlug } from "../lib/ownerSlug";
 import type { Page, Post } from "../types";
 
@@ -82,6 +83,8 @@ export async function getStaticPaths() {
     const { slug } = Astro.params;
     const { contentType } = Astro.props;
 
+const { inflationIndex, mostRecentYear } = await buildInflationIndex();
+
 const data = await fetchGraphQL<{ page: Page | null; post: Post | null }>(
   contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug)
 );
@@ -120,6 +123,13 @@ const postYear = new Date(post.date).getFullYear();
 const postMoreThanTwoYearsOld = postYear < currentYear - 2;
 const yearOfVisit = post.yearsOfVisit?.nodes?.[0]?.name;
 const price = post.prices?.nodes?.[0]?.name;
+const priceMatch = price?.match(/[\d,.]+/);
+const rawPrice = priceMatch ? Number.parseFloat(priceMatch[0].replace(",", "")) : null;
+const inflationMultiplier = yearOfVisit ? inflationIndex?.[yearOfVisit] : undefined;
+const inflationAdjustedPrice =
+  rawPrice && inflationMultiplier && yearOfVisit !== mostRecentYear
+    ? `~£${(rawPrice * inflationMultiplier).toFixed(2)}`
+    : null;
 const rating = post.ratings?.nodes?.[0]?.name;
 const tubeStation = post.tubeStations?.nodes?.[0]?.name;
 const tubeLines = post.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
@@ -261,6 +271,9 @@ const reviewStructuredData =
           ? ` (in ${yearOfVisit})`
           : ""}:
         {" "}{price}
+        {inflationAdjustedPrice && (
+          <span class="inflation-price"> ({inflationAdjustedPrice} adjusted for inflation in {mostRecentYear})</span>
+        )}
       </p>
       <p>Year of Visit: {yearOfVisit}</p>
       {(post.owners?.nodes?.length ?? 0) > 0 && (

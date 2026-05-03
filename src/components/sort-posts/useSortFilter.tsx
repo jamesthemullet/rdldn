@@ -212,6 +212,7 @@ export const useSortFilter = (posts: Post[]) => {
       setTimeout(() => setCopied(false), 2000);
     });
   }, []);
+  const [showInflationPrice, setShowInflationPrice] = useState(false);
 
   const handleCheckboxChange = (setter: BooleanStateSetter) => () => {
     setter((prev) => !prev);
@@ -273,7 +274,12 @@ export const useSortFilter = (posts: Post[]) => {
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
+<<<<<<< feat/shareable-league-table-links
     copyShareableLink,
     copied,
+=======
+    showInflationPrice,
+    setShowInflationPrice,
+>>>>>>> main
   };
 };
