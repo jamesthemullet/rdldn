@@ -4,7 +4,7 @@ import type { Post } from "../../types";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
 
 const getUniqueValues = (posts: Post[], accessor: (post: Post) => string | undefined): string[] =>
-  Array.from(new Set(posts.map(accessor))).filter((v): v is string => v !== undefined && v !== "");
+  Array.from(new Set(posts.map(accessor))).filter((v): v is string => v !== undefined && v !== "").sort();
 
 const SortPosts = ({
   posts,

@@ -497,6 +497,10 @@ p {
   }
 }
 
+.share-button {
+  margin-left: 1rem;
+}
+
 .other-list {
   ul {
     display: flex;

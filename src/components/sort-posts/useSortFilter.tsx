@@ -241,7 +241,7 @@ export const useSortFilter = (posts: Post[]) => {
     [posts, filters, sortColumn, sortOrder]
   );
   const uniqueMeats = useMemo(
-    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))],
+    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))].sort(),
     [posts]
   );
 
