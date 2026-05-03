@@ -45,12 +45,9 @@ const SortPosts = ({
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
-<<<<<<< feat/shareable-league-table-links
     copyShareableLink,
     copied,
-=======
     setShowInflationPrice,
->>>>>>> main
   } = useSortFilter(posts);
 
   const uniqueAreas = useMemo(

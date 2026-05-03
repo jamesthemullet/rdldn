@@ -274,12 +274,9 @@ export const useSortFilter = (posts: Post[]) => {
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
-<<<<<<< feat/shareable-league-table-links
     copyShareableLink,
     copied,
-=======
     showInflationPrice,
     setShowInflationPrice,
->>>>>>> main
   };
 };

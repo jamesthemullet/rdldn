@@ -112,10 +112,12 @@ const getRoastTitles = (host: HTMLDivElement) =>
 
 beforeEach(() => {
   document.body.innerHTML = "";
+  window.history.replaceState(null, "", "/");
 });
 
 afterEach(() => {
   document.body.innerHTML = "";
+  window.history.replaceState(null, "", "/");
 });
 
 describe("sort-posts component", () => {
