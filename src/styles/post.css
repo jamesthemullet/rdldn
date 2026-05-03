@@ -391,6 +391,10 @@ p {
     margin: 0;
   }
 
+  .share-button {
+    margin-left: 1rem;
+  }
+
   .show-hide-button {
     margin: 1rem 0;
   }
@@ -495,10 +499,6 @@ p {
     justify-content: flex-start;
     margin-bottom: 1rem;
   }
-}
-
-.share-button {
-  margin-left: 1rem;
 }
 
 .other-list {
