@@ -212,6 +212,14 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
           </ol>
         </div>
 
+        <div class="share-section">
+          <button
+            @click="copyResult"
+            class="submit-btn share-btn"
+            x-text="copied ? 'Copied! ✓' : 'Copy result'"
+          ></button>
+        </div>
+
         <button @click="restartGame" class="submit-btn">Play Again</button>
         <button @click="backToStart" class="submit-btn high-scores-btn">Back to Start</button>
       </div>
@@ -243,6 +251,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       scoreSubmitted: false,
       submitError: "",
       leaderboard: [],
+      copied: false,
 
       init() {
         this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
@@ -276,6 +285,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         this.scoreSubmitted = false;
         this.submitError = "";
         this.leaderboard = [];
+        this.copied = false;
       },
 
       get currentPost() {
@@ -384,6 +394,26 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         }
       },
 
+      get tierLabel() {
+        if (this.totalScore >= 90) return "Gravy Whisperer";
+        if (this.totalScore >= 70) return "Roast Connoisseur";
+        if (this.totalScore >= 50) return "Roast Appreciator";
+        if (this.totalScore >= 30) return "Roast Novice";
+        if (this.totalScore >= 10) return "Lord Gravy's Disappointment";
+        return "Utterly Disgraceful";
+      },
+
+      async copyResult() {
+        const text = `I scored ${this.totalScore}/100 on the Guess The Score game! Tier: ${this.tierLabel}\n\nThink you can do better? https://www.rdldn.co.uk/guessthescore/?ref=share`;
+        try {
+          await navigator.clipboard.writeText(text);
+          this.copied = true;
+          setTimeout(() => { this.copied = false; }, 2000);
+        } catch {
+          // clipboard unavailable — silently ignore
+        }
+      },
+
       restartGame() {
         this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
         this.currentIndex = 0;
@@ -397,6 +427,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         this.scoreSubmitted = false;
         this.submitError = "";
         this.leaderboard = [];
+        this.copied = false;
       },
 
       shuffle(arr) {
