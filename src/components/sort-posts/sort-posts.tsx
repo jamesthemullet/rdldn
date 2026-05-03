@@ -4,7 +4,7 @@ import type { Post } from "../../types";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
 
 const getUniqueValues = (posts: Post[], accessor: (post: Post) => string | undefined): string[] =>
-  Array.from(new Set(posts.map(accessor))).filter((v): v is string => v !== undefined && v !== "");
+  Array.from(new Set(posts.map(accessor))).filter((v): v is string => v !== undefined && v !== "").sort();
 
 const SortPosts = ({
   posts,
@@ -45,6 +45,8 @@ const SortPosts = ({
     setShowBorough,
     setShowOwner,
     setShowClosedDown,
+    copyShareableLink,
+    copied,
     setShowInflationPrice,
   } = useSortFilter(posts);
 
@@ -291,6 +293,9 @@ const SortPosts = ({
 
           <button type="button" className="clear-button" onClick={clearFilters}>
             Clear All Filters
+          </button>
+          <button type="button" className="share-button" onClick={copyShareableLink}>
+            {copied ? "Copied!" : "Copy shareable link"}
           </button>
         </div>
       )}

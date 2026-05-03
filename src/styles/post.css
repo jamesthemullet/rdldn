@@ -391,6 +391,10 @@ p {
     margin: 0;
   }
 
+  .share-button {
+    margin-left: 1rem;
+  }
+
   .show-hide-button {
     margin: 1rem 0;
   }
