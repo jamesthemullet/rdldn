@@ -4,6 +4,7 @@ const isProtectedRoute = createRouteMatcher(["/api/wishlist(.*)", "/api/profile(
 
 export const onRequest = clerkMiddleware((auth, context) => {
   if (isProtectedRoute(context.request)) {
-    auth().protect();
+    const { userId, redirectToSignIn } = auth();
+    if (!userId) return redirectToSignIn();
   }
 });
