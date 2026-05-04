@@ -3,6 +3,15 @@ import type { APIRoute } from "astro";
 import { kv } from "../../../lib/kv";
 
 const TOKEN_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
+const RATE_LIMIT = 10;
+const RATE_WINDOW_S = 60 * 60; // 1 hour
+
+async function checkRateLimit(ip: string): Promise<boolean> {
+  const key = `rate:submit:${ip}`;
+  const count = await kv.incr(key);
+  if (count === 1) await kv.expire(key, RATE_WINDOW_S);
+  return count <= RATE_LIMIT;
+}
 
 function verifyToken(token: string): boolean {
   const secret = import.meta.env.SCORE_SECRET;
@@ -23,6 +32,18 @@ function verifyToken(token: string): boolean {
 }
 
 export const POST: APIRoute = async ({ request }) => {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  if (!(await checkRateLimit(ip))) {
+    return new Response(JSON.stringify({ error: "Too many requests" }), {
+      status: 429,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   let body: { name?: unknown; score?: unknown; token?: unknown };
   try {
     body = await request.json();
