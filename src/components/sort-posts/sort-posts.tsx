@@ -1,6 +1,8 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
-import { useMemo } from "react";
+import { useAuth } from "@clerk/astro/react";
+import { useEffect, useMemo, useState } from "react";
 import type { Post } from "../../types";
+import WishlistButton from "../wishlist-button/wishlist-button.tsx";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
 
 const getUniqueValues = (posts: Post[], accessor: (post: Post) => string | undefined): string[] =>
@@ -15,6 +17,28 @@ const SortPosts = ({
   inflationIndex?: Record<string, number>;
   mostRecentYear?: string;
 }) => {
+  const { isSignedIn, isLoaded } = useAuth();
+  const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    fetch("/api/wishlist")
+      .then((r) => r.json())
+      .then((items: { postSlug: string }[]) => {
+        setSavedSlugs(new Set(items.map((i) => i.postSlug)));
+      })
+      .catch(() => {});
+  }, [isLoaded, isSignedIn]);
+
+  function handleSaveToggle(slug: string, nowSaved: boolean) {
+    setSavedSlugs((prev) => {
+      const next = new Set(prev);
+      if (nowSaved) next.add(slug);
+      else next.delete(slug);
+      return next;
+    });
+  }
+
   const {
     sortOrder,
     sortColumn,
@@ -316,6 +340,14 @@ const SortPosts = ({
                 data-test-id="roast-rating"
               >
                 {post.ratings?.nodes[0]?.name}
+                <WishlistButton
+                  postSlug={post.slug ?? ""}
+                  postTitle={post.title ?? ""}
+                  postRating={post.ratings?.nodes[0]?.name}
+                  iconOnly
+                  isSaved={savedSlugs.has(post.slug ?? "")}
+                  onSaveToggle={handleSaveToggle}
+                />
               </span>
               {showPrice && <span data-test-id="roast-price">{post.prices?.nodes[0]?.name || ""}</span>}
               {showInflationPrice && (() => {

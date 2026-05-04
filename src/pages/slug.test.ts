@@ -2,6 +2,11 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { resetGraphQLRequestCache } from "../lib/api";
 
+vi.mock("../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("astro:assets", () => ({
   Image: (() => {
     type AstroImageComponent = ((

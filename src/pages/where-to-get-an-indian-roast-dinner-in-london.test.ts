@@ -4,6 +4,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 const getSinglePageDataMock = vi.fn();
 const getAllRoastDinnerPostsMock = vi.fn();
 
+vi.mock("../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("../lib/getSinglePageData", () => ({
   getSinglePageData: getSinglePageDataMock
 }));

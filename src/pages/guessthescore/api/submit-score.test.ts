@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 vi.mock("../../../lib/kv", () => ({
   kv: {
     zadd: vi.fn(),
+    incr: vi.fn(),
+    expire: vi.fn(),
   },
 }));
 
@@ -33,6 +35,8 @@ describe("POST /guessthescore/api/submit-score", () => {
     vi.clearAllMocks();
     vi.stubEnv("SCORE_SECRET", TEST_SECRET);
     vi.mocked(kv.zadd).mockResolvedValue(1);
+    vi.mocked(kv.incr).mockResolvedValue(1);
+    vi.mocked(kv.expire).mockResolvedValue(1);
   });
 
   afterEach(() => {
@@ -211,6 +215,74 @@ describe("POST /guessthescore/api/submit-score", () => {
       } as unknown as APIContext);
 
       expect(response.status).toBe(200);
+    });
+  });
+
+  describe("rate limiting", () => {
+    test("returns 429 when rate limit is exceeded", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(11);
+      const token = createValidToken();
+      const response = await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
+
+      expect(response.status).toBe(429);
+      const data = await response.json();
+      expect(data.error).toBe("Too many requests");
+    });
+
+    test("allows requests within the rate limit", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(10);
+      const token = createValidToken();
+      const response = await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
+
+      expect(response.status).toBe(200);
+    });
+
+    test("sets TTL on first request in window", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(1);
+      const token = createValidToken();
+      await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
+
+      expect(kv.expire).toHaveBeenCalledWith(expect.stringContaining("rate:submit:"), 3600);
+    });
+
+    test("does not set TTL on subsequent requests in window", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(2);
+      const token = createValidToken();
+      await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
+
+      expect(kv.expire).not.toHaveBeenCalled();
+    });
+
+    test("uses x-forwarded-for header for rate limit key", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(1);
+      const request = new Request("http://localhost/guessthescore/api/submit-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-forwarded-for": "1.2.3.4, 10.0.0.1" },
+        body: JSON.stringify({ name: "Alice", score: 80, token: createValidToken() }),
+      });
+      await POST({ request } as unknown as APIContext);
+
+      expect(kv.incr).toHaveBeenCalledWith("rate:submit:1.2.3.4");
+    });
+
+    test("falls back to x-real-ip when x-forwarded-for is absent", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(1);
+      const request = new Request("http://localhost/guessthescore/api/submit-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-real-ip": "5.6.7.8" },
+        body: JSON.stringify({ name: "Alice", score: 80, token: createValidToken() }),
+      });
+      await POST({ request } as unknown as APIContext);
+
+      expect(kv.incr).toHaveBeenCalledWith("rate:submit:5.6.7.8");
+    });
+
+    test("does not call zadd when rate limited", async () => {
+      vi.mocked(kv.incr).mockResolvedValue(11);
+      const token = createValidToken();
+      await POST({ request: makeRequest({ name: "Alice", score: 80, token }) } as unknown as APIContext);
+
+      expect(kv.zadd).not.toHaveBeenCalled();
     });
   });
 

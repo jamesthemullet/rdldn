@@ -21,6 +21,11 @@ const mockPage = {
   }
 };
 
+vi.mock("../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("../lib/api", () => {
   return {
     fetchGraphQL: vi.fn(async (_query: string, variables: Record<string, unknown> = {}) => {

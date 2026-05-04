@@ -3,6 +3,11 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import type { Post } from "../../types";
 
+vi.mock("../../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("../../lib/getAllRoastDinnerPosts", () => ({
   getAllRoastDinnerPosts: vi.fn(),
 }));

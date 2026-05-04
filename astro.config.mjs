@@ -1,6 +1,6 @@
 // @ts-check
 
-
+import clerk from "@clerk/astro";
 import alpinejs from "@astrojs/alpinejs";
 import mdx from "@astrojs/mdx";
 import partytown from "@astrojs/partytown";
@@ -10,12 +10,38 @@ import vercel from "@astrojs/vercel";
 import { defineConfig } from "astro/config";
 import { EnumChangefreq } from "sitemap";
 
+// Workaround: @clerk/astro 3.x virtual module doesn't propagate to all Vite 8 environments
+const clerkVirtualConfig = {
+  name: "clerk-virtual-config",
+  resolveId(/** @type {string} */ id) {
+    if (id === "virtual:@clerk/astro/config") return "\0virtual:@clerk/astro/config";
+  },
+  load(/** @type {string} */ id) {
+    if (id === "\0virtual:@clerk/astro/config") {
+      return `export function isStaticOutput(forceStatic) {
+        if (forceStatic !== undefined) return forceStatic;
+        return false;
+      }`;
+    }
+  },
+};
+
+const isTesting = process.env.PLAYWRIGHT === "true";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
   adapter: vercel(),
   site: "https://rdldn.co.uk",
+  devToolbar: {
+    enabled: !isTesting,
+  },
+  vite: {
+    plugins: [clerkVirtualConfig],
+    ...(isTesting && { server: { hmr: { overlay: false } } }),
+  },
   integrations: [
+    ...(isTesting ? [] : [clerk()]),
     partytown({
       config: {
         forward: ["dataLayer.push"],
@@ -63,7 +89,7 @@ export default defineConfig({
         return item;
       },
     }),
-    alpinejs(),
+    alpinejs({ entrypoint: "./src/entrypoints/alpine.ts" }),
     react(),
   ],
 });

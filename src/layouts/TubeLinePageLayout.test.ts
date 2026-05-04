@@ -2,6 +2,11 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { describe, expect, test, vi } from "vitest";
 import type { Page, Post } from "../types";
 
+vi.mock("../components/header/HeaderAuth", () => ({
+  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
+  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("astro:assets", () => ({
 	Image: Object.assign(
 		(_result: unknown, props: { src: string; alt?: string }) =>

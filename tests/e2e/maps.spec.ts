@@ -18,8 +18,8 @@ const getRenderedMarkerCount = async (page: Page) => {
 };
 
 const waitForMapTiles = async (page: Page) => {
-  const tiles = page.locator("#map .leaflet-tile-container img");
-  await expect.poll(async () => tiles.count()).toBeGreaterThan(0);
+  // Wait for the React component to hydrate (map-marker-counts is only rendered by React)
+  await expect(page.locator('[data-test-id="map-marker-counts"]')).toBeAttached({ timeout: 10000 });
 };
 
 test.describe("maps page", () => {

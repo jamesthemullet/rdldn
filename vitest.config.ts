@@ -15,12 +15,25 @@ const { astroConfig } = await config.resolveConfig({ root }, "dev");
 const settings = await config.createSettings(astroConfig, astroConfig.logLevel, root);
 const logger = createNodeLogger(astroConfig);
 
+const clerkVirtualModules = {
+  name: "clerk-virtual-modules",
+  enforce: "pre" as const,
+  resolveId(id: string) {
+    if (id === "virtual:@clerk/astro/config") return "\0virtual:@clerk/astro/config";
+  },
+  load(id: string) {
+    if (id === "\0virtual:@clerk/astro/config") {
+      return "export const isStaticOutput = (isStatic) => isStatic;";
+    }
+  },
+};
+
 export default defineConfig({
-  plugins: [astroPlugin({ settings, logger })],
+  plugins: [clerkVirtualModules, astroPlugin({ settings, logger })],
   test: {
     globals: true,
     environment: "node",
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+include: ["src/**/*.{test,spec}.{ts,tsx}"],
     coverage: {
       provider: "istanbul",
       include: ["src/**/*.{ts,tsx,astro}"],
