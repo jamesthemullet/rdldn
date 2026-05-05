@@ -1,6 +1,18 @@
 import { Show, SignInButton, UserButton } from "@clerk/astro/react";
+import { useState, useEffect } from "react";
+
+function useFlag(key: string, defaultValue = true): boolean {
+  const [value, setValue] = useState(defaultValue);
+  useEffect(() => {
+    const stored = localStorage.getItem(`flag_${key}`);
+    setValue(stored === null ? defaultValue : stored === "true");
+  }, []);
+  return value;
+}
 
 export function HeaderAuthDesktop() {
+  const authEnabled = useFlag("authFeatures");
+  if (!authEnabled) return null;
   return (
     <>
       <Show when="signed-in">
@@ -16,6 +28,8 @@ export function HeaderAuthDesktop() {
 }
 
 export function HeaderAuthMobile() {
+  const authEnabled = useFlag("authFeatures");
+  if (!authEnabled) return null;
   return (
     <>
       <a href="/my-roasts">My Roasts</a>

@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/flags.css";
+import { FLAG_DEFINITIONS } from "../lib/featureFlags";
+
+const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({ key, ...def }));
+---
+
+<BaseLayout pageTitle="Feature Flags" description="Control feature flags for this site.">
+  <main class="flags-page">
+    <h2>Feature Flags</h2>
+    <p class="flags-intro">Changes take effect on the next page load.</p>
+    <ul class="flags-list">
+      {
+        flags.map((flag) => (
+          <li class="flag-item">
+            <div class="flag-info">
+              <span class="flag-label">{flag.label}</span>
+              <span class="flag-description">{flag.description}</span>
+            </div>
+            <label class="toggle-switch" aria-label={`Toggle ${flag.label}`}>
+              <input
+                type="checkbox"
+                class="flag-checkbox"
+                data-flag-key={flag.key}
+                data-default={flag.defaultValue ? "true" : "false"}
+              />
+              <span class="toggle-slider" />
+            </label>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+  <script>
+    document.querySelectorAll<HTMLInputElement>(".flag-checkbox").forEach((checkbox) => {
+      const key = checkbox.getAttribute("data-flag-key");
+      const defaultVal = checkbox.getAttribute("data-default") === "true";
+      if (!key) return;
+      const stored = localStorage.getItem(`flag_${key}`);
+      checkbox.checked = stored === null ? defaultVal : stored === "true";
+      checkbox.addEventListener("change", () => {
+        localStorage.setItem(`flag_${key}`, String(checkbox.checked));
+      });
+    });
+  </script>
+</BaseLayout>

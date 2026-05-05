@@ -105,6 +105,9 @@ section {
           }
 
           .featured-image {
+            position: relative;
+            overflow: hidden;
+
             a {
               max-width: 100%;
               white-space: normal;
@@ -252,4 +255,31 @@ section {
 .centre-with-padding {
   text-align: center;
   padding: 0 1rem;
+}
+
+.new-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-top: 64px solid var(--roast-new-blue);
+  border-right: 64px solid transparent;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.new-badge::after {
+  content: "NEW";
+  position: absolute;
+  top: -50px;
+  left: 8px;
+  font-family: "Loved by the King", sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--roast-white);
+  transform: rotate(-45deg);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
