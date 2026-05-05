@@ -1,12 +1,12 @@
 import { Show, SignInButton, UserButton } from "@clerk/astro/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function useFlag(key: string, defaultValue = true): boolean {
   const [value, setValue] = useState(defaultValue);
   useEffect(() => {
     const stored = localStorage.getItem(`flag_${key}`);
     setValue(stored === null ? defaultValue : stored === "true");
-  }, []);
+  }, [key, defaultValue]);
   return value;
 }
 

@@ -21,7 +21,9 @@
       "Bash(xargs grep *)",
       "Bash(yarn add *)",
       "Bash(git stash *)",
-      "WebFetch(domain:clerk.com)"
+      "WebFetch(domain:clerk.com)",
+      "Bash(yarn lint *)",
+      "Bash(yarn lint:fix *)"
     ]
   }
 }
