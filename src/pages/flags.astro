@@ -58,7 +58,8 @@ const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
   <script>
     document.querySelectorAll(".flag-checkbox").forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
-        document.getElementById("flags-form").submit();
+        const form = document.getElementById("flags-form");
+        if (form instanceof HTMLFormElement) form.submit();
       });
     });
   </script>
