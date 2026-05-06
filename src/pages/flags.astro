@@ -1,0 +1,66 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/flags.css";
+import { FLAG_DEFINITIONS } from "../lib/featureFlags";
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+  for (const key of Object.keys(FLAG_DEFINITIONS)) {
+    const value = formData.get(`flag_${key}`) === "on";
+    Astro.cookies.set(`flag_${key}`, String(value), {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: "lax",
+      httpOnly: false,
+    });
+  }
+  return Astro.redirect("/flags");
+}
+
+const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
+  key,
+  ...def,
+  current: (() => {
+    const cookie = Astro.cookies.get(`flag_${key}`);
+    return cookie ? cookie.value === "true" : false;
+  })(),
+}));
+---
+
+<BaseLayout pageTitle="Feature Flags" description="Control feature flags for this site.">
+  <main class="flags-page">
+    <h2>Feature Flags</h2>
+    <p class="flags-intro">Changes take effect immediately.</p>
+    <form method="POST" id="flags-form">
+      <ul class="flags-list">
+        {
+          flags.map((flag) => (
+            <li class="flag-item">
+              <div class="flag-info">
+                <span class="flag-label">{flag.label}</span>
+                <span class="flag-description">{flag.description}</span>
+              </div>
+              <label class="toggle-switch" aria-label={`Toggle ${flag.label}`}>
+                <input
+                  type="checkbox"
+                  name={`flag_${flag.key}`}
+                  class="flag-checkbox"
+                  checked={flag.current}
+                />
+                <span class="toggle-slider" />
+              </label>
+            </li>
+          ))
+        }
+      </ul>
+    </form>
+  </main>
+  <script>
+    document.querySelectorAll(".flag-checkbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const form = document.getElementById("flags-form");
+        if (form instanceof HTMLFormElement) form.submit();
+      });
+    });
+  </script>
+</BaseLayout>
