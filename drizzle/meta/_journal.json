@@ -8,6 +8,13 @@
       "when": 1777535613478,
       "tag": "0000_pale_jackal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778131682791,
+      "tag": "0001_round_king_bedlam",
+      "breakpoints": true
     }
   ]
 }

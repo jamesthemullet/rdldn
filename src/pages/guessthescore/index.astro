@@ -53,6 +53,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       <!-- Pre-game screen -->
       <div x-show="!gameStarted" class="pre-game">
         <div x-show="!showingHighScores" class="pre-game-actions">
+          <p x-show="personalBest !== null" class="personal-best-display">Your best: <strong x-text="`${personalBest}/100`"></strong></p>
           <button @click="startGame" class="submit-btn">Start Game</button>
           <button @click="showHighScores" class="submit-btn high-scores-btn">High Scores</button>
         </div>
@@ -165,6 +166,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         <div class="final-score">
           <span x-text="totalScore"></span><span>/100</span>
         </div>
+        <p x-show="isNewPersonalBest" class="new-personal-best">New personal best!</p>
         <p x-text="endMessage" class="end-message"></p>
 
         <!-- Score submission -->
@@ -252,9 +254,26 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       submitError: "",
       leaderboard: [],
       copied: false,
+      personalBest: null,
+      isNewPersonalBest: false,
 
       init() {
         this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+        const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
+        const authEnabled = match ? match[2] === "true" : false;
+        if (authEnabled) this.fetchPersonalBest();
+      },
+
+      async fetchPersonalBest() {
+        try {
+          const res = await fetch("/guessthescore/api/personal-best");
+          if (res.ok) {
+            const data = await res.json();
+            this.personalBest = data.score;
+          }
+        } catch {
+          // silently fail — personal best is a nice-to-have
+        }
       },
 
       startGame() {
@@ -286,6 +305,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         this.submitError = "";
         this.leaderboard = [];
         this.copied = false;
+        this.isNewPersonalBest = false;
       },
 
       get currentPost() {
@@ -346,10 +366,33 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         if (this.currentIndex >= 9) {
           this.gameOver = true;
           this.fetchLeaderboard();
+          this.savePersonalBest();
         } else {
           this.currentIndex++;
           this.guess = 5;
           this.revealed = false;
+        }
+      },
+
+      async savePersonalBest() {
+        const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
+        const authEnabled = match ? match[2] === "true" : false;
+        if (!authEnabled) return;
+        try {
+          const res = await fetch("/guessthescore/api/personal-best", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ score: this.totalScore }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.saved) {
+              this.isNewPersonalBest = true;
+              this.personalBest = data.personalBest;
+            }
+          }
+        } catch {
+          // silently fail
         }
       },
 
@@ -428,6 +471,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
         this.submitError = "";
         this.leaderboard = [];
         this.copied = false;
+        this.isNewPersonalBest = false;
       },
 
       shuffle(arr) {
