@@ -1,4 +1,4 @@
-import { numeric, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { integer, numeric, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -22,5 +22,20 @@ export const wishlistItems = pgTable(
   (table) => [unique().on(table.userId, table.postSlug)]
 );
 
+export const gamePersonalBests = pgTable(
+  "game_personal_bests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    game: text("game").notNull(),
+    score: integer("score").notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [unique().on(table.userId, table.game)]
+);
+
 export type User = typeof users.$inferSelect;
 export type WishlistItem = typeof wishlistItems.$inferSelect;
+export type GamePersonalBest = typeof gamePersonalBests.$inferSelect;
