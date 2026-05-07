@@ -1,64 +1,40 @@
-# Astro Starter Kit: Blog
+# Roast Dinners in London
+
+A site reviewing roast dinners across London — rating pubs, restaurants, and chains, with stats, maps, and rankings.
+
+Built with [Astro](https://astro.build), deployed on [Vercel](https://vercel.com). Content is pulled from a WordPress GraphQL backend. Auth is handled by [Clerk](https://clerk.com). Data is stored in [Neon](https://neon.tech) (Postgres) via [Drizzle ORM](https://orm.drizzle.team).
+
+## Getting started
 
 ```sh
-npm create astro@latest -- --template blog
+yarn install
+yarn dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
+The dev server starts at `http://localhost:4321`.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
+| Command | Action |
+| :--- | :--- |
+| `yarn dev` | Start local dev server |
+| `yarn build` | Build for production |
+| `yarn preview` | Preview the production build locally |
+| `yarn test` | Run unit tests (Vitest) |
+| `yarn test:watch` | Run unit tests in watch mode |
+| `yarn test:coverage` | Generate code coverage report |
+| `yarn test:e2e` | Run end-to-end tests (Playwright) |
+| `yarn lint` | Check code with Biome |
+| `yarn lint:fix` | Auto-fix lint issues |
+| `yarn db:generate` | Generate Drizzle migrations |
+| `yarn db:migrate` | Run migrations |
 
-Features:
+## Tech stack
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 🧪 Testing
-
-The project uses [Vitest](https://vitest.dev/) for unit tests. After installing dependencies, run your preferred package manager's test script, for example `yarn test` (continuous mode with `yarn test:watch`). Generate code coverage with `yarn test:coverage` (HTML and lcov output lands in `/coverage`).
+- **Framework:** Astro 6 with React and Alpine.js islands
+- **Styling:** CSS (per-component files)
+- **Testing:** Vitest (unit), Playwright (e2e)
+- **Linting:** Biome
+- **Database:** Neon (Postgres) + Drizzle ORM
+- **Auth:** Clerk
+- **Deployment:** Vercel
