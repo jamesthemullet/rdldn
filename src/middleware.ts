@@ -8,3 +8,7 @@ export const onRequest = clerkMiddleware((auth, context) => {
     if (!userId) return redirectToSignIn();
   }
 });
+
+export const config = {
+  matcher: ["/((?!_astro|images|favicon\\.ico|.*\\..*).*)"],
+};

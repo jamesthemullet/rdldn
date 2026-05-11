@@ -1,6 +1,8 @@
 ---
 import sanitizeHtml from "sanitize-html";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+export const prerender = true;
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
