@@ -15,7 +15,7 @@ import "../styles/post.css";
 export const prerender = false;
 export const response = {
   headers: {
-    "Cache-Control": "no-store",
+    "Cache-Control": "s-maxage=3600, stale-while-revalidate=86400",
   },
 };
 
