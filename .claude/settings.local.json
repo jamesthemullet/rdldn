@@ -24,7 +24,8 @@
       "WebFetch(domain:clerk.com)",
       "Bash(yarn lint *)",
       "Bash(yarn lint:fix *)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(yarn ts-check *)"
     ]
   }
 }
