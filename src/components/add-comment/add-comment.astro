@@ -78,7 +78,7 @@ const messageColor = "black";
           const messageElement = form.querySelector("p");
 
           if (data.errors) {
-            messageElement.textContent = `Failed to submit comment: ${data.errors[0].message}`;
+            messageElement.textContent = "Failed to submit comment. Please try again later.";
             messageElement.style.color = "red";
           } else {
             messageElement.textContent = "Comment submitted! Awaiting moderation.";

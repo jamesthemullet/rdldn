@@ -84,6 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
   });
 
   await kv.zadd("leaderboard", { score, member });
+  await kv.zremrangebyrank("leaderboard", 0, -101); // keep top 100
 
   return new Response(JSON.stringify({ ok: true }), {
     headers: { "Content-Type": "application/json" },
