@@ -80,7 +80,7 @@ const { threadedComments, postId } = Astro.props as Props;
       const data = await response.json();
       if (data.errors) {
         if (message) {
-          message.textContent = `Failed to submit comment: ${data.errors[0].message}`;
+          message.textContent = "Failed to submit comment. Please try again later.";
           message.style.color = "red";
         }
       } else {

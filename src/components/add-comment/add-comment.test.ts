@@ -61,7 +61,7 @@ describe("add-comment component", () => {
     expect(html).toContain("mutation AddComment($input: CreateCommentInput!)");
     expect(html).toContain("commentOn: parseInt(postId, 10)");
     expect(html).toContain("parent: parentId || null");
-    expect(html).toContain("Failed to submit comment:");
+    expect(html).toContain("Failed to submit comment. Please try again later.");
     expect(html).toContain("Comment submitted! Awaiting moderation.");
     expect(html).toContain("form.reset()");
   });

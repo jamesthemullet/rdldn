@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 vi.mock("../../../lib/kv", () => ({
   kv: {
     zadd: vi.fn(),
+    zremrangebyrank: vi.fn(),
     incr: vi.fn(),
     expire: vi.fn(),
   },
