@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import type { APIRoute } from "astro";
 import { kv } from "../../../lib/kv";
 
@@ -28,7 +28,7 @@ function verifyToken(token: string): boolean {
     .update(`${nonce}:${timestamp}`)
     .digest("hex");
 
-  return expected === sig;
+  return timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
 }
 
 export const POST: APIRoute = async ({ request }) => {
