@@ -28,6 +28,7 @@ function verifyToken(token: string): boolean {
     .update(`${nonce}:${timestamp}`)
     .digest("hex");
 
+  if (expected.length !== sig.length) return false;
   return timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
 }
 

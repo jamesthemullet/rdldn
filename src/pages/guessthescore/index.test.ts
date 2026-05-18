@@ -1,5 +1,5 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const validPost = (slug: string, rating: string) => ({
   title: slug,
@@ -31,8 +31,13 @@ vi.mock("astro:assets", () => ({
   ),
 }));
 
+beforeEach(() => {
+  vi.stubEnv("SCORE_SECRET", "test-secret");
+});
+
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 describe("guessthescore page", () => {
