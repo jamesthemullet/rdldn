@@ -1,5 +1,5 @@
-import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { getContainerRenderer as reactRenderer } from "@astrojs/react";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const fetchGraphQLMock = vi.fn();
