@@ -1,4 +1,5 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import { getContainerRenderer as reactRenderer } from "@astrojs/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const fetchGraphQLMock = vi.fn();
@@ -113,7 +114,7 @@ describe("league-of-roasts page", () => {
       }
     );
 
-    const container = await AstroContainer.create();
+    const container = await AstroContainer.create({ renderers: [await reactRenderer()] });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -158,7 +159,7 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create();
+    const container = await AstroContainer.create({ renderers: [await reactRenderer()] });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -212,7 +213,7 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create();
+    const container = await AstroContainer.create({ renderers: [await reactRenderer()] });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
