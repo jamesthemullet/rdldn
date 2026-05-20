@@ -1,4 +1,3 @@
-import { getContainerRenderer as reactRenderer } from "@astrojs/react";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -114,7 +113,19 @@ describe("league-of-roasts page", () => {
       }
     );
 
-    const container = await AstroContainer.create({ renderers: [await reactRenderer()] });
+    const container = await AstroContainer.create({
+      renderers: [
+        {
+          name: "@astrojs/react",
+          clientEntrypoint: "@astrojs/react/client.js",
+          serverEntrypoint: "@astrojs/react/server.js",
+          ssr: {
+            check: () => false,
+            renderToStaticMarkup: async () => ({ html: "" }),
+          },
+        },
+      ],
+    });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -159,7 +170,19 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create({ renderers: [await reactRenderer()] });
+    const container = await AstroContainer.create({
+      renderers: [
+        {
+          name: "@astrojs/react",
+          clientEntrypoint: "@astrojs/react/client.js",
+          serverEntrypoint: "@astrojs/react/server.js",
+          ssr: {
+            check: () => false,
+            renderToStaticMarkup: async () => ({ html: "" }),
+          },
+        },
+      ],
+    });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -213,7 +236,19 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create({ renderers: [await reactRenderer()] });
+    const container = await AstroContainer.create({
+      renderers: [
+        {
+          name: "@astrojs/react",
+          clientEntrypoint: "@astrojs/react/client.js",
+          serverEntrypoint: "@astrojs/react/server.js",
+          ssr: {
+            check: () => false,
+            renderToStaticMarkup: async () => ({ html: "" }),
+          },
+        },
+      ],
+    });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
