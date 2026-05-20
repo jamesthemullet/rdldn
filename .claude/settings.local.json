@@ -27,7 +27,8 @@
       "WebFetch(domain:github.com)",
       "Bash(yarn ts-check *)",
       "Skill(product)",
-      "Bash(Get-ChildItem *)"
+      "Bash(Get-ChildItem *)",
+      "Bash(npx tsc *)"
     ]
   }
 }

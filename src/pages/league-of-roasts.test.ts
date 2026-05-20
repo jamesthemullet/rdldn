@@ -118,9 +118,8 @@ describe("league-of-roasts page", () => {
         {
           name: "@astrojs/react",
           clientEntrypoint: "@astrojs/react/client.js",
-          serverEntrypoint: "@astrojs/react/server.js",
           ssr: {
-            check: () => false,
+            check: async () => false,
             renderToStaticMarkup: async () => ({ html: "" }),
           },
         },
@@ -175,9 +174,8 @@ describe("league-of-roasts page", () => {
         {
           name: "@astrojs/react",
           clientEntrypoint: "@astrojs/react/client.js",
-          serverEntrypoint: "@astrojs/react/server.js",
           ssr: {
-            check: () => false,
+            check: async () => false,
             renderToStaticMarkup: async () => ({ html: "" }),
           },
         },
@@ -241,9 +239,8 @@ describe("league-of-roasts page", () => {
         {
           name: "@astrojs/react",
           clientEntrypoint: "@astrojs/react/client.js",
-          serverEntrypoint: "@astrojs/react/server.js",
           ssr: {
-            check: () => false,
+            check: async () => false,
             renderToStaticMarkup: async () => ({ html: "" }),
           },
         },
