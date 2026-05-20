@@ -4,16 +4,19 @@ import { defineConfig } from "vitest/config";
 
 const astroRoot = path.join(process.cwd(), "node_modules", "astro", "dist");
 
-const [{ default: astroPlugin }, config, { createNodeLoggerFromFlags }] = await Promise.all([
+const [{ default: astroPlugin }, config, { AstroLogger }] = await Promise.all([
   import(pathToFileURL(path.join(astroRoot, "vite-plugin-astro", "index.js")).href),
   import(pathToFileURL(path.join(astroRoot, "core", "config", "index.js")).href),
-  import(pathToFileURL(path.join(astroRoot, "core", "logger", "impls", "node.js")).href)
+  import(pathToFileURL(path.join(astroRoot, "core", "logger", "core.js")).href)
 ]);
 
 const root = process.cwd();
 const { astroConfig } = await config.resolveConfig({ root }, "dev");
 const settings = await config.createSettings(astroConfig, astroConfig.logLevel, root);
-const logger = createNodeLoggerFromFlags({});
+const logger = new AstroLogger({
+  level: "info",
+  destination: { write: (msg: { message: string }) => process.stderr.write(msg.message + "\n") },
+});
 
 const clerkVirtualModules = {
   name: "clerk-virtual-modules",

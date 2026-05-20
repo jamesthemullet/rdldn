@@ -113,7 +113,18 @@ describe("league-of-roasts page", () => {
       }
     );
 
-    const container = await AstroContainer.create();
+    const container = await AstroContainer.create({
+      renderers: [
+        {
+          name: "@astrojs/react",
+          clientEntrypoint: "@astrojs/react/client.js",
+          ssr: {
+            check: async () => false,
+            renderToStaticMarkup: async () => ({ html: "" }),
+          },
+        },
+      ],
+    });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -158,7 +169,18 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create();
+    const container = await AstroContainer.create({
+      renderers: [
+        {
+          name: "@astrojs/react",
+          clientEntrypoint: "@astrojs/react/client.js",
+          ssr: {
+            check: async () => false,
+            renderToStaticMarkup: async () => ({ html: "" }),
+          },
+        },
+      ],
+    });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -212,7 +234,18 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create();
+    const container = await AstroContainer.create({
+      renderers: [
+        {
+          name: "@astrojs/react",
+          clientEntrypoint: "@astrojs/react/client.js",
+          ssr: {
+            check: async () => false,
+            renderToStaticMarkup: async () => ({ html: "" }),
+          },
+        },
+      ],
+    });
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 

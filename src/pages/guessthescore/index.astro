@@ -1,6 +1,4 @@
 ---
-export const prerender = true;
-
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import "./game.css";
@@ -30,7 +28,8 @@ const gamePosts: GamePost[] = allPosts
     rating: Number.parseFloat(post.ratings!.nodes[0].name),
   }));
 
-const secret = import.meta.env.SCORE_SECRET || "dev-secret";
+const secret = import.meta.env.SCORE_SECRET;
+if (!secret) throw new Error("SCORE_SECRET env var is not set");
 const nonce = randomUUID();
 const timestamp = Date.now().toString();
 const sig = createHmac("sha256", secret)

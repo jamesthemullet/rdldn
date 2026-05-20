@@ -94,7 +94,7 @@ const roastListStructuredData = {
       class="sort-posts-container"
       style="opacity: 0; position: absolute; visibility: hidden;"
     >
-      <SortPosts client:visible posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
+      <SortPosts client:only="react" posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
     </div>
 
     <script lang="ts">

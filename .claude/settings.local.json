@@ -25,7 +25,10 @@
       "Bash(yarn lint *)",
       "Bash(yarn lint:fix *)",
       "WebFetch(domain:github.com)",
-      "Bash(yarn ts-check *)"
+      "Bash(yarn ts-check *)",
+      "Skill(product)",
+      "Bash(Get-ChildItem *)",
+      "Bash(npx tsc *)"
     ]
   }
 }
