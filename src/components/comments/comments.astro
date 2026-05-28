@@ -26,7 +26,7 @@ const { threadedComments, postId } = Astro.props as Props;
     )
   }
 
-  <form id="comment-form" class="comment-form" data-post-id={postId}>
+  <form id="comment-form" class="comment-form" data-post-id={postId} data-graphql-url={import.meta.env.PUBLIC_GRAPHQL_URL}>
     <div>
       <label for="authorName">Name:</label>
       <input type="text" id="authorName" name="authorName" required />
@@ -56,8 +56,9 @@ const { threadedComments, postId } = Astro.props as Props;
       const commentText = form.querySelector("[name='commentText']")?.value;
 
       const postId = form?.getAttribute("data-post-id");
+      const graphqlUrl = form?.getAttribute("data-graphql-url") ?? "";
 
-      const response = await fetch("https://blog.rdldn.co.uk/graphql", {
+      const response = await fetch(graphqlUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

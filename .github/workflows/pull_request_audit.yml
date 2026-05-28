@@ -35,6 +35,8 @@ jobs:
   unit-tests:
     needs: [lint, typecheck]
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js 18.x
@@ -50,6 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SCORE_SECRET: test-secret-for-ci
+      PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js 18.x
@@ -67,6 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_API_SECRET: ${{ secrets.PIPELINE_GITHUB_API_SECRET }}
+      PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
     steps:
       - uses: actions/checkout@v6
       - name: Use Node.js 18.x

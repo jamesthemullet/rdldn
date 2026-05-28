@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fetchGraphQL, resetGraphQLRequestCache } from "./api";
 
-const GRAPHQL_URL = "https://blog.rdldn.co.uk/graphql";
+const GRAPHQL_URL = import.meta.env.PUBLIC_GRAPHQL_URL;
 
 function mockFetch(data: unknown, options: { ok?: boolean; errors?: unknown[] } = {}) {
   const { ok = true, errors } = options;
