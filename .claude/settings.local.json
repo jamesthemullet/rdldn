@@ -28,7 +28,8 @@
       "Bash(yarn ts-check *)",
       "Skill(product)",
       "Bash(Get-ChildItem *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('astro:', p.dependencies?.astro || p.devDependencies?.astro\\)\")"
     ]
   }
 }
