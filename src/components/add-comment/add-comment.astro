@@ -52,7 +52,7 @@ const messageColor = "black";
           const email = form.querySelector("[name='email']")?.value;
           const commentText = form.querySelector("[name='commentText']")?.value;
 
-          const response = await fetch("https://blog.rdldn.co.uk/graphql", {
+          const response = await fetch(import.meta.env.PUBLIC_GRAPHQL_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

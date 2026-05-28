@@ -36,7 +36,7 @@ export async function fetchGraphQL<T = unknown>(
   }
 
   const requestPromise = (async () => {
-    const response = await fetch("https://blog.rdldn.co.uk/graphql", {
+    const response = await fetch(import.meta.env.PUBLIC_GRAPHQL_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
