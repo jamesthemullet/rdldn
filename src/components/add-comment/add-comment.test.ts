@@ -57,7 +57,7 @@ describe("add-comment component", () => {
     expect(html).toContain("DOMContentLoaded");
     expect(html).toContain('querySelectorAll("form[data-post-id]")');
     expect(html).toContain('button.dataset.handled === "true"');
-    expect(html).toContain('fetch("https://blog.rdldn.co.uk/graphql"');
+    expect(html).toContain("fetch(import.meta.env.PUBLIC_GRAPHQL_URL");
     expect(html).toContain("mutation AddComment($input: CreateCommentInput!)");
     expect(html).toContain("commentOn: parseInt(postId, 10)");
     expect(html).toContain("parent: parentId || null");

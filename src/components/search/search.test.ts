@@ -22,7 +22,7 @@ describe("search component", () => {
     });
 
     expect(html).toContain('data-result-limit="9"');
-    expect(html).toContain('fetch("https://blog.rdldn.co.uk/graphql"');
+    expect(html).toContain("fetch(import.meta.env.PUBLIC_GRAPHQL_URL");
     expect(html).toContain("query SearchPosts($search: String!, $first: Int!)");
     expect(html).toContain("search: this.searchTerm");
     expect(html).toContain("first: this.resultLimit");
