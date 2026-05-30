@@ -1,5 +1,13 @@
-export default (Alpine: any) => {
-  Alpine.data("wishlistButton", (props: any) => {
+import type { Alpine } from 'alpinejs';
+
+interface WishlistButtonProps {
+  postSlug: string;
+  postTitle: string;
+  postRating: string;
+}
+
+export default (alpine: Alpine) => {
+  alpine.data("wishlistButton", (props: WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
     return {
       saved: false,
@@ -7,7 +15,7 @@ export default (Alpine: any) => {
       loading: false,
 
       async init() {
-        const clerk = (window as any).Clerk;
+        const clerk = window.Clerk;
         if (!clerk) {
           this.signedOut = true;
           return;
@@ -56,7 +64,7 @@ export default (Alpine: any) => {
 
   queueMicrotask(() => {
     if (document.readyState !== "loading") {
-      Alpine.start();
+      alpine.start();
     }
   });
 };

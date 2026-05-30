@@ -1,4 +1,4 @@
-import { type ChangeEvent, type SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { type ChangeEvent, type ReactElement, type SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import type { Post } from "../../types";
 
 type FilterState = {
@@ -131,7 +131,7 @@ const filterPosts = (posts: Post[], filters: FilterState): Post[] => {
 export const translateClosedDown = (
   closedDown: string | undefined,
   newSlug: string | undefined
-) => {
+): string | ReactElement | undefined => {
   switch (closedDown) {
     case "closeddown":
       return "Closed Down";
@@ -163,7 +163,7 @@ export const translateClosedDown = (
 
 type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
 
-const getInitialStateFromUrl = () => {
+const getInitialStateFromUrl = (): URLSearchParams | null => {
   if (typeof window === "undefined") return null;
   const params = new URLSearchParams(window.location.search);
   return params;
