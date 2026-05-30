@@ -1,6 +1,5 @@
-import type { Post, PostsConnection } from "../types";
-import { fetchGraphQL } from "./api";
-import GET_ALL_POSTS from "./queries/getAllPosts";
+import type { Post } from "../types";
+import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
 
 const getMedian = (arr: number[]): number => {
   const sorted = [...arr].sort((a, b) => a - b);
@@ -50,17 +49,6 @@ export async function buildInflationIndex(): Promise<{
   inflationIndex: Record<string, number>;
   mostRecentYear: string;
 }> {
-  const allPosts: Post[] = [];
-  let hasNextPage = true;
-  let endCursor: string | null = null;
-
-  while (hasNextPage) {
-    const variables: { after?: string } = endCursor ? { after: endCursor } : {};
-    const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
-    allPosts.push(...(posts.nodes as Post[]));
-    hasNextPage = posts.pageInfo.hasNextPage;
-    endCursor = posts.pageInfo.endCursor;
-  }
-
+  const allPosts = await getAllRoastDinnerPosts();
   return computeInflationIndex(allPosts);
 }
