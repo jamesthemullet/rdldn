@@ -3,7 +3,7 @@ import type { Alpine } from "alpinejs";
 interface WishlistButtonAlpineProps {
   postSlug: string;
   postTitle: string;
-  postRating?: string;
+  postRating: string | null;
 }
 
 interface WindowClerk {
