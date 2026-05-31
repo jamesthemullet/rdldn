@@ -30,7 +30,7 @@ const SortPosts = ({
       .catch(() => {});
   }, [isLoaded, isSignedIn]);
 
-  function handleSaveToggle(slug: string, nowSaved: boolean) {
+  function handleSaveToggle(slug: string, nowSaved: boolean): void {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
       if (nowSaved) next.add(slug);

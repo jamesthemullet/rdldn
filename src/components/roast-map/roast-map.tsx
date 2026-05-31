@@ -30,7 +30,7 @@ const getMarkerColor = (rating: number): { colour: string; backgroundColour: str
   return { colour: "#fff", backgroundColour: "#000000" };
 };
 
-const createColouredIcon = (colour: string, backgroundColour: string, value: number) => {
+const createColouredIcon = (colour: string, backgroundColour: string, value: number): L.DivIcon => {
   const formattedValue = value.toFixed(1);
   return L.divIcon({
     className: "",

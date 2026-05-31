@@ -49,7 +49,7 @@ export default function WishlistButton({ postSlug, postTitle, postRating, iconOn
 
   const currentlySaved = controlled ? isSaved! : saved;
 
-  async function toggle() {
+  async function toggle(): Promise<void> {
     if (currentlySaved) {
       await fetch(`/api/wishlist/${postSlug}`, { method: "DELETE" });
       if (controlled) onSaveToggle?.(postSlug, false);

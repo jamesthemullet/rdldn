@@ -163,7 +163,7 @@ export const translateClosedDown = (
 
 type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
 
-const getInitialStateFromUrl = () => {
+const getInitialStateFromUrl = (): URLSearchParams | null => {
   if (typeof window === "undefined") return null;
   const params = new URLSearchParams(window.location.search);
   return params;
@@ -214,7 +214,7 @@ export const useSortFilter = (posts: Post[]) => {
   }, []);
   const [showInflationPrice, setShowInflationPrice] = useState(false);
 
-  const handleCheckboxChange = (setter: BooleanStateSetter) => () => {
+  const handleCheckboxChange = (setter: BooleanStateSetter): (() => void) => () => {
     setter((prev) => !prev);
   };
 
@@ -222,7 +222,7 @@ export const useSortFilter = (posts: Post[]) => {
     setSortColumn(e.target.value);
   };
 
-  const toggleSortOrder = () => {
+  const toggleSortOrder = (): void => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
@@ -232,7 +232,7 @@ export const useSortFilter = (posts: Post[]) => {
     dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
   };
 
-  const clearFilters = () => {
+  const clearFilters = (): void => {
     dispatch({ type: "CLEAR_FILTERS" });
   };
 
