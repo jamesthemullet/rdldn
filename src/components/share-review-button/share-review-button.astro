@@ -1,0 +1,100 @@
+---
+type Props = {
+  title: string;
+  rating?: string | null;
+  price?: string | null;
+  yearOfVisit?: string | null;
+  tubeStation?: string | null;
+  loved?: string | null;
+  loathed?: string | null;
+  slug: string;
+};
+
+const { title, rating, price, yearOfVisit, tubeStation, loved, loathed, slug } = Astro.props;
+
+const parts: string[] = [`🍖 ${title}`];
+if (rating) parts.push(`Rating: ${rating}/10`);
+if (price) {
+  const priceStr = yearOfVisit ? `${price} (${yearOfVisit})` : price;
+  parts.push(`Price: ${priceStr}`);
+}
+if (tubeStation) parts.push(`Tube: ${tubeStation}`);
+if (loved) parts.push(`✅ Loved: ${loved}`);
+if (loathed) parts.push(`❌ Loathed: ${loathed}`);
+parts.push(`rdldn.co.uk/${slug}`);
+
+const shareText = parts.join(" | ");
+const pageUrl = `https://rdldn.co.uk/${slug}`;
+const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+const threadsUrl = `https://www.threads.net/intent/post?text=${encodeURIComponent(shareText)}`;
+const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+const blueskyUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(shareText)}`;
+
+import "./share-review-button.css";
+---
+
+<div class="share-review-buttons">
+  <p class="share-review-label">Share this review:</p>
+  <a
+    href={whatsappUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="share-review-btn"
+    aria-label={`Share ${title} review on WhatsApp`}
+  >
+    WhatsApp
+  </a>
+  <a
+    href={threadsUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="share-review-btn"
+    aria-label={`Share ${title} review on Threads`}
+  >
+    Threads
+  </a>
+  <a
+    href={facebookUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="share-review-btn"
+    aria-label={`Share ${title} review on Facebook`}
+  >
+    Facebook
+  </a>
+  <a
+    href={blueskyUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="share-review-btn"
+    aria-label={`Share ${title} review on Bluesky`}
+  >
+    Bluesky
+  </a>
+  <button
+    type="button"
+    class="share-review-btn"
+    id="copy-review-btn"
+  >
+    Copy text
+  </button>
+</div>
+
+<script define:vars={{ shareText }}>
+  const btn = document.getElementById("copy-review-btn");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        btn.textContent = "Copied!";
+        btn.classList.add("share-review-btn--copied");
+        setTimeout(() => {
+          btn.textContent = "Copy text";
+          btn.classList.remove("share-review-btn--copied");
+        }, 2000);
+      } catch {
+        // clipboard unavailable
+      }
+    });
+  }
+</script>

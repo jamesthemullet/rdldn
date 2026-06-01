@@ -20,6 +20,7 @@ import FeaturedPostHeader from "../components/featured-post-header/featured-post
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import WishlistButton from "../components/wishlist-button/wishlist-button.astro";
+import ShareReviewButton from "../components/share-review-button/share-review-button.astro";
 import logo3 from "../images/logo-3.png";
 import { buildInflationIndex } from "../lib/inflationIndex";
 import { toOwnerSlug } from "../lib/ownerSlug";
@@ -294,6 +295,18 @@ const reviewStructuredData =
       <h3>Loved & Loathed:</h3>
       <p>Loved: {post.highlights?.loved}</p>
       <p>Loathed: {post.highlights?.loathed}</p>
+    </section>
+    <section>
+      <ShareReviewButton
+        title={singlePost.title ?? ""}
+        rating={rating}
+        price={price}
+        yearOfVisit={yearOfVisit}
+        tubeStation={tubeStation}
+        loved={post.highlights?.loved}
+        loathed={post.highlights?.loathed}
+        slug={String(slug)}
+      />
     </section>
     <section>
       {post.closedDowns?.nodes?.length === 0 && (
