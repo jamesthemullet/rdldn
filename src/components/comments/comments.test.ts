@@ -61,6 +61,6 @@ describe("comments component", () => {
 
     expect(html).toContain('id="comment-form"');
     expect(html).toContain("Comment submitted! Awaiting moderation.");
-    expect(html).toContain('data-graphql-url=');
+    expect(html).toContain('GRAPHQL_URL');
   });
 });
