@@ -1,5 +1,6 @@
 // @ts-check
 
+import { fileURLToPath } from "node:url";
 import clerk from "@clerk/astro";
 import alpinejs from "@astrojs/alpinejs";
 import mdx from "@astrojs/mdx";
@@ -38,7 +39,14 @@ export default defineConfig({
   },
   vite: {
     plugins: [clerkVirtualConfig],
-    ...(isTesting && { server: { hmr: { overlay: false } } }),
+    ...(isTesting && {
+      server: { hmr: { overlay: false } },
+      resolve: {
+        alias: {
+          "@clerk/astro/react": fileURLToPath(new URL("./src/mocks/clerk-react.tsx", import.meta.url)),
+        },
+      },
+    }),
   },
   integrations: [
     ...(isTesting ? [] : [clerk()]),

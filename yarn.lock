@@ -27,10 +27,10 @@
   resolved "https://registry.yarnpkg.com/@astrojs/compiler/-/compiler-4.0.0.tgz#81eb5dbb1d0664f94fccdc0669c0c203ef75227a"
   integrity sha512-eouss7G8ygdZqHuke033VMcVw5HTZUu+PXd/h06DGDUg/jt5btPYPqh66ENWw/mU78rBrf/oeC4oqoBwMtDMNA==
 
-"@astrojs/internal-helpers@0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.9.1.tgz#273aa9c8b4782237c3f852e2c00b82026c007747"
-  integrity sha512-1pWuARqYom/TzuU3+0ZugsTrKlUydWKuULmDqSMTuonY+9IRDUEGKX/8PXQ1nBxRq3w85uGtd9q9SXfqEldMIQ==
+"@astrojs/internal-helpers@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.10.0.tgz#c0e2ee6a963794961c5fbc216a7598f0b7edbfbb"
+  integrity sha512-Ry2R3VPeIN4uPCSA4xQc+e+vsJXkalKpEbDc07hV+a/o5Bs2N/s/uDcPJH/05L19DKh9tAy7e6JM3YZ6Cxfezw==
   dependencies:
     "@types/hast" "^3.0.4"
     "@types/mdast" "^4.0.4"
@@ -88,12 +88,13 @@
     unist-util-visit-parents "^6.0.2"
     vfile "^6.0.3"
 
-"@astrojs/mdx@5.0.6":
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-5.0.6.tgz#e10e88346733cd82d3206fcc95db4d9a87181360"
-  integrity sha512-4dKe0ZMmqujofPNDHahzClkwinn9f8jHPcaXcgdGvPAlboD2mjzkUCofli2cBnxYAkdfhC6d50gBJ8i/cH8gHw==
+"@astrojs/mdx@6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-6.0.1.tgz#5aaf2264f24b0cb8ef42a962967ff7a7a8462137"
+  integrity sha512-J5K8F7A1LMH+cj+dcxm+uAeIznkfwxMcRpG7DD6ABNDOt8da98ph6ie4TD+4FV/ojVOJK0PQGWY4hmxQORLv0w==
   dependencies:
-    "@astrojs/markdown-remark" "7.1.2"
+    "@astrojs/internal-helpers" "0.10.0"
+    "@astrojs/markdown-remark" "7.2.0"
     "@mdx-js/mdx" "^3.1.1"
     acorn "^8.16.0"
     es-module-lexer "^2.0.0"
