@@ -41,13 +41,6 @@
     smol-toml "^1.6.0"
     unified "^11.0.5"
 
-"@astrojs/internal-helpers@0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.9.1.tgz#273aa9c8b4782237c3f852e2c00b82026c007747"
-  integrity sha512-1pWuARqYom/TzuU3+0ZugsTrKlUydWKuULmDqSMTuonY+9IRDUEGKX/8PXQ1nBxRq3w85uGtd9q9SXfqEldMIQ==
-  dependencies:
-    picomatch "^4.0.4"
-
 "@astrojs/language-server@^2.16.7":
   version "2.16.10"
   resolved "https://registry.yarnpkg.com/@astrojs/language-server/-/language-server-2.16.10.tgz#eb133eedb7bb3d38ab9f6963703374d598ca1861"
@@ -72,33 +65,6 @@
     vscode-html-languageservice "^5.6.2"
     vscode-uri "^3.1.0"
 
-"@astrojs/markdown-remark@7.1.2":
-  version "7.1.2"
-  resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-7.1.2.tgz#ab0fc6c7ae915e4f89eb7308c39679ea0571f04e"
-  integrity sha512-caXZ4Dc2St2dW8luEg22GlP0gupLdztCTQE4EzZOxW1pqWXz9mbeJEuHUkgDYcKWW8tjIHkydYDhWLVoxJ327Q==
-  dependencies:
-    "@astrojs/internal-helpers" "0.9.1"
-    "@astrojs/prism" "4.0.2"
-    github-slugger "^2.0.0"
-    hast-util-from-html "^2.0.3"
-    hast-util-to-text "^4.0.2"
-    js-yaml "^4.1.1"
-    mdast-util-definitions "^6.0.0"
-    rehype-raw "^7.0.0"
-    rehype-stringify "^10.0.1"
-    remark-gfm "^4.0.1"
-    remark-parse "^11.0.0"
-    remark-rehype "^11.1.2"
-    remark-smartypants "^3.0.2"
-    retext-smartypants "^6.2.0"
-    shiki "^4.0.0"
-    smol-toml "^1.6.0"
-    unified "^11.0.5"
-    unist-util-remove-position "^5.0.0"
-    unist-util-visit "^5.1.0"
-    unist-util-visit-parents "^6.0.2"
-    vfile "^6.0.3"
-
 "@astrojs/markdown-remark@7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-7.2.0.tgz#0d38f54a07bb81da8fc365084bb6415c7c54a86c"
@@ -122,12 +88,13 @@
     unist-util-visit-parents "^6.0.2"
     vfile "^6.0.3"
 
-"@astrojs/mdx@5.0.6":
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-5.0.6.tgz#e10e88346733cd82d3206fcc95db4d9a87181360"
-  integrity sha512-4dKe0ZMmqujofPNDHahzClkwinn9f8jHPcaXcgdGvPAlboD2mjzkUCofli2cBnxYAkdfhC6d50gBJ8i/cH8gHw==
+"@astrojs/mdx@6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-6.0.1.tgz#5aaf2264f24b0cb8ef42a962967ff7a7a8462137"
+  integrity sha512-J5K8F7A1LMH+cj+dcxm+uAeIznkfwxMcRpG7DD6ABNDOt8da98ph6ie4TD+4FV/ojVOJK0PQGWY4hmxQORLv0w==
   dependencies:
-    "@astrojs/markdown-remark" "7.1.2"
+    "@astrojs/internal-helpers" "0.10.0"
+    "@astrojs/markdown-remark" "7.2.0"
     "@mdx-js/mdx" "^3.1.1"
     acorn "^8.16.0"
     es-module-lexer "^2.0.0"
@@ -4918,7 +4885,7 @@ sharp@^0.34.0:
     "@img/sharp-win32-ia32" "0.34.5"
     "@img/sharp-win32-x64" "0.34.5"
 
-shiki@^4.0.0, shiki@^4.0.2:
+shiki@^4.0.2:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/shiki/-/shiki-4.1.0.tgz#4cc1cf75f350b41419708cb03bcf2c7b8ccb4550"
   integrity sha512-l/ABZPUR5v70jI10EzqfMS/I96vjSGv2y0ihUV+WYFzv0EfvW4s54m0Lg8wCrrL+2IkwBzFTuxkZjPf8b2NX9Q==
