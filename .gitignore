@@ -34,6 +34,7 @@ pnpm-debug.log*
 .vercel
 
 yarn.lock
+package-lock.json
 .env.local
 .claude/settings.local.json
 
