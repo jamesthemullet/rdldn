@@ -1,11 +1,11 @@
 import type { Clerk as ClerkInstance } from "@clerk/shared/types";
 import type { Alpine as AlpineInstance } from "alpinejs";
 
-interface WishlistButtonProps {
+type WishlistButtonProps = {
   postSlug: string;
   postTitle: string;
-  postRating?: string;
-}
+  postRating: string | null;
+};
 
 export default (Alpine: AlpineInstance) => {
   Alpine.data("wishlistButton", (props: WishlistButtonProps) => {
