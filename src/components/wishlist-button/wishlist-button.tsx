@@ -47,7 +47,7 @@ export default function WishlistButton({ postSlug, postTitle, postRating, iconOn
     );
   }
 
-  const currentlySaved = controlled ? isSaved! : saved;
+  const currentlySaved = isSaved ?? saved;
 
   async function toggle(): Promise<void> {
     if (currentlySaved) {
