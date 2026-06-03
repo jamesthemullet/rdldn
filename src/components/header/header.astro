@@ -18,7 +18,7 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
       </div>
 
       <div class="header-top-right">
-        <HeaderAuthDesktop client:load />
+        <HeaderAuthDesktop client:idle />
         <SocialLinks className="socials header-socials" />
       </div>
 
@@ -37,7 +37,7 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
       <a href="/to-do-list">To-Do List</a>
       <a href="/search">Search</a>
       <a href="/archive">Archive</a>
-      <HeaderAuthMobile client:load />
+      <HeaderAuthMobile client:idle />
       <div class="dropdown">
         <a
           href="/about"

@@ -54,6 +54,8 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 
 export default function RoastMap({ markers }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markerLayerRef = useRef<L.LayerGroup | null>(null);
   const [showClosed, setShowClosed] = useState(false);
   const [minRating, setMinRating] = useState(0);
   const filteredMarkers = useMemo(
@@ -73,6 +75,7 @@ export default function RoastMap({ markers }: Props) {
   );
   const totalMarkers = markers.length;
 
+  // Initialise the map and tile layer once; preserve zoom/pan across filter changes.
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -82,9 +85,25 @@ export default function RoastMap({ markers }: Props) {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
+    const layer = L.layerGroup().addTo(map);
+    mapInstanceRef.current = map;
+    markerLayerRef.current = layer;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+      markerLayerRef.current = null;
+    };
+  }, []);
+
+  // Swap out only the markers when filters change, leaving the map position intact.
+  useEffect(() => {
+    const layer = markerLayerRef.current;
+    if (!layer) return;
+
+    layer.clearLayers();
 
     filteredMarkers.forEach(({ lat, lng, label, rating, slug }) => {
-
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
       const markerLabel = label ? `${label} (${rating.toFixed(1)}/10)` : `Roast location (${rating.toFixed(1)}/10)`;
@@ -93,14 +112,10 @@ export default function RoastMap({ markers }: Props) {
         title: markerLabel,
         alt: markerLabel,
       })
-        .addTo(map)
+        .addTo(layer)
         .bindTooltip(markerLabel, { direction: "top", opacity: 0.9 })
         .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
-
-    return () => {
-      map.remove();
-    };
   }, [filteredMarkers]);
 
   return (

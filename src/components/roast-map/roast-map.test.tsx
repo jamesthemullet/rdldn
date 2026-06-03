@@ -37,6 +37,15 @@ const leafletMocks = vi.hoisted(() => {
 
   const divIconMock = vi.fn();
 
+  const layerGroupClearLayersMock = vi.fn();
+  const layerGroupMock = vi.fn(() => {
+    const layer: { addTo: ReturnType<typeof vi.fn>; clearLayers: ReturnType<typeof vi.fn> } = {
+      addTo: vi.fn(() => layer),
+      clearLayers: layerGroupClearLayersMock
+    };
+    return layer;
+  });
+
   return {
     mapSetViewMock,
     mapRemoveMock,
@@ -47,7 +56,9 @@ const leafletMocks = vi.hoisted(() => {
     markerBindTooltipMock,
     markerBindPopupMock,
     markerMock,
-    divIconMock
+    divIconMock,
+    layerGroupClearLayersMock,
+    layerGroupMock
   };
 });
 
@@ -56,7 +67,8 @@ vi.mock("leaflet", () => ({
     map: leafletMocks.mapMock,
     tileLayer: leafletMocks.tileLayerMock,
     marker: leafletMocks.markerMock,
-    divIcon: leafletMocks.divIconMock
+    divIcon: leafletMocks.divIconMock,
+    layerGroup: leafletMocks.layerGroupMock
   }
 }));
 
@@ -108,6 +120,8 @@ beforeEach(() => {
   leafletMocks.markerMock.mockClear();
   leafletMocks.divIconMock.mockReset();
   leafletMocks.divIconMock.mockImplementation((options: unknown) => ({ options }));
+  leafletMocks.layerGroupMock.mockClear();
+  leafletMocks.layerGroupClearLayersMock.mockReset();
 });
 
 afterEach(() => {
@@ -184,11 +198,13 @@ describe("roast-map component", () => {
       title: "Closed One (8.6/10)",
       alt: "Closed One (8.6/10)"
     });
-    expect(leafletMocks.mapRemoveMock).toHaveBeenCalledTimes(1);
+    // Map is reused across filter changes; remove is only called on unmount.
+    expect(leafletMocks.mapRemoveMock).not.toHaveBeenCalled();
 
     await act(async () => {
       root.unmount();
     });
+    expect(leafletMocks.mapRemoveMock).toHaveBeenCalledTimes(1);
   });
 
   test("filters visible markers by minimum rating", async () => {
