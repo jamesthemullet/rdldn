@@ -1,5 +1,5 @@
-import type { Alpine as AlpineInstance } from "alpinejs";
 import type { Clerk as ClerkInstance } from "@clerk/shared/types";
+import type { Alpine as AlpineInstance } from "alpinejs";
 
 interface WishlistButtonProps {
   postSlug: string;
