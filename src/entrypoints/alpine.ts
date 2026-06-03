@@ -1,5 +1,14 @@
-export default (Alpine: any) => {
-  Alpine.data("wishlistButton", (props: any) => {
+import type { Clerk as ClerkInstance } from "@clerk/shared/types";
+import type { Alpine as AlpineInstance } from "alpinejs";
+
+interface WishlistButtonProps {
+  postSlug: string;
+  postTitle: string;
+  postRating?: string;
+}
+
+export default (Alpine: AlpineInstance) => {
+  Alpine.data("wishlistButton", (props: WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
     return {
       saved: false,
@@ -7,7 +16,7 @@ export default (Alpine: any) => {
       loading: false,
 
       async init() {
-        const clerk = (window as any).Clerk;
+        const clerk = (window as unknown as { Clerk?: ClerkInstance }).Clerk;
         if (!clerk) {
           this.signedOut = true;
           return;
