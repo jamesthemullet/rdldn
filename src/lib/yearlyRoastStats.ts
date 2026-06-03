@@ -1,4 +1,5 @@
 import type { Post } from "../types";
+import { isRoastDinnerPost } from "./utils";
 
 type YearlyRoastStats = Record<string, { matching: number; total: number }>;
 
@@ -32,9 +33,7 @@ export function buildYearlyRoastStats(
   posts: Post[],
   isMatchingRating: (rating: number) => boolean
 ): YearlyRoastStats {
-  const roastDinnerPosts = posts.filter((post) =>
-    post.typesOfPost?.nodes.some((type) => type.name === "Roast Dinner")
-  );
+  const roastDinnerPosts = posts.filter(isRoastDinnerPost);
 
   const stats: YearlyRoastStats = {};
 
