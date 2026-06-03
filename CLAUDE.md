@@ -13,3 +13,9 @@ For all GitHub interactions (viewing PRs, creating PRs, posting comments, checki
 - `mcp__github__list_commits` — list commits
 
 Use `ToolSearch` to discover the full set of available `mcp__github__` tools if needed.
+
+## TypeScript Guidelines
+
+- Prefer `type` aliases over `interface` for all TypeScript type definitions
+- Only use `interface` when declaration merging is explicitly required
+- Avoid `any` — prefer precise types, generics, or `unknown`
