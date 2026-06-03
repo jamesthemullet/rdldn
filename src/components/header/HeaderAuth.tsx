@@ -1,5 +1,5 @@
 import { Show, SignInButton, UserButton } from "@clerk/astro/react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 function useAuthFlag(): boolean | null {
   const [enabled, setEnabled] = useState<boolean | null>(null);
@@ -11,7 +11,7 @@ function useAuthFlag(): boolean | null {
   return enabled;
 }
 
-export function HeaderAuthDesktop() {
+export const HeaderAuthDesktop = memo(function HeaderAuthDesktop() {
   const enabled = useAuthFlag();
   if (!enabled) return null;
   return (
@@ -26,9 +26,9 @@ export function HeaderAuthDesktop() {
       </Show>
     </>
   );
-}
+});
 
-export function HeaderAuthMobile() {
+export const HeaderAuthMobile = memo(function HeaderAuthMobile() {
   const enabled = useAuthFlag();
   if (!enabled) return null;
   return (
@@ -41,4 +41,4 @@ export function HeaderAuthMobile() {
       </Show>
     </>
   );
-}
+});

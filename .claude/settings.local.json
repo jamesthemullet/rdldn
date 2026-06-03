@@ -29,7 +29,11 @@
       "Skill(product)",
       "Bash(Get-ChildItem *)",
       "Bash(npx tsc *)",
-      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('astro:', p.dependencies?.astro || p.devDependencies?.astro\\)\")"
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('astro:', p.dependencies?.astro || p.devDependencies?.astro\\)\")",
+      "Bash(cd /tmp)",
+      "Bash(curl -sL \"https://registry.npmjs.org/@astrojs/react/-/react-5.0.6.tgz\")",
+      "Bash(tar -xz --wildcards \"*/server.js\")",
+      "Read(//tmp/package/dist/**)"
     ]
   }
 }

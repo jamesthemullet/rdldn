@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/astro/server";
 
-const isProtectedRoute = createRouteMatcher(["/api/wishlist(.*)", "/api/profile(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/api/wishlist(.*)", "/api/profile(.*)", "/my-roasts"]);
 
 export const onRequest = clerkMiddleware((auth, context) => {
   if (isProtectedRoute(context.request)) {

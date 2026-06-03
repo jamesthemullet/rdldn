@@ -2,13 +2,13 @@ import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Post } from "../types";
 import { fetchGraphQL } from "./api";
+import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
 import {
   fetchPageData,
   fetchPostsByDate,
   fetchTopRatedRoasts,
   fetchTopRatedRoastsByFilter,
 } from "./graphql";
-import GET_ALL_POSTS from "./queries/getAllPosts";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
 import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
 
@@ -16,7 +16,12 @@ vi.mock("./api", () => ({
   fetchGraphQL: vi.fn(),
 }));
 
+vi.mock("./getAllRoastDinnerPosts", () => ({
+  getAllRoastDinnerPosts: vi.fn(),
+}));
+
 const mockFetchGraphQL = fetchGraphQL as unknown as Mock;
+const mockGetAllRoastDinnerPosts = getAllRoastDinnerPosts as unknown as Mock;
 
 function makePost(overrides: Partial<Post> = {}): Post {
   return {
@@ -30,25 +35,16 @@ function makePost(overrides: Partial<Post> = {}): Post {
   } as Post;
 }
 
-function singlePage(posts: Post[], hasNextPage = false, endCursor: string | null = null) {
-  return {
-    posts: {
-      nodes: posts,
-      pageInfo: { hasNextPage, endCursor },
-    },
-  };
-}
-
 describe("fetchTopRatedRoastsByFilter", () => {
   beforeEach(() => {
-    mockFetchGraphQL.mockReset();
+    mockGetAllRoastDinnerPosts.mockReset();
   });
 
   it("returns posts matching the matcher, sorted by rating descending", async () => {
     const low = makePost({ slug: "low", ratings: { nodes: [{ name: "6" }] } });
     const high = makePost({ slug: "high", ratings: { nodes: [{ name: "9" }] } });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([low, high]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([low, high]);
 
     const result = await fetchTopRatedRoastsByFilter({
       matcher: () => true,
@@ -63,7 +59,7 @@ describe("fetchTopRatedRoastsByFilter", () => {
       makePost({ slug: `slug-${i}`, ratings: { nodes: [{ name: String(i + 1) }] } })
     );
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage(posts));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce(posts);
 
     const result = await fetchTopRatedRoastsByFilter({ matcher: () => true, limit: 3 });
 
@@ -75,7 +71,7 @@ describe("fetchTopRatedRoastsByFilter", () => {
       makePost({ slug: `slug-${i}`, ratings: { nodes: [{ name: String(i + 1) }] } })
     );
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage(posts));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce(posts);
 
     const result = await fetchTopRatedRoastsByFilter({ matcher: () => true });
 
@@ -86,7 +82,7 @@ describe("fetchTopRatedRoastsByFilter", () => {
     const matching = makePost({ slug: "matching", areas: { nodes: [{ name: "East" }] } });
     const nonMatching = makePost({ slug: "other", areas: { nodes: [{ name: "West" }] } });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([matching, nonMatching]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([matching, nonMatching]);
 
     const result = await fetchTopRatedRoastsByFilter({
       matcher: (post) => post.areas?.nodes?.[0]?.name === "East",
@@ -103,7 +99,7 @@ describe("fetchTopRatedRoastsByFilter", () => {
       closedDowns: { nodes: [{ name: "closed" }] },
     });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([open, closed]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([open, closed]);
 
     const result = await fetchTopRatedRoastsByFilter({ matcher: () => true });
 
@@ -115,7 +111,7 @@ describe("fetchTopRatedRoastsByFilter", () => {
     const noRating = makePost({ slug: "no-rating", ratings: { nodes: [] } });
     const hasRating = makePost({ slug: "has-rating", ratings: { nodes: [{ name: "7" }] } });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([noRating, hasRating]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([noRating, hasRating]);
 
     const result = await fetchTopRatedRoastsByFilter({ matcher: () => true, minRating: 0 });
 
@@ -128,34 +124,18 @@ describe("fetchTopRatedRoastsByFilter", () => {
     const low = makePost({ slug: "low", ratings: { nodes: [{ name: "5" }] } });
     const high = makePost({ slug: "high", ratings: { nodes: [{ name: "9" }] } });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([low, high]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([low, high]);
 
     const result = await fetchTopRatedRoastsByFilter({ matcher: () => true, minRating: 7 });
 
     expect(result).toHaveLength(1);
     expect(result[0].slug).toBe("high");
   });
-
-  it("paginates through multiple pages", async () => {
-    const firstPost = makePost({ slug: "first", ratings: { nodes: [{ name: "8" }] } });
-    const secondPost = makePost({ slug: "second", ratings: { nodes: [{ name: "9" }] } });
-
-    mockFetchGraphQL
-      .mockResolvedValueOnce(singlePage([firstPost], true, "cursor-1"))
-      .mockResolvedValueOnce(singlePage([secondPost], false, null));
-
-    const result = await fetchTopRatedRoastsByFilter({ matcher: () => true });
-
-    expect(mockFetchGraphQL).toHaveBeenCalledTimes(2);
-    expect(mockFetchGraphQL).toHaveBeenNthCalledWith(1, GET_ALL_POSTS, {});
-    expect(mockFetchGraphQL).toHaveBeenNthCalledWith(2, GET_ALL_POSTS, { after: "cursor-1" });
-    expect(result).toHaveLength(2);
-  });
 });
 
 describe("fetchTopRatedRoasts", () => {
   beforeEach(() => {
-    mockFetchGraphQL.mockReset();
+    mockGetAllRoastDinnerPosts.mockReset();
   });
 
   it("returns top 5 posts as topRated", async () => {
@@ -168,7 +148,7 @@ describe("fetchTopRatedRoasts", () => {
       })
     );
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage(posts));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce(posts);
 
     const { topRated } = await fetchTopRatedRoasts("South London");
 
@@ -187,7 +167,7 @@ describe("fetchTopRatedRoasts", () => {
       ratings: { nodes: [{ name: "8" }] },
     });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([inArea, outArea]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([inArea, outArea]);
 
     const { topRated } = await fetchTopRatedRoasts("East London");
 
@@ -196,7 +176,6 @@ describe("fetchTopRatedRoasts", () => {
   });
 
   it("returns highRated posts with rating >= 8 not already in topRated", async () => {
-    // 5 posts rated 9 will go to topRated; 1 post rated 8 becomes highRated
     const topPosts = Array.from({ length: 5 }, (_, i) =>
       makePost({
         slug: `top-${i}`,
@@ -212,7 +191,7 @@ describe("fetchTopRatedRoasts", () => {
       areas: { nodes: [{ name: "Central" }] },
     });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([...topPosts, highPost]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([...topPosts, highPost]);
 
     const { topRated, highRated } = await fetchTopRatedRoasts("Central");
 
@@ -237,7 +216,7 @@ describe("fetchTopRatedRoasts", () => {
       areas: { nodes: [{ name: "Central" }] },
     });
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([...topPosts, lowish]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([...topPosts, lowish]);
 
     const { highRated } = await fetchTopRatedRoasts("Central");
 
@@ -259,7 +238,7 @@ describe("fetchTopRatedRoasts", () => {
       closedDowns: { nodes: [] },
     } as Post;
 
-    mockFetchGraphQL.mockResolvedValueOnce(singlePage([...topPosts, noMeta]));
+    mockGetAllRoastDinnerPosts.mockResolvedValueOnce([...topPosts, noMeta]);
 
     const { highRated } = await fetchTopRatedRoasts("Central");
 
