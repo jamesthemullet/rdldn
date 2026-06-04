@@ -123,14 +123,14 @@
   dependencies:
     prismjs "^1.30.0"
 
-"@astrojs/react@5.0.6":
-  version "5.0.6"
-  resolved "https://registry.npmjs.org/@astrojs/react/-/react-5.0.6.tgz"
-  integrity sha512-3pfjmw3sUnV5WplLblDzsAKlHv9kNmlCFAw/xP/agubiZFo4d+uPXX2jynNwAfvwyI5v+Q9uIIFwyujv9jifLg==
+"@astrojs/react@5.0.7":
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/@astrojs/react/-/react-5.0.7.tgz#1193ab152abfc28ebccb206c449201056803c4c6"
+  integrity sha512-N9cCoxvnLWaP+AK1Fv4e5Mc7ktnVTpSo2nWLwvD9Ohr1dJKygwrTSm9yatqoahgb1A5Kwjg/rT2shRiIVdn3aw==
   dependencies:
     "@astrojs/internal-helpers" "0.10.0"
     "@vitejs/plugin-react" "^5.2.0"
-    devalue "^5.6.4"
+    devalue "^5.8.1"
     ultrahtml "^1.6.0"
     vite "^7.3.2"
 
@@ -1201,9 +1201,9 @@ abbrev@^3.0.0:
   integrity sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==
 
 accented@^1.2.0:
-  version "1.3.1"
-  resolved "https://registry.npmjs.org/accented/-/accented-1.3.1.tgz"
-  integrity sha512-3HUnof116r0XsSyGnxJk4Gs1EoiHpKbYnYMNCsIOoggFxqjsUq6MlT1gjkxRnsiu/p3ATpSGmH2zEr3ixiJiow==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/accented/-/accented-1.3.2.tgz#3aabc37c38649a4fbd7355623d53aec364cd4b1a"
+  integrity sha512-VQ7qSj906T+HcArnkyk4yyDTdCeGblZdMcEFKpx+Z1TIeUcU1XnnIFYwP41AojOg4OTacQL+HwV6ip5qrFMX1A==
   dependencies:
     "@preact/signals-core" "^1.14.2"
     axe-core "^4.11.4"
@@ -1326,10 +1326,10 @@ astro-seo@^1.0.0:
   dependencies:
     "@astrojs/check" "^0.9.0"
 
-"astro@^4.15.0 || ^5.0.0 || ^6.0.0", astro@^6.0.0, astro@^6.4.0, astro@6.4.2:
-  version "6.4.2"
-  resolved "https://registry.npmjs.org/astro/-/astro-6.4.2.tgz"
-  integrity sha512-8H89CH2dKL5SCU99OCqdU9BGjmPkSJqaPurywj5XMo7eMFGUFD3vsNhdEKnEh4mK4LgGje3/QDTTSIIGst0G0Q==
+astro@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-6.4.3.tgz#6c44f5bd3d9bab3c0206348bf254aaea2d6ce23a"
+  integrity sha512-heArIk8zLcxuoj1WgBH2zGdAD8zKSU1mEcBvS6hYMEHRPlbtvB+4Y8ri9Z27hzeryvGaFgrH32zjghEfV2y07g==
   dependencies:
     "@astrojs/compiler" "^4.0.0"
     "@astrojs/internal-helpers" "0.10.0"
@@ -1345,7 +1345,7 @@ astro-seo@^1.0.0:
     clsx "^2.1.1"
     common-ancestor-path "^2.0.0"
     cookie "^1.1.1"
-    devalue "^5.6.3"
+    devalue "^5.8.1"
     diff "^8.0.3"
     dset "^3.1.4"
     es-module-lexer "^2.0.0"
@@ -1674,7 +1674,7 @@ detect-libc@^2.0.0, detect-libc@^2.1.2:
   resolved "https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz"
   integrity sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==
 
-devalue@^5.6.3, devalue@^5.6.4:
+devalue@^5.8.1:
   version "5.8.1"
   resolved "https://registry.npmjs.org/devalue/-/devalue-5.8.1.tgz"
   integrity sha512-4CXDYRBGqN+57wVJkuXBYmpAVUSg3L6JAQa/DFqm238G73E1wuyc/JhGQJzN7vUf/CMphYau2zXbfWzDR5aTEw==
