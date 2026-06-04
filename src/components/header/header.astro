@@ -4,6 +4,8 @@ import logo1 from "../../images/logo-1.png";
 import "./header.css";
 import SocialLinks from "../social-links/social-links.astro";
 import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
+
+const currentPath = Astro.url.pathname;
 ---
 
 <header>
@@ -31,12 +33,12 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
     </div>
 
     <nav id="nav-menu" aria-label="Main navigation">
-      <a href="/league-of-roasts">League Of Roasts</a>
-      <a href="/best-roast-lists">Best Roasts Lists</a>
-      <a href="/maps">Maps</a>
-      <a href="/to-do-list">To-Do List</a>
-      <a href="/search">Search</a>
-      <a href="/archive">Archive</a>
+      <a href="/league-of-roasts" aria-current={currentPath === "/league-of-roasts" ? "page" : undefined}>League Of Roasts</a>
+      <a href="/best-roast-lists" aria-current={currentPath === "/best-roast-lists" ? "page" : undefined}>Best Roasts Lists</a>
+      <a href="/maps" aria-current={currentPath === "/maps" ? "page" : undefined}>Maps</a>
+      <a href="/to-do-list" aria-current={currentPath === "/to-do-list" ? "page" : undefined}>To-Do List</a>
+      <a href="/search" aria-current={currentPath === "/search" ? "page" : undefined}>Search</a>
+      <a href="/archive" aria-current={currentPath === "/archive" ? "page" : undefined}>Archive</a>
       <HeaderAuthMobile client:load />
       <div class="dropdown">
         <a
@@ -44,12 +46,42 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
           class="dropdown-toggle"
           aria-haspopup="true"
           aria-expanded="false"
+          aria-current={currentPath === "/about" ? "page" : undefined}
           >About <span class="dropdown-arrow" aria-hidden="true">▼</span></a
         >
         <div class="dropdown-menu">
-          <a href="/advertise-with-us">Advertise With Us</a>
+          <a href="/advertise-with-us" aria-current={currentPath === "/advertise-with-us" ? "page" : undefined}>Advertise With Us</a>
         </div>
       </div>
     </nav>
   </div>
 </header>
+
+<script>
+  const navToggle = document.getElementById("nav-toggle") as HTMLButtonElement | null;
+  const navContainer = navToggle?.closest<HTMLElement>(".nav-container");
+
+  navToggle?.addEventListener("click", () => {
+    const isOpen = navContainer?.classList.toggle("open") ?? false;
+    navToggle.classList.toggle("open", isOpen);
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  // Mobile: toggle dropdown on click; allow navigation only when submenu is already open
+  const dropdownToggle = document.querySelector<HTMLAnchorElement>(".dropdown-toggle");
+  const dropdown = dropdownToggle?.closest<HTMLElement>(".dropdown");
+
+  dropdownToggle?.addEventListener("click", (e) => {
+    if (!window.matchMedia("(min-width: 1024px)").matches) {
+      const isOpen = dropdown?.classList.contains("open") ?? false;
+      if (!isOpen) {
+        e.preventDefault();
+        dropdown?.classList.add("open");
+        dropdownToggle.setAttribute("aria-expanded", "true");
+      } else {
+        dropdown?.classList.remove("open");
+        dropdownToggle.setAttribute("aria-expanded", "false");
+      }
+    }
+  });
+</script>
