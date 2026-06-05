@@ -52,4 +52,26 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
       </div>
     </nav>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const navToggle = document.getElementById("nav-toggle");
+      const navContainer = document.querySelector(".nav-container");
+      const dropdownToggle = document.querySelector(".dropdown-toggle");
+      const dropdown = document.querySelector(".dropdown");
+
+      navToggle?.addEventListener("click", () => {
+        const isOpen = navToggle.classList.toggle("open");
+        navToggle.setAttribute("aria-expanded", isOpen.toString());
+        navContainer?.classList.toggle("open");
+      });
+
+      dropdownToggle?.addEventListener("click", (e) => {
+        if (window.innerWidth < 1024) {
+          e.preventDefault();
+          const isOpen = dropdown?.classList.toggle("open");
+          dropdownToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        }
+      });
+    });
+  </script>
 </header>
