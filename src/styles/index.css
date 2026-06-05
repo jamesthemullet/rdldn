@@ -202,8 +202,9 @@ section {
   height: 100%;
 }
 
-.dropdown-btn:focus {
-  outline: none;
+.dropdown-btn:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 2px;
 }
 
 .dropdown-content.open {
