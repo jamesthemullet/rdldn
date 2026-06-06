@@ -27,6 +27,9 @@ const initialFilterState: FilterState = {
   year: "",
 };
 
+const filterStateKeys = new Set<string>(Object.keys(initialFilterState));
+const isFilterKey = (name: string): name is keyof FilterState => filterStateKeys.has(name);
+
 const filterReducer = (state: FilterState, action: FilterAction): FilterState => {
   switch (action.type) {
     case "SET_FILTER":
@@ -229,7 +232,10 @@ export const useSortFilter = (posts: Post[]) => {
   const handleFilterChange = (
     e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
+    const { name, value } = e.target;
+    if (isFilterKey(name)) {
+      dispatch({ type: "SET_FILTER", name, value });
+    }
   };
 
   const clearFilters = (): void => {
