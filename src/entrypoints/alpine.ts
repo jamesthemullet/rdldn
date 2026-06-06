@@ -7,8 +7,8 @@ type WishlistButtonProps = {
   postRating: string | null;
 };
 
-export default (Alpine: AlpineInstance) => {
-  Alpine.data("wishlistButton", (props: WishlistButtonProps) => {
+export default (alpine: AlpineInstance) => {
+  Alpine.data("wishlistButton", (props: WishlistButtonProps = {} as WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
     return {
       saved: false,
@@ -65,7 +65,7 @@ export default (Alpine: AlpineInstance) => {
 
   queueMicrotask(() => {
     if (document.readyState !== "loading") {
-      Alpine.start();
+      alpine.start();
     }
   });
 };
