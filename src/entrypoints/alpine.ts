@@ -1,13 +1,14 @@
-import type { Alpine } from 'alpinejs';
+import type { Clerk as ClerkInstance } from "@clerk/shared/types";
+import type { Alpine as AlpineInstance } from "alpinejs";;
 
-interface WishlistButtonProps {
+type WishlistButtonProps = {
   postSlug: string;
   postTitle: string;
-  postRating: string;
-}
+  postRating: string | null;
+};
 
 export default (alpine: Alpine) => {
-  alpine.data("wishlistButton", (props: WishlistButtonProps) => {
+  Alpine.data("wishlistButton", (props: WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
     return {
       saved: false,
@@ -15,7 +16,7 @@ export default (alpine: Alpine) => {
       loading: false,
 
       async init() {
-        const clerk = window.Clerk;
+        const clerk = (window as unknown as { Clerk?: ClerkInstance }).Clerk;
         if (!clerk) {
           this.signedOut = true;
           return;

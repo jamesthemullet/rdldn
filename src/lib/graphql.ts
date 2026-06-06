@@ -1,13 +1,9 @@
 import { fetchGraphQL } from "../lib/api";
-import type { Page, Post, PostsConnection } from "../types";
-import GET_ALL_POSTS from "./queries/getAllPosts";
+import type { Page, Post } from "../types";
+import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
 import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
 import { getPostRating } from "./utils";
-
-type FetchAllPostsResponse = {
-  posts: PostsConnection;
-};
 
 type HighRatedRoast = {
   name: string;
@@ -25,30 +21,14 @@ const fetchFilteredRoasts = async ({
   minRating: number;
   matcher: (post: Post) => boolean;
 }): Promise<Post[]> => {
-  const allPosts: Post[] = [];
-  let hasNextPage = true;
-  let endCursor: string | null = null;
+  const allPosts = await getAllRoastDinnerPosts();
 
-  while (hasNextPage) {
-    const variables: { after?: string } = endCursor ? { after: endCursor } : {};
-    const { posts } = await fetchGraphQL<FetchAllPostsResponse>(
-      GET_ALL_POSTS,
-      variables
-    );
-
-    const filtered = posts.nodes.filter((post) => {
+  return allPosts
+    .filter((post) => {
       const rating = getPostRating(post);
       return matcher(post) && isPostOpen(post) && !Number.isNaN(rating) && rating > minRating;
-    });
-
-    allPosts.push(...filtered);
-    hasNextPage = posts.pageInfo.hasNextPage;
-    endCursor = posts.pageInfo.endCursor;
-  }
-
-  return allPosts.sort(
-    (a, b) => getPostRating(b) - getPostRating(a)
-  );
+    })
+    .sort((a, b) => getPostRating(b) - getPostRating(a));
 };
 
 export const fetchTopRatedRoastsByFilter = async ({

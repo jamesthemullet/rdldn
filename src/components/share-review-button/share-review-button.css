@@ -1,0 +1,35 @@
+.share-review-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 10px 0;
+}
+
+.share-review-label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.share-review-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin: 0;
+  color: var(--roast-main-text) !important;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+  height: auto;
+  min-width: unset;
+}
+
+.share-review-btn--copied {
+  border-color: var(--roast-pink);
+}
