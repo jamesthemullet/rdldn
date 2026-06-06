@@ -1,5 +1,5 @@
 import type { Clerk as ClerkInstance } from "@clerk/shared/types";
-import type { Alpine as AlpineInstance } from "alpinejs";;
+import type { Alpine as AlpineInstance } from "alpinejs";
 
 type WishlistButtonProps = {
   postSlug: string;
@@ -7,8 +7,8 @@ type WishlistButtonProps = {
   postRating: string | null;
 };
 
-export default (alpine: Alpine) => {
-  Alpine.data("wishlistButton", (props: WishlistButtonProps) => {
+export default (alpine: AlpineInstance) => {
+  Alpine.data("wishlistButton", (props: WishlistButtonProps = {} as WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
     return {
       saved: false,
