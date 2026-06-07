@@ -105,12 +105,13 @@ export default function RoastMap({ markers }: Props) {
 
   return (
     <>
-      <p>Also show places that have closed down?</p>
+      <p id="show-closed-desc">Also show places that have closed down?</p>
       <label>
         <input
           type="checkbox"
           checked={showClosed}
           onChange={(e) => setShowClosed(e.target.checked)}
+          aria-describedby="show-closed-desc"
         />
         Show closed places
       </label>
@@ -129,6 +130,9 @@ export default function RoastMap({ markers }: Props) {
         value={minRating}
         onChange={(e) => setMinRating(Number(e.target.value))}
       />
+      <p aria-live="polite" className="sr-only">
+        {visibleMarkers} {visibleMarkers === 1 ? "restaurant" : "restaurants"} shown on map
+      </p>
       <br />
       <br />
       <div
