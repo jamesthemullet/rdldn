@@ -23,6 +23,7 @@ import ShareReviewButton from "../components/share-review-button/share-review-bu
 import WishlistButton from "../components/wishlist-button/wishlist-button.astro";
 import logo3 from "../images/logo-3.png";
 import { buildInflationIndex } from "../lib/inflationIndex";
+import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../lib/ownerSlug";
 import type { Page, Post } from "../types";
 
@@ -138,6 +139,42 @@ const tubeLines = post.tubeLines?.nodes?.map((line: { name: string }) => line.na
 const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
 
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
+const postBorough = post.boroughs?.nodes?.[0]?.name;
+
+let overallRank: number | null = null;
+let totalOpen: number | null = null;
+let boroughRank: number | null = null;
+let totalInBorough: number | null = null;
+
+if (contentType === "post" && isRoastDinner && !closedDownId && rating) {
+  const allPosts = await getAllRoastDinnerPosts();
+  const openRoasts = allPosts
+    .filter(
+      (p) =>
+        !p.closedDowns?.nodes?.[0]?.name &&
+        p.typesOfPost?.nodes?.some((n) => n.name === "Roast Dinner") &&
+        p.ratings?.nodes?.[0]?.name
+    )
+    .sort((a, b) => {
+      const aR = Number.parseFloat(a.ratings?.nodes?.[0]?.name ?? "0");
+      const bR = Number.parseFloat(b.ratings?.nodes?.[0]?.name ?? "0");
+      return bR - aR;
+    });
+
+  totalOpen = openRoasts.length;
+  const rankIdx = openRoasts.findIndex((p) => p.slug === slug);
+  overallRank = rankIdx !== -1 ? rankIdx + 1 : null;
+
+  if (postBorough) {
+    const boroughRoasts = openRoasts.filter(
+      (p) => p.boroughs?.nodes?.[0]?.name === postBorough
+    );
+    totalInBorough = boroughRoasts.length;
+    const boroughIdx = boroughRoasts.findIndex((p) => p.slug === slug);
+    boroughRank = boroughIdx !== -1 ? boroughIdx + 1 : null;
+  }
+}
+
 /* istanbul ignore next */
 const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3) as string;
 
@@ -264,6 +301,14 @@ const reviewStructuredData =
       <p class={isRereviewed ? "re-reviewed-rating" : ""}>
         Rating: {rating}
       </p>
+      {overallRank && totalOpen && (
+        <p class="rank-context">
+          Ranked #{overallRank} of {totalOpen} open London roasts
+          {boroughRank && totalInBorough && postBorough && (
+            <> · #{boroughRank} in {postBorough}</>
+          )}
+        </p>
+      )}
       {tubeStation && <p>Tube Station: {tubeStation}</p> }
               <p>
         Tube Lines:{" "}
@@ -306,6 +351,10 @@ const reviewStructuredData =
         loved={post.highlights?.loved}
         loathed={post.highlights?.loathed}
         slug={String(slug)}
+        overallRank={overallRank ?? undefined}
+        totalOpen={totalOpen ?? undefined}
+        boroughRank={boroughRank ?? undefined}
+        borough={postBorough}
       />
     </section>
     <section aria-label="Get Booking">

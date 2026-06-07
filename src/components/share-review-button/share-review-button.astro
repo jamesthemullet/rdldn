@@ -8,12 +8,22 @@ type Props = {
   loved?: string | null;
   loathed?: string | null;
   slug: string;
+  overallRank?: number | null;
+  totalOpen?: number | null;
+  boroughRank?: number | null;
+  borough?: string | null;
 };
 
-const { title, rating, price, yearOfVisit, tubeStation, loved, loathed, slug } = Astro.props;
+const { title, rating, price, yearOfVisit, tubeStation, loved, loathed, slug, overallRank, totalOpen, boroughRank, borough } = Astro.props;
 
 const parts: string[] = [`🍖 ${title}`];
 if (rating) parts.push(`Rating: ${rating}/10`);
+if (overallRank && totalOpen) {
+  const rankStr = boroughRank && borough
+    ? `Ranked #${overallRank} of ${totalOpen} open London roasts · #${boroughRank} in ${borough}`
+    : `Ranked #${overallRank} of ${totalOpen} open London roasts`;
+  parts.push(rankStr);
+}
 if (price) {
   const priceStr = yearOfVisit ? `${price} (${yearOfVisit})` : price;
   parts.push(`Price: ${priceStr}`);
@@ -21,10 +31,10 @@ if (price) {
 if (tubeStation) parts.push(`Tube: ${tubeStation}`);
 if (loved) parts.push(`✅ Loved: ${loved}`);
 if (loathed) parts.push(`❌ Loathed: ${loathed}`);
-parts.push(`rdldn.co.uk/${slug}`);
+parts.push(`rdldn.co.uk/${slug}?utm_source=share`);
 
 const shareText = parts.join(" | ");
-const pageUrl = `https://rdldn.co.uk/${slug}`;
+const pageUrl = `https://rdldn.co.uk/${slug}?utm_source=share`;
 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
 const threadsUrl = `https://www.threads.net/intent/post?text=${encodeURIComponent(shareText)}`;
 const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
