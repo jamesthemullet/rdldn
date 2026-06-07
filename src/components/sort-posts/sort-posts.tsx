@@ -94,6 +94,13 @@ const SortPosts = ({
     () => getUniqueValues(posts, (post) => post.yearsOfVisit?.nodes[0]?.name),
     [posts]
   );
+  const uniqueZones = useMemo(
+    () =>
+      Array.from(new Set(posts.flatMap((post) => post.zones?.nodes.map((z) => z.name) ?? [])))
+        .filter(Boolean)
+        .sort(),
+    [posts]
+  );
 
   return (
     <div>
@@ -309,6 +316,17 @@ const SortPosts = ({
                 {uniqueYears.map((year) => (
                   <option key={year} value={year}>
                     {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="zone-filter">Filter by Fare Zone: </label>
+              <select id="zone-filter" name="zone" value={filters.zone} onChange={handleFilterChange}>
+                <option value="">All</option>
+                {uniqueZones.map((zone) => (
+                  <option key={zone} value={zone}>
+                    {zone}
                   </option>
                 ))}
               </select>
