@@ -2,7 +2,7 @@ import { fetchGraphQL } from "../lib/api";
 import type { Page, Post } from "../types";
 import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
 import GET_POSTS_BY_DATE from "./queries/getPostsByDate";
-import SINGLE_PAGE_QUERY_PREVIEW from "./queries/singlePage";
+import { getSinglePageData } from "./getSinglePageData";
 import { getPostRating } from "./utils";
 
 type HighRatedRoast = {
@@ -72,23 +72,8 @@ export const fetchTopRatedRoasts = async (
   return { topRated, highRated };
 }
 
-export const fetchPageData = async (id: string): Promise<Page> => {
-  try {
-    const { page } = await fetchGraphQL<{ page: Page | null }>(
-      SINGLE_PAGE_QUERY_PREVIEW,
-      { id }
-    );
-
-    if (!page) {
-      throw new Error("No single page data found");
-    }
-
-    return page;
-  } catch (error) {
-    console.error("Error fetching GraphQL data:", error);
-    throw error;
-  }
-}
+export const fetchPageData = (id: string): Promise<Page> =>
+  getSinglePageData({ variables: { id } });
 
 export const fetchPostsByDate = async (date: string): Promise<Post[]> => {
   const [year, month] = date.split("-");

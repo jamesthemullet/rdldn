@@ -265,27 +265,19 @@ describe("fetchPageData", () => {
     });
   });
 
-  it("logs and throws when page is null", async () => {
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
+  it("throws when page is null", async () => {
     mockFetchGraphQL.mockResolvedValueOnce({ page: null });
 
     await expect(fetchPageData("10608")).rejects.toThrow("No single page data found");
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching GraphQL data:",
-      expect.any(Error)
-    );
-
-    consoleErrorSpy.mockRestore();
   });
 
-  it("logs and re-throws when the API request fails", async () => {
+  it("logs and throws when the API request fails", async () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const networkError = new Error("Network error");
 
     mockFetchGraphQL.mockRejectedValueOnce(networkError);
 
-    await expect(fetchPageData("10608")).rejects.toThrow("Network error");
+    await expect(fetchPageData("10608")).rejects.toThrow("No single page data found");
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error fetching GraphQL data:",
       networkError
