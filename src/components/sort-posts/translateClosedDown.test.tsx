@@ -35,10 +35,11 @@ describe("translateClosedDown", () => {
 
   it("returns an anchor element linking to the new slug for re-reviewed with newSlug", () => {
     const result = translateClosedDown("re-reviewed-2024", "new-place") as ReactElement;
+    const props = result.props as { href: string; children: string };
 
     expect(result.type).toBe("a");
-    expect(result.props.href).toBe("/new-place");
-    expect(result.props.children).toContain("2024");
+    expect(props.href).toBe("/new-place");
+    expect(props.children).toContain("2024");
   });
 
   it("passes unknown strings through unchanged", () => {
