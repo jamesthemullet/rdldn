@@ -10,6 +10,7 @@ type FilterState = {
   owner: string;
   closedDown: string;
   year: string;
+  zone: string;
 };
 
 type FilterAction =
@@ -25,6 +26,7 @@ const initialFilterState: FilterState = {
   owner: "",
   closedDown: "",
   year: "",
+  zone: "",
 };
 
 const filterReducer = (state: FilterState, action: FilterAction): FilterState => {
@@ -123,7 +125,8 @@ const filterPosts = (posts: Post[], filters: FilterState): Post[] => {
           ? !post.closedDowns?.nodes[0]?.name
           : post.closedDowns?.nodes[0]?.name === filters.closedDown
         : true) &&
-      (filters.year ? post.yearsOfVisit?.nodes[0]?.name === filters.year : true)
+      (filters.year ? post.yearsOfVisit?.nodes[0]?.name === filters.year : true) &&
+      (filters.zone ? post.zones?.nodes.some((z) => z.name === filters.zone) : true)
     );
   });
 };
@@ -183,6 +186,7 @@ export const useSortFilter = (posts: Post[]) => {
     owner: urlParams?.get("owner") ?? "",
     closedDown: urlParams?.get("closedDown") ?? "",
     year: urlParams?.get("year") ?? "",
+    zone: urlParams?.get("zone") ?? "",
   });
   const [showOptions, setShowOptions] = useState(false);
   const [showYearVisited, setShowYearVisited] = useState(false);
