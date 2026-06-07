@@ -252,8 +252,8 @@ const reviewStructuredData =
     <Newsletter />
     
     {contentType === "post" && isRoastDinner && (
-    <section id="summary" class="summary">
-              <h3>Summary:</h3>
+    <section id="summary" class="summary" aria-labelledby="summary-heading">
+              <h3 id="summary-heading">Summary:</h3>
 
       {(post.closedDowns?.nodes?.length ?? 0) > 0 && (
         <p class="closed-message">
@@ -291,12 +291,12 @@ const reviewStructuredData =
         </p>
       )}
     </section>
-    <section>
-      <h3>Loved & Loathed:</h3>
+    <section aria-labelledby="loved-loathed-heading">
+      <h3 id="loved-loathed-heading">Loved & Loathed:</h3>
       <p>Loved: {post.highlights?.loved}</p>
       <p>Loathed: {post.highlights?.loathed}</p>
     </section>
-    <section>
+    <section aria-label="Share this review">
       <ShareReviewButton
         title={singlePost.title ?? ""}
         rating={rating}
@@ -308,7 +308,7 @@ const reviewStructuredData =
         slug={String(slug)}
       />
     </section>
-    <section>
+    <section aria-label="Get Booking">
       {post.closedDowns?.nodes?.length === 0 && (
         <>
           <h3>Get Booking:</h3>
