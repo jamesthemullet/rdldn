@@ -250,6 +250,18 @@ section {
   }
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--roast-pink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
 .substack-signup {
   padding: 1rem;
   text-align: center;
