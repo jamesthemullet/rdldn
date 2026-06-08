@@ -4,7 +4,7 @@ type DropdownOption = {
   label: string;
 };
 
-interface Props {
+type Props = {
   label: string;
   id: string;
   name: string;
@@ -16,7 +16,7 @@ interface Props {
   defaultOptionLabel?: string;
   maxOptionLabelLength?: number;
   center?: boolean;
-}
+};
 
 const {
   label,

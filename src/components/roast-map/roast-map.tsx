@@ -3,18 +3,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 // import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 
-interface Marker {
+type Marker = {
   lat: number;
   lng: number;
   label?: string;
   rating: number;
   slug?: string;
   closed?: string;
-}
+};
 
-interface Props {
+type Props = {
   markers: Marker[];
-}
+};
 
 const getMarkerColor = (rating: number): { colour: string; backgroundColour: string } => {
   if (rating >= 9) return { colour: "#fff", backgroundColour: "#4B0082" };
