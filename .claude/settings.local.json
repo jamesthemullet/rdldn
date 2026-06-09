@@ -33,7 +33,8 @@
       "Bash(cd /tmp)",
       "Bash(curl -sL \"https://registry.npmjs.org/@astrojs/react/-/react-5.0.6.tgz\")",
       "Bash(tar -xz --wildcards \"*/server.js\")",
-      "Read(//tmp/package/dist/**)"
+      "Read(//tmp/package/dist/**)",
+      "mcp__github__create_issue"
     ]
   }
 }

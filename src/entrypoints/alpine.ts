@@ -8,7 +8,9 @@ type WishlistButtonProps = {
 };
 
 export default (alpine: AlpineInstance) => {
-  Alpine.data("wishlistButton", (props: WishlistButtonProps = {} as WishlistButtonProps) => {
+  (window as unknown as { Alpine: AlpineInstance }).Alpine = alpine;
+
+  alpine.data("wishlistButton", (props: WishlistButtonProps = {} as WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
     return {
       saved: false,
@@ -63,9 +65,9 @@ export default (alpine: AlpineInstance) => {
     };
   });
 
-  queueMicrotask(() => {
-    if (document.readyState !== "loading") {
-      alpine.start();
-    }
-  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => alpine.start());
+  } else {
+    alpine.start();
+  }
 };
