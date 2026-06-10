@@ -1,5 +1,6 @@
 import type { Post } from "../types";
 import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
+import { getPostRating } from "./utils";
 
 export async function getTubeLineRoastPosts(
   tubeStations: string[],
@@ -8,7 +9,7 @@ export async function getTubeLineRoastPosts(
   const allPosts = await getAllRoastDinnerPosts();
 
   return allPosts.filter((post) => {
-    const rating = Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
+    const rating = getPostRating(post);
 
     return (
       rating >= minimumRating &&
