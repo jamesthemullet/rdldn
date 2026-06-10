@@ -561,6 +561,92 @@ describe("sort-posts component", () => {
     });
   });
 
+  test("filters by fare zone using multi-zone matching", async () => {
+    const zonePosts: Post[] = [
+      {
+        date: "2026-01-01",
+        title: "Zone One Only",
+        slug: "zone-one-only",
+        ratings: { nodes: [{ name: "8.0" }] },
+        zones: { nodes: [{ name: "1" }] }
+      },
+      {
+        date: "2026-01-01",
+        title: "Zone One and Two",
+        slug: "zone-one-and-two",
+        ratings: { nodes: [{ name: "7.5" }] },
+        zones: { nodes: [{ name: "1" }, { name: "2" }] }
+      },
+      {
+        date: "2026-01-01",
+        title: "Zone Three",
+        slug: "zone-three",
+        ratings: { nodes: [{ name: "9.0" }] },
+        zones: { nodes: [{ name: "3" }] }
+      },
+      {
+        date: "2026-01-01",
+        title: "No Zone",
+        slug: "no-zone",
+        ratings: { nodes: [{ name: "8.5" }] }
+      }
+    ];
+
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<SortPosts posts={zonePosts} />);
+    });
+    await waitForRender();
+
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
+    const zoneFilter = host.querySelector('select[name="zone"]') as HTMLSelectElement;
+
+    await act(async () => {
+      zoneFilter.value = "1";
+      zoneFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    const titlesZone1 = getRoastTitles(host);
+    expect(titlesZone1).toContain("Zone One Only");
+    expect(titlesZone1).toContain("Zone One and Two");
+    expect(titlesZone1).not.toContain("Zone Three");
+    expect(titlesZone1).not.toContain("No Zone");
+
+    await act(async () => {
+      zoneFilter.value = "2";
+      zoneFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    const titlesZone2 = getRoastTitles(host);
+    expect(titlesZone2).toEqual(["Zone One and Two"]);
+
+    const clearButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Clear All Filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      clearButton.click();
+    });
+    await waitForRender();
+
+    expect(getRoastTitles(host)).toHaveLength(4);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
   test("covers all sort column branches with sparse post data", async () => {
     const branchPosts: Post[] = [
       {

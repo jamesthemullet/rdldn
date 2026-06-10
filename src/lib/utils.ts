@@ -10,7 +10,7 @@ type TopRoastPostOptions = {
 export const getPostRating = (post: Post): number =>
   Number.parseFloat(post.ratings?.nodes?.[0]?.name || "0");
 
-const isRoastDinnerPost = (post: Post): boolean =>
+export const isRoastDinnerPost = (post: Post): boolean =>
   post.typesOfPost?.nodes?.some((node) => node.name === "Roast Dinner") ?? false;
 
 const isClosedDownPost = (post: Post): boolean =>

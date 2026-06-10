@@ -1,9 +1,9 @@
 ---
-interface Props {
+type Props = {
   postSlug: string;
   postTitle: string;
   postRating?: string | null;
-}
+};
 
 const { postSlug, postTitle, postRating } = Astro.props;
 import "./wishlist-button.css";

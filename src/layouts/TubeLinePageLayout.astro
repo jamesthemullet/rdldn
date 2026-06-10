@@ -8,14 +8,14 @@ import BaseLayout from "./BaseLayout.astro";
 
 import "../styles/post.css";
 
-interface Props {
+type Props = {
   singlePage: Page;
   lineName: string;
   headingClass: string;
   stations: string[];
   roastPosts: Post[];
   threadedComments: ThreadedComments;
-}
+};
 
 const {
   singlePage,
