@@ -218,27 +218,32 @@ export const useSortFilter = (posts: Post[]) => {
   }, []);
   const [showInflationPrice, setShowInflationPrice] = useState(false);
 
-  const handleCheckboxChange = (setter: BooleanStateSetter): (() => void) => () => {
-    setter((prev) => !prev);
-  };
+  const handleCheckboxChange = useCallback(
+    (setter: BooleanStateSetter): (() => void) =>
+      () => {
+        setter((prev) => !prev);
+      },
+    []
+  );
 
-  const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleSortChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     setSortColumn(e.target.value);
-  };
+  }, []);
 
-  const toggleSortOrder = (): void => {
+  const toggleSortOrder = useCallback((): void => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
+  }, []);
 
-  const handleFilterChange = (
-    e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>
-  ) => {
-    dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
-  };
+  const handleFilterChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
+      dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
+    },
+    []
+  );
 
-  const clearFilters = (): void => {
+  const clearFilters = useCallback((): void => {
     dispatch({ type: "CLEAR_FILTERS" });
-  };
+  }, []);
 
   const sortedPosts = useMemo(
     () => sortedByColumn(filterPosts(posts, filters), sortColumn, sortOrder),

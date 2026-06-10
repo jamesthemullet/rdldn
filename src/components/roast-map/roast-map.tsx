@@ -3,18 +3,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 // import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 
-interface Marker {
+type Marker = {
   lat: number;
   lng: number;
   label?: string;
   rating: number;
   slug?: string;
   closed?: string;
-}
+};
 
-interface Props {
+type Props = {
   markers: Marker[];
-}
+};
 
 const getMarkerColor = (rating: number): { colour: string; backgroundColour: string } => {
   if (rating >= 9) return { colour: "#fff", backgroundColour: "#4B0082" };
@@ -54,6 +54,8 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 
 export default function RoastMap({ markers }: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const [showClosed, setShowClosed] = useState(false);
   const [minRating, setMinRating] = useState(0);
   const filteredMarkers = useMemo(
@@ -73,18 +75,34 @@ export default function RoastMap({ markers }: Props) {
   );
   const totalMarkers = markers.length;
 
+  // Initialise the map and tile layer once on mount.
   useEffect(() => {
     if (!mapRef.current) return;
 
     const map = L.map(mapRef.current).setView([51.505, -0.09], 10);
-
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
+    const layer = L.layerGroup().addTo(map);
+    mapInstanceRef.current = map;
+    markersLayerRef.current = layer;
+
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+      markersLayerRef.current = null;
+    };
+  }, []);
+
+  // Update markers whenever the filtered set changes without recreating the map.
+  useEffect(() => {
+    const layer = markersLayerRef.current;
+    if (!layer) return;
+
+    layer.clearLayers();
 
     filteredMarkers.forEach(({ lat, lng, label, rating, slug }) => {
-
       const { colour, backgroundColour } = getMarkerColor(rating);
       const icon = createColouredIcon(colour, backgroundColour, rating);
       const markerLabel = label ? `${label} (${rating.toFixed(1)}/10)` : `Roast location (${rating.toFixed(1)}/10)`;
@@ -93,14 +111,10 @@ export default function RoastMap({ markers }: Props) {
         title: markerLabel,
         alt: markerLabel,
       })
-        .addTo(map)
+        .addTo(layer)
         .bindTooltip(markerLabel, { direction: "top", opacity: 0.9 })
         .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
-
-    return () => {
-      map.remove();
-    };
   }, [filteredMarkers]);
 
   return (
