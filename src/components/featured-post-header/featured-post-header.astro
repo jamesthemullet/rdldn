@@ -1,9 +1,9 @@
 ---
-interface Props {
+type Props = {
   imageSrc: string;
   title: string;
   imageAlt?: string;
-}
+};
 
 const { imageSrc, title, imageAlt = title }: Props = Astro.props;
 ---
