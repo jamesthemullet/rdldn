@@ -215,8 +215,8 @@ h4 {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
-  color: #000;
+  background-color: rgba(0, 0, 0, 0.55);
+  color: #fff;
   font-size: 0.8rem;
   text-align: center;
   padding: 0.5rem 0;
@@ -234,7 +234,7 @@ h4 {
   position: relative;
 
   figcaption {
-    color: var(--roast-light);
+    color: #fff;
     width: 100%;
     min-height: 22px;
     background-color: var(--roast-new-blue);
@@ -248,7 +248,7 @@ h4 {
     right: 0;
 
     a {
-      color: var(--roast-light);
+      color: #fff;
     }
   }
 }
@@ -458,7 +458,7 @@ p {
 
       label {
         font-size: 1.2rem;
-        color: var(--roast-new-blue);
+        color: var(--link-color, var(--roast-new-blue));
         cursor: pointer;
       }
     }

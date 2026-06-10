@@ -45,6 +45,7 @@ html[data-theme="dark"] {
   --border: #555;
   --input-bg: #2a2a2a;
   --card-shadow: rgba(0, 0, 0, 0.4);
+  --link-color: #0f83ff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -61,6 +62,7 @@ html[data-theme="dark"] {
     --border: #555;
     --input-bg: #2a2a2a;
     --card-shadow: rgba(0, 0, 0, 0.4);
+    --link-color: #0f83ff;
   }
 }
 
@@ -165,6 +167,10 @@ ol {
   li p {
     text-decoration: none;
   }
+}
+
+a {
+  color: var(--link-color, var(--roast-new-blue));
 }
 
 p {
