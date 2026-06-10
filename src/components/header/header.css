@@ -281,6 +281,58 @@ header {
   gap: 0.5rem;
 }
 
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  min-width: unset;
+  padding: 0.25rem;
+  margin: 0;
+  background: none;
+  border: 2px solid var(--roast-white);
+  border-radius: 50%;
+  color: var(--roast-white);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: var(--roast-pink);
+    color: var(--roast-pink);
+  }
+
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
+}
+
+/* Light mode: show moon (to switch to dark) */
+.theme-toggle .sun-icon {
+  display: none;
+}
+.theme-toggle .moon-icon {
+  display: block;
+}
+
+/* Dark mode: show sun (to switch to light) */
+[data-theme="dark"] .theme-toggle .sun-icon {
+  display: block;
+}
+[data-theme="dark"] .theme-toggle .moon-icon {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .theme-toggle .sun-icon {
+    display: block;
+  }
+  html:not([data-theme="light"]) .theme-toggle .moon-icon {
+    display: none;
+  }
+}
+
 .header-top-right .cl-userButtonTrigger,
 .header-top-right .cl-userButtonBox {
   border: none !important;
