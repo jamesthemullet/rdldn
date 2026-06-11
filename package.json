@@ -16,7 +16,8 @@
     "lint:errors": "biome check --diagnostic-level=error .",
     "ts-check": "astro check",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "knip": "knip"
   },
   "resolutions": {
     "defu": ">=6.1.5",
