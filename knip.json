@@ -6,5 +6,9 @@
   },
   "tags": ["-lintignore"],
   "ignoreDependencies": ["@astrojs/ts-plugin", "sitemap"],
-  "ignoreBinaries": ["wait-on", "axe"]
+  "ignoreBinaries": ["wait-on", "axe"],
+  "ignoreFiles": [
+    "src/entrypoints/alpine.ts",
+    "vitest.setup.ts"
+  ]
 }
