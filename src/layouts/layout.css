@@ -19,6 +19,51 @@
   --piccadilly: #003688;
   --victoria: #0098d4;
   --overground: #ee7c0e;
+
+  /* Semantic theme tokens */
+  --bg: #fff;
+  --text: #403b37;
+  --text-muted: #333;
+  --text-muted-2: #666;
+  --surface: #fff;
+  --surface-alt: #ebebeb;
+  --border: #333;
+  --input-bg: #fff;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] {
+  --roast-main-text: #e8e0d8;
+  --roast-light: #2a2a2a;
+  --roast-black: #e8e0d8;
+  --bg: #121212;
+  --text: #e8e0d8;
+  --text-muted: #c8c0b8;
+  --text-muted-2: #9a9290;
+  --surface: #1e1e1e;
+  --surface-alt: #2a2a2a;
+  --border: #555;
+  --input-bg: #2a2a2a;
+  --card-shadow: rgba(0, 0, 0, 0.4);
+  --link-color: #0f83ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) {
+    --roast-main-text: #e8e0d8;
+    --roast-light: #2a2a2a;
+    --roast-black: #e8e0d8;
+    --bg: #121212;
+    --text: #e8e0d8;
+    --text-muted: #c8c0b8;
+    --text-muted-2: #9a9290;
+    --surface: #1e1e1e;
+    --surface-alt: #2a2a2a;
+    --border: #555;
+    --input-bg: #2a2a2a;
+    --card-shadow: rgba(0, 0, 0, 0.4);
+    --link-color: #0f83ff;
+  }
 }
 
 @font-face {
@@ -38,7 +83,8 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: var(--roast-main-text);
+  color: var(--text);
+  background-color: var(--bg);
   font-size: 18px;
 }
 
@@ -123,8 +169,12 @@ ol {
   }
 }
 
+a {
+  color: var(--link-color, var(--roast-new-blue));
+}
+
 p {
-  color: #333;
+  color: var(--text-muted);
   padding: 0;
   line-height: 1.5;
   font-size: 1.2rem;
@@ -134,6 +184,8 @@ input {
   margin-top: 0.5rem;
   border: 2px solid var(--roast-new-blue);
   box-sizing: border-box;
+  background-color: var(--input-bg);
+  color: var(--text);
 
   &:focus {
     outline: none;
@@ -146,14 +198,18 @@ input {
 }
 
 select {
-  border: 1px solid #333;
+  border: 1px solid var(--border);
   height: 3rem;
+  background-color: var(--input-bg);
+  color: var(--text);
 }
 
 option {
   padding: 0.5rem;
-  border: 1px solid #333;
+  border: 1px solid var(--border);
   font-size: 1.2rem;
+  background-color: var(--input-bg);
+  color: var(--text);
 }
 
 button {

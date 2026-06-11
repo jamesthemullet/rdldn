@@ -1,8 +1,8 @@
 ---
-interface Props {
+type Props = {
   postId: string;
   parentId?: string | null;
-}
+};
 const { postId, parentId } = Astro.props as Props;
 
 const message = "";

@@ -2,14 +2,14 @@ import { useAuth } from "@clerk/astro/react";
 import { useEffect, useState } from "react";
 import "./wishlist-button.css";
 
-interface Props {
+type Props = {
   postSlug: string;
   postTitle: string;
   postRating?: string | null;
   iconOnly?: boolean;
   isSaved?: boolean;
   onSaveToggle?: (slug: string, nowSaved: boolean) => void;
-}
+};
 
 export default function WishlistButton({ postSlug, postTitle, postRating, iconOnly = false, isSaved, onSaveToggle }: Props) {
   const { isSignedIn, isLoaded } = useAuth();
@@ -47,7 +47,7 @@ export default function WishlistButton({ postSlug, postTitle, postRating, iconOn
     );
   }
 
-  const currentlySaved = controlled ? isSaved! : saved;
+  const currentlySaved = controlled ? (isSaved ?? false) : saved;
 
   async function toggle(): Promise<void> {
     if (currentlySaved) {
