@@ -157,7 +157,7 @@ export default function RoastMap({ markers }: Props) {
         hidden
       />
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
-      <div id="map" ref={mapRef} style={{ height: "600px" }} />
+      <div id="map" ref={mapRef} style={{ height: "600px" }} role="region" aria-label="Map of reviewed roast dinner locations in London" />
     </>
   );
 }
