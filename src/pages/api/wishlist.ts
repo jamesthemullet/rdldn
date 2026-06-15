@@ -3,6 +3,12 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users, wishlistItems } from "../../lib/schema";
 
+type WishlistPostBody = {
+  postSlug: string;
+  postTitle: string;
+  postRating?: string | null;
+};
+
 async function getUserId(clerkId: string): Promise<string | null> {
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
   return user?.id ?? null;
@@ -39,11 +45,7 @@ export async function POST(context: APIContext) {
   }
 
   const body = await context.request.json();
-  const { postSlug, postTitle, postRating } = body as {
-    postSlug: string;
-    postTitle: string;
-    postRating?: string | null;
-  };
+  const { postSlug, postTitle, postRating } = body as WishlistPostBody;
 
   if (!postSlug || !postTitle) {
     return new Response(JSON.stringify({ error: "postSlug and postTitle are required" }), { status: 400 });

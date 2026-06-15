@@ -1,15 +1,10 @@
-import type { Post } from "../types";
+import type { Post, PostsConnection } from "../types";
 import { isRoastDinnerPost } from "./utils";
 
 type YearlyRoastStats = Record<string, { matching: number; total: number }>;
 
 export async function fetchAllPosts(
-  fetchGraphQL: (query: string, variables?: Record<string, unknown>) => Promise<{
-    posts: {
-      nodes: Post[];
-      pageInfo: { hasNextPage: boolean; endCursor: string | null };
-    };
-  }>,
+  fetchGraphQL: (query: string, variables?: Record<string, unknown>) => Promise<{ posts: PostsConnection }>,
   query: string
 ): Promise<Post[]> {
   const allRoastPosts: Post[] = [];
