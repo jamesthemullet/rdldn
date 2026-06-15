@@ -1,15 +1,9 @@
-import type { Post } from "../types";
+import type { Post, PostsConnection } from "../types";
 import { fetchGraphQL } from "./api";
 import GET_ALL_POSTS from "./queries/getAllPosts";
 
 type PostsResponse = {
-  posts: {
-    nodes: Post[];
-    pageInfo: {
-      hasNextPage: boolean;
-      endCursor: string | null;
-    };
-  };
+  posts: PostsConnection;
 };
 
 let allRoastDinnerPostsPromise: Promise<Post[]> | null = null;
