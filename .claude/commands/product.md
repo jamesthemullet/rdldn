@@ -82,6 +82,14 @@ Use `ToolSearch` to find the `mcp__github__create_issue` tool, then call it to l
 
 Report the issue URL once created.
 
+## Rejected ideas
+
+Do not re-propose these — they have been reviewed and rejected:
+
+| Feature | Reason rejected |
+|---|---|
+| **Your Roast Trail** — "Pick up where you left off" recently-viewed strip on the homepage (localStorage) | This is a food review blog, not e-commerce. Users don't browse multiple reviews then return to compare — the visit pattern doesn't fit. The wishlist already covers the "save for later" use case for signed-in users. Closed issue #410. |
+
 ## Known project patterns
 
 - **`useSortFilter` hook:** All filter/sort logic for the league table lives here — new interactive features should extend this hook rather than add separate state
