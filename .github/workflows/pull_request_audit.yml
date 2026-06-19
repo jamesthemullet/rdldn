@@ -10,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
@@ -23,7 +23,7 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
@@ -38,7 +38,7 @@ jobs:
     env:
       PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
@@ -54,7 +54,7 @@ jobs:
       SCORE_SECRET: test-secret-for-ci
       PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
@@ -72,7 +72,7 @@ jobs:
       GITHUB_API_SECRET: ${{ secrets.PIPELINE_GITHUB_API_SECRET }}
       PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Use Node.js 18.x
         uses: actions/setup-node@v6
         with:
