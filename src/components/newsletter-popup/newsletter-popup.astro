@@ -1,0 +1,59 @@
+---
+import "./newsletter-popup.css";
+---
+
+<div class="newsletter-popup-overlay" id="newsletter-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="newsletter-popup-heading">
+  <div class="newsletter-popup">
+    <div class="newsletter-popup-header">
+      <p class="newsletter-popup-heading" id="newsletter-popup-heading">📬 Get new roast reviews direct to your inbox</p>
+      <button class="newsletter-popup-close" id="newsletter-popup-close" aria-label="Close newsletter signup">×</button>
+    </div>
+    <iframe
+      src="https://rdldn.substack.com/embed"
+      width="480"
+      height="320"
+      style="border: 1px solid #EEE; background: white"
+      frameborder="0"
+      scrolling="no"
+      title="Subscribe to the Roast Dinners in London newsletter"
+    ></iframe>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "newsletter-dismissed";
+  const THREE_MONTHS_MS = 3 * 30 * 24 * 60 * 60 * 1000;
+
+  const overlay = document.getElementById("newsletter-popup-overlay");
+  const closeBtn = document.getElementById("newsletter-popup-close");
+
+  if (overlay) {
+    const dismissed = localStorage.getItem(STORAGE_KEY);
+    const shouldShow = !dismissed || Date.now() - Number(dismissed) > THREE_MONTHS_MS;
+
+    if (shouldShow) {
+      setTimeout(() => {
+        overlay.classList.add("visible");
+      }, 5000);
+    }
+
+    const dismissForever = () => {
+      overlay.classList.remove("visible");
+      localStorage.setItem(STORAGE_KEY, String(Date.now()));
+    };
+
+    const hideForSession = () => {
+      overlay.classList.remove("visible");
+    };
+
+    closeBtn?.addEventListener("click", dismissForever);
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) hideForSession();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("visible")) hideForSession();
+    });
+  }
+</script>

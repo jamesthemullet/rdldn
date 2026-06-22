@@ -20,8 +20,8 @@ async function fetchAllRoastDinnerPosts(): Promise<Post[]> {
   const allPosts: Post[] = [];
 
   while (hasNextPage) {
-    const variables = endCursor ? { after: endCursor } : {};
-    const data = (await fetchGraphQL(GET_ALL_POSTS, variables)) as PostsResponse;
+    const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+    const data = await fetchGraphQL<PostsResponse>(GET_ALL_POSTS, variables);
     const posts = data?.posts;
     const nodes = posts?.nodes ?? [];
     allPosts.push(...nodes);
