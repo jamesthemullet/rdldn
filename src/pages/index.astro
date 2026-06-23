@@ -563,10 +563,4 @@ try {
 
     localStorage.setItem("lastVisit", now);
   </script>
-  <script>
-    if (import.meta.env.MODE === "development") {
-      const { accented } = await import("accented");
-      accented();
-    }
-  </script>
 </BaseLayout>
