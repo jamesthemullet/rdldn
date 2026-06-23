@@ -250,7 +250,7 @@ export const useSortFilter = (posts: Post[]) => {
     [posts, filters, sortColumn, sortOrder]
   );
   const uniqueMeats = useMemo(
-    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))].sort(),
+    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter((name): name is string => name !== undefined))].sort(),
     [posts]
   );
 

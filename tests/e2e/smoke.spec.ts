@@ -1,8 +1,8 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const normalizePathname = (value: string) => (value.endsWith("/") ? value : `${value}/`);
 
-const assertSeoBasics = async (page: { title: () => Promise<string>; url: () => string; locator: (selector: string) => any }, expectedPathname: string) => {
+const assertSeoBasics = async (page: Page, expectedPathname: string) => {
   const title = (await page.title()).trim();
   expect(title.length).toBeGreaterThan(0);
 
