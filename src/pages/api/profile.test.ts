@@ -23,7 +23,7 @@ function makeSelectChain(result: unknown[]) {
 }
 
 function makeInsertChain() {
-  return { values: vi.fn().mockResolvedValue(undefined) };
+  return { values: vi.fn().mockResolvedValue(undefined) } as unknown as ReturnType<typeof db.insert>;
 }
 
 function makeContext({
@@ -80,7 +80,7 @@ describe("GET /api/profile", () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([]))
       .mockReturnValueOnce(makeSelectChain([profile]));
-    vi.mocked(db.insert).mockReturnValue(makeInsertChain() as ReturnType<typeof db.insert>);
+    vi.mocked(db.insert).mockReturnValue(makeInsertChain());
 
     const response = await GET(makeContext({ clerkId: "clerk-new", email: "new@example.com" }));
 
@@ -95,7 +95,7 @@ describe("GET /api/profile", () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([]))
       .mockReturnValueOnce(makeSelectChain([profile]));
-    vi.mocked(db.insert).mockReturnValue(makeInsertChain() as ReturnType<typeof db.insert>);
+    vi.mocked(db.insert).mockReturnValue(makeInsertChain());
 
     const response = await GET(makeContext({ clerkId: "clerk-xyz", hasCurrentUser: false }));
 
@@ -108,7 +108,7 @@ describe("GET /api/profile", () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([]))
       .mockReturnValueOnce(makeSelectChain([profile]));
-    vi.mocked(db.insert).mockReturnValue(makeInsertChain() as ReturnType<typeof db.insert>);
+    vi.mocked(db.insert).mockReturnValue(makeInsertChain());
 
     const response = await GET(makeContext({ clerkId: "clerk-null-user" }));
 
