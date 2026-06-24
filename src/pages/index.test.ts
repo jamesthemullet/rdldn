@@ -8,6 +8,10 @@ vi.mock("../components/header/HeaderAuth", () => ({
   HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
 }));
 
+vi.mock("../components/my-roast-list-item/MyRoastListItem", () => ({
+  MyRoastListItem: Object.assign(() => "", { isAstroComponentFactory: true }),
+}));
+
 vi.mock("../lib/api", () => ({
   fetchGraphQL: fetchGraphQLMock,
 }));
