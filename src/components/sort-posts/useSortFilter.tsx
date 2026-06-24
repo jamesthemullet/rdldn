@@ -29,6 +29,8 @@ const initialFilterState: FilterState = {
   zone: "",
 };
 
+const isFilterKey = (key: string): key is keyof FilterState => key in initialFilterState;
+
 const filterReducer = (state: FilterState, action: FilterAction): FilterState => {
   switch (action.type) {
     case "SET_FILTER":
@@ -236,7 +238,10 @@ export const useSortFilter = (posts: Post[]) => {
 
   const handleFilterChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
-      dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
+      const { name, value } = e.target;
+      if (isFilterKey(name)) {
+        dispatch({ type: "SET_FILTER", name, value });
+      }
     },
     []
   );
