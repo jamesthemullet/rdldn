@@ -1,10 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/index.css";
+import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import NewsletterPopup from "../components/newsletter-popup/newsletter-popup.astro";
 import Search from "../components/search/search.astro";
-import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
 import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
