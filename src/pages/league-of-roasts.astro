@@ -99,44 +99,41 @@ const roastListStructuredData = {
 
     <script lang="ts">
       document.addEventListener("DOMContentLoaded", () => {
-        let attempts = 0;
-        const maxAttempts = 20; // 2 seconds max
+        const loadingElement = document.getElementById("sort-posts-loading");
+        const containerElement = document.querySelector<HTMLElement>(".sort-posts-container");
 
-        const checkForComponent = () => {
-          attempts++;
-          const sortPostsElement = document.querySelector(
-            ".sort-posts-container > div"
-          );
-          const loadingElement = document.getElementById("sort-posts-loading");
-          const containerElement = document.querySelector(
-            ".sort-posts-container"
-          );
+        if (!loadingElement || !containerElement) return;
 
-          if (sortPostsElement && loadingElement && containerElement) {
-            loadingElement.style.display = "none";
-            containerElement.style.position = "static";
-            containerElement.style.visibility = "visible";
-            containerElement.style.opacity = "1";
-            containerElement.style.transition = "opacity 0.2s ease-in-out";
-            return;
-          }
-
-          if (attempts < maxAttempts) {
-            setTimeout(checkForComponent, 100);
-          } else {
-            if (loadingElement) {
-              loadingElement.style.display = "none";
-            }
-            if (containerElement) {
-              containerElement.style.position = "static";
-              containerElement.style.visibility = "visible";
-              containerElement.style.opacity = "1";
-            }
-            console.log("Fallback: showing component anyway");
-          }
+        const showComponent = () => {
+          loadingElement.style.display = "none";
+          containerElement.style.position = "static";
+          containerElement.style.visibility = "visible";
+          containerElement.style.opacity = "1";
+          containerElement.style.transition = "opacity 0.2s ease-in-out";
         };
 
-        checkForComponent();
+        if (containerElement.querySelector(":scope > div")) {
+          showComponent();
+          return;
+        }
+
+        const observer = new MutationObserver(() => {
+          if (containerElement.querySelector(":scope > div")) {
+            observer.disconnect();
+            showComponent();
+          }
+        });
+
+        observer.observe(containerElement, { childList: true });
+
+        // Fallback after 3s if React never mounts
+        setTimeout(() => {
+          observer.disconnect();
+          loadingElement.style.display = "none";
+          containerElement.style.position = "static";
+          containerElement.style.visibility = "visible";
+          containerElement.style.opacity = "1";
+        }, 3000);
       });
     </script>
 
