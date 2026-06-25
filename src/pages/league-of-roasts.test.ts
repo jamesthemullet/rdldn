@@ -15,10 +15,7 @@ vi.mock("../lib/getSinglePageData", () => ({
 }));
 
 vi.mock("../components/sort-posts/sort-posts.tsx", () => ({
-  default: Object.assign(
-    () => '<div class="sort-posts-mock">Sort posts component</div>',
-    { isAstroComponentFactory: true }
-  ),
+  default: () => null,
 }));
 
 vi.mock("astro:assets", () => ({
