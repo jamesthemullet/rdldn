@@ -4,10 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 const fetchGraphQLMock = vi.fn();
 const getSinglePageDataMock = vi.fn();
 
-vi.mock("../components/header/HeaderAuth", () => ({
-  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
-  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
-}));
+vi.mock("../components/header/HeaderAuth");
 
 vi.mock("../lib/api", () => ({
   fetchGraphQL: fetchGraphQLMock,
@@ -113,18 +110,7 @@ describe("league-of-roasts page", () => {
       }
     );
 
-    const container = await AstroContainer.create({
-      renderers: [
-        {
-          name: "@astrojs/react",
-          clientEntrypoint: "@astrojs/react/client.js",
-          ssr: {
-            check: async () => false,
-            renderToStaticMarkup: async () => ({ html: "" }),
-          },
-        },
-      ],
-    });
+    const container = await AstroContainer.create();
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -169,18 +155,7 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create({
-      renderers: [
-        {
-          name: "@astrojs/react",
-          clientEntrypoint: "@astrojs/react/client.js",
-          ssr: {
-            check: async () => false,
-            renderToStaticMarkup: async () => ({ html: "" }),
-          },
-        },
-      ],
-    });
+    const container = await AstroContainer.create();
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
@@ -234,18 +209,7 @@ describe("league-of-roasts page", () => {
       },
     });
 
-    const container = await AstroContainer.create({
-      renderers: [
-        {
-          name: "@astrojs/react",
-          clientEntrypoint: "@astrojs/react/client.js",
-          ssr: {
-            check: async () => false,
-            renderToStaticMarkup: async () => ({ html: "" }),
-          },
-        },
-      ],
-    });
+    const container = await AstroContainer.create();
     const { default: Page } = await import("./league-of-roasts.astro");
     const html = await container.renderToString(Page);
 
