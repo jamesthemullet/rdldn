@@ -1,11 +1,7 @@
-import { getContainerRenderer as getReactContainerRenderer } from "@astrojs/react";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-vi.mock("../components/header/HeaderAuth", () => ({
-  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
-  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
-}));
+vi.mock("../components/header/HeaderAuth");
 
 vi.mock("../lib/api", () => ({
   fetchGraphQL: vi.fn()
@@ -24,16 +20,7 @@ afterEach(() => {
   vi.resetModules();
 });
 
-const createContainer = async () => {
-  const renderer = getReactContainerRenderer() as ReturnType<typeof getReactContainerRenderer> & { ssr?: boolean };
-  if (!("ssr" in renderer)) {
-    renderer.ssr = true;
-  }
-  const container = await AstroContainer.create({
-    renderers: [renderer as unknown as import("astro").SSRLoadedRenderer]
-  });
-  return container;
-};
+const createContainer = async () => AstroContainer.create();
 
 describe("maps page", () => {
   test("renders map page and builds markers from paginated post locations", async () => {
