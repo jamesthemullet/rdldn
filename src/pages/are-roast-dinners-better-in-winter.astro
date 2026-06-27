@@ -68,7 +68,6 @@ const totalReviews = Object.values(seasonStats).reduce(
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
-import { sanitizeContent } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle={singlePage.title}
