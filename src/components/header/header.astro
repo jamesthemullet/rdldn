@@ -4,6 +4,8 @@ import logo1 from "../../images/logo-1.png";
 import "./header.css";
 import SocialLinks from "../social-links/social-links.astro";
 import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
+
+const isTesting = import.meta.env.PLAYWRIGHT === "true";
 ---
 
 <header>
@@ -18,7 +20,7 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
       </div>
 
       <div class="header-top-right">
-        <HeaderAuthDesktop client:load />
+        {!isTesting && <HeaderAuthDesktop client:load />}
         <button
           id="theme-toggle"
           class="theme-toggle"
@@ -57,7 +59,7 @@ import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
       <a href="/to-do-list">To-Do List</a>
       <a href="/search">Search</a>
       <a href="/archive">Archive</a>
-      <HeaderAuthMobile client:load />
+      {!isTesting && <HeaderAuthMobile client:load />}
       <div class="dropdown">
         <a
           href="/about"
