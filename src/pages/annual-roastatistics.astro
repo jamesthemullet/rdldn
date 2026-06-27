@@ -1,5 +1,4 @@
 ---
-import { sanitizeContent } from "../lib/sanitize";
 import Comments from "../components/comments/comments.astro";
 import Dropdown from "../components/dropdown/dropdown.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
@@ -8,6 +7,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchGraphQL } from "../lib/api";
 import { getSinglePageData } from "../lib/getSinglePageData";
 import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
 import { fetchAllPosts } from "../lib/yearlyRoastStats";
 import type { Post } from "../types";
