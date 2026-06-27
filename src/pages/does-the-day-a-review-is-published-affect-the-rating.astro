@@ -1,4 +1,5 @@
----
+﻿---
+import { sanitizeContent } from "../lib/sanitize";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
@@ -70,6 +71,7 @@ const maxAverage = sortedByAverage[0]?.average ?? 10;
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
+import { sanitizeContent } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle={singlePage.title}
@@ -81,7 +83,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
 
     <ul class={styles.dayChart} aria-label="Average roast dinner ratings by day of review publication">
       {

@@ -1,4 +1,5 @@
----
+﻿---
+import { sanitizeTitle } from "../lib/sanitize";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/index.css";
 import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
@@ -260,6 +261,7 @@ try {
   console.error("Error fetching features data:", error);
 }
 ---
+import { sanitizeTitle } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle="Home of Roast Dinners In London"
@@ -274,7 +276,7 @@ try {
           <li class="heading" data-post-date={post?.date}>
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -303,7 +305,7 @@ try {
           <li class="heading">
             <h3>
               <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={page?.title} />
+                <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
@@ -347,7 +349,7 @@ try {
           <li class="heading">
             <h3>
               <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={page?.title} />
+                <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
@@ -406,7 +408,7 @@ try {
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -437,7 +439,7 @@ try {
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -466,7 +468,7 @@ try {
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a

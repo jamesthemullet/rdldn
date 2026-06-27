@@ -1,4 +1,5 @@
----
+﻿---
+import { sanitizeTitle } from "../lib/sanitize";
 import Dropdown from "../components/dropdown/dropdown.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchPostsByDate } from "../lib/graphql";
@@ -38,6 +39,7 @@ try {
   console.error("Error fetching posts:", error);
 }
 ---
+import { sanitizeTitle } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle="Archive"
@@ -74,7 +76,7 @@ try {
             <li class="heading">
               <h2>
                 <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                  <Fragment set:html={post?.title} />
+                  <Fragment set:html={sanitizeTitle(post?.title)} />
                 </a>
               </h2>
               <a

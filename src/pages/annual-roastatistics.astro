@@ -1,4 +1,5 @@
----
+﻿---
+import { sanitizeContent } from "../lib/sanitize";
 import Comments from "../components/comments/comments.astro";
 import Dropdown from "../components/dropdown/dropdown.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
@@ -147,6 +148,7 @@ const topMeats = Array.from(meatCounts.entries())
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
+import { sanitizeContent } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle={singlePage.title}
@@ -158,7 +160,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    {singlePage.content ? <div set:html={singlePage.content} /> : null}
+    {singlePage.content ? <div set:html={sanitizeContent(singlePage.content)} /> : null}
     <p>
       Select a year to see your roast dinner averages and where in London you
       reviewed roasts.

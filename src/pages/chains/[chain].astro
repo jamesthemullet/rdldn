@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sanitizeTitle } from "../../lib/sanitize";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
 import "../../styles/index.css";
@@ -119,7 +120,7 @@ const averageRating =
             >
               <h3>
                 <a href={`/${post.slug}`} rel="noopener noreferrer">
-                  <Fragment set:html={post.title} />
+                  <Fragment set:html={sanitizeTitle(post.title)} />
                 </a>
               </h3>
               <a

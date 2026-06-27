@@ -1,4 +1,5 @@
----
+﻿---
+import { sanitizeContent, sanitizeTitle } from "../lib/sanitize";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
 import type { Page, Size } from "../types";
@@ -74,6 +75,7 @@ if (!singlePage) {
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
+import { sanitizeContent, sanitizeTitle } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle={singlePage.title}
@@ -93,7 +95,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             <li class="heading">
               <h3>
                 <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                  <Fragment set:html={post?.title} />
+                  <Fragment set:html={sanitizeTitle(post?.title)} />
                 </a>
               </h3>
               <a

@@ -1,4 +1,5 @@
----
+﻿---
+import { sanitizeContent } from "../lib/sanitize";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { organiseComments } from "../lib/utils";
 import type { Post, PostsConnection } from "../types";
@@ -598,6 +599,7 @@ const overgroundStations = [
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
+import { sanitizeContent } from "../lib/sanitize";
 
 <BaseLayout
   pageTitle={singlePage.title}
@@ -609,7 +611,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
 
     <div class="entry-content container">
       <p>
