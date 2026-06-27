@@ -540,28 +540,28 @@
     sisteransi "^1.0.5"
 
 "@clerk/astro@^3.0.21":
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-3.4.7.tgz#b785c3a07da7e6f04e82c4b7ed87a3b2b334ffa9"
-  integrity sha512-7W4g8m5x3Pn/hypHhHFL1MUsO3faxlz/ECJXr8ElPOXPT8BO52YmZK4ouhal//IaC0w1tOGosWtiDePNoViodw==
+  version "3.4.8"
+  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-3.4.8.tgz#3a23ff9255f0c6800926440d28802f673abb69c9"
+  integrity sha512-czZLK9GYscjjZg+ijR37HdvJ+6JJjX0hBxcbb/xWvK+CPV6kdDhXJ9aej9T+OTbd+Nq0aWLtZ0Nch9NdX15q2A==
   dependencies:
-    "@clerk/backend" "^3.8.3"
-    "@clerk/shared" "^4.21.0"
+    "@clerk/backend" "^3.8.4"
+    "@clerk/shared" "^4.22.0"
     nanoid "5.1.6"
     nanostores "1.0.1"
 
-"@clerk/backend@^3.8.3":
-  version "3.8.3"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.8.3.tgz#149828a2cd4c23664d0a39f5f3c0c0ab509ffa80"
-  integrity sha512-kVL32qvH3jB3JeXr/nimcUTzKADly4NhBhwaKBGsEHANaHFBbpNhu8TEirHiEiOPhUINql34P7bvNEdrvPBr+Q==
+"@clerk/backend@^3.8.4":
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.8.4.tgz#f751390b1c3fcdfc51448d2bf9b2de446acd5f65"
+  integrity sha512-3G+kEu8kalqQokJ/n0IynhBh2i6TtiilRzuAg5UWMburkK658/elrG0Uqsapd5yKhmkNuvizHwOPWwKAMxP2EQ==
   dependencies:
-    "@clerk/shared" "^4.21.0"
+    "@clerk/shared" "^4.22.0"
     standardwebhooks "^1.0.0"
     tslib "2.8.1"
 
-"@clerk/shared@^4.21.0":
-  version "4.21.0"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.21.0.tgz#f24b2edbcf0beab738a135177586574a021093f0"
-  integrity sha512-/Ac4+aA6rNsDxk3UOYlzstR1WNSB32sbnwdKQZbzShp8c1bInvYGp9gxj7Y3V8CZXRWdGTvg///AsZ2qhSL4nQ==
+"@clerk/shared@^4.22.0":
+  version "4.22.0"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.22.0.tgz#57cab56e5ebc7942c79bfd15e4c419cb309aaace"
+  integrity sha512-GZ56kzUB2UBb8MCF+Eo8WIey+W4RP1tAkyOL+geiHxrQxJlUcgD+xalY2YPJLH8WVFwtOnfIl8KPEo0M0e/DRg==
   dependencies:
     "@tanstack/query-core" "^5.100.6"
     dequal "2.0.3"
@@ -1319,7 +1319,7 @@
 
 "@isaacs/fs-minipass@^4.0.0":
   version "4.0.1"
-  resolved "https://registry.npmjs.org/@isaacs/fs-minipass/-/fs-minipass-4.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/@isaacs/fs-minipass/-/fs-minipass-4.0.1.tgz#2d59ae3ab4b38fb4270bfa23d30f8e2e86c7fe32"
   integrity sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==
   dependencies:
     minipass "^7.0.4"
@@ -2401,10 +2401,10 @@ astro-seo@^1.0.0:
   dependencies:
     "@astrojs/check" "^0.9.0"
 
-astro@7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-7.0.2.tgz#344375ec6db41e51cd0f8f018819d77314a5850e"
-  integrity sha512-Rj31HS85pVSfiQTxKTwH6vTmF8y57iRfkgb1uiCTtdLIh3jlUKPAPXtEmHXRKp/PdTS00D4EXYlWXypY+AVVCA==
+astro@7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-7.0.3.tgz#482be126864c4bd8a93a5e1a4e1486c7097841ca"
+  integrity sha512-CK+G+Tl2DMV1EXCwVG45vyurxf2IfRTklMxDhRKn+tst9Yl8rWXpudL62Fa6zin5Bt968FBvuyASj1aJShROZg==
   dependencies:
     "@astrojs/compiler-rs" "^0.2.2"
     "@astrojs/internal-helpers" "0.10.0"
@@ -2588,7 +2588,7 @@ chokidar@^5.0.0:
 
 chownr@^3.0.0:
   version "3.0.0"
-  resolved "https://registry.npmjs.org/chownr/-/chownr-3.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/chownr/-/chownr-3.0.0.tgz#9855e64ecd240a9cc4267ce8a4aa5d24a1da15e4"
   integrity sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==
 
 ci-info@^4.4.0:
@@ -4368,12 +4368,12 @@ minimatch@^10.2.1, minimatch@^10.2.2:
 
 minipass@^7.0.4, minipass@^7.1.2, minipass@^7.1.3:
   version "7.1.3"
-  resolved "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-7.1.3.tgz#79389b4eb1bb2d003a9bba87d492f2bd37bdc65b"
   integrity sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==
 
 minizlib@^3.1.0:
   version "3.1.0"
-  resolved "https://registry.npmjs.org/minizlib/-/minizlib-3.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/minizlib/-/minizlib-3.1.0.tgz#6ad76c3a8f10227c9b51d1c9ac8e30b27f5a251c"
   integrity sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==
   dependencies:
     minipass "^7.1.2"
@@ -5234,9 +5234,9 @@ svgo@^4.0.1:
     sax "^1.5.0"
 
 tar@^7.4.0, tar@^7.5.8:
-  version "7.5.16"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-7.5.16.tgz#f11e063afed4554f758049d082909e37d6b53ced"
-  integrity sha512-56adEpPMouktRlBLXiaYFFzZ/3+JXa8P9n7WbR+ibIjtviN55mEaOkiysCnPnWm+7kkui1Dn8J9l+g6zV8731w==
+  version "7.5.17"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-7.5.17.tgz#5eace4af68b088bb1d737ba9fffdacbbb70ba6e0"
+  integrity sha512-wPEBwzapC+2PaTYPH6e2L+cNOEE227S47wUYFqlegcs8zlLLmeb9Fcff1HVZY4Fwku/1Eyv38n7GYwB2aaS71g==
   dependencies:
     "@isaacs/fs-minipass" "^4.0.0"
     chownr "^3.0.0"
@@ -5753,7 +5753,7 @@ yallist@^3.0.2:
 
 yallist@^5.0.0:
   version "5.0.0"
-  resolved "https://registry.npmjs.org/yallist/-/yallist-5.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/yallist/-/yallist-5.0.0.tgz#00e2de443639ed0d78fd87de0d27469fbcffb533"
   integrity sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==
 
 yaml-language-server@~1.20.0:
