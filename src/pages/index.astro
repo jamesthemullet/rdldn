@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
 import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
 import Newsletter from "../components/newsletter/newsletter.astro";
@@ -274,7 +275,7 @@ try {
           <li class="heading" data-post-date={post?.date}>
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -303,7 +304,7 @@ try {
           <li class="heading">
             <h3>
               <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={page?.title} />
+                <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
@@ -347,7 +348,7 @@ try {
           <li class="heading">
             <h3>
               <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={page?.title} />
+                <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
@@ -406,7 +407,7 @@ try {
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -437,7 +438,7 @@ try {
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -466,7 +467,7 @@ try {
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a

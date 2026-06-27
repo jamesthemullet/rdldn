@@ -2,6 +2,7 @@
 import Dropdown from "../components/dropdown/dropdown.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchPostsByDate } from "../lib/graphql";
+import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
 import type { Post } from "../types";
 
@@ -74,7 +75,7 @@ try {
             <li class="heading">
               <h2>
                 <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                  <Fragment set:html={post?.title} />
+                  <Fragment set:html={sanitizeTitle(post?.title)} />
                 </a>
               </h2>
               <a
