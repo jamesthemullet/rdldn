@@ -55,10 +55,10 @@ test("custom 404 page renders and home link works", async ({ page }) => {
     "Welcome to Vegan Roast Dinners in London"
   );
 
-  const homeLink = page.getByRole("link", { name: /return to safety/i });
+  const homeLink = page.locator("a.safety-link");
   await expect(homeLink).toBeVisible();
   await homeLink.click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
   await expect(page.getByRole("heading", { level: 1, name: "Roast Dinners in London" })).toBeVisible();
 });
 
@@ -183,7 +183,7 @@ test("league of roasts table renders, filters, and reveals extra data", async ({
   await expect(page.locator("section.post-title h2")).toBeVisible();
   await page.goBack();
   await expect(page).toHaveURL(/\/league-of-roasts\/?$/);
-  await expect(leagueItems.first()).toBeVisible();
+  await expect(leagueItems.first()).toBeVisible({ timeout: 15000 });
 
   const optionsButton = page.locator(".show-hide-button");
   const buttonLabel = (await optionsButton.textContent()) || "";

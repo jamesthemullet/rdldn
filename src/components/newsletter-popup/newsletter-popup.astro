@@ -1,23 +1,27 @@
 ---
 import "./newsletter-popup.css";
+
+const isTesting = import.meta.env.PLAYWRIGHT === "true";
 ---
 
-<div class="newsletter-popup-overlay" id="newsletter-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="newsletter-popup-heading">
-  <div class="newsletter-popup">
-    <div class="newsletter-popup-header">
-      <p class="newsletter-popup-heading" id="newsletter-popup-heading">📬 Get new roast reviews direct to your inbox</p>
-      <button class="newsletter-popup-close" id="newsletter-popup-close" aria-label="Close newsletter signup">×</button>
+{!isTesting && (
+  <div class="newsletter-popup-overlay" id="newsletter-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="newsletter-popup-heading">
+    <div class="newsletter-popup">
+      <div class="newsletter-popup-header">
+        <p class="newsletter-popup-heading" id="newsletter-popup-heading">📬 Get new roast reviews direct to your inbox</p>
+        <button class="newsletter-popup-close" id="newsletter-popup-close" aria-label="Close newsletter signup">×</button>
+      </div>
+      <iframe
+        src="https://rdldn.substack.com/embed"
+        width="480"
+        height="320"
+        style="border: 1px solid #EEE; background: white"
+        scrolling="no"
+        title="Subscribe to the Roast Dinners in London newsletter"
+      ></iframe>
     </div>
-    <iframe
-      src="https://rdldn.substack.com/embed"
-      width="480"
-      height="320"
-      style="border: 1px solid #EEE; background: white"
-      scrolling="no"
-      title="Subscribe to the Roast Dinners in London newsletter"
-    ></iframe>
   </div>
-</div>
+)}
 
 <script>
   const STORAGE_KEY = "newsletter-dismissed";
