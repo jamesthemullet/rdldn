@@ -23,7 +23,11 @@ test("home page renders key hero elements without console errors", async ({ page
   const consoleErrors: string[] = [];
   page.on("console", (msg) => {
     if (msg.type() === "error") {
-      consoleErrors.push(msg.text());
+      const text = msg.text();
+      // Ignore expected third-party iframe errors from the newsletter popup
+      if (!text.includes("rdldn.substack.com")) {
+        consoleErrors.push(text);
+      }
     }
   });
 
