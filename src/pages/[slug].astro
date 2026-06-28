@@ -139,7 +139,7 @@ const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => 
 
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
-const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3) as string;
+const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3.src) as string;
 
 const rawContent = singlePost.content?.replace(/i\d+\.wp\.com\/rdldn\.co\.uk/g, "blog.rdldn.co.uk") ?? "";
 const safeContent = sanitizeHtml(rawContent, {

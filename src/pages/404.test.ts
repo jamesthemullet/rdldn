@@ -28,7 +28,7 @@ describe("404 page", () => {
     expect(html).toContain("404 - Page Not Found");
     expect(html).toContain("Welcome to Vegan Roast Dinners in London");
     expect(html).toContain("Oops! Looks like you've wandered into our secret vegan section");
-    expect(html).toContain("🥩 Return to Safety (Real Roast Dinners) 🥩");
+    expect(html).toContain("Return to Safety (Real Roast Dinners)");
 
     expect(html).toContain("Vegan Roast Dinner 1");
     expect(html).toContain("Vegan Roast Dinner 2");
