@@ -267,8 +267,8 @@ try {
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
   opengraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
 >
-  <section class="home-list latest-reviews">
-    <h2>Latest Reviews:</h2>
+  <section class="home-list latest-reviews" aria-labelledby="latest-reviews-heading">
+    <h2 id="latest-reviews-heading">Latest Reviews:</h2>
     <ul>
       {
         posts.map((post, index) => (
@@ -296,8 +296,8 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Find Your Favourite Roast:</h2>
+  <section class="home-list" aria-labelledby="find-favourite-heading">
+    <h2 id="find-favourite-heading">Find Your Favourite Roast:</h2>
     <ul>
       {
         findYourFavouriteRoastPages.map((page) => (
@@ -321,8 +321,8 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list interactive-features">
-    <h2>Interactive:</h2>
+  <section class="home-list interactive-features" aria-labelledby="interactive-heading">
+    <h2 id="interactive-heading">Interactive:</h2>
     <ul>
       <li class="heading">
         <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
@@ -340,8 +340,8 @@ try {
       <li class="heading interactive-features__placeholder" aria-hidden="true"></li>
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Roast By Location:</h2>
+  <section class="home-list" aria-labelledby="roast-by-location-heading">
+    <h2 id="roast-by-location-heading">Roast By Location:</h2>
     <ul>
       {
         locationPages.map((page) => (
@@ -395,12 +395,12 @@ try {
     </div>
   </section> -->
 
-  <section class="home">
-    <h2>Search:</h2>
+  <section class="home" aria-labelledby="search-heading">
+    <h2 id="search-heading">Search:</h2>
     <Search resultLimit={4} />
   </section>
-  <section class="home-list">
-    <h2>A few of the best roasts:</h2>
+  <section class="home-list" aria-labelledby="best-roasts-heading">
+    <h2 id="best-roasts-heading">A few of the best roasts:</h2>
     <ul>
       {
         bestRoasts.map((post, index) => (
@@ -430,8 +430,8 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Features:</h2>
+  <section class="home-list" aria-labelledby="features-heading">
+    <h2 id="features-heading">Features:</h2>
     <ul>
       {
         features.map((post, index) => (
@@ -459,8 +459,8 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Roastatistics:</h2>
+  <section class="home-list" aria-labelledby="roastatistics-heading">
+    <h2 id="roastatistics-heading">Roastatistics:</h2>
     <ul>
       {
         roastStatistics.map((post, index) => (

@@ -10,7 +10,7 @@ describe("search component", () => {
     expect(html).toContain('x-data="searchComponent"');
     expect(html).toContain('data-result-limit="4"');
     expect(html).toContain('placeholder="Search..."');
-    expect(html).toContain('x-show="searchResults.length &gt; 0"');
+    expect(html).toMatch(/x-show="searchResults\.length (?:&gt;|>) 0"/);
     expect(html).toContain("No results found.");
   });
 
@@ -41,6 +41,6 @@ describe("search component", () => {
     expect(html).toContain('class="area-label"');
     expect(html).toContain('class="closed-badge"');
     expect(html).toContain("getScoreColor");
-    expect(html).toContain("post.closedDowns?.nodes?.length &gt; 0");
+    expect(html).toMatch(/post\.closedDowns\?\.nodes\?\.length (?:&gt;|>) 0/);
   });
 });
