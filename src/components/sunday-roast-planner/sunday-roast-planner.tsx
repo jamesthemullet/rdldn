@@ -60,21 +60,21 @@ const SundayRoastPlanner = ({
 
   const uniqueAreas = useMemo(
     () =>
-      Array.from(new Set(openPosts.map((p) => p.areas?.nodes[0]?.name).filter(Boolean)))
+      Array.from(new Set(openPosts.map((p) => p.areas?.nodes[0]?.name).filter((a): a is string => Boolean(a))))
         .filter((a) => a !== "Not Really London")
-        .sort() as string[],
+        .sort(),
     [openPosts]
   );
 
   const uniqueBoroughs = useMemo(
     () =>
-      Array.from(new Set(openPosts.map((p) => p.boroughs?.nodes[0]?.name).filter(Boolean))).sort() as string[],
+      Array.from(new Set(openPosts.map((p) => p.boroughs?.nodes[0]?.name).filter((a): a is string => Boolean(a)))).sort(),
     [openPosts]
   );
 
   const uniqueTubeLines = useMemo(
     () =>
-      Array.from(new Set(openPosts.map((p) => p.tubeLines?.nodes[0]?.name).filter(Boolean))).sort() as string[],
+      Array.from(new Set(openPosts.map((p) => p.tubeLines?.nodes[0]?.name).filter((a): a is string => Boolean(a)))).sort(),
     [openPosts]
   );
 
