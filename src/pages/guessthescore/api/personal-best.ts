@@ -8,7 +8,7 @@ async function getUserId(clerkId: string): Promise<string | null> {
   return user?.id ?? null;
 }
 
-export async function GET(context: APIContext) {
+export async function GET(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
@@ -33,15 +33,15 @@ export async function GET(context: APIContext) {
   });
 }
 
-export async function POST(context: APIContext) {
+export async function POST(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const body = await context.request.json();
-  const { score } = body as { score: unknown };
+  const body = await context.request.json() as { score: unknown };
+  const { score } = body;
 
   if (typeof score !== "number" || !Number.isInteger(score) || score < 0 || score > 100) {
     return new Response(JSON.stringify({ error: "Invalid score" }), { status: 400 });
