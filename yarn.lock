@@ -3628,9 +3628,9 @@ kleur@^4.1.5:
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
 knip@^6.0.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-6.22.0.tgz#82c24fcda583455d4d11b8e9686ea24dd84776bb"
-  integrity sha512-HTqtalzPNERFiyTj/3pERGss8oBzgxL9ZWiEQ29N9/+cTMZ1guIIEtcczrYpaoE76//XSHO11uuc66O9feY8wA==
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-6.23.0.tgz#8581f5c01e24be0b21990094f6444aa15b89f11e"
+  integrity sha512-2DvAOX2pZWiG4SLvRRxOAU0aWGEn1ZoVblI541xIoXFdHqq2THMZXy66/qcY5WGuW3TXhb9T1x1zd/Hd1u+yqg==
   dependencies:
     fdir "^6.5.0"
     formatly "^0.3.0"
@@ -5334,9 +5334,9 @@ ultrahtml@^1.6.0:
   integrity sha512-R9fBn90VTJrqqLDwyMph+HGne8eqY1iPfYhPzZrvKpIfwkWZbcYlfpsb8B9dTvBfpy1/hqAD7Wi8EKfP9e8zdw==
 
 unbash@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/unbash/-/unbash-4.0.1.tgz#efa4876b0f95ab86931546aa1e699e7e353de7ad"
-  integrity sha512-1ajSo3813sDoVIHx4inJdUS4l5L2ic5cFiddemPiyjb/PZEoBAhFwHtbaEdRDFxbAKy7FCG7s5ww3/uCFawuIA==
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/unbash/-/unbash-4.0.2.tgz#79ec0fcca990e24c78e6bddcc9b8cb7d756533f0"
+  integrity sha512-8gwNZ29+0/3zmXw7ToIHZtg6wK37xnniRUdBt7B27xZxaxfgR5tGMaGHT0t0dLtBV9fXE7zurh0s6Z1DHVjfWg==
 
 uncrypto@^0.1.3:
   version "0.1.3"
