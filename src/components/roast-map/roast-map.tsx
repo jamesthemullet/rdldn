@@ -2,8 +2,6 @@ import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 
-// import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-
 type Marker = {
   lat: number;
   lng: number;
