@@ -2,6 +2,9 @@
 
 User-agent: *
 Disallow: /404.html
+Disallow: /flags
+Disallow: /sign-in
+Disallow: /api/
 
 # Allow all other pages
 Allow: /

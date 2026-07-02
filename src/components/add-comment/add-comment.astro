@@ -16,11 +16,11 @@ const messageColor = "black";
 >
   <div>
     <label for={`authorName-${parentId}`}>Name:</label>
-    <input type="text" name="authorName" id={`authorName-${parentId}`} required />
+    <input type="text" name="authorName" id={`authorName-${parentId}`} autocomplete="name" required />
   </div>
   <div>
     <label for={`email-${parentId}`}>Email:</label>
-    <input type="email" name="email" id={`email-${parentId}`} required />
+    <input type="email" name="email" id={`email-${parentId}`} autocomplete="email" required />
   </div>
   <div>
     <label for={`commentText-${parentId}`}>Comment:</label>
