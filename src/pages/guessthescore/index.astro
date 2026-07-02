@@ -22,7 +22,7 @@ const gamePosts: GamePost[] = allPosts
     const imageUrl = post.featuredImage?.node?.sourceUrl;
     if (!ratingName || !imageUrl) return false;
     const rating = Number.parseFloat(ratingName);
-    return !isNaN(rating) && rating >= 0 && rating <= 10;
+    return !Number.isNaN(rating) && rating >= 0 && rating <= 10;
   })
   .map((post) => ({
     title: post.title || "Unknown",
