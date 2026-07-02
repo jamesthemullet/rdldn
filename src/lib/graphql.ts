@@ -92,11 +92,11 @@ export const fetchPageData = async (id: string): Promise<Page> => {
 
 export const fetchPostsByDate = async (date: string): Promise<Post[]> => {
   const [year, month] = date.split("-");
-  const variables = { year: Number.parseInt(year), month: Number.parseInt(month) };
+  const variables = { year: Number.parseInt(year, 10), month: Number.parseInt(month, 10) };
 
   const response = await fetchGraphQL<{ posts: { nodes: Post[] } }>(GET_POSTS_BY_DATE, variables);
 
-  if (!response || !response.posts) {
+  if (!response?.posts) {
     throw new Error("Failed to fetch posts by date");
   }
 

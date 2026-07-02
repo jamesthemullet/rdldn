@@ -335,27 +335,27 @@ header {
 
 .header-top-right .cl-userButtonTrigger,
 .header-top-right .cl-userButtonBox {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  background: none !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  min-width: unset !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  background: none;
+  width: 2rem;
+  height: 2rem;
+  min-width: unset;
+  padding: 0;
+  margin: 0;
 }
 
 .header-top-right .cl-userButtonAvatarBox,
 .header-top-right .cl-userButtonAvatarImage {
-  width: 2rem !important;
-  height: 2rem !important;
+  width: 2rem;
+  height: 2rem;
 }
 
 .header-top-right [data-clerk-control-slot-default] {
-  display: flex !important;
-  align-items: center !important;
-  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+  padding-bottom: 0;
 }
 
 @media (max-width: 1023px) {

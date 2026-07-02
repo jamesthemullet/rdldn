@@ -52,7 +52,7 @@ const createColouredIcon = (colour: string, backgroundColour: string, value: num
 };
 
 export default function RoastMap({ markers }: Props) {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const [showClosed, setShowClosed] = useState(false);
@@ -156,7 +156,7 @@ export default function RoastMap({ markers }: Props) {
         hidden
       />
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
-      <div id="map" ref={mapRef} style={{ height: "600px" }} role="region" aria-label="Map of reviewed roast dinner locations in London" />
+      <section id="map" ref={mapRef} style={{ height: "600px" }} aria-label="Map of reviewed roast dinner locations in London" />
     </>
   );
 }

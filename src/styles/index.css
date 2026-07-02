@@ -249,7 +249,7 @@ section {
     button {
       margin: 10px;
       width: 200px;
-      margin-left: 0 !important;
+      margin-left: 0;
     }
 
     select {

@@ -20,7 +20,7 @@ describe("middleware", () => {
 		const response = middleware(makeRequest(userAgent));
 		expect(response).toBeInstanceOf(Response);
 		expect(response?.status).toBe(403);
-		const text = await response!.text();
+		const text = await response?.text();
 		expect(text).toBe("Blocked");
 	});
 

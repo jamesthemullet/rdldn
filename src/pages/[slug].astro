@@ -154,7 +154,7 @@ const safeContent = sanitizeHtml(rawContent, {
 });
 
 const threadedComments = organiseComments(
-  contentType === "page" ? data.page!.comments!.nodes : data.post!.comments!.nodes
+  contentType === "page" ? data.page?.comments?.nodes : data.post?.comments?.nodes
 );
 
 const reviewStructuredData =
