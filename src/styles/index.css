@@ -15,6 +15,20 @@ section {
     }
   }
 
+  &.home-list.interactive-features li.heading {
+    @media (min-width: 1200px) {
+      min-width: 400px;
+      max-width: 400px;
+    }
+  }
+
+  .interactive-features__placeholder {
+    visibility: hidden;
+    pointer-events: none;
+    min-width: 400px;
+    max-width: 400px;
+  }
+
   &.home-list {
     &:not(.search-container) {
       margin: 1rem 0 0 1rem;
@@ -251,6 +265,9 @@ section {
     }
   }
 }
+
+
+
 
 .centre-with-padding {
   text-align: center;

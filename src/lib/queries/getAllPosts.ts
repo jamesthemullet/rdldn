@@ -67,6 +67,11 @@ const GET_ALL_POSTS = `
             name
           }
         }
+        tubeLines {
+          nodes {
+            name
+          }
+        }
         closedDowns {
           nodes {
             name

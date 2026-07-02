@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeContent } from "../lib/sanitize";
 export const prerender = true;
 
 import "../styles/post.css";
@@ -33,7 +34,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
 
     <BestPostsList posts={filtered} />
 

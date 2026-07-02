@@ -29,17 +29,17 @@ const { threadedComments, postId } = Astro.props as Props;
   <form id="comment-form" class="comment-form" data-post-id={postId} data-graphql-url={import.meta.env.PUBLIC_GRAPHQL_URL}>
     <div>
       <label for="authorName">Name:</label>
-      <input type="text" id="authorName" name="authorName" required />
+      <input type="text" id="authorName" name="authorName" autocomplete="name" required />
     </div>
     <div>
       <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required />
+      <input type="email" id="email" name="email" autocomplete="email" required />
     </div><div>
       <label for="commentText">Comment:</label>
       <textarea id="commentText" name="commentText" required></textarea>
     </div>
     <button type="submit">Post Comment</button>
-    <p id="message" role="status" aria-live="polite"></p>
+    <p id="message" role="status" aria-live="polite" aria-atomic="true"></p>
   </form>
 </section>
 

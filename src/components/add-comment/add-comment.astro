@@ -13,18 +13,18 @@ const { postId, parentId } = Astro.props as Props;
 >
   <div>
     <label for={`authorName-${parentId}`}>Name:</label>
-    <input type="text" name="authorName" id={`authorName-${parentId}`} required />
+    <input type="text" name="authorName" id={`authorName-${parentId}`} autocomplete="name" required />
   </div>
   <div>
     <label for={`email-${parentId}`}>Email:</label>
-    <input type="email" name="email" id={`email-${parentId}`} required />
+    <input type="email" name="email" id={`email-${parentId}`} autocomplete="email" required />
   </div>
   <div>
     <label for={`commentText-${parentId}`}>Comment:</label>
     <textarea name="commentText" id={`commentText-${parentId}`} required></textarea>
   </div>
   <button class="reply-button" data-button-id={parentId}>Post Reply</button>
-  <p role="status" aria-live="polite"></p>
+  <p role="status" aria-live="polite" aria-atomic="true"></p>
 </form>
 
 <script is:inline define:vars={{ GRAPHQL_URL: import.meta.env.PUBLIC_GRAPHQL_URL }}>
