@@ -46,6 +46,9 @@ const { posts } = Astro.props as Props;
           <img
             src={post.featuredImage.node.sourceUrl}
             alt={post.featuredImage.node.altText || `Image for ${post.title}`}
+            width="400"
+            height="300"
+            loading="lazy"
           />
         </div>
       )}

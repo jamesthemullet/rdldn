@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/astro/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Post } from "../../types";
 import WishlistButton from "../wishlist-button/wishlist-button.tsx";
 import "./sunday-roast-planner.css";
@@ -45,6 +45,8 @@ const SundayRoastPlanner = ({
   const { isSignedIn, isLoaded } = useAuth();
   const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
   const [step, setStep] = useState<Step>(1);
+  const [announcement, setAnnouncement] = useState("");
+  const isFirstRender = useRef(true);
   const [locationType, setLocationType] = useState<LocationType>("area");
   const [area, setArea] = useState("");
   const [borough, setBorough] = useState("");
@@ -137,6 +139,23 @@ const SundayRoastPlanner = ({
       .slice(0, 3);
   }, [step, openPosts, locationType, area, borough, tubeLine, budget, minRating, inflationIndex]);
 
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (step === 1) setAnnouncement("Step 1 of 3: Where do you want to eat?");
+    else if (step === 2) setAnnouncement("Step 2 of 3: What's your budget?");
+    else if (step === 3) setAnnouncement("Step 3 of 3: What's the minimum rating you'll accept?");
+    else if (step === "results") {
+      setAnnouncement(
+        results.length === 0
+          ? "No matching roasts found. Try relaxing your filters."
+          : `${results.length === 1 ? "Your top pick is" : `Your top ${results.length} picks are`} ready.`
+      );
+    }
+  }, [step, results]);
+
   const updateUrl = useCallback((lt: LocationType, a: string, bo: string, tl: string, b: string, r: string) => {
     const params = new URLSearchParams();
     if (lt === "borough" && bo) params.set("borough", bo);
@@ -193,6 +212,9 @@ const SundayRoastPlanner = ({
 
   return (
     <div className="planner">
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </div>
       {step === 1 && (
         <div className="planner__step">
           <p className="planner__step-label">Step 1 of 3</p>
