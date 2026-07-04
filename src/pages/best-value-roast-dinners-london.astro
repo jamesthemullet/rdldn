@@ -26,7 +26,8 @@ while (hasNextPage) {
   allRoastPosts.push(
     ...posts.nodes.filter(
       (post: Post) =>
-        post.typesOfPost?.nodes.some((node: { name: string }) => node.name === "Roast Dinner") &&
+        post.typesOfPost?.nodes.length === 1 &&
+        post.typesOfPost.nodes[0]?.name === "Roast Dinner" &&
         !post.closedDowns?.nodes[0]?.name &&
         post.areas?.nodes[0]?.name !== "Not Really London"
     )
@@ -63,17 +64,15 @@ const valueListStructuredData = {
   <FeaturedPostHeader imageSrc={logo3.src} title={pageTitle} />
   <div class="container league-container">
     <p>
-      Looking for a <strong>cheap roast dinner in London</strong> that doesn't skimp on quality? This
-      page ranks every venue we've reviewed by <strong>value score</strong> — rating divided by an
-      inflation-adjusted price, so a brilliant £14 roast visited in 2019 is fairly compared against a
-      brilliant £22 roast visited today. The best cheap Sunday roast London has to offer, and plenty of
-      roast dinners under £15, all in one place.
+      A great roast dinner shouldn't have to cost a fortune. This page ranks every roast dinner I've
+      reviewed by value score — rating divided by an inflation-adjusted price — so a brilliant £14 roast
+      from 2019 gets compared fairly against a brilliant £22 roast today. If you're after a cheap roast
+      dinner in London that still hits the spot, or just fancy a roast dinner under £15, start here.
     </p>
     <p>
-      Filter by area, borough or tube line to find the best value roast dinner near you, or just scroll
-      the ranked table below. Every price shown has been adjusted for roast dinner
-      inflation{mostRecentYear ? ` to ${mostRecentYear} money` : ""}, so you're comparing venues fairly
-      no matter when they were visited.
+      Filter by area, borough or tube line to narrow it down, or just scroll the ranked table below. Every
+      price has been adjusted for roast dinner inflation{mostRecentYear ? ` to ${mostRecentYear} money` : ""},
+      so it doesn't matter when I visited — the comparison is fair.
     </p>
 
     <div class="sort-posts-loading" id="best-value-loading">

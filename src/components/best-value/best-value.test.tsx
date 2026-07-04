@@ -116,6 +116,15 @@ describe("best-value component", () => {
     });
     await waitForRender();
 
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
     const areaFilter = host.querySelector('select[name="area"]') as HTMLSelectElement;
     await act(async () => {
       areaFilter.value = "Camden";

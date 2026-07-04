@@ -64,6 +64,7 @@ export const useValueFilter = (scoredPosts: ValueScoredPost[]) => {
     dispatch({ type: "CLEAR_FILTERS" });
   }, []);
 
+  const [showOptions, setShowOptions] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -89,6 +90,8 @@ export const useValueFilter = (scoredPosts: ValueScoredPost[]) => {
 
   return {
     filters,
+    showOptions,
+    setShowOptions,
     handleFilterChange,
     clearFilters,
     copyShareableLink,

@@ -11,6 +11,10 @@
     margin-left: 1rem;
   }
 
+  .show-hide-button {
+    margin: 1rem 0;
+  }
+
   .filter-posts {
     display: flex;
     flex-direction: column;
@@ -30,6 +34,10 @@
       @media (min-width: 768px) {
         max-width: 300px;
       }
+    }
+
+    label {
+      margin-top: 1rem;
     }
 
     select,

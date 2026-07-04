@@ -53,6 +53,14 @@ describe("best-value-roast-dinners-london page", () => {
                   prices: { nodes: [{ name: "£1" }] },
                   closedDowns: { nodes: [] },
                 },
+                {
+                  title: "Combination Type Roast",
+                  slug: "combination-type-roast",
+                  typesOfPost: { nodes: [{ name: "Roast Dinner" }, { name: "Guide" }] },
+                  ratings: { nodes: [{ name: "10" }] },
+                  prices: { nodes: [{ name: "£1" }] },
+                  closedDowns: { nodes: [] },
+                },
               ],
               pageInfo: {
                 hasNextPage: true,
@@ -117,6 +125,7 @@ describe("best-value-roast-dinners-london page", () => {
     expect(html).not.toContain('"name":"Not A Roast"');
     expect(html).not.toContain('"name":"Closed Roast"');
     expect(html).not.toContain('"name":"Outside London"');
+    expect(html).not.toContain('"name":"Combination Type Roast"');
 
     const cheapIndex = html.indexOf('"name":"Cheap And Great"');
     const priceyIndex = html.indexOf('"name":"Pricey And Mediocre"');
