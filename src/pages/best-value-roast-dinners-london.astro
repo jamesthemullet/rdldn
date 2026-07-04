@@ -27,7 +27,8 @@ while (hasNextPage) {
     ...posts.nodes.filter(
       (post: Post) =>
         post.typesOfPost?.nodes.some((node: { name: string }) => node.name === "Roast Dinner") &&
-        !post.closedDowns?.nodes[0]?.name
+        !post.closedDowns?.nodes[0]?.name &&
+        post.areas?.nodes[0]?.name !== "Not Really London"
     )
   );
   hasNextPage = posts.pageInfo.hasNextPage;
@@ -69,8 +70,8 @@ const valueListStructuredData = {
       roast dinners under £15, all in one place.
     </p>
     <p>
-      Filter by meat, area, borough or tube line to find the best value roast dinner near you, or just
-      scroll the ranked table below. Every price shown has been adjusted for roast dinner
+      Filter by area, borough or tube line to find the best value roast dinner near you, or just scroll
+      the ranked table below. Every price shown has been adjusted for roast dinner
       inflation{mostRecentYear ? ` to ${mostRecentYear} money` : ""}, so you're comparing venues fairly
       no matter when they were visited.
     </p>

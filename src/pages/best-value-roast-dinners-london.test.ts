@@ -28,7 +28,7 @@ afterEach(() => {
 });
 
 describe("best-value-roast-dinners-london page", () => {
-  test("fetches paginated posts, excludes closed/non-roast posts, and ranks structured data by value score", async () => {
+  test("fetches paginated posts, excludes closed/non-roast/not-really-london posts, and ranks structured data by value score", async () => {
     fetchGraphQLMock.mockImplementation(
       async (_query: string, variables: Record<string, unknown> = {}) => {
         if (!variables.after) {
@@ -42,6 +42,7 @@ describe("best-value-roast-dinners-london page", () => {
                   ratings: { nodes: [{ name: "9" }] },
                   prices: { nodes: [{ name: "£12" }] },
                   yearsOfVisit: { nodes: [{ name: "2024" }] },
+                  areas: { nodes: [{ name: "Soho" }] },
                   closedDowns: { nodes: [] },
                 },
                 {
@@ -73,12 +74,22 @@ describe("best-value-roast-dinners-london page", () => {
                 closedDowns: { nodes: [{ name: "closeddown" }] },
               },
               {
+                title: "Outside London",
+                slug: "outside-london",
+                typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+                ratings: { nodes: [{ name: "10" }] },
+                prices: { nodes: [{ name: "£5" }] },
+                areas: { nodes: [{ name: "Not Really London" }] },
+                closedDowns: { nodes: [] },
+              },
+              {
                 title: "Pricey And Mediocre",
                 slug: "pricey-and-mediocre",
                 typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
                 ratings: { nodes: [{ name: "6" }] },
                 prices: { nodes: [{ name: "£30" }] },
                 yearsOfVisit: { nodes: [{ name: "2024" }] },
+                areas: { nodes: [{ name: "Camden" }] },
                 closedDowns: { nodes: [] },
               },
             ],
@@ -105,6 +116,7 @@ describe("best-value-roast-dinners-london page", () => {
     expect(html).toContain('"@type":"ItemList"');
     expect(html).not.toContain('"name":"Not A Roast"');
     expect(html).not.toContain('"name":"Closed Roast"');
+    expect(html).not.toContain('"name":"Outside London"');
 
     const cheapIndex = html.indexOf('"name":"Cheap And Great"');
     const priceyIndex = html.indexOf('"name":"Pricey And Mediocre"');

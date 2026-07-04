@@ -38,16 +38,6 @@
     }
   }
 
-  .sort-posts {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 1rem;
-  }
-
   .clear-button,
   .share-button {
     margin-top: 1rem;
@@ -57,38 +47,6 @@
     margin-top: 1.5rem;
     font-style: italic;
     color: var(--text-muted, var(--roast-main-text));
-  }
-
-  .value-scatter {
-    margin-top: 1rem;
-    max-width: 640px;
-
-    svg {
-      width: 100%;
-      height: auto;
-    }
-
-    .axis-line {
-      stroke: var(--roast-main-text);
-      stroke-width: 1;
-    }
-
-    .axis-label {
-      font-size: 8px;
-      fill: var(--text-muted, var(--roast-main-text));
-    }
-
-    .value-dot {
-      fill: var(--roast-new-blue, #1d4ed8);
-      fill-opacity: 0.75;
-      stroke: var(--roast-main-text);
-      stroke-width: 0.5;
-    }
-
-    a:focus-visible .value-dot {
-      stroke: var(--blood);
-      stroke-width: 1.5;
-    }
   }
 
   .value-table {

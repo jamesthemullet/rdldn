@@ -108,7 +108,7 @@ describe("best-value component", () => {
     });
   });
 
-  test("filters by meat and clears filters", async () => {
+  test("filters by area and clears filters", async () => {
     const { host, root } = createHost();
 
     await act(async () => {
@@ -116,10 +116,10 @@ describe("best-value component", () => {
     });
     await waitForRender();
 
-    const meatFilter = host.querySelector('select[name="meat"]') as HTMLSelectElement;
+    const areaFilter = host.querySelector('select[name="area"]') as HTMLSelectElement;
     await act(async () => {
-      meatFilter.value = "Pork";
-      meatFilter.dispatchEvent(new Event("change", { bubbles: true }));
+      areaFilter.value = "Camden";
+      areaFilter.dispatchEvent(new Event("change", { bubbles: true }));
     });
     await waitForRender();
 
