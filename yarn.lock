@@ -91,10 +91,10 @@
   resolved "https://registry.npmjs.org/@astrojs/compiler/-/compiler-2.13.1.tgz"
   integrity sha512-f3FN83d2G/v32ipNClRKgYv30onQlMZX1vCeZMjPsMMPl1mDpmbl0+N5BYo4S/ofzqJyS5hvwacEo0CCVDn/Qg==
 
-"@astrojs/internal-helpers@0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmjs.org/@astrojs/internal-helpers/-/internal-helpers-0.10.0.tgz"
-  integrity sha512-Ry2R3VPeIN4uPCSA4xQc+e+vsJXkalKpEbDc07hV+a/o5Bs2N/s/uDcPJH/05L19DKh9tAy7e6JM3YZ6Cxfezw==
+"@astrojs/internal-helpers@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.10.1.tgz#3f96b64cf73d39199b1a70909de488a005c50776"
+  integrity sha512-5phcroT/vmOOrYuuAxtkbPixy5hePtlz9i8K4OeDv3dNK6/UQRuXPOSRTxIOBbUY5Sonw2UaxjbuVc43Mcir6Q==
   dependencies:
     "@types/hast" "^3.0.4"
     "@types/mdast" "^4.0.4"
@@ -129,12 +129,12 @@
     vscode-html-languageservice "^5.6.2"
     vscode-uri "^3.1.0"
 
-"@astrojs/markdown-remark@7.2.0":
-  version "7.2.0"
-  resolved "https://registry.npmjs.org/@astrojs/markdown-remark/-/markdown-remark-7.2.0.tgz"
-  integrity sha512-+YxmVQu1Bd+MFfSzjq1rOJvD9+nIOJzz5YIIhdIH01RrxRkKbyKoEgyIqP3yv51MhzMDgd79QaPv+kCVPT8vHw==
+"@astrojs/markdown-remark@7.2.1":
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-7.2.1.tgz#6aaaf44f0b44ad2fd051837e6ed3142ecd32e4c8"
+  integrity sha512-jPVNIqTvk+yKviikszv/Y1U4jGUSKpp/Nw48QZV4qjWgp70j4Lkq3lhSDRbWwCfgKvEyO9GHuVbV1dM2WYXy1w==
   dependencies:
-    "@astrojs/internal-helpers" "0.10.0"
+    "@astrojs/internal-helpers" "0.10.1"
     "@astrojs/prism" "4.0.2"
     github-slugger "^2.0.0"
     hast-util-from-html "^2.0.3"
@@ -152,23 +152,23 @@
     unist-util-visit-parents "^6.0.2"
     vfile "^6.0.3"
 
-"@astrojs/markdown-satteri@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/@astrojs/markdown-satteri/-/markdown-satteri-0.3.2.tgz#413b03a9d1d816fd0f8727d0b1de307a9ff51165"
-  integrity sha512-feXuUPy41gVfeM7EHT1ciUim8ozGr+YHXab9uUBc1Hk8y60DQosO8ldL+AoPXnCAoGj1OChwHfvXmmJ6XVnY9A==
+"@astrojs/markdown-satteri@0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@astrojs/markdown-satteri/-/markdown-satteri-0.3.3.tgz#5e41daea3eb62f58ea39e1a9c2cb0f0650d985d8"
+  integrity sha512-Lje33Ittd8UQGgbIIWQvhPkj5X5c4b1sZnZWX3JQV/AWpfbuQGxVi2ONt6+ScydcwfR4egilslEWyczMclrJ1g==
   dependencies:
-    "@astrojs/internal-helpers" "0.10.0"
+    "@astrojs/internal-helpers" "0.10.1"
     "@astrojs/prism" "4.0.2"
     github-slugger "^2.0.0"
     satteri "^0.9.1"
 
-"@astrojs/mdx@7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-7.0.1.tgz#6051c63e6414684e3e4344de9e2ab3ab5264aa0d"
-  integrity sha512-N8qZnqhTbydVuXlHhyUocNIccbuqsYIagSGbmzcOsJrOJZPT9Q/Z1jIa7kwFk/rqIjsNpPSOeahNoGBiR+dZoA==
+"@astrojs/mdx@7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-7.0.2.tgz#6853603ab260c2dde824e9fffef68b7366bddccf"
+  integrity sha512-l+sJY5U1KkGZUdr+bIL4Y6BefeS549qoSHVSkUSs6A9INwdCND+/0+vN0NroPBXwl5Vcg5u78t7VQRsJjePxbw==
   dependencies:
-    "@astrojs/internal-helpers" "0.10.0"
-    "@astrojs/markdown-remark" "7.2.0"
+    "@astrojs/internal-helpers" "0.10.1"
+    "@astrojs/markdown-remark" "7.2.1"
     "@mdx-js/mdx" "^3.1.1"
     acorn "^8.16.0"
     es-module-lexer "^2.0.0"
@@ -197,12 +197,12 @@
   dependencies:
     prismjs "^1.30.0"
 
-"@astrojs/react@6.0.0":
-  version "6.0.0"
-  resolved "https://registry.npmjs.org/@astrojs/react/-/react-6.0.0.tgz#ca37f5d05f750732d4400ebf627fac45aa022272"
-  integrity sha512-jNf3kKE6KYXJbD5ZsXaLhnwDK3YvK9ttQ2ykAcNf5XdxOlUQEHLnomO3FO8abqghs0ilqhgGOyc2AlgGyQtz/g==
+"@astrojs/react@6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/react/-/react-6.0.1.tgz#9d57b4bfcb8043b945a7ca67cfb42382d484f2ff"
+  integrity sha512-Afs1sEm72P2plDnrOGxmIteJ7bjx/VqxlcaQLNip5eHJ5tIvKUORQetC9UKcvgwKnj51t60HWl5mOANkOsWs4w==
   dependencies:
-    "@astrojs/internal-helpers" "0.10.0"
+    "@astrojs/internal-helpers" "0.10.1"
     "@vitejs/plugin-react" "^5.2.0"
     devalue "^5.8.1"
     ultrahtml "^1.6.0"
@@ -228,12 +228,12 @@
     is-wsl "^3.1.1"
     which-pm-runs "^1.1.0"
 
-"@astrojs/vercel@11.0.1":
-  version "11.0.1"
-  resolved "https://registry.yarnpkg.com/@astrojs/vercel/-/vercel-11.0.1.tgz#5a28f6f6add4e7a946848f3e47cdba2e105b1914"
-  integrity sha512-xd/Rna0HgsG9JkBr2ig+4mdffN3E+ZHnZtQDKaeO2hgGYhHJpeDUPrtfsiO3DXq6I6L/qE9kkqahIb60AH3z6Q==
+"@astrojs/vercel@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@astrojs/vercel/-/vercel-11.0.2.tgz#4949ccc1f44a6ed823de2366be699aea510a1cc4"
+  integrity sha512-Y9P+hfmKwZKeS7bTxsvTsJRdAobmzm6NFTd6dTzb+Muv3Jr0t87bR+2wdP1jaKM3h7QW65mSYXaL9hxvpoAAXg==
   dependencies:
-    "@astrojs/internal-helpers" "0.10.0"
+    "@astrojs/internal-helpers" "0.10.1"
     "@vercel/analytics" "^1.6.1"
     "@vercel/functions" "^3.4.3"
     "@vercel/nft" "^1.3.2"
@@ -2420,14 +2420,14 @@ astro-seo@^1.0.0:
   dependencies:
     "@astrojs/check" "^0.9.0"
 
-astro@7.0.5:
-  version "7.0.5"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-7.0.5.tgz#65cb2f38e7df20e461e4cd494f7c9de651e91936"
-  integrity sha512-KR/zBBgU6I+F5vDoTsuTbXbBmI565CToDOgPr0pPiL2Hgrvx4CV8Cg2wtT6VqqyOS7BIfBkdagKD+40SojGl7w==
+astro@7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-7.0.6.tgz#c3718ff998811ab5dfefe9b928eeecb7e346e1cc"
+  integrity sha512-Myw0sFia+zs/Y0yqfZEsUYXfDPh3ELcLf1f0Q/qQzVXBh/af1qO62WNT+P89DCcfGVV51nMoQhEfkBYqJmoUOQ==
   dependencies:
     "@astrojs/compiler-rs" "^0.3.0"
-    "@astrojs/internal-helpers" "0.10.0"
-    "@astrojs/markdown-satteri" "0.3.2"
+    "@astrojs/internal-helpers" "0.10.1"
+    "@astrojs/markdown-satteri" "0.3.3"
     "@astrojs/telemetry" "3.3.2"
     "@capsizecss/unpack" "^4.0.0"
     "@clack/prompts" "^1.1.0"
@@ -4669,9 +4669,9 @@ picocolors@^1.1.1:
   integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
 
 picomatch@>=2.3.2, picomatch@^2.0.4, picomatch@^4.0.2, picomatch@^4.0.3, picomatch@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.npmjs.org/picomatch/-/picomatch-4.0.4.tgz#fd6f5e00a143086e074dffe4c924b8fb293b0589"
-  integrity sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.5.tgz#51ea57a17d86f605f81039595fbc40ed06a55fab"
+  integrity sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==
 
 playwright-core@1.61.1:
   version "1.61.1"
