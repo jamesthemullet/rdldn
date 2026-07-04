@@ -21,7 +21,10 @@ let endCursor: string | null = null;
 
 while (hasNextPage) {
   const variables: { after?: string } = endCursor ? { after: endCursor } : {};
-  const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
+  const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(
+    GET_ALL_POSTS,
+    variables
+  );
 
   allRoastPosts.push(
     ...posts.nodes.filter(
@@ -55,24 +58,31 @@ const valueListStructuredData = {
     "@type": "ListItem",
     position: idx + 1,
     name: post.title,
-    url: post.slug && Astro.site ? new URL(post.slug, Astro.site).href : undefined,
+    url:
+      post.slug && Astro.site ? new URL(post.slug, Astro.site).href : undefined,
   })),
 };
 ---
 
-<BaseLayout pageTitle={pageTitle} description={description} structuredData={valueListStructuredData}>
+<BaseLayout
+  pageTitle={pageTitle}
+  description={description}
+  structuredData={valueListStructuredData}
+>
   <FeaturedPostHeader imageSrc={logo3.src} title={pageTitle} />
   <div class="container league-container">
     <p>
-      A great roast dinner shouldn't have to cost a fortune. This page ranks every roast dinner I've
-      reviewed by value score — rating divided by an inflation-adjusted price — so a brilliant £14 roast
-      from 2019 gets compared fairly against a brilliant £22 roast today. If you're after a cheap roast
-      dinner in London that still hits the spot, or just fancy a roast dinner under £15, start here.
+      This page ranks every roast dinner I've reviewed by value score - rating
+      divided by an inflation-adjusted price - so a brilliant £14 roast from
+      2019 gets compared fairly against a brilliant £28 roast today. If you're
+      after a cheap roast dinner in London that still hits the spot, or just
+      fancy a roast dinner under £20 (maybe), start here.
     </p>
     <p>
-      Filter by area, borough or tube line to narrow it down, or just scroll the ranked table below. Every
-      price has been adjusted for roast dinner inflation{mostRecentYear ? ` to ${mostRecentYear} money` : ""},
-      so it doesn't matter when I visited — the comparison is fair.
+      Filter by area, borough or tube line to narrow it down, or just scroll the
+      ranked table below. Every price has been adjusted for roast dinner
+      inflation{mostRecentYear ? ` to ${mostRecentYear} money` : ""}, so it
+      doesn't matter when I visited — the comparison is fair.
     </p>
 
     <div class="sort-posts-loading" id="best-value-loading">
@@ -82,8 +92,16 @@ const valueListStructuredData = {
       </div>
     </div>
 
-    <div class="best-value-loading-container" style="opacity: 0; position: absolute; visibility: hidden;">
-      <BestValue client:only="react" posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
+    <div
+      class="best-value-loading-container"
+      style="opacity: 0; position: absolute; visibility: hidden;"
+    >
+      <BestValue
+        client:only="react"
+        posts={allRoastPosts}
+        inflationIndex={inflationIndex}
+        mostRecentYear={mostRecentYear}
+      />
     </div>
 
     <script lang="ts">
@@ -93,9 +111,13 @@ const valueListStructuredData = {
 
         const checkForComponent = () => {
           attempts++;
-          const bestValueElement = document.querySelector(".best-value-loading-container > div");
+          const bestValueElement = document.querySelector(
+            ".best-value-loading-container > div"
+          );
           const loadingElement = document.getElementById("best-value-loading");
-          const containerElement = document.querySelector(".best-value-loading-container");
+          const containerElement = document.querySelector(
+            ".best-value-loading-container"
+          );
 
           if (bestValueElement && loadingElement && containerElement) {
             loadingElement.style.display = "none";
