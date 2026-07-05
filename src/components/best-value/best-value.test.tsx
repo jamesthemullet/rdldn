@@ -169,4 +169,116 @@ describe("best-value component", () => {
       root.unmount();
     });
   });
+
+  test("filters by borough and clears filters", async () => {
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<BestValue posts={posts} />);
+    });
+    await waitForRender();
+
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
+    const boroughFilter = host.querySelector('select[name="borough"]') as HTMLSelectElement;
+    await act(async () => {
+      boroughFilter.value = "Westminster";
+      boroughFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Cheap And Great"]);
+
+    const clearButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Clear All Filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      clearButton.click();
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Cheap And Great", "Pricey And Mediocre"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("filters by tube line and matches multi-line posts on any of their lines", async () => {
+    const multiLinePosts: Post[] = [
+      {
+        date: "2026-01-01",
+        title: "Two Lines",
+        slug: "two-lines",
+        ratings: { nodes: [{ name: "8" }] },
+        prices: { nodes: [{ name: "£12" }] },
+        tubeLines: { nodes: [{ name: "Central" }, { name: "Northern" }] },
+      },
+      {
+        date: "2026-01-01",
+        title: "Central Only",
+        slug: "central-only",
+        ratings: { nodes: [{ name: "7" }] },
+        prices: { nodes: [{ name: "£14" }] },
+        tubeLines: { nodes: [{ name: "Central" }] },
+      },
+      {
+        date: "2026-01-01",
+        title: "Victoria Only",
+        slug: "victoria-only",
+        ratings: { nodes: [{ name: "9" }] },
+        prices: { nodes: [{ name: "£15" }] },
+        tubeLines: { nodes: [{ name: "Victoria" }] },
+      },
+    ];
+
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<BestValue posts={multiLinePosts} />);
+    });
+    await waitForRender();
+
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
+    const tubeLineFilter = host.querySelector('select[name="tubeLine"]') as HTMLSelectElement;
+
+    await act(async () => {
+      tubeLineFilter.value = "Northern";
+      tubeLineFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Two Lines"]);
+
+    await act(async () => {
+      tubeLineFilter.value = "Central";
+      tubeLineFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    const centralResults = getVenueNames(host);
+    expect(centralResults).toContain("Two Lines");
+    expect(centralResults).toContain("Central Only");
+    expect(centralResults).not.toContain("Victoria Only");
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
 });
