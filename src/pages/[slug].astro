@@ -20,6 +20,7 @@ import FeaturedPostHeader from "../components/featured-post-header/featured-post
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import ShareReviewButton from "../components/share-review-button/share-review-button.astro";
+import VisitButton from "../components/visit-button/visit-button.astro";
 import WishlistButton from "../components/wishlist-button/wishlist-button.astro";
 import logo3 from "../images/logo-3.png";
 import { buildInflationIndex } from "../lib/inflationIndex";
@@ -331,6 +332,11 @@ const reviewStructuredData =
       )}
     </section>
     <WishlistButton
+      postSlug={String(slug)}
+      postTitle={singlePost.title ?? ""}
+      postRating={rating ?? null}
+    />
+    <VisitButton
       postSlug={String(slug)}
       postTitle={singlePost.title ?? ""}
       postRating={rating ?? null}
