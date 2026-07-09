@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users, wishlistItems } from "../../lib/schema";
 
-type WishlistPayload = {
+type WishlistPostBody = {
   postSlug: string;
   postTitle: string;
   postRating?: string | null;
@@ -44,7 +44,7 @@ export async function POST(context: APIContext): Promise<Response> {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const body = await context.request.json() as WishlistPayload;
+  const body = (await context.request.json()) as WishlistPostBody;
   const { postSlug, postTitle, postRating } = body;
 
   if (!postSlug || !postTitle) {
