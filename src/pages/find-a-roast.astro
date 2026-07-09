@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { Post, PostsConnection } from "../types";
+import "../styles/post.css";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import Newsletter from "../components/newsletter/newsletter.astro";
+import SundayRoastPlanner from "../components/sunday-roast-planner/sunday-roast-planner.tsx";
+import findARoastImg from "../images/find-a-roast.png";
+import { fetchGraphQL } from "../lib/api";
+import { computeInflationIndex } from "../lib/inflationIndex";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+
+export const prerender = true;
+
+const allRoastPosts: Post[] = [];
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
+
+  allRoastPosts.push(
+    ...posts.nodes.filter((post: Post) =>
+      post.typesOfPost?.nodes.some((node: { name: string }) => node.name === "Roast Dinner")
+    )
+  );
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+const { inflationIndex, mostRecentYear } = computeInflationIndex(allRoastPosts);
+---
+
+<BaseLayout
+  pageTitle="Find A Roast — Sunday Roast Planner"
+  description="Answer three quick questions and find your perfect Sunday roast in London."
+>
+  <FeaturedPostHeader imageSrc={findARoastImg.src} title="Find A Roast" />
+  <div class="container">
+    <p class="planner-intro">
+      Tell us where you are, what you want to spend, and how good it needs to be — we'll pick the
+      top matches from {allRoastPosts.filter((p) => !p.closedDowns?.nodes[0]?.name).length} reviewed restaurants.
+    </p>
+    <SundayRoastPlanner client:only="react" posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
+    <Newsletter />
+  </div>
+</BaseLayout>

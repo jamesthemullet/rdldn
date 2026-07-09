@@ -36,6 +36,18 @@ describe("GET /guessthescore/api/personal-best", () => {
     expect((await response.json()).error).toBe("Unauthorized");
   });
 
+  test("returns the stored personal best score for a known user", async () => {
+    vi.mocked(db.select)
+      .mockReturnValueOnce(makeSelectChain([{ id: "user-123" }]) as never)
+      .mockReturnValueOnce(makeSelectChain([{ score: 42 }]) as never);
+
+    const response = await GET(makeContext("clerk_abc"));
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.score).toBe(42);
+  });
+
   test("returns null score when user is not in the database", async () => {
     vi.mocked(db.select).mockReturnValue(makeSelectChain([]) as never);
     const response = await GET(makeContext("clerk_abc"));
@@ -59,18 +71,32 @@ describe("POST /guessthescore/api/personal-best", () => {
     expect((await response.json()).error).toBe("Invalid score");
   });
 
-  test("saves a new personal best for an existing user and returns 201", async () => {
+  test("does not update when the new score does not beat the existing personal best", async () => {
     vi.mocked(db.select)
-      .mockReturnValueOnce(makeSelectChain([{ id: "user-uuid" }]) as never)
+      .mockReturnValueOnce(makeSelectChain([{ id: "user-123" }]) as never)
+      .mockReturnValueOnce(makeSelectChain([{ id: "pb-1", score: 80 }]) as never);
+
+    const response = await POST(makeContext("clerk_abc", { score: 60 }));
+    const data = await response.json();
+
+    expect(data.saved).toBe(false);
+    expect(data.personalBest).toBe(80);
+    expect(db.update).not.toHaveBeenCalled();
+  });
+
+  test("saves a new personal best when no previous record exists", async () => {
+    vi.mocked(db.select)
+      .mockReturnValueOnce(makeSelectChain([{ id: "user-123" }]) as never)
       .mockReturnValueOnce(makeSelectChain([]) as never);
     vi.mocked(db.insert).mockReturnValue({
       values: vi.fn().mockResolvedValue([]),
     } as never);
 
-    const response = await POST(makeContext("clerk_abc", { score: 80 }));
-    expect(response.status).toBe(201);
+    const response = await POST(makeContext("clerk_abc", { score: 75 }));
     const data = await response.json();
+
+    expect(response.status).toBe(201);
     expect(data.saved).toBe(true);
-    expect(data.personalBest).toBe(80);
+    expect(data.personalBest).toBe(75);
   });
 });

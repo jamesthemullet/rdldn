@@ -14,7 +14,7 @@ async function getUserId(clerkId: string): Promise<string | null> {
   return user?.id ?? null;
 }
 
-export async function GET(context: APIContext) {
+export async function GET(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
@@ -37,15 +37,15 @@ export async function GET(context: APIContext) {
   });
 }
 
-export async function POST(context: APIContext) {
+export async function POST(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const body = await context.request.json();
-  const { postSlug, postTitle, postRating } = body as WishlistPostBody;
+  const body = (await context.request.json()) as WishlistPostBody;
+  const { postSlug, postTitle, postRating } = body;
 
   if (!postSlug || !postTitle) {
     return new Response(JSON.stringify({ error: "postSlug and postTitle are required" }), { status: 400 });

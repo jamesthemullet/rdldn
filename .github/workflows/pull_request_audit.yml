@@ -94,7 +94,7 @@ jobs:
           yarn add chromedriver@$CHROMIUM_VERSION
           echo "chromedriver version: $(chromedriver --version)"
       - run: yarn run build
-      - run: yarn dev & npx wait-on http://localhost:4321
+      - run: yarn preview & npx wait-on http://localhost:4321
       - name: Run axe
         run: |
           yarn add @axe-core/cli
