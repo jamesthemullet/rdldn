@@ -10,7 +10,7 @@ describe("search component", () => {
     expect(html).toContain('x-data="searchComponent"');
     expect(html).toContain('data-result-limit="4"');
     expect(html).toContain('placeholder="Search..."');
-    expect(html).toContain('x-show="searchResults.length > 0"');
+    expect(html).toMatch(/x-show="searchResults\.length (?:&gt;|>) 0"/);
     expect(html).toContain("No results found.");
   });
 
@@ -27,5 +27,20 @@ describe("search component", () => {
     expect(html).toContain("search: this.searchTerm");
     expect(html).toContain("first: this.resultLimit");
     expect(html).toContain("this.searchPerformed = true");
+    expect(html).toContain("ratings { nodes { name } }");
+    expect(html).toContain("areas { nodes { name } }");
+    expect(html).toContain("closedDowns { nodes { name } }");
+  });
+
+  test("renders score chip, area label, and closed badge elements", async () => {
+    const container = await AstroContainer.create();
+    const { default: Search } = await import("./search.astro");
+    const html = await container.renderToString(Search);
+
+    expect(html).toContain('class="score-chip"');
+    expect(html).toContain('class="area-label"');
+    expect(html).toContain('class="closed-badge"');
+    expect(html).toContain("getScoreColor");
+    expect(html).toMatch(/post\.closedDowns\?\.nodes\?\.length (?:&gt;|>) 0/);
   });
 });

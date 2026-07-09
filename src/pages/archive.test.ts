@@ -2,10 +2,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { fetchPostsByDate } from "../lib/graphql";
 
-vi.mock("../components/header/HeaderAuth", () => ({
-  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
-  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
-}));
+vi.mock("../components/header/HeaderAuth");
 
 vi.mock("../lib/graphql", () => ({
   fetchPostsByDate: vi.fn()

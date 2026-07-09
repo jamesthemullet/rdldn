@@ -29,6 +29,24 @@ const { resultLimit = 4 } = Astro.props;
               <a :href="`/${post.slug}`" x-text="post.title"></a>
             </h3>
 
+            <div class="search-result-meta">
+              <span
+                class="score-chip"
+                x-show="post.ratings?.nodes[0]?.name"
+                :style="post.ratings?.nodes[0]?.name ? `background-color: ${getScoreColor(post.ratings.nodes[0].name).background}; color: ${getScoreColor(post.ratings.nodes[0].name).color}` : ''"
+                x-text="post.ratings?.nodes[0]?.name ? parseFloat(post.ratings.nodes[0].name).toFixed(1) : ''"
+              ></span>
+              <span
+                class="area-label"
+                x-show="post.areas?.nodes[0]?.name"
+                x-text="post.areas?.nodes[0]?.name"
+              ></span>
+              <span
+                class="closed-badge"
+                x-show="post.closedDowns?.nodes?.length > 0"
+              >Closed</span>
+            </div>
+
             <a
               :href="`/${post.slug}`"
               rel="noopener noreferrer"
@@ -64,6 +82,22 @@ const { resultLimit = 4 } = Astro.props;
         this.resultLimit = Number(limit) || 4;
       },
 
+      getScoreColor(scoreStr) {
+        const score = parseFloat(scoreStr);
+        if (isNaN(score)) return { color: "#fff", background: "#000000" };
+        if (score >= 9) return { color: "#fff", background: "#4B0082" };
+        if (score >= 8.5) return { color: "#fff", background: "#83539B" };
+        if (score >= 8) return { color: "#fff", background: "#588EB5" };
+        if (score >= 7.5) return { color: "#000", background: "#51A790" };
+        if (score >= 7) return { color: "#000", background: "#4D7833" };
+        if (score >= 6.5) return { color: "#000", background: "#6A972A" };
+        if (score >= 6) return { color: "#000", background: "#CFB920" };
+        if (score >= 5) return { color: "#fff", background: "#CF7C1D" };
+        if (score >= 4) return { color: "#fff", background: "#FF0000" };
+        if (score >= 3) return { color: "#fff", background: "#8B0000" };
+        return { color: "#fff", background: "#000000" };
+      },
+
       async handleSearch() {
         const response = await fetch(GRAPHQL_URL, {
           method: "POST",
@@ -72,13 +106,18 @@ const { resultLimit = 4 } = Astro.props;
             query: `
               query SearchPosts($search: String!, $first: Int!) {
                 posts(where: { search: $search }, first: $first) {
-                  nodes { title
-                  slug
-                  featuredImage {
-                    node {
-                      sourceUrl
+                  nodes {
+                    title
+                    slug
+                    featuredImage {
+                      node {
+                        sourceUrl
+                      }
                     }
-                  } }
+                    ratings { nodes { name } }
+                    areas { nodes { name } }
+                    closedDowns { nodes { name } }
+                  }
                 }
               }
             `,

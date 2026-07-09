@@ -22,6 +22,22 @@ export const wishlistItems = pgTable(
   (table) => [unique().on(table.userId, table.postSlug)]
 );
 
+export const visits = pgTable(
+  "visits",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    postSlug: text("post_slug").notNull(),
+    postTitle: text("post_title").notNull(),
+    postRating: numeric("post_rating"),
+    visitedAt: timestamp("visited_at").defaultNow().notNull(),
+    notes: text("notes"),
+  },
+  (table) => [unique().on(table.userId, table.postSlug)]
+);
+
 export const gamePersonalBests = pgTable(
   "game_personal_bests",
   {
@@ -38,4 +54,5 @@ export const gamePersonalBests = pgTable(
 
 export type User = typeof users.$inferSelect;
 export type WishlistItem = typeof wishlistItems.$inferSelect;
+export type Visit = typeof visits.$inferSelect;
 export type GamePersonalBest = typeof gamePersonalBests.$inferSelect;

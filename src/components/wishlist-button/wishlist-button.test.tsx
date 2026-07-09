@@ -27,9 +27,18 @@ const createHost = () => {
   return { host, root: createRoot(host) };
 };
 
+const setCookie = (value: string) => {
+  document.cookie = `flag_authFeatures=${value}; path=/`;
+};
+
+const clearCookie = () => {
+  document.cookie = "flag_authFeatures=; max-age=0; path=/";
+};
+
 beforeEach(() => {
   document.body.innerHTML = "";
   vi.clearAllMocks();
+  setCookie("true");
   global.fetch = vi.fn().mockResolvedValue({
     json: vi.fn().mockResolvedValue([]),
   });
@@ -37,9 +46,25 @@ beforeEach(() => {
 
 afterEach(() => {
   document.body.innerHTML = "";
+  clearCookie();
 });
 
 describe("WishlistButton", () => {
+  test("renders nothing when the auth features flag is off, even when signed out", async () => {
+    setCookie("false");
+    mockUseAuth.mockReturnValue({ isSignedIn: false, isLoaded: true });
+
+    const { host, root } = createHost();
+    await act(async () => {
+      root.render(<WishlistButton postSlug="test-slug" postTitle="Test Post" />);
+    });
+    await waitForEffects();
+
+    expect(host.innerHTML).toBe("");
+
+    await act(async () => root.unmount());
+  });
+
   test("renders nothing while Clerk has not finished loading", async () => {
     mockUseAuth.mockReturnValue({ isSignedIn: false, isLoaded: false });
 

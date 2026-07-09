@@ -22,7 +22,7 @@ function verifyToken(token: string): boolean {
 
   const [nonce, timestamp, sig] = parts;
   const age = Date.now() - Number.parseInt(timestamp, 10);
-  if (isNaN(age) || age > TOKEN_MAX_AGE_MS || age < 0) return false;
+  if (Number.isNaN(age) || age > TOKEN_MAX_AGE_MS || age < 0) return false;
 
   const expected = createHmac("sha256", secret)
     .update(`${nonce}:${timestamp}`)

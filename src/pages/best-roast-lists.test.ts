@@ -74,10 +74,7 @@ const mockPages = [
   }
 ];
 
-vi.mock("../components/header/HeaderAuth", () => ({
-  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
-  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
-}));
+vi.mock("../components/header/HeaderAuth");
 
 vi.mock("../lib/api", () => ({
   fetchGraphQL: fetchGraphQLMock

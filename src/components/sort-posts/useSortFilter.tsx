@@ -1,6 +1,9 @@
 import { type ChangeEvent, type ReactElement, type SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import type { Post } from "../../types";
 
+type SortColumn = "rating" | "price" | "yearVisited" | "meat" | "tubeStation" | "area" | "borough" | "owner" | "closedDown" | "title";
+type SortOrder = "asc" | "desc";
+
 type FilterState = {
   meat: string;
   score: string;
@@ -38,7 +41,7 @@ const filterReducer = (state: FilterState, action: FilterAction): FilterState =>
   }
 };
 
-const sortedByColumn = (posts: Post[], column: string, order: string): Post[] => {
+const sortedByColumn = (posts: Post[], column: SortColumn, order: SortOrder): Post[] => {
   return [...posts].sort((a, b) => {
     let aValue: string | number = "";
     let bValue: string | number = "";
@@ -173,8 +176,8 @@ const getInitialStateFromUrl = (): URLSearchParams | null => {
 };
 
 export const useSortFilter = (posts: Post[]) => {
-  const [sortOrder, setSortOrder] = useState(() => getInitialStateFromUrl()?.get("order") ?? "desc");
-  const [sortColumn, setSortColumn] = useState(() => getInitialStateFromUrl()?.get("sort") ?? "rating");
+  const [sortOrder, setSortOrder] = useState<SortOrder>(() => (getInitialStateFromUrl()?.get("order") ?? "desc") as SortOrder);
+  const [sortColumn, setSortColumn] = useState<SortColumn>(() => (getInitialStateFromUrl()?.get("sort") ?? "rating") as SortColumn);
   const [filters, dispatch] = useReducer(filterReducer, undefined, () => {
     const params = getInitialStateFromUrl();
     return {
@@ -228,7 +231,7 @@ export const useSortFilter = (posts: Post[]) => {
   );
 
   const handleSortChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    setSortColumn(e.target.value);
+    setSortColumn(e.target.value as SortColumn);
   }, []);
 
   const toggleSortOrder = useCallback((): void => {
@@ -251,7 +254,7 @@ export const useSortFilter = (posts: Post[]) => {
     [posts, filters, sortColumn, sortOrder]
   );
   const uniqueMeats = useMemo(
-    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter(Boolean))].sort(),
+    () => [...new Set(posts.map((post) => post.meats?.nodes[0]?.name).filter((name): name is string => name !== undefined))].sort(),
     [posts]
   );
 
