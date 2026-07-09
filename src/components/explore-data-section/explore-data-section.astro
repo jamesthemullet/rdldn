@@ -1,0 +1,41 @@
+---
+type Props = {
+  borough?: string;
+  meat?: string;
+  rating?: string;
+};
+
+const { borough, meat, rating } = Astro.props;
+const hasHighRating = rating !== undefined && Number(rating) >= 7;
+---
+
+{
+  (borough || meat || hasHighRating) && (
+    <section class="explore-data" aria-labelledby="explore-heading">
+      <h3 id="explore-heading">Explore more:</h3>
+      <ul>
+        {borough && (
+          <li>
+            <a href={`/league-of-roasts?borough=${encodeURIComponent(borough)}&closedDown=open`}>
+              All open roast dinners in {borough} →
+            </a>
+          </li>
+        )}
+        {meat && (
+          <li>
+            <a href={`/league-of-roasts?meat=${encodeURIComponent(meat)}`}>
+              All {meat} roasts in London →
+            </a>
+          </li>
+        )}
+        {hasHighRating && (
+          <li>
+            <a href={`/league-of-roasts?score=${Math.floor(Number(rating))}`}>
+              All roasts rated {Math.floor(Number(rating))}+ in London →
+            </a>
+          </li>
+        )}
+      </ul>
+    </section>
+  )
+}

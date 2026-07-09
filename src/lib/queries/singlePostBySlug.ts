@@ -37,6 +37,11 @@ const SINGLE_POST_QUERY = (slug: string) => `
           name
         }
       }
+      meats {
+        nodes {
+          name
+        }
+      }
       tubeStations {
         nodes {
           name

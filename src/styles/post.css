@@ -55,6 +55,17 @@ section {
     }
   }
 
+  &.explore-data {
+    ul {
+      gap: 0.5rem;
+    }
+
+    a {
+      color: var(--roast-new-blue);
+      text-decoration: underline;
+    }
+  }
+
   &.roast-by-tag {
     ul {
       display: flex;
