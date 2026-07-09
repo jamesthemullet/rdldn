@@ -176,20 +176,21 @@ const getInitialStateFromUrl = (): URLSearchParams | null => {
 };
 
 export const useSortFilter = (posts: Post[]) => {
-  const urlParams = getInitialStateFromUrl();
-
-  const [sortOrder, setSortOrder] = useState<SortOrder>((urlParams?.get("order") ?? "desc") as SortOrder);
-  const [sortColumn, setSortColumn] = useState<SortColumn>((urlParams?.get("sort") ?? "rating") as SortColumn);
-  const [filters, dispatch] = useReducer(filterReducer, {
-    meat: urlParams?.get("meat") ?? "",
-    score: urlParams?.get("score") ?? "",
-    price: urlParams?.get("price") ?? "",
-    area: urlParams?.get("area") ?? "",
-    borough: urlParams?.get("borough") ?? "",
-    owner: urlParams?.get("owner") ?? "",
-    closedDown: urlParams?.get("closedDown") ?? "",
-    year: urlParams?.get("year") ?? "",
-    zone: urlParams?.get("zone") ?? "",
+  const [sortOrder, setSortOrder] = useState<SortOrder>(() => (getInitialStateFromUrl()?.get("order") ?? "desc") as SortOrder);
+  const [sortColumn, setSortColumn] = useState<SortColumn>(() => (getInitialStateFromUrl()?.get("sort") ?? "rating") as SortColumn);
+  const [filters, dispatch] = useReducer(filterReducer, undefined, () => {
+    const params = getInitialStateFromUrl();
+    return {
+      meat: params?.get("meat") ?? "",
+      score: params?.get("score") ?? "",
+      price: params?.get("price") ?? "",
+      area: params?.get("area") ?? "",
+      borough: params?.get("borough") ?? "",
+      owner: params?.get("owner") ?? "",
+      closedDown: params?.get("closedDown") ?? "",
+      year: params?.get("year") ?? "",
+      zone: params?.get("zone") ?? "",
+    };
   });
   const [showOptions, setShowOptions] = useState(false);
   const [showYearVisited, setShowYearVisited] = useState(false);
