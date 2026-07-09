@@ -13,6 +13,12 @@ type VisitButtonProps = {
   postRating: string | null;
 };
 
+function isAuthFeaturesFlagEnabled(): boolean {
+  const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
+  const val = match ? match[2] : null;
+  return val === "true";
+}
+
 export default (alpine: AlpineInstance) => {
   (window as unknown as { Alpine: AlpineInstance }).Alpine = alpine;
 
@@ -21,9 +27,11 @@ export default (alpine: AlpineInstance) => {
     return {
       saved: false,
       signedOut: false,
+      flagEnabled: isAuthFeaturesFlagEnabled(),
       loading: false,
 
       async init() {
+        if (!this.flagEnabled) return;
         const clerk = (window as unknown as { Clerk?: ClerkInstance }).Clerk;
         if (!clerk) {
           this.signedOut = true;
@@ -76,9 +84,11 @@ export default (alpine: AlpineInstance) => {
     return {
       visited: false,
       signedOut: false,
+      flagEnabled: isAuthFeaturesFlagEnabled(),
       loading: false,
 
       async init() {
+        if (!this.flagEnabled) return;
         const clerk = (window as unknown as { Clerk?: ClerkInstance }).Clerk;
         if (!clerk) {
           this.signedOut = true;
