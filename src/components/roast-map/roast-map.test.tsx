@@ -170,7 +170,7 @@ describe("roast-map component", () => {
         html: expect.stringContaining("9.2")
       })
     );
-    expect((leafletMocks.divIconMock.mock.calls[0]?.[0] as { html?: string }).html).toContain("#4B0082");
+    expect((leafletMocks.divIconMock.mock.calls[0]![0] as { html?: string }).html).toContain("#4B0082");
 
     await act(async () => {
       root.unmount();
