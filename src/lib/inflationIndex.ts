@@ -1,16 +1,18 @@
 import type { Post } from "../types";
 import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
 
+type InflationIndexResult = {
+  inflationIndex: Record<string, number>;
+  mostRecentYear: string;
+};
+
 const getMedian = (arr: number[]): number => {
   const sorted = [...arr].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
 };
 
-export function computeInflationIndex(posts: Post[]): {
-  inflationIndex: Record<string, number>;
-  mostRecentYear: string;
-} {
+export function computeInflationIndex(posts: Post[]): InflationIndexResult {
   const yearPrices = new Map<string, number[]>();
 
   for (const post of posts) {
@@ -45,10 +47,7 @@ export function computeInflationIndex(posts: Post[]): {
   return { inflationIndex, mostRecentYear };
 }
 
-export async function buildInflationIndex(): Promise<{
-  inflationIndex: Record<string, number>;
-  mostRecentYear: string;
-}> {
+export async function buildInflationIndex(): Promise<InflationIndexResult> {
   const allPosts = await getAllRoastDinnerPosts();
   return computeInflationIndex(allPosts);
 }

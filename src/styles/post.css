@@ -525,7 +525,7 @@ p {
       list-style: none;
       margin: 0 0 1rem;
       padding: 0;
-      text-decoration: none !important;
+      text-decoration: none;
 
       .featured-image img {
         width: 100%;

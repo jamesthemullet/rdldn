@@ -5,7 +5,7 @@ export const GET: APIRoute = async () => {
   try {
     const results = await kv.zrange("leaderboard", 0, 9, { rev: true });
 
-    const scores = (results as unknown[]).flatMap((member) => {
+    const scores = (results as Array<string | Record<string, unknown>>).flatMap((member) => {
       if (typeof member === "object" && member !== null) return [member];
       if (typeof member === "string") {
         try {

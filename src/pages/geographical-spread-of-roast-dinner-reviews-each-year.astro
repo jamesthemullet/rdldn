@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
 import type { Post, PostsConnection } from "../types";
 import "../styles/post.css";
@@ -69,7 +70,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
     <ul>
       {
         orderedYears
