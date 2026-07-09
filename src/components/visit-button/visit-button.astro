@@ -12,6 +12,7 @@ import "./visit-button.css";
 
 <div
   x-data={`visitButton(${JSON.stringify({ postSlug, postTitle, postRating: postRating ?? null })})`}
+  x-show="flagEnabled"
 >
   <a x-show="signedOut" href="/sign-in" class="visit-btn visit-sign-in"
     >Sign in to log a visit</a
