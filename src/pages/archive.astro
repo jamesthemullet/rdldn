@@ -2,6 +2,7 @@
 import Dropdown from "../components/dropdown/dropdown.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchPostsByDate } from "../lib/graphql";
+import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
 import type { Post } from "../types";
 
@@ -39,7 +40,10 @@ try {
 }
 ---
 
-<BaseLayout pageTitle="Archive">
+<BaseLayout
+  pageTitle="Archive"
+  description="Browse every roast dinner review by month. Search the complete Roast Dinners in London archive going back to 2016."
+>
   <div class="no-image-container">
     <section class="post-title">
       <h2>Gravy Archives</h2>
@@ -71,7 +75,7 @@ try {
             <li class="heading">
               <h2>
                 <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                  <Fragment set:html={post?.title} />
+                  <Fragment set:html={sanitizeTitle(post?.title)} />
                 </a>
               </h2>
               <a

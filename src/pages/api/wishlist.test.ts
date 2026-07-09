@@ -77,13 +77,14 @@ describe("POST /api/wishlist", () => {
     expect((await response.json()).error).toContain("required");
   });
 
-  test("returns 200 when the wishlist item already exists", async () => {
+  test("returns 200 and does not insert when the wishlist item already exists", async () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([{ id: "user-uuid" }]) as never)
       .mockReturnValueOnce(makeSelectChain([{ id: "existing-item" }]) as never);
     const response = await POST(makeContext("clerk_abc", { postSlug: "slug", postTitle: "Title" }));
     expect(response.status).toBe(200);
     expect((await response.json()).saved).toBe(true);
+    expect(db.insert).not.toHaveBeenCalled();
   });
 
   test("inserts a new wishlist item and returns 201", async () => {
