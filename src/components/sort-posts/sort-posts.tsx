@@ -352,6 +352,9 @@ const SortPosts = ({
                 data-test-id="roast-link"
               >
                 {post.title}
+                {post.closedDowns?.nodes[0]?.name && (
+                  <span className="sr-only"> (Closed)</span>
+                )}
               </a>
               <span
                 className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}
