@@ -34,6 +34,13 @@ const initialFilterState: FilterState = {
 
 const isFilterKey = (key: string): key is keyof FilterState => key in initialFilterState;
 
+const SORT_ORDERS: readonly SortOrder[] = ["asc", "desc"];
+const SORT_COLUMNS: readonly SortColumn[] = [
+  "rating", "price", "yearVisited", "meat", "tubeStation", "area", "borough", "owner", "closedDown", "title",
+];
+const isSortOrder = (v: string): v is SortOrder => (SORT_ORDERS as readonly string[]).includes(v);
+const isSortColumn = (v: string): v is SortColumn => (SORT_COLUMNS as readonly string[]).includes(v);
+
 const filterReducer = (state: FilterState, action: FilterAction): FilterState => {
   switch (action.type) {
     case "SET_FILTER":
@@ -178,8 +185,14 @@ const getInitialStateFromUrl = (): URLSearchParams | null => {
 };
 
 export const useSortFilter = (posts: Post[]) => {
-  const [sortOrder, setSortOrder] = useState<SortOrder>(() => (getInitialStateFromUrl()?.get("order") ?? "desc") as SortOrder);
-  const [sortColumn, setSortColumn] = useState<SortColumn>(() => (getInitialStateFromUrl()?.get("sort") ?? "rating") as SortColumn);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
+    const v = getInitialStateFromUrl()?.get("order") ?? "desc";
+    return isSortOrder(v) ? v : "desc";
+  });
+  const [sortColumn, setSortColumn] = useState<SortColumn>(() => {
+    const v = getInitialStateFromUrl()?.get("sort") ?? "rating";
+    return isSortColumn(v) ? v : "rating";
+  });
   const [filters, dispatch] = useReducer(filterReducer, undefined, () => {
     const params = getInitialStateFromUrl();
     return {

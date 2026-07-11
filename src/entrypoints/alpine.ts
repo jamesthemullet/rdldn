@@ -1,4 +1,3 @@
-import type { Clerk as ClerkInstance } from "@clerk/shared/types";
 import type { Alpine as AlpineInstance } from "alpinejs";
 
 type WishlistButtonProps = {
@@ -20,7 +19,7 @@ function isAuthFeaturesFlagEnabled(): boolean {
 }
 
 export default (alpine: AlpineInstance) => {
-  (window as unknown as { Alpine: AlpineInstance }).Alpine = alpine;
+  window.Alpine = alpine;
 
   alpine.data("wishlistButton", (props: WishlistButtonProps = {} as WishlistButtonProps) => {
     const { postSlug, postTitle, postRating } = props;
@@ -32,7 +31,7 @@ export default (alpine: AlpineInstance) => {
 
       async init() {
         if (!this.flagEnabled) return;
-        const clerk = (window as unknown as { Clerk?: ClerkInstance }).Clerk;
+        const clerk = window.Clerk;
         if (!clerk) {
           this.signedOut = true;
           return;
@@ -89,7 +88,7 @@ export default (alpine: AlpineInstance) => {
 
       async init() {
         if (!this.flagEnabled) return;
-        const clerk = (window as unknown as { Clerk?: ClerkInstance }).Clerk;
+        const clerk = window.Clerk;
         if (!clerk) {
           this.signedOut = true;
           return;
