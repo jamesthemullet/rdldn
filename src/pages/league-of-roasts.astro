@@ -101,7 +101,7 @@ const roastListStructuredData = {
     <script lang="ts">
       document.addEventListener("DOMContentLoaded", () => {
         const loadingElement = document.getElementById("sort-posts-loading");
-        const containerElement = document.querySelector<HTMLElement>(".sort-posts-container");
+        const containerElement = document.querySelector(".sort-posts-container");
 
         if (!loadingElement || !containerElement) return;
 
@@ -113,19 +113,19 @@ const roastListStructuredData = {
           containerElement.style.transition = "opacity 0.2s ease-in-out";
         };
 
-        if (containerElement.querySelector(":scope > div")) {
+        if (containerElement.querySelector("astro-island > div")) {
           showComponent();
           return;
         }
 
         const observer = new MutationObserver(() => {
-          if (containerElement.querySelector(":scope > div")) {
+          if (containerElement.querySelector("astro-island > div")) {
             observer.disconnect();
             showComponent();
           }
         });
 
-        observer.observe(containerElement, { childList: true });
+        observer.observe(containerElement, { childList: true, subtree: true });
 
         // Fallback after 3s if React never mounts
         setTimeout(() => {
