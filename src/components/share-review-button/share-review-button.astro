@@ -75,6 +75,7 @@ import "./share-review-button.css";
     type="button"
     class="share-review-btn"
     id="copy-review-btn"
+    aria-label={`Copy ${title} review text to clipboard`}
   >
     Copy text
   </button>
@@ -87,9 +88,11 @@ import "./share-review-button.css";
       try {
         await navigator.clipboard.writeText(shareText);
         btn.textContent = "Copied!";
+        btn.setAttribute("aria-label", "Review text copied to clipboard");
         btn.classList.add("share-review-btn--copied");
         setTimeout(() => {
           btn.textContent = "Copy text";
+          btn.setAttribute("aria-label", "Copy review text to clipboard");
           btn.classList.remove("share-review-btn--copied");
         }, 2000);
       } catch {

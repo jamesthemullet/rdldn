@@ -11,11 +11,17 @@ import FeaturedPostHeader from "../components/featured-post-header/featured-post
 import Newsletter from "../components/newsletter/newsletter.astro";
 import { fetchPageData } from "../lib/graphql";
 
-const singlePage = await fetchPageData("2");
+let singlePage: Awaited<ReturnType<typeof fetchPageData>> | null = null;
 
-const threadedComments = organiseComments(singlePage.comments.nodes);
+try {
+  singlePage = await fetchPageData("2");
+} catch (error) {
+  console.error("Error fetching about page data:", error);
+}
 
-const safeContent = sanitizeHtml(singlePage.content ?? "", {
+const threadedComments = singlePage ? organiseComments(singlePage.comments.nodes) : [];
+
+const safeContent = sanitizeHtml(singlePage?.content ?? "", {
   allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "iframe"]),
   allowedAttributes: {
     ...sanitizeHtml.defaults.allowedAttributes,
@@ -28,17 +34,17 @@ const safeContent = sanitizeHtml(singlePage.content ?? "", {
 ---
 
 <BaseLayout
-  pageTitle={singlePage.title}
+  pageTitle={singlePage?.title ?? "About"}
   description={singlePage?.seo?.opengraphDescription}
   opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
 >
   <FeaturedPostHeader
-    imageSrc={singlePage?.featuredImage?.node?.sourceUrl}
-    title={singlePage.title}
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl ?? ""}
+    title={singlePage?.title ?? "About"}
   />
   <div class="container">
     <div set:html={safeContent} />
     <Newsletter />
-    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+    <Comments threadedComments={threadedComments} postId={singlePage?.pageId ?? "2"} />
   </div>
 </BaseLayout>

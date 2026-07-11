@@ -20,7 +20,7 @@
   padding: 0.5rem 1rem;
   cursor: pointer;
   margin: 0;
-  color: var(--roast-main-text) !important;
+  color: var(--roast-main-text);
   font-family: inherit;
   font-size: 1rem;
   font-weight: normal;

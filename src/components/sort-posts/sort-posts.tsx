@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
 import { useAuth } from "@clerk/astro/react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Post } from "../../types";
 import WishlistButton from "../wishlist-button/wishlist-button.tsx";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
@@ -30,14 +30,14 @@ const SortPosts = ({
       .catch(() => {});
   }, [isLoaded, isSignedIn]);
 
-  function handleSaveToggle(slug: string, nowSaved: boolean): void {
+  const handleSaveToggle = useCallback((slug: string, nowSaved: boolean): void => {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
       if (nowSaved) next.add(slug);
       else next.delete(slug);
       return next;
     });
-  }
+  }, []);
 
   const {
     sortOrder,

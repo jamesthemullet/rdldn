@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeContent } from "../lib/sanitize";
 export const prerender = true;
 
 import { organiseComments } from "../lib/utils";
@@ -68,7 +69,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
     <ul>
       {
         yearsSorted.map(({ year, average, count }) => (

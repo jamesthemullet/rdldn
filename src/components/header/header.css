@@ -10,7 +10,7 @@ header {
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: var(--roast-new-blue);
+  background-color: var(--roast-main-text);
   color: var(--roast-white);
   font-size: 1.5em;
   margin-right: 2rem;
@@ -132,7 +132,7 @@ header {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   width: 100%;
-  background-color: var(--roast-new-blue);
+  background-color: var(--roast-main-text);
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
@@ -195,7 +195,7 @@ header {
   left: 0;
   min-width: 200px;
   z-index: 1001;
-  background-color: var(--roast-new-blue);
+  background-color: var(--roast-main-text);
 }
 
 .dropdown-menu a {
@@ -335,27 +335,27 @@ header {
 
 .header-top-right .cl-userButtonTrigger,
 .header-top-right .cl-userButtonBox {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  background: none !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  min-width: unset !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  background: none;
+  width: 2rem;
+  height: 2rem;
+  min-width: unset;
+  padding: 0;
+  margin: 0;
 }
 
 .header-top-right .cl-userButtonAvatarBox,
 .header-top-right .cl-userButtonAvatarImage {
-  width: 2rem !important;
-  height: 2rem !important;
+  width: 2rem;
+  height: 2rem;
 }
 
 .header-top-right [data-clerk-control-slot-default] {
-  display: flex !important;
-  align-items: center !important;
-  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+  padding-bottom: 0;
 }
 
 @media (max-width: 1023px) {

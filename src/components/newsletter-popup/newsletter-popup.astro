@@ -2,10 +2,10 @@
 import "./newsletter-popup.css";
 ---
 
-<div class="newsletter-popup-overlay" id="newsletter-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="newsletter-popup-heading">
+<div class="newsletter-popup-overlay" id="newsletter-popup-overlay" role="dialog" aria-modal="true" aria-labelledby="newsletter-popup-heading" aria-hidden="true">
   <div class="newsletter-popup">
     <div class="newsletter-popup-header">
-      <p class="newsletter-popup-heading" id="newsletter-popup-heading">📬 Get new roast reviews direct to your inbox</p>
+      <h2 class="newsletter-popup-heading" id="newsletter-popup-heading">📬 Get new roast reviews direct to your inbox</h2>
       <button class="newsletter-popup-close" id="newsletter-popup-close" aria-label="Close newsletter signup">×</button>
     </div>
     <iframe
@@ -13,7 +13,6 @@ import "./newsletter-popup.css";
       width="480"
       height="320"
       style="border: 1px solid #EEE; background: white"
-      frameborder="0"
       scrolling="no"
       title="Subscribe to the Roast Dinners in London newsletter"
     ></iframe>
@@ -31,29 +30,57 @@ import "./newsletter-popup.css";
     const dismissed = localStorage.getItem(STORAGE_KEY);
     const shouldShow = !dismissed || Date.now() - Number(dismissed) > THREE_MONTHS_MS;
 
+    let previouslyFocused: Element | null = null;
+
+    const show = () => {
+      previouslyFocused = document.activeElement;
+      overlay.classList.add("visible");
+      overlay.setAttribute("aria-hidden", "false");
+      closeBtn?.focus();
+    };
+
+    const hide = (persist: boolean) => {
+      overlay.classList.remove("visible");
+      overlay.setAttribute("aria-hidden", "true");
+      if (previouslyFocused instanceof HTMLElement) {
+        previouslyFocused.focus();
+      }
+      if (persist) {
+        localStorage.setItem(STORAGE_KEY, String(Date.now()));
+      }
+    };
+
     if (shouldShow) {
-      setTimeout(() => {
-        overlay.classList.add("visible");
-      }, 5000);
+      setTimeout(show, 5000);
     }
 
-    const dismissForever = () => {
-      overlay.classList.remove("visible");
-      localStorage.setItem(STORAGE_KEY, String(Date.now()));
-    };
-
-    const hideForSession = () => {
-      overlay.classList.remove("visible");
-    };
-
-    closeBtn?.addEventListener("click", dismissForever);
+    closeBtn?.addEventListener("click", () => hide(true));
 
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) hideForSession();
+      if (e.target === overlay) hide(false);
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && overlay.classList.contains("visible")) hideForSession();
+      if (e.key === "Escape" && overlay.classList.contains("visible")) hide(false);
+    });
+
+    overlay.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (!overlay.classList.contains("visible") || e.key !== "Tab") return;
+      const focusable = Array.from(
+        overlay.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute("disabled"));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        last.focus();
+        e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first.focus();
+        e.preventDefault();
+      }
     });
   }
 </script>

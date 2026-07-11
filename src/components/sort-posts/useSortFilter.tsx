@@ -1,6 +1,9 @@
 import { type ChangeEvent, type ReactElement, type SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import type { Post } from "../../types";
 
+type SortColumn = "rating" | "price" | "yearVisited" | "meat" | "tubeStation" | "area" | "borough" | "owner" | "closedDown" | "title";
+type SortOrder = "asc" | "desc";
+
 type FilterState = {
   meat: string;
   score: string;
@@ -29,6 +32,8 @@ const initialFilterState: FilterState = {
   zone: "",
 };
 
+const isFilterKey = (key: string): key is keyof FilterState => key in initialFilterState;
+
 const filterReducer = (state: FilterState, action: FilterAction): FilterState => {
   switch (action.type) {
     case "SET_FILTER":
@@ -38,7 +43,7 @@ const filterReducer = (state: FilterState, action: FilterAction): FilterState =>
   }
 };
 
-const sortedByColumn = (posts: Post[], column: string, order: string): Post[] => {
+const sortedByColumn = (posts: Post[], column: SortColumn, order: SortOrder): Post[] => {
   return [...posts].sort((a, b) => {
     let aValue: string | number = "";
     let bValue: string | number = "";
@@ -173,20 +178,21 @@ const getInitialStateFromUrl = (): URLSearchParams | null => {
 };
 
 export const useSortFilter = (posts: Post[]) => {
-  const urlParams = getInitialStateFromUrl();
-
-  const [sortOrder, setSortOrder] = useState(urlParams?.get("order") ?? "desc");
-  const [sortColumn, setSortColumn] = useState(urlParams?.get("sort") ?? "rating");
-  const [filters, dispatch] = useReducer(filterReducer, {
-    meat: urlParams?.get("meat") ?? "",
-    score: urlParams?.get("score") ?? "",
-    price: urlParams?.get("price") ?? "",
-    area: urlParams?.get("area") ?? "",
-    borough: urlParams?.get("borough") ?? "",
-    owner: urlParams?.get("owner") ?? "",
-    closedDown: urlParams?.get("closedDown") ?? "",
-    year: urlParams?.get("year") ?? "",
-    zone: urlParams?.get("zone") ?? "",
+  const [sortOrder, setSortOrder] = useState<SortOrder>(() => (getInitialStateFromUrl()?.get("order") ?? "desc") as SortOrder);
+  const [sortColumn, setSortColumn] = useState<SortColumn>(() => (getInitialStateFromUrl()?.get("sort") ?? "rating") as SortColumn);
+  const [filters, dispatch] = useReducer(filterReducer, undefined, () => {
+    const params = getInitialStateFromUrl();
+    return {
+      meat: params?.get("meat") ?? "",
+      score: params?.get("score") ?? "",
+      price: params?.get("price") ?? "",
+      area: params?.get("area") ?? "",
+      borough: params?.get("borough") ?? "",
+      owner: params?.get("owner") ?? "",
+      closedDown: params?.get("closedDown") ?? "",
+      year: params?.get("year") ?? "",
+      zone: params?.get("zone") ?? "",
+    };
   });
   const [showOptions, setShowOptions] = useState(false);
   const [showYearVisited, setShowYearVisited] = useState(false);
@@ -227,7 +233,7 @@ export const useSortFilter = (posts: Post[]) => {
   );
 
   const handleSortChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    setSortColumn(e.target.value);
+    setSortColumn(e.target.value as SortColumn);
   }, []);
 
   const toggleSortOrder = useCallback((): void => {
@@ -236,7 +242,10 @@ export const useSortFilter = (posts: Post[]) => {
 
   const handleFilterChange = useCallback(
     (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
-      dispatch({ type: "SET_FILTER", name: e.target.name as keyof FilterState, value: e.target.value });
+      const { name, value } = e.target;
+      if (isFilterKey(name)) {
+        dispatch({ type: "SET_FILTER", name, value });
+      }
     },
     []
   );

@@ -1,0 +1,38 @@
+---
+type Props = {
+  postSlug: string;
+  postTitle: string;
+  postRating?: string | null;
+};
+
+const { postSlug, postTitle, postRating } = Astro.props;
+
+import "./visit-button.css";
+---
+
+<div
+  x-data={`visitButton(${JSON.stringify({ postSlug, postTitle, postRating: postRating ?? null })})`}
+  x-show="flagEnabled"
+>
+  <a x-show="signedOut" href="/sign-in" class="visit-btn visit-sign-in"
+    >Sign in to log a visit</a
+  >
+  <button
+    x-show="!signedOut"
+    type="button"
+    x-on:click="toggle()"
+    x-bind:disabled="loading"
+    x-bind:class="visited ? 'visit-btn visit-btn--visited' : 'visit-btn'"
+    x-bind:aria-label="visited ? 'Remove visit' : 'Mark as visited'"
+    x-bind:aria-pressed="visited"
+  >
+    <span aria-hidden="true" style="line-height:1;display:inline-block;width:1em;text-align:center">
+      <span x-show="loading">…</span>
+      <svg x-show="!loading && visited" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1em" height="1em" fill="currentColor"><path d="M173.9 439.4L7 273.1c-9.4-9.4-9.4-24.6 0-33.9l39.6-39.6c9.4-9.4 24.6-9.4 33.9 0L192 311.1 433.5 69.6c9.4-9.4 24.6-9.4 33.9 0l39.6 39.6c9.4 9.4 9.4 24.6 0 33.9l-299 299.9c-9.4 9.5-24.6 9.5-34.1.4z"/></svg>
+      <svg x-show="!loading && !visited" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="32"><circle cx="256" cy="256" r="224"/></svg>
+    </span>
+    <span
+      x-text="loading ? 'Saving…' : visited ? ' Visited' : ' Mark as visited'"
+    ></span>
+  </button>
+</div>

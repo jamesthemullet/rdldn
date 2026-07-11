@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
+import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import NewsletterPopup from "../components/newsletter-popup/newsletter-popup.astro";
 import Search from "../components/search/search.astro";
@@ -8,6 +10,9 @@ import { fetchGraphQL } from "../lib/api";
 
 export const prerender = true;
 
+import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
+import findARoastImg from "../images/find-a-roast.png";
+import guessTheScoreImg from "../images/guess-the-score.png";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 import GET_ALL_PAGES from "../lib/queries/getAllPages";
 import GET_FEATURE_POSTS from "../lib/queries/getFeaturePosts.ts";
@@ -262,15 +267,15 @@ try {
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
   opengraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
 >
-  <section class="home-list latest-reviews">
-    <h2>Latest Reviews:</h2>
+  <section class="home-list latest-reviews" aria-labelledby="latest-reviews-heading">
+    <h2 id="latest-reviews-heading">Latest Reviews:</h2>
     <ul>
       {
         posts.map((post, index) => (
           <li class="heading" data-post-date={post?.date}>
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -291,15 +296,15 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Find Your Favourite Roast:</h2>
+  <section class="home-list" aria-labelledby="find-favourite-heading">
+    <h2 id="find-favourite-heading">Find Your Favourite Roast:</h2>
     <ul>
       {
         findYourFavouriteRoastPages.map((page) => (
           <li class="heading">
             <h3>
               <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={page?.title} />
+                <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
@@ -316,15 +321,34 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Roast By Location:</h2>
+  <section class="home-list interactive-features" aria-labelledby="interactive-heading">
+    <h2 id="interactive-heading">Interactive:</h2>
+    <ul>
+      <li class="heading">
+        <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
+        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image">
+          <img src={findARoastImg.src} alt="Find a roast" width="400" height="300" loading="lazy" />
+        </a>
+      </li>
+      <MyRoastListItem imgSrc={dreamingOfRoastDinners.src} client:load />
+      <li class="heading">
+        <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
+        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image">
+          <img src={guessTheScoreImg.src} alt="Guess the score" width="400" height="300" loading="lazy" />
+        </a>
+      </li>
+      <li class="heading interactive-features__placeholder" aria-hidden="true"></li>
+    </ul>
+  </section>
+  <section class="home-list" aria-labelledby="roast-by-location-heading">
+    <h2 id="roast-by-location-heading">Roast By Location:</h2>
     <ul>
       {
         locationPages.map((page) => (
           <li class="heading">
             <h3>
               <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={page?.title} />
+                <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
             <a href={page?.slug} rel="noopener noreferrer">
@@ -371,19 +395,19 @@ try {
     </div>
   </section> -->
 
-  <section class="home">
-    <h2>Search:</h2>
+  <section class="home" aria-labelledby="search-heading">
+    <h2 id="search-heading">Search:</h2>
     <Search resultLimit={4} />
   </section>
-  <section class="home-list">
-    <h2>A few of the best roasts:</h2>
+  <section class="home-list" aria-labelledby="best-roasts-heading">
+    <h2 id="best-roasts-heading">A few of the best roasts:</h2>
     <ul>
       {
         bestRoasts.map((post, index) => (
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -406,15 +430,15 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Features:</h2>
+  <section class="home-list" aria-labelledby="features-heading">
+    <h2 id="features-heading">Features:</h2>
     <ul>
       {
         features.map((post, index) => (
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a
@@ -435,15 +459,15 @@ try {
       }
     </ul>
   </section>
-  <section class="home-list">
-    <h2>Roastatistics:</h2>
+  <section class="home-list" aria-labelledby="roastatistics-heading">
+    <h2 id="roastatistics-heading">Roastatistics:</h2>
     <ul>
       {
         roastStatistics.map((post, index) => (
           <li class="heading">
             <h3>
               <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={post?.title} />
+                <Fragment set:html={sanitizeTitle(post?.title)} />
               </a>
             </h3>
             <a

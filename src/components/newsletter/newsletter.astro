@@ -1,12 +1,17 @@
+---
+const isTesting = import.meta.env.PLAYWRIGHT === "true";
+---
+
 <div class="post-summary-block highlight-block substack-signup">
   <p class="substack-signup-heading">📬 Get new roast reviews direct to your inbox</p>
-  <iframe
-    src="https://rdldn.substack.com/embed"
-    width="480"
-    height="320"
-    style="border: 1px solid #EEE; background: white"
-    frameborder="0"
-    scrolling="no"
-    title="Subscribe to the Roast Dinners in London newsletter"
-  ></iframe>
+  {!isTesting && (
+    <iframe
+      src="https://rdldn.substack.com/embed"
+      width="480"
+      height="320"
+      style="border: 1px solid #EEE; background: white"
+      scrolling="no"
+      title="Subscribe to the Roast Dinners in London newsletter"
+    ></iframe>
+  )}
 </div>
