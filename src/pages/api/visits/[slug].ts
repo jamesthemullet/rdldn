@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../../lib/db";
 import { users, visits } from "../../../lib/schema";
 
-export async function DELETE(context: APIContext) {
+export async function DELETE(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
