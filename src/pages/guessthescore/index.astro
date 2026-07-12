@@ -175,11 +175,12 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
 
         <!-- Score submission -->
         <div x-show="!scoreSubmitted" class="score-submit">
-          <p class="score-submit-prompt">
+          <label for="player-name" class="score-submit-prompt">
             Enter your name for the leaderboard:
-          </p>
+          </label>
           <div class="score-submit-row">
             <input
+              id="player-name"
               type="text"
               x-model="playerName"
               placeholder="Your name"

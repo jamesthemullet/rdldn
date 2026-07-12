@@ -12,6 +12,7 @@ const {
   halloween,
   structuredData,
   ogType = "website",
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = Astro.site
@@ -63,11 +64,15 @@ const canonicalURL = Astro.site
       description={description ||
         "Lord Gravy bringing you a guide to the best and worst roast dinners in London."}
       canonical={canonicalURL}
+      noindex={noindex}
       openGraph={{
         basic: {
           title: pageTitle || "Roast Dinners In London",
           type: ogType,
           image: opengraphImage || logo1.src,
+        },
+        image: {
+          alt: description || "Roast Dinners In London",
         },
         optional: {
           description:
@@ -83,6 +88,7 @@ const canonicalURL = Astro.site
           description ||
           "Lord Gravy bringing you a guide to the best and worst roast dinners in London.",
         image: opengraphImage || logo1.src,
+        imageAlt: description || "Roast Dinners In London",
       }}
     />
     {
