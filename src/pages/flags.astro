@@ -27,8 +27,8 @@ const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
 }));
 ---
 
-<BaseLayout pageTitle="Feature Flags" description="Control feature flags for this site.">
-  <main class="flags-page">
+<BaseLayout pageTitle="Feature Flags" description="Control feature flags for this site." noindex={true}>
+  <div class="flags-page">
     <h2>Feature Flags</h2>
     <p class="flags-intro">Changes take effect immediately.</p>
     <form method="POST" id="flags-form">
@@ -54,7 +54,7 @@ const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
         }
       </ul>
     </form>
-  </main>
+  </div>
   <script>
     document.querySelectorAll(".flag-checkbox").forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
