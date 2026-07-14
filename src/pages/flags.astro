@@ -28,7 +28,7 @@ const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
 ---
 
 <BaseLayout pageTitle="Feature Flags" description="Control feature flags for this site.">
-  <main class="flags-page">
+  <div class="flags-page">
     <h2>Feature Flags</h2>
     <p class="flags-intro">Changes take effect immediately.</p>
     <form method="POST" id="flags-form">
@@ -40,12 +40,13 @@ const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
                 <span class="flag-label">{flag.label}</span>
                 <span class="flag-description">{flag.description}</span>
               </div>
-              <label class="toggle-switch" aria-label={`Toggle ${flag.label}`}>
+              <label class="toggle-switch">
                 <input
                   type="checkbox"
                   name={`flag_${flag.key}`}
                   class="flag-checkbox"
                   checked={flag.current}
+                  aria-label={`Toggle ${flag.label}`}
                 />
                 <span class="toggle-slider" />
               </label>
@@ -54,7 +55,7 @@ const flags = Object.entries(FLAG_DEFINITIONS).map(([key, def]) => ({
         }
       </ul>
     </form>
-  </main>
+  </div>
   <script>
     document.querySelectorAll(".flag-checkbox").forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
