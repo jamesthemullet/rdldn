@@ -39,3 +39,10 @@
   opacity: 0.6;
   cursor: default;
 }
+
+.wishlist-btn__icon {
+  line-height: 1;
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+}

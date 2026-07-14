@@ -20,6 +20,7 @@ import FeaturedPostHeader from "../components/featured-post-header/featured-post
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import ShareReviewButton from "../components/share-review-button/share-review-button.astro";
+import VisitButton from "../components/visit-button/visit-button.astro";
 import WishlistButton from "../components/wishlist-button/wishlist-button.astro";
 import logo3 from "../images/logo-3.png";
 import { buildInflationIndex } from "../lib/inflationIndex";
@@ -139,7 +140,7 @@ const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => 
 
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
-const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3) as string;
+const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3.src) as string;
 
 const rawContent = singlePost.content?.replace(/i\d+\.wp\.com\/rdldn\.co\.uk/g, "blog.rdldn.co.uk") ?? "";
 const safeContent = sanitizeHtml(rawContent, {
@@ -154,7 +155,7 @@ const safeContent = sanitizeHtml(rawContent, {
 });
 
 const threadedComments = organiseComments(
-  contentType === "page" ? data.page!.comments!.nodes : data.post!.comments!.nodes
+  (contentType === "page" ? data.page?.comments?.nodes : data.post?.comments?.nodes) ?? null
 );
 
 const reviewStructuredData =
@@ -221,6 +222,7 @@ const reviewStructuredData =
     {contentType === "post" && (
       <>
         <button
+          type="button"
           class="skip"
           onclick="
             const el = document.getElementById('summary');
@@ -252,8 +254,8 @@ const reviewStructuredData =
     <Newsletter />
     
     {contentType === "post" && isRoastDinner && (
-    <section id="summary" class="summary">
-              <h3>Summary:</h3>
+    <section id="summary" class="summary" aria-labelledby="summary-heading">
+              <h3 id="summary-heading">Summary:</h3>
 
       {(post.closedDowns?.nodes?.length ?? 0) > 0 && (
         <p class="closed-message">
@@ -291,12 +293,12 @@ const reviewStructuredData =
         </p>
       )}
     </section>
-    <section>
-      <h3>Loved & Loathed:</h3>
+    <section aria-labelledby="loved-loathed-heading">
+      <h3 id="loved-loathed-heading">Loved & Loathed:</h3>
       <p>Loved: {post.highlights?.loved}</p>
       <p>Loathed: {post.highlights?.loathed}</p>
     </section>
-    <section>
+    <section aria-label="Share this review">
       <ShareReviewButton
         title={singlePost.title ?? ""}
         rating={rating}
@@ -308,7 +310,7 @@ const reviewStructuredData =
         slug={String(slug)}
       />
     </section>
-    <section>
+    <section aria-label="Get Booking">
       {post.closedDowns?.nodes?.length === 0 && (
         <>
           <h3>Get Booking:</h3>
@@ -330,6 +332,11 @@ const reviewStructuredData =
       )}
     </section>
     <WishlistButton
+      postSlug={String(slug)}
+      postTitle={singlePost.title ?? ""}
+      postRating={rating ?? null}
+    />
+    <VisitButton
       postSlug={String(slug)}
       postTitle={singlePost.title ?? ""}
       postRating={rating ?? null}

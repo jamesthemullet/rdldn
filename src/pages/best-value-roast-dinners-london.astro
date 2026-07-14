@@ -1,0 +1,151 @@
+---
+import BestValue from "../components/best-value/best-value.tsx";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import Newsletter from "../components/newsletter/newsletter.astro";
+import logo3 from "../images/logo-3.png";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { computeInflationIndex } from "../lib/inflationIndex";
+import { computeValueScores } from "../lib/valueScore";
+import "../styles/post.css";
+import "../styles/best-value.css";
+import { fetchGraphQL } from "../lib/api";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+import type { Post, PostsConnection } from "../types";
+
+export const prerender = true;
+
+const allRoastPosts: Post[] = [];
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(
+    GET_ALL_POSTS,
+    variables
+  );
+
+  allRoastPosts.push(
+    ...posts.nodes.filter(
+      (post: Post) =>
+        post.typesOfPost?.nodes.length === 1 &&
+        post.typesOfPost.nodes[0]?.name === "Roast Dinner" &&
+        !post.closedDowns?.nodes[0]?.name &&
+        post.areas?.nodes[0]?.name !== "Not Really London"
+    )
+  );
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+const { inflationIndex, mostRecentYear } = computeInflationIndex(allRoastPosts);
+
+const scoredPosts = computeValueScores(allRoastPosts, inflationIndex).sort(
+  (a, b) => b.valueScore - a.valueScore
+);
+
+const pageTitle = "Best Value Roast Dinners in London";
+const description =
+  "Ranked by value score (rating divided by inflation-adjusted price): the cheap roast dinner London spots and best cheap Sunday roast London deals, including roast dinners under £15.";
+
+const valueListStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: pageTitle,
+  description,
+  itemListElement: scoredPosts.slice(0, 20).map(({ post }, idx) => ({
+    "@type": "ListItem",
+    position: idx + 1,
+    name: post.title,
+    url:
+      post.slug && Astro.site ? new URL(post.slug, Astro.site).href : undefined,
+  })),
+};
+---
+
+<BaseLayout
+  pageTitle={pageTitle}
+  description={description}
+  structuredData={valueListStructuredData}
+>
+  <FeaturedPostHeader imageSrc={logo3.src} title={pageTitle} />
+  <div class="container league-container">
+    <p>
+      This page ranks every roast dinner I've reviewed by value score - rating
+      divided by an inflation-adjusted price - so a brilliant £14 roast from
+      2019 gets compared fairly against a brilliant £28 roast today. If you're
+      after a cheap roast dinner in London that still hits the spot, or just
+      fancy a roast dinner under £20 (maybe), start here.
+    </p>
+    <p>
+      Filter by area, borough or tube line to narrow it down, or just scroll the
+      ranked table below. Every price has been adjusted for roast dinner
+      inflation{mostRecentYear ? ` to ${mostRecentYear} money` : ""}, so it
+      doesn't matter when I visited — the comparison is fair.
+    </p>
+
+    <div class="sort-posts-loading" id="best-value-loading">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p>Loading the value rankings...</p>
+      </div>
+    </div>
+
+    <div
+      class="best-value-loading-container"
+      style="opacity: 0; position: absolute; visibility: hidden;"
+    >
+      <BestValue
+        client:only="react"
+        posts={allRoastPosts}
+        inflationIndex={inflationIndex}
+        mostRecentYear={mostRecentYear}
+      />
+    </div>
+
+    <script lang="ts">
+      document.addEventListener("DOMContentLoaded", () => {
+        let attempts = 0;
+        const maxAttempts = 20; // 2 seconds max
+
+        const checkForComponent = () => {
+          attempts++;
+          const bestValueElement = document.querySelector(
+            ".best-value-loading-container > div"
+          );
+          const loadingElement = document.getElementById("best-value-loading");
+          const containerElement = document.querySelector(
+            ".best-value-loading-container"
+          );
+
+          if (bestValueElement && loadingElement && containerElement) {
+            loadingElement.style.display = "none";
+            containerElement.style.position = "static";
+            containerElement.style.visibility = "visible";
+            containerElement.style.opacity = "1";
+            containerElement.style.transition = "opacity 0.2s ease-in-out";
+            return;
+          }
+
+          if (attempts < maxAttempts) {
+            setTimeout(checkForComponent, 100);
+          } else {
+            if (loadingElement) {
+              loadingElement.style.display = "none";
+            }
+            if (containerElement) {
+              containerElement.style.position = "static";
+              containerElement.style.visibility = "visible";
+              containerElement.style.opacity = "1";
+            }
+          }
+        };
+
+        checkForComponent();
+      });
+    </script>
+
+    <Newsletter />
+  </div>
+</BaseLayout>

@@ -1,16 +1,18 @@
 ---
-interface Props {
+type Props = {
   postSlug: string;
   postTitle: string;
   postRating?: string | null;
-}
+};
 
 const { postSlug, postTitle, postRating } = Astro.props;
+
 import "./wishlist-button.css";
 ---
 
 <div
   x-data={`wishlistButton(${JSON.stringify({ postSlug, postTitle, postRating: postRating ?? null })})`}
+  x-show="flagEnabled"
 >
   <a x-show="signedOut" href="/sign-in" class="wishlist-btn wishlist-sign-in"
     >Sign in to save this to your list</a

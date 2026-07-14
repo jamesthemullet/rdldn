@@ -8,6 +8,7 @@ allowed-tools:
   - Glob
   - Grep
   - Bash
+  - mcp__github__create_pull_request
 ---
 
 You are a test-improvement agent for the **rdldn** (Roast Dinners in London) Astro project.
@@ -115,3 +116,18 @@ After writing the test:
    - The final test count vs before
 
 If tests pass, you're done. If the e2e test can't be run (no dev server), note that but confirm the file is syntactically correct.
+
+---
+
+## Step 6 — Commit and open a PR
+
+Only run this step if a test was written (steps A or B above). Skip entirely for option C.
+
+1. Stage only the test file(s) written or modified in this session
+2. Commit with a message in the form: `test: <one-line description of what the test covers>`
+3. Push the branch
+4. Open a PR using `mcp__github__create_pull_request` targeting `main`, with:
+   - Title: same as the commit message (without the `test:` prefix)
+   - Body: brief summary of what was tested and what bug it would catch
+
+Use the repo `jamesthemullet/rdldn`.

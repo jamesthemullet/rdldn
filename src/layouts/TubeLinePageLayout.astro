@@ -7,15 +7,16 @@ import type { Page, Post, Comments as ThreadedComments } from "../types";
 import BaseLayout from "./BaseLayout.astro";
 
 import "../styles/post.css";
+import { sanitizeContent } from "../lib/sanitize";
 
-interface Props {
+type Props = {
   singlePage: Page;
   lineName: string;
   headingClass: string;
   stations: string[];
   roastPosts: Post[];
   threadedComments: ThreadedComments;
-}
+};
 
 const {
   singlePage,
@@ -38,7 +39,7 @@ const {
   />
 
   <div class="container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
     <section>
       <h3 class={`heading-underline ${headingClass}`}>
         Roast Dinners On The {lineName} Line

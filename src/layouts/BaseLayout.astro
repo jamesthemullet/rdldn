@@ -5,8 +5,6 @@ import "./layout.css";
 import { SEO } from "astro-seo";
 import logo1 from "../images/logo-1.png";
 
-// import logo3 from "/images/logo-3.png";
-
 const {
   pageTitle,
   description,
@@ -24,6 +22,13 @@ const canonicalURL = Astro.site
 
 <html lang="en">
   <head>
+    <script is:inline>
+      (function() {
+        var stored = localStorage.getItem('theme');
+        var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
     <link
       rel="preload"
       href="/fonts/LovedbytheKing-Regular.ttf"
@@ -62,7 +67,7 @@ const canonicalURL = Astro.site
         basic: {
           title: pageTitle || "Roast Dinners In London",
           type: ogType,
-          image: opengraphImage || logo1,
+          image: opengraphImage || logo1.src,
         },
         optional: {
           description:

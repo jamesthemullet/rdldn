@@ -3,12 +3,18 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users, wishlistItems } from "../../lib/schema";
 
+type WishlistPostBody = {
+  postSlug: string;
+  postTitle: string;
+  postRating?: string | null;
+};
+
 async function getUserId(clerkId: string): Promise<string | null> {
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
   return user?.id ?? null;
 }
 
-export async function GET(context: APIContext) {
+export async function GET(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
@@ -31,19 +37,15 @@ export async function GET(context: APIContext) {
   });
 }
 
-export async function POST(context: APIContext) {
+export async function POST(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const body = await context.request.json();
-  const { postSlug, postTitle, postRating } = body as {
-    postSlug: string;
-    postTitle: string;
-    postRating?: string | null;
-  };
+  const body = (await context.request.json()) as WishlistPostBody;
+  const { postSlug, postTitle, postRating } = body;
 
   if (!postSlug || !postTitle) {
     return new Response(JSON.stringify({ error: "postSlug and postTitle are required" }), { status: 400 });

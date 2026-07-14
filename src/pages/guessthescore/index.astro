@@ -1,7 +1,10 @@
 ---
+import FeaturedPostHeader from "../../components/featured-post-header/featured-post-header.astro";
+import guessTheScoreImg from "../../images/guess-the-score.png";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import "./game.css";
+import "../../styles/post.css";
 import { createHmac, randomUUID } from "node:crypto";
 
 const allPosts = await getAllRoastDinnerPosts();
@@ -19,7 +22,7 @@ const gamePosts: GamePost[] = allPosts
     const imageUrl = post.featuredImage?.node?.sourceUrl;
     if (!ratingName || !imageUrl) return false;
     const rating = Number.parseFloat(ratingName);
-    return !isNaN(rating) && rating >= 0 && rating <= 10;
+    return !Number.isNaN(rating) && rating >= 0 && rating <= 10;
   })
   .map((post) => ({
     title: post.title || "Unknown",
@@ -42,8 +45,8 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
   pageTitle="Guess The Score | Roast Dinners In London"
   description="Can you guess Lord Gravy's roast dinner scores? Play the rating game — see 10 roast dinner photos and guess the score out of 10!"
 >
+  <FeaturedPostHeader imageSrc={guessTheScoreImg.src} title="Guess The Score!" />
   <section class="game-container">
-    <h2>Guess The Score!</h2>
     <p class="game-intro">
       Lord Gravy has reviewed hundreds of roast dinners across London. Can you
       guess what score he gave each one? You'll see 10 photos — slide to your

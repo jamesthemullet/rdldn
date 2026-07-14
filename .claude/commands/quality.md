@@ -1,5 +1,5 @@
 ---
-description: Incrementally improve code quality — picks one issue from a rotating category and fixes it, then reports the finding.
+description: Incrementally improve code quality — picks one issue from a rotating category and fixes it, opens a PR, then reports the finding.
 user-invocable: true
 allowed-tools:
   - Read
@@ -8,6 +8,8 @@ allowed-tools:
   - Glob
   - Grep
   - Bash
+  - mcp__github__create_pull_request
+  - mcp__github__create_branch
 ---
 
 You are running an incremental code quality improvement session for the **rdldn** (Roast Dinners in London) Astro / React / TypeScript project.
@@ -67,7 +69,33 @@ Fix every reported error before proceeding. Re-run until the output is clean.
 
 Run `yarn build 2>&1 | tail -20` to confirm TypeScript still compiles cleanly after the change. If it fails, fix the compilation error before reporting.
 
-### Step 6 — Report
+### Step 6 — Commit, push, and open a PR
+
+1. Create a new branch named `quality/<short-slug>` (e.g. `quality/remove-isSaved-bang`):
+   ```
+   git checkout -b quality/<short-slug>
+   ```
+2. Stage only the files you changed and commit:
+   ```
+   git add <file1> [<file2>]
+   git commit -m "<concise imperative message>\n\nCo-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+   ```
+3. Push the branch:
+   ```
+   git push -u origin quality/<short-slug>
+   ```
+4. Open a PR using `mcp__github__create_pull_request` targeting `main`. Title should be concise (≤ 70 chars). Body should follow this template:
+   ```
+   ## Summary
+   - <what was changed and why>
+
+   ## Category
+   <chosen quality category>
+
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+   ```
+
+### Step 7 — Report
 
 Output exactly this structure:
 

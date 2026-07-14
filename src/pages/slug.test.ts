@@ -2,10 +2,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { resetGraphQLRequestCache } from "../lib/api";
 
-vi.mock("../components/header/HeaderAuth", () => ({
-  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
-  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
-}));
+vi.mock("../components/header/HeaderAuth");
 
 vi.mock("astro:assets", () => ({
   Image: (() => {
@@ -415,5 +412,58 @@ describe("[slug] render", () => {
     } else {
       expect(result).toBe("");
     }
+  });
+
+  test.each([
+    ["closeddown", "Closed Down"],
+    ["tempclosed", "Temporarily Closed"],
+    ["newmanagement", "Under New Management"],
+    ["popupmoved", "Popup Now Trading Elsewhere"],
+    ["popupstopped", "Popup Stopped Trading"],
+    ["unknown-status", "Closed Down"],
+  ])('renders closed status label for closedDownId "%s"', async (closedDownId, expectedLabel) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
+
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
+        post: {
+          postId: "200",
+          date: "2025-06-01",
+          content: "<p>Review</p>",
+          title: "Status Venue",
+          featuredImage: { node: { sourceUrl: "https://example.com/img.jpg" } },
+          seo: { opengraphDescription: "Desc", opengraphImage: { sourceUrl: "https://example.com/og.jpg" } },
+          areas: { nodes: [{ name: "East" }] },
+          boroughs: { nodes: [{ name: "Hackney" }] },
+          tubeStations: { nodes: [{ name: "Bethnal Green" }] },
+          tubeLines: { nodes: [{ name: "Central" }] },
+          prices: { nodes: [{ name: "£20" }] },
+          ratings: { nodes: [{ name: "7" }] },
+          yearsOfVisit: { nodes: [{ name: "2025" }] },
+          typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+          closedDowns: { nodes: [{ name: closedDownId }] },
+          nSFWs: { nodes: [] },
+          highlights: { loved: "Gravy", loathed: "Nothing" },
+          comments: { nodes: [] }
+        }
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./[slug].astro");
+    const html = await container.renderToString(Page, {
+      params: { slug: "status-venue" },
+      props: { contentType: "post" },
+      request: new Request("https://rdldn.co.uk/status-venue")
+    });
+
+    expect(html).toContain(expectedLabel);
   });
 });

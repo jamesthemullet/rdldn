@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
+import { sanitizeTitle } from "../../lib/sanitize";
 import "../../styles/index.css";
 import type { Post } from "../../types";
 
@@ -72,7 +73,10 @@ const averageRating =
     : null;
 ---
 
-<BaseLayout pageTitle={`Roast Dinner Reviews by ${chainName}`}>
+<BaseLayout
+  pageTitle={`Roast Dinner Reviews by ${chainName}`}
+  description={`${posts.length === 1 ? "1 roast dinner review" : `${posts.length} roast dinner reviews`} of ${chainName} venues in London.${averageRating ? ` Average rating: ${averageRating}/10.` : ""}`}
+>
   <div class="no-image-container">
     <section class="post-title centre-with-padding">
       <h2>Reviews of venues owned by {chainName}</h2>
@@ -119,7 +123,7 @@ const averageRating =
             >
               <h3>
                 <a href={`/${post.slug}`} rel="noopener noreferrer">
-                  <Fragment set:html={post.title} />
+                  <Fragment set:html={sanitizeTitle(post.title)} />
                 </a>
               </h3>
               <a

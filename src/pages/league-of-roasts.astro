@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
 import type { Post, PostsConnection } from "../types";
 import "../styles/post.css";
@@ -81,7 +82,7 @@ const roastListStructuredData = {
     title={singlePage.title}
   />
   <div class="container league-container">
-    <div set:html={singlePage.content} />
+    <div set:html={sanitizeContent(singlePage.content)} />
 
     <div class="sort-posts-loading" id="sort-posts-loading">
       <div class="loading-content">
@@ -99,44 +100,41 @@ const roastListStructuredData = {
 
     <script lang="ts">
       document.addEventListener("DOMContentLoaded", () => {
-        let attempts = 0;
-        const maxAttempts = 20; // 2 seconds max
+        const loadingElement = document.getElementById("sort-posts-loading");
+        const containerElement = document.querySelector(".sort-posts-container");
 
-        const checkForComponent = () => {
-          attempts++;
-          const sortPostsElement = document.querySelector(
-            ".sort-posts-container > div"
-          );
-          const loadingElement = document.getElementById("sort-posts-loading");
-          const containerElement = document.querySelector(
-            ".sort-posts-container"
-          );
+        if (!loadingElement || !containerElement) return;
 
-          if (sortPostsElement && loadingElement && containerElement) {
-            loadingElement.style.display = "none";
-            containerElement.style.position = "static";
-            containerElement.style.visibility = "visible";
-            containerElement.style.opacity = "1";
-            containerElement.style.transition = "opacity 0.2s ease-in-out";
-            return;
-          }
-
-          if (attempts < maxAttempts) {
-            setTimeout(checkForComponent, 100);
-          } else {
-            if (loadingElement) {
-              loadingElement.style.display = "none";
-            }
-            if (containerElement) {
-              containerElement.style.position = "static";
-              containerElement.style.visibility = "visible";
-              containerElement.style.opacity = "1";
-            }
-            console.log("Fallback: showing component anyway");
-          }
+        const showComponent = () => {
+          loadingElement.style.display = "none";
+          containerElement.style.position = "static";
+          containerElement.style.visibility = "visible";
+          containerElement.style.opacity = "1";
+          containerElement.style.transition = "opacity 0.2s ease-in-out";
         };
 
-        checkForComponent();
+        if (containerElement.querySelector("astro-island > div")) {
+          showComponent();
+          return;
+        }
+
+        const observer = new MutationObserver(() => {
+          if (containerElement.querySelector("astro-island > div")) {
+            observer.disconnect();
+            showComponent();
+          }
+        });
+
+        observer.observe(containerElement, { childList: true, subtree: true });
+
+        // Fallback after 3s if React never mounts
+        setTimeout(() => {
+          observer.disconnect();
+          loadingElement.style.display = "none";
+          containerElement.style.position = "static";
+          containerElement.style.visibility = "visible";
+          containerElement.style.opacity = "1";
+        }, 3000);
       });
     </script>
 

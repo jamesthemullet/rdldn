@@ -1,15 +1,9 @@
-import type { Post } from "../types";
+import type { Post, PostsConnection } from "../types";
 import { fetchGraphQL } from "./api";
 import GET_ALL_POSTS from "./queries/getAllPosts";
 
 type PostsResponse = {
-  posts: {
-    nodes: Post[];
-    pageInfo: {
-      hasNextPage: boolean;
-      endCursor: string | null;
-    };
-  };
+  posts: PostsConnection;
 };
 
 let allRoastDinnerPostsPromise: Promise<Post[]> | null = null;
@@ -20,8 +14,8 @@ async function fetchAllRoastDinnerPosts(): Promise<Post[]> {
   const allPosts: Post[] = [];
 
   while (hasNextPage) {
-    const variables = endCursor ? { after: endCursor } : {};
-    const data = (await fetchGraphQL(GET_ALL_POSTS, variables)) as PostsResponse;
+    const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+    const data = await fetchGraphQL<PostsResponse>(GET_ALL_POSTS, variables);
     const posts = data?.posts;
     const nodes = posts?.nodes ?? [];
     allPosts.push(...nodes);

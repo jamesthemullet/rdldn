@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users } from "../../lib/schema";
 
-export async function GET(context: APIContext) {
+export async function GET(context: APIContext): Promise<Response> {
   const auth = context.locals.auth();
   const { userId: clerkId } = auth;
 

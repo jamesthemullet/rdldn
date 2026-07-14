@@ -1,0 +1,17 @@
+name: Knip
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  knip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+      - name: Install dependencies
+        run: yarn install
+      - name: Run Knip
+        run: yarn knip

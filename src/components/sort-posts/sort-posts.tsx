@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
 import { useAuth } from "@clerk/astro/react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Post } from "../../types";
 import WishlistButton from "../wishlist-button/wishlist-button.tsx";
 import { translateClosedDown, useSortFilter } from "./useSortFilter.tsx";
@@ -30,14 +30,14 @@ const SortPosts = ({
       .catch(() => {});
   }, [isLoaded, isSignedIn]);
 
-  function handleSaveToggle(slug: string, nowSaved: boolean): void {
+  const handleSaveToggle = useCallback((slug: string, nowSaved: boolean): void => {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
       if (nowSaved) next.add(slug);
       else next.delete(slug);
       return next;
     });
-  }
+  }, []);
 
   const {
     sortOrder,
@@ -92,6 +92,13 @@ const SortPosts = ({
   );
   const uniqueYears = useMemo(
     () => getUniqueValues(posts, (post) => post.yearsOfVisit?.nodes[0]?.name),
+    [posts]
+  );
+  const uniqueZones = useMemo(
+    () =>
+      Array.from(new Set(posts.flatMap((post) => post.zones?.nodes.map((z) => z.name) ?? [])))
+        .filter(Boolean)
+        .sort(),
     [posts]
   );
 
@@ -309,6 +316,17 @@ const SortPosts = ({
                 {uniqueYears.map((year) => (
                   <option key={year} value={year}>
                     {year}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="zone-filter">Filter by Fare Zone: </label>
+              <select id="zone-filter" name="zone" value={filters.zone} onChange={handleFilterChange}>
+                <option value="">All</option>
+                {uniqueZones.map((zone) => (
+                  <option key={zone} value={zone}>
+                    {zone}
                   </option>
                 ))}
               </select>
