@@ -15,6 +15,13 @@
       "when": 1778131682791,
       "tag": "0001_round_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783539927075,
+      "tag": "0002_abandoned_ronan",
+      "breakpoints": true
     }
   ]
 }

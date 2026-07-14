@@ -3,9 +3,10 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const fetchGraphQLMock = vi.fn();
 
-vi.mock("../components/header/HeaderAuth", () => ({
-  HeaderAuthDesktop: Object.assign(() => "", { isAstroComponentFactory: true }),
-  HeaderAuthMobile: Object.assign(() => "", { isAstroComponentFactory: true }),
+vi.mock("../components/header/HeaderAuth");
+
+vi.mock("../components/my-roast-list-item/MyRoastListItem", () => ({
+  MyRoastListItem: () => null,
 }));
 
 vi.mock("../lib/api", () => ({

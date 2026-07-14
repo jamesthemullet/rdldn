@@ -306,18 +306,29 @@ section {
   }
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--roast-pink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
 .substack-signup {
   padding: 1rem;
   text-align: center;
 }
 
-.substack-signup-link {
-  display: inline-block;
-  padding: 1rem 2rem;
+.substack-signup-heading {
   font-size: 1.25rem;
   font-weight: bold;
-  color: var(--roast-pink);
-  border-radius: 8px;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.75rem;
+}
+
+.substack-signup iframe {
+  max-width: 100%;
 }

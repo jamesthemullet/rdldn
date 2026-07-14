@@ -5,6 +5,10 @@
     "type": true
   },
   "tags": ["-lintignore"],
-  "ignoreDependencies": ["@astrojs/ts-plugin", "sitemap"],
-  "ignoreBinaries": ["wait-on", "axe"]
+  "ignoreDependencies": ["@astrojs/ts-plugin", "sitemap", "accented"],
+  "ignoreBinaries": ["wait-on", "axe"],
+  "ignoreFiles": [
+    "src/entrypoints/alpine.ts",
+    "vitest.setup.ts"
+  ]
 }

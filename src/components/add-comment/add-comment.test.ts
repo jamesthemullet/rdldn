@@ -27,7 +27,9 @@ describe("add-comment component", () => {
     expect(html).toContain('class="reply-button"');
     expect(html).toContain('data-button-id="456"');
     expect(html).toContain("Post Reply");
-    expect(html).toContain('style="color: black;"');
+    expect(html).toContain('role="status"');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('aria-atomic="true"');
   });
 
   test("renders without parent attributes when parentId is not provided", async () => {
