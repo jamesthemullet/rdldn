@@ -539,28 +539,28 @@
     sisteransi "^1.0.5"
 
 "@clerk/astro@^3.0.21":
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-3.3.3.tgz#64ec2d366f5b9445fdc91214bc0725dd70051b44"
-  integrity sha512-nzBg8FBNNxR3PMkjTmzZ0ciI2GfNBXTgWQk96SjTlmFbE6VDxAiPKZpUls6378QRxlK4H17cqH8r7jic7EmuQA==
+  version "3.4.17"
+  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-3.4.17.tgz#d6cfc303053036e0d7a605f0d2071b0859bb7238"
+  integrity sha512-SVxY4eVH3+kOlFZ1iXhR71/6jcNjStTbDPYgPBauZlqOvUOxi9JqTOKugi44H9rE5cMl9nTGAWguRvoD4WGpaA==
   dependencies:
-    "@clerk/backend" "^3.5.0"
-    "@clerk/shared" "^4.15.0"
+    "@clerk/backend" "^3.11.5"
+    "@clerk/shared" "^4.25.3"
     nanoid "5.1.6"
     nanostores "1.0.1"
 
-"@clerk/backend@^3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.5.0.tgz#63ee2ebff7500dcb4bb549c226fe4e3be8f55155"
-  integrity sha512-g1bjzqj7/mb6rnrQ5zr+ybjpilTIWADaCoHE1HnEAjQfbcdfn3gb9PPX0wJ1KWw8OOQEQYSjzXPzvofEB1j+ww==
+"@clerk/backend@^3.11.5":
+  version "3.11.5"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.11.5.tgz#23e28fa7a3bb13821c05383862ffd9db6b26594f"
+  integrity sha512-HEpf9XlEna1uK+JhFSvIseyvviO1C4rdjv8qe3CSu/qSNMCZD69BSA12IkwBrXuopbrmngNFv/unsNV9jcUepw==
   dependencies:
-    "@clerk/shared" "^4.15.0"
+    "@clerk/shared" "^4.25.3"
     standardwebhooks "^1.0.0"
     tslib "2.8.1"
 
-"@clerk/shared@^4.15.0":
-  version "4.15.0"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.15.0.tgz#85d658e28fe908435b7d8a60795698eec6dd7d41"
-  integrity sha512-uX8nfLb69m8mA6KWKWfuPSwoVNDRyUdufeCeTEZsdZxbRUsEYT/c0KWFN28IOQCtK09tpVtzrUHvW44v5Dc5OA==
+"@clerk/shared@^4.25.3":
+  version "4.25.3"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.25.3.tgz#09c19f070a3fc7584b5e8ecad405fe5ec71bdc3e"
+  integrity sha512-WJOD9vjmCG2k5ynlpYesEXRtBgrJOvON5UV2T6NuCsVTu0dGjHSrnEo5LhUNAAYiKiwd4Mww1EXDRL9ULFkxZw==
   dependencies:
     "@tanstack/query-core" "^5.100.6"
     dequal "2.0.3"
