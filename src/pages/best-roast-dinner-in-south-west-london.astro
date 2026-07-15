@@ -11,8 +11,8 @@ import type { Post } from "../types";
 const pageId = "5612";
 const singlePage = await fetchPageData(pageId);
 
-const getSouthWestTopRatedRoasts = async () => {
-  const allPosts = [];
+const getSouthWestTopRatedRoasts = async (): Promise<{ topRated: Post[]; highRated: Post[] }> => {
+  const allPosts: Post[] = [];
   let hasNextPage = true;
   let endCursor: string | null = null;
 

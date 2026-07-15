@@ -1,0 +1,28 @@
+.visit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--roast-main-text);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: none;
+  height: auto;
+  margin: 10px 0;
+  min-width: 13rem;
+  text-decoration: none;
+  justify-content: center;
+}
+
+.visit-btn--visited {
+  border-color: var(--roast-pink);
+}
+
+.visit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
