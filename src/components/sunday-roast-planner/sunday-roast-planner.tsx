@@ -183,21 +183,21 @@ const SundayRoastPlanner = ({
     window.history.replaceState(null, "", window.location.pathname);
   }
 
-  function copyLink() {
+  const copyLink = useCallback(() => {
     navigator.clipboard.writeText(window.location.href).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }
+  }, []);
 
-  function handleSaveToggle(slug: string, nowSaved: boolean) {
+  const handleSaveToggle = useCallback((slug: string, nowSaved: boolean) => {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
       if (nowSaved) next.add(slug);
       else next.delete(slug);
       return next;
     });
-  }
+  }, []);
 
   function switchLocationType(lt: LocationType) {
     setLocationType(lt);
