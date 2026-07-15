@@ -35,7 +35,7 @@ const formatDate = (dateString: string): string => {
   const formattedDate = date.toLocaleDateString("en-US", options);
 
   const day = date.getDate();
-  const ordinalSuffix = (day: number) => {
+  const ordinalSuffix = (day: number): string => {
     if (day > 3 && day < 21) return "th";
     switch (day % 10) {
       case 1:

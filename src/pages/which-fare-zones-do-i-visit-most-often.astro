@@ -20,7 +20,7 @@ const singlePage = await getSinglePageData({ variables });
 const zoneCountsByYear = new Map<string, Record<string, number>>();
 const totalZoneCounts: Record<string, number> = {};
 
-const getZoneNumber = (zoneName: string) => {
+const getZoneNumber = (zoneName: string): number => {
   const match = zoneName.match(/\d+/);
   return match ? Number.parseInt(match[0], 10) : Number.POSITIVE_INFINITY;
 };
@@ -57,7 +57,7 @@ while (hasNextPage) {
   endCursor = posts.pageInfo.endCursor;
 }
 
-const sortZones = (a: [string, number], b: [string, number]) => {
+const sortZones = (a: [string, number], b: [string, number]): number => {
   const aNum = getZoneNumber(a[0]);
   const bNum = getZoneNumber(b[0]);
   if (aNum !== bNum) return aNum - bNum;

@@ -111,7 +111,7 @@ const CLOSED_STATUS_LABELS: Record<string, string> = {
 
 const closedDownId = post.closedDowns?.nodes?.[0]?.name;
 
-const getClosedMessage = () => {
+const getClosedMessage = (): string => {
   if (!closedDownId) return "";
 
   if (closedDownId.includes("re-reviewed")) {
