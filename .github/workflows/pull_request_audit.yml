@@ -71,6 +71,7 @@ jobs:
     env:
       GITHUB_API_SECRET: ${{ secrets.PIPELINE_GITHUB_API_SECRET }}
       PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
+      PLAYWRIGHT: "true"
     steps:
       - uses: actions/checkout@v7
       - name: Use Node.js 18.x
