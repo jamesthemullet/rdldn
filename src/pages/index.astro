@@ -330,7 +330,9 @@ try {
           <img src={findARoastImg.src} alt="Find a roast" width="400" height="300" loading="lazy" />
         </a>
       </li>
-      <MyRoastListItem imgSrc={dreamingOfRoastDinners.src} client:idle />
+      <li class="heading">
+        <MyRoastListItem imgSrc={dreamingOfRoastDinners.src} client:idle />
+      </li>
       <li class="heading">
         <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
         <a href="/guessthescore" rel="noopener noreferrer" class="featured-image">
