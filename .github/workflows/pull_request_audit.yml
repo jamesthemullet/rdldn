@@ -93,8 +93,7 @@ jobs:
           echo "Installing chromedriver version: $CHROMIUM_VERSION"
           yarn add chromedriver@$CHROMIUM_VERSION
           echo "chromedriver version: $(chromedriver --version)"
-      - run: yarn run build
-      - run: yarn preview & npx wait-on http://localhost:4321
+      - run: yarn dev & npx wait-on http://localhost:4321 --timeout 60000
       - name: Run axe
         run: |
           yarn add @axe-core/cli
