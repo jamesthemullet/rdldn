@@ -12,6 +12,7 @@ const {
   halloween,
   structuredData,
   ogType = "website",
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = Astro.site
@@ -84,8 +85,11 @@ const canonicalURL = Astro.site
           description ||
           "Lord Gravy bringing you a guide to the best and worst roast dinners in London.",
         image: opengraphImage || logo1.src,
+        imageAlt: pageTitle || "Roast Dinners In London",
       }}
     />
+    <meta property="og:locale" content="en_GB" />
+    {noindex && <meta name="robots" content="noindex" />}
     {
       structuredData && (
         <script

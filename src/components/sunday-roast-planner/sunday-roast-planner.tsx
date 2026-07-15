@@ -223,6 +223,7 @@ const SundayRoastPlanner = ({
             <button
               type="button"
               className={`planner__tab ${locationType === "area" ? "planner__tab--active" : ""}`}
+              aria-pressed={locationType === "area"}
               onClick={() => switchLocationType("area")}
             >
               By area
@@ -230,6 +231,7 @@ const SundayRoastPlanner = ({
             <button
               type="button"
               className={`planner__tab ${locationType === "borough" ? "planner__tab--active" : ""}`}
+              aria-pressed={locationType === "borough"}
               onClick={() => switchLocationType("borough")}
             >
               By borough
@@ -237,6 +239,7 @@ const SundayRoastPlanner = ({
             <button
               type="button"
               className={`planner__tab ${locationType === "tubeLine" ? "planner__tab--active" : ""}`}
+              aria-pressed={locationType === "tubeLine"}
               onClick={() => switchLocationType("tubeLine")}
             >
               By tube line

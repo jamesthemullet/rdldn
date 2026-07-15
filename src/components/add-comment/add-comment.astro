@@ -23,7 +23,7 @@ const { postId, parentId } = Astro.props as Props;
     <label for={`commentText-${parentId}`}>Comment:</label>
     <textarea name="commentText" id={`commentText-${parentId}`} required></textarea>
   </div>
-  <button class="reply-button" data-button-id={parentId}>Post Reply</button>
+  <button type="button" class="reply-button" data-button-id={parentId}>Post Reply</button>
   <p role="status" aria-live="polite" aria-atomic="true"></p>
 </form>
 
