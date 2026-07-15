@@ -107,7 +107,7 @@ const waitForRender = async () => {
 
 const getRoastTitles = (host: HTMLDivElement) =>
   Array.from(host.querySelectorAll('[data-test-id="roast-link"]')).map((el) =>
-    (el.textContent ?? "").trim()
+    (el.textContent ?? "").replace(/\s*\(Closed\)\s*$/, "").trim()
   );
 
 beforeEach(() => {
