@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
-import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
+import { Image } from "astro:assets";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import NewsletterPopup from "../components/newsletter-popup/newsletter-popup.astro";
 import Search from "../components/search/search.astro";
@@ -327,14 +327,26 @@ try {
       <li class="heading">
         <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
         <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image">
-          <img src={findARoastImg.src} alt="Find a roast" width="400" height="300" loading="lazy" />
+          <Image src={findARoastImg} alt="Find a roast" width={400} height={300} loading="lazy" />
         </a>
       </li>
-      <MyRoastListItem imgSrc={dreamingOfRoastDinners.src} client:load />
+      <li
+        class="heading"
+        x-data
+        x-show="document.cookie.includes('flag_authFeatures=true')"
+        style="display: none"
+      >
+        <h3>
+          <a href="/my-roasts" rel="noopener noreferrer">My Roast List</a>
+        </h3>
+        <a href="/my-roasts" rel="noopener noreferrer" class="featured-image">
+          <Image src={dreamingOfRoastDinners} alt="My roast list" width={400} height={300} loading="lazy" />
+        </a>
+      </li>
       <li class="heading">
         <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
         <a href="/guessthescore" rel="noopener noreferrer" class="featured-image">
-          <img src={guessTheScoreImg.src} alt="Guess the score" width="400" height="300" loading="lazy" />
+          <Image src={guessTheScoreImg} alt="Guess the score" width={400} height={300} loading="lazy" />
         </a>
       </li>
       <li class="heading interactive-features__placeholder" aria-hidden="true"></li>
