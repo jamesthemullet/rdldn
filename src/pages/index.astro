@@ -71,7 +71,7 @@ if (recentPostCursor) {
   }
 }
 
-const posts = [recentPost, ...otherPosts];
+const posts = [recentPost, ...otherPosts].filter(Boolean);
 
 const locationPageIds = ["5614", "5612", "5616", "5594"];
 
