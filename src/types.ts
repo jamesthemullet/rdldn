@@ -8,6 +8,14 @@ export type Sizes = {
   sourceUrl: string;
 }[];
 
+export type NameNode = {
+  name: string;
+};
+
+export type NamedTaxonomy = {
+  nodes: NameNode[];
+};
+
 export type Post = {
   postId?: number;
   title?: string;
@@ -34,75 +42,23 @@ export type Post = {
   comments?: {
     nodes: Comment[];
   };
-  ratings?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  yearsOfVisit?: {
-    nodes: {
-      name: string;
-    }[];
-  };
+  ratings?: NamedTaxonomy;
+  yearsOfVisit?: NamedTaxonomy;
   location?: {
     latitude: string;
     longitude: string;
   };
-  typesOfPost?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  prices?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  areas?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  boroughs?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  owners?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  meats?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  tubeStations?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  tubeLines?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  nSFWs?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  closedDowns?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  features?: {
-    nodes: {
-      name: string;
-    }[];
-  };
+  typesOfPost?: NamedTaxonomy;
+  prices?: NamedTaxonomy;
+  areas?: NamedTaxonomy;
+  boroughs?: NamedTaxonomy;
+  owners?: NamedTaxonomy;
+  meats?: NamedTaxonomy;
+  tubeStations?: NamedTaxonomy;
+  tubeLines?: NamedTaxonomy;
+  nSFWs?: NamedTaxonomy;
+  closedDowns?: NamedTaxonomy;
+  features?: NamedTaxonomy;
   highlights?: {
     loved: string;
     loathed: string;
@@ -110,21 +66,9 @@ export type Post = {
     locationPost?: string;
     instagram?: string;
   };
-  tags?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  zones?: {
-    nodes: {
-      name: string;
-    }[];
-  };
-  newSlugs?: {
-    nodes: {
-      name: string;
-    }[];
-  };
+  tags?: NamedTaxonomy;
+  zones?: NamedTaxonomy;
+  newSlugs?: NamedTaxonomy;
 };
 
 export type PostsConnection = {
