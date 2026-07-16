@@ -307,14 +307,14 @@ section {
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+select:focus-visible {
   outline: 3px solid var(--roast-pink);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-input:focus-visible,
-select:focus-visible {
+input:focus-visible {
   outline: none;
 }
 
