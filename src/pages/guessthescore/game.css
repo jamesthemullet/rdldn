@@ -206,6 +206,11 @@
   border: none;
   margin: 0;
 
+  &:focus-visible {
+    box-shadow: 0 0 0 3px var(--roast-pink);
+    border-radius: 4px;
+  }
+
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
