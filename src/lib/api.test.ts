@@ -158,6 +158,105 @@ describe("fetchGraphQL", () => {
     await expect(fetchGraphQL("{ me }")).rejects.toThrow(JSON.stringify(errors));
   });
 
+  it("retries on a transient 503 response and succeeds once the backend recovers", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn()
+        .mockResolvedValueOnce({ ok: false, status: 503, json: vi.fn().mockResolvedValue({}) })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          json: vi.fn().mockResolvedValue({ data: { posts: [] } }),
+        })
+    );
+    const query = "{ posts { nodes { slug } } }";
+
+    const resultPromise = fetchGraphQL(query);
+    await vi.runAllTimersAsync();
+    const result = await resultPromise;
+
+    expect(result).toEqual({ posts: [] });
+    expect(fetch).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
+  });
+
+  it("retries when the response body is not valid JSON (e.g. an HTML maintenance page)", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn()
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 503,
+          json: vi.fn().mockRejectedValue(new SyntaxError("Unexpected token '<'")),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          json: vi.fn().mockResolvedValue({ data: { posts: [] } }),
+        })
+    );
+    const query = "{ posts { nodes { slug } } }";
+
+    const resultPromise = fetchGraphQL(query);
+    await vi.runAllTimersAsync();
+    const result = await resultPromise;
+
+    expect(result).toEqual({ posts: [] });
+    expect(fetch).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
+  });
+
+  it("stops retrying after the max attempts and throws, evicting the cache entry", async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 503, json: vi.fn().mockResolvedValue({}) })
+    );
+    const query = "{ posts { nodes { slug } } }";
+
+    const resultPromise = fetchGraphQL(query);
+    const assertion = expect(resultPromise).rejects.toThrow("GraphQL Error");
+    await vi.runAllTimersAsync();
+    await assertion;
+
+    expect(fetch).toHaveBeenCalledTimes(3);
+    vi.useRealTimers();
+
+    // A subsequent call should re-fetch rather than reuse the evicted, rejected entry.
+    vi.unstubAllGlobals();
+    mockFetch({ posts: [] });
+    const result = await fetchGraphQL(query);
+    expect(result).toEqual({ posts: [] });
+  });
+
+  it("does not retry on a non-retryable 4xx response", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 400, json: vi.fn().mockResolvedValue({}) })
+    );
+    const query = "{ posts { nodes { slug } } }";
+
+    await expect(fetchGraphQL(query)).rejects.toThrow("GraphQL Error");
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not retry on a real GraphQL errors array", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: vi.fn().mockResolvedValue({ errors: [{ message: "Not found" }] }),
+      })
+    );
+    const query = "{ posts { nodes { slug } } }";
+
+    await expect(fetchGraphQL(query)).rejects.toThrow("GraphQL Error");
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
   it("resetGraphQLRequestCache clears the cache so subsequent calls re-fetch", async () => {
     mockFetch({ posts: [] });
     const query = "{ posts { nodes { slug } } }";
