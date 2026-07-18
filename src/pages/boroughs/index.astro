@@ -1,8 +1,11 @@
 ---
+import FeaturedPostHeader from "../../components/featured-post-header/featured-post-header.astro";
+import logo3 from "../../images/logo-3.png";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
 import { getPostRating } from "../../lib/utils";
+import "../../styles/post.css";
 import "../../styles/boroughs.css";
 import type { Post } from "../../types";
 
@@ -77,15 +80,14 @@ const boroughStats: BoroughStat[] = [...postsByBorough.entries()]
   pageTitle="Best Roast Dinners by Borough | Roast Dinners in London"
   description={`Browse ${boroughStats.length} London boroughs Lord Gravy has reviewed roast dinners in — ranked list, average rating and average price for each.`}
 >
-  <div class="no-image-container boroughs-hub">
-    <section class="post-title centre-with-padding">
-      <h2>Best Roast Dinners by Borough</h2>
-      <p class="borough-hub-intro">
+  <div class="boroughs-hub">
+    <FeaturedPostHeader imageSrc={logo3.src} title="Best Roast Dinners by Borough">
+      <p slot="meta" class="borough-hub-intro">
         Every London borough Lord Gravy has reviewed a roast dinner in, with
         average rating and average price. Boroughs with two or more reviews
         get their own ranked page.
       </p>
-    </section>
+    </FeaturedPostHeader>
 
     {
       boroughStats.length > 0 && (

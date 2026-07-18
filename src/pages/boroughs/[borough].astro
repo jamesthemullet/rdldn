@@ -1,9 +1,12 @@
 ---
+import FeaturedPostHeader from "../../components/featured-post-header/featured-post-header.astro";
+import logo3 from "../../images/logo-3.png";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
 import { sanitizeTitle } from "../../lib/sanitize";
 import { getPostRating } from "../../lib/utils";
+import "../../styles/post.css";
 import "../../styles/boroughs.css";
 import type { Post } from "../../types";
 
@@ -77,30 +80,36 @@ const description = `Lord Gravy has reviewed ${posts.length} roast dinner${posts
   description={description}
   opengraphImage={topPost?.featuredImage?.node?.sourceUrl}
 >
-  <div class="no-image-container borough-detail">
-    <section class="post-title centre-with-padding">
-      <a class="borough-back-link" href="/boroughs">← Browse all boroughs</a>
-      <h2>Best Roast Dinners in {boroughName}</h2>
-      <div class="borough-summary">
-        <p>
-          <strong>Reviews:</strong> {posts.length}
-        </p>
-        {
-          averageRating && (
-            <p>
-              <strong>Average rating:</strong> {averageRating}/10
-            </p>
-          )
-        }
-        {
-          averagePrice && (
-            <p>
-              <strong>Average price:</strong> £{averagePrice}
-            </p>
-          )
-        }
-      </div>
-    </section>
+  <div class="borough-detail">
+    <FeaturedPostHeader
+      imageSrc={topPost?.featuredImage?.node?.sourceUrl || logo3.src}
+      imageAlt={topPost?.featuredImage?.node?.altText ||
+        `Photo of the best roast dinner in ${boroughName}`}
+      title={`Best Roast Dinners in ${boroughName}`}
+    >
+      <Fragment slot="meta">
+        <a class="borough-back-link" href="/boroughs">← Browse all boroughs</a>
+        <div class="borough-summary">
+          <p>
+            <strong>Reviews:</strong> {posts.length}
+          </p>
+          {
+            averageRating && (
+              <p>
+                <strong>Average rating:</strong> {averageRating}/10
+              </p>
+            )
+          }
+          {
+            averagePrice && (
+              <p>
+                <strong>Average price:</strong> £{averagePrice}
+              </p>
+            )
+          }
+        </div>
+      </Fragment>
+    </FeaturedPostHeader>
   </div>
 
   <section class="home-list">
