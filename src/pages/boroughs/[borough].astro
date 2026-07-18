@@ -80,76 +80,76 @@ const description = `Lord Gravy has reviewed ${posts.length} roast dinner${posts
   description={description}
   opengraphImage={topPost?.featuredImage?.node?.sourceUrl}
 >
-  <div class="borough-detail">
-    <FeaturedPostHeader
-      imageSrc={topPost?.featuredImage?.node?.sourceUrl || logo3.src}
-      imageAlt={topPost?.featuredImage?.node?.altText ||
-        `Photo of the best roast dinner in ${boroughName}`}
-      title={`Best Roast Dinners in ${boroughName}`}
-    >
-      <Fragment slot="meta">
-        <a class="borough-back-link" href="/boroughs">← Browse all boroughs</a>
-        <div class="borough-summary">
-          <p>
-            <strong>Reviews:</strong> {posts.length}
-          </p>
-          {
-            averageRating && (
-              <p>
-                <strong>Average rating:</strong> {averageRating}/10
-              </p>
-            )
-          }
-          {
-            averagePrice && (
-              <p>
-                <strong>Average price:</strong> £{averagePrice}
-              </p>
-            )
-          }
-        </div>
-      </Fragment>
-    </FeaturedPostHeader>
-  </div>
-
-  <section class="home-list">
-    <ul>
-      {
-        posts.map((post, index) => (
-          <li class="heading" data-rating={post.ratings?.nodes?.[0]?.name || ""}>
-            <h3>
-              <span class="borough-rank">#{index + 1}</span>{" "}
-              <a href={`/${post.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(post.title)} />
-              </a>
-            </h3>
-            <a
-              href={`/${post.slug}`}
-              rel="noopener noreferrer"
-              class="featured-image"
-            >
-              <img
-                src={post.featuredImage?.node?.sourceUrl}
-                alt={
-                  post.featuredImage?.node?.altText ||
-                  `Photo of the roast dinner at ${post.title}`
-                }
-                width="400"
-                height="300"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
-            </a>
+  <FeaturedPostHeader
+    imageSrc={topPost?.featuredImage?.node?.sourceUrl || logo3.src}
+    imageAlt={topPost?.featuredImage?.node?.altText ||
+      `Photo of the best roast dinner in ${boroughName}`}
+    title={`Best Roast Dinners in ${boroughName}`}
+  >
+    <Fragment slot="meta">
+      <a class="borough-back-link" href="/boroughs">← Browse all boroughs</a>
+      <div class="borough-summary">
+        <p>
+          <strong>Reviews:</strong> {posts.length}
+        </p>
+        {
+          averageRating && (
             <p>
-              <strong>Rating:</strong> {post.ratings?.nodes?.[0]?.name || "N/A"}
+              <strong>Average rating:</strong> {averageRating}/10
             </p>
-            {post.prices?.nodes?.[0]?.name && (
+          )
+        }
+        {
+          averagePrice && (
+            <p>
+              <strong>Average price:</strong> £{averagePrice}
+            </p>
+          )
+        }
+      </div>
+    </Fragment>
+  </FeaturedPostHeader>
+
+  <div class="container borough-detail">
+    <section class="home-list">
+      <ul>
+        {
+          posts.map((post, index) => (
+            <li class="heading" data-rating={post.ratings?.nodes?.[0]?.name || ""}>
+              <h3>
+                <span class="borough-rank">#{index + 1}</span>{" "}
+                <a href={`/${post.slug}`} rel="noopener noreferrer">
+                  <Fragment set:html={sanitizeTitle(post.title)} />
+                </a>
+              </h3>
+              <a
+                href={`/${post.slug}`}
+                rel="noopener noreferrer"
+                class="featured-image"
+              >
+                <img
+                  src={post.featuredImage?.node?.sourceUrl}
+                  alt={
+                    post.featuredImage?.node?.altText ||
+                    `Photo of the roast dinner at ${post.title}`
+                  }
+                  width="400"
+                  height="300"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
+              </a>
               <p>
-                <strong>Price:</strong> {post.prices.nodes[0].name}
+                <strong>Rating:</strong> {post.ratings?.nodes?.[0]?.name || "N/A"}
               </p>
-            )}
-          </li>
-        ))
-      }
-    </ul>
-  </section>
+              {post.prices?.nodes?.[0]?.name && (
+                <p>
+                  <strong>Price:</strong> {post.prices.nodes[0].name}
+                </p>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
 </BaseLayout>
