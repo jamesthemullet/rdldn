@@ -282,6 +282,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -307,7 +309,7 @@ try {
                 <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
-            <a href={page?.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
               <img
                 src={page?.featuredImageUrl}
                 alt={`Preview image for ${page?.title}`}
@@ -326,14 +328,14 @@ try {
     <ul>
       <li class="heading">
         <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
-        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image">
+        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
           <img src={findARoastImg.src} alt="Find a roast" width="400" height="300" loading="lazy" />
         </a>
       </li>
       <MyRoastListItem imgSrc={dreamingOfRoastDinners.src} client:idle />
       <li class="heading">
         <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
-        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image">
+        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
           <img src={guessTheScoreImg.src} alt="Guess the score" width="400" height="300" loading="lazy" />
         </a>
       </li>
@@ -351,7 +353,7 @@ try {
                 <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
-            <a href={page?.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
               <img
                 src={page?.featuredImageUrl}
                 alt={`Preview image for ${page?.title}`}
@@ -414,6 +416,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -445,6 +449,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -474,6 +480,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}

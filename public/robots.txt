@@ -8,3 +8,5 @@ Disallow: /api/
 
 # Allow all other pages
 Allow: /
+
+Sitemap: https://rdldn.co.uk/sitemap-index.xml

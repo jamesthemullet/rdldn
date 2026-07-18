@@ -79,23 +79,25 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={singlePage.content} />
 
-    <section class="other-list">
-      <h3>Best Roasts In...</h3>
+    <section class="other-list" aria-labelledby="best-roasts-in-heading">
+      <h3 id="best-roasts-in-heading">Best Roasts In...</h3>
       <ul>
         {
           bestRoasts
             .filter((post) => !post.title?.toLowerCase().includes("line"))
             .map((post) => (
               <li class="heading">
-                <h3>
+                <h4>
                   <a href={`/${post?.slug}`} rel="noopener noreferrer">
                     <Fragment set:html={sanitizeTitle(post?.title)} />
                   </a>
-                </h3>
+                </h4>
                 <a
                   href={`/${post?.slug}`}
                   rel="noopener noreferrer"
                   class="featured-image"
+                  aria-hidden="true"
+                  tabindex="-1"
                 >
                   <img
                     src={post?.featuredImageUrl}
@@ -111,23 +113,25 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       </ul>
     </section>
 
-    <section class="other-list">
-      <h3>Best Roast Dinners on Tube Lines</h3>
+    <section class="other-list" aria-labelledby="best-tube-roasts-heading">
+      <h3 id="best-tube-roasts-heading">Best Roast Dinners on Tube Lines</h3>
       <ul>
         {
           bestRoasts
             .filter((post) => post.title?.toLowerCase().includes("line"))
             .map((post, index) => (
               <li class="heading">
-                <h3>
+                <h4>
                   <a href={`/${post?.slug}`} rel="noopener noreferrer">
                     <Fragment set:html={sanitizeTitle(post?.title)} />
                   </a>
-                </h3>
+                </h4>
                 <a
                   href={`/${post?.slug}`}
                   rel="noopener noreferrer"
                   class="featured-image"
+                  aria-hidden="true"
+                  tabindex="-1"
                 >
                   <img
                     src={post?.featuredImageUrl}
