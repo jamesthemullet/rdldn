@@ -101,6 +101,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                 href={`/${post?.slug}`}
                 rel="noopener noreferrer"
                 class="featured-image"
+                aria-hidden="true"
+                tabindex="-1"
               >
                 <img
                   src={post?.featuredImageUrl}
