@@ -4,7 +4,7 @@ import logo3 from "../../images/logo-3.png";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
-import { getPostRating } from "../../lib/utils";
+import { getPostRating, isClosedDownPost } from "../../lib/utils";
 import "../../styles/post.css";
 import "../../styles/boroughs.css";
 import type { Post } from "../../types";
@@ -35,7 +35,12 @@ const postsByBorough = new Map<string, Post[]>();
 
 allPosts.forEach((post) => {
   const boroughName = post.boroughs?.nodes?.[0]?.name;
-  if (!boroughName || boroughName.trim().toLowerCase() === "n/a") return;
+  if (
+    !boroughName ||
+    boroughName.trim().toLowerCase() === "n/a" ||
+    isClosedDownPost(post)
+  )
+    return;
 
   const current = postsByBorough.get(boroughName) ?? [];
   current.push(post);

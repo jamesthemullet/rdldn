@@ -56,6 +56,13 @@ describe("boroughs hub page", () => {
         boroughs: { nodes: [{ name: "N/A" }] },
         ratings: { nodes: [{ name: "5.0" }] },
       },
+      {
+        slug: "hackney-closed",
+        boroughs: { nodes: [{ name: "Hackney" }] },
+        ratings: { nodes: [{ name: "1.0" }] },
+        prices: { nodes: [{ name: "£1" }] },
+        closedDowns: { nodes: [{ name: "closeddown" }] },
+      },
     ] as Post[]);
 
     const container = await AstroContainer.create();

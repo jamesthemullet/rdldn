@@ -65,6 +65,19 @@ describe("borough detail page", () => {
         boroughs: { nodes: [{ name: "n/a" }] },
         ratings: { nodes: [{ name: "7.0" }] },
       },
+      {
+        slug: "camden-open",
+        date: "2025-01-01T00:00:00.000Z",
+        boroughs: { nodes: [{ name: "Camden" }] },
+        ratings: { nodes: [{ name: "8.0" }] },
+      },
+      {
+        slug: "camden-closed",
+        date: "2025-01-01T00:00:00.000Z",
+        boroughs: { nodes: [{ name: "Camden" }] },
+        ratings: { nodes: [{ name: "9.0" }] },
+        closedDowns: { nodes: [{ name: "closeddown" }] },
+      },
     ] as Post[]);
 
     const pageModule = await import("./[borough].astro");
@@ -78,10 +91,12 @@ describe("borough detail page", () => {
       (entry) => entry.params.borough === "solo-borough"
     );
     const naBorough = paths.find((entry) => entry.params.borough === "n-a");
+    const camden = paths.find((entry) => entry.params.borough === "camden");
 
     expect(hackney).toBeDefined();
     expect(solo).toBeUndefined();
     expect(naBorough).toBeUndefined();
+    expect(camden).toBeUndefined();
     expect(hackney?.props.boroughName).toBe("Hackney");
     expect(hackney?.props.posts.map((post) => post.slug)).toEqual([
       "hackney-high",

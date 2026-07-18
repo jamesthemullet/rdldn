@@ -5,7 +5,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import { toOwnerSlug } from "../../lib/ownerSlug";
 import { sanitizeTitle } from "../../lib/sanitize";
-import { getPostRating } from "../../lib/utils";
+import { getPostRating, isClosedDownPost } from "../../lib/utils";
 import "../../styles/post.css";
 import "../../styles/boroughs.css";
 import type { Post } from "../../types";
@@ -31,7 +31,12 @@ export async function getStaticPaths() {
 
   allPosts.forEach((post) => {
     const boroughName = post.boroughs?.nodes?.[0]?.name;
-    if (!boroughName || boroughName.trim().toLowerCase() === "n/a") return;
+    if (
+      !boroughName ||
+      boroughName.trim().toLowerCase() === "n/a" ||
+      isClosedDownPost(post)
+    )
+      return;
 
     const boroughSlug = toOwnerSlug(boroughName);
     const current = postsByBorough.get(boroughSlug) ?? {
