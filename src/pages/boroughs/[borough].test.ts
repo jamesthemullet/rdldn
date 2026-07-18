@@ -53,6 +53,18 @@ describe("borough detail page", () => {
         date: "2025-01-01T00:00:00.000Z",
         ratings: { nodes: [{ name: "8.0" }] },
       },
+      {
+        slug: "na-borough-1",
+        date: "2025-01-01T00:00:00.000Z",
+        boroughs: { nodes: [{ name: "N/A" }] },
+        ratings: { nodes: [{ name: "8.0" }] },
+      },
+      {
+        slug: "na-borough-2",
+        date: "2025-01-01T00:00:00.000Z",
+        boroughs: { nodes: [{ name: "n/a" }] },
+        ratings: { nodes: [{ name: "7.0" }] },
+      },
     ] as Post[]);
 
     const pageModule = await import("./[borough].astro");
@@ -65,9 +77,11 @@ describe("borough detail page", () => {
     const solo = paths.find(
       (entry) => entry.params.borough === "solo-borough"
     );
+    const naBorough = paths.find((entry) => entry.params.borough === "n-a");
 
     expect(hackney).toBeDefined();
     expect(solo).toBeUndefined();
+    expect(naBorough).toBeUndefined();
     expect(hackney?.props.boroughName).toBe("Hackney");
     expect(hackney?.props.posts.map((post) => post.slug)).toEqual([
       "hackney-high",
@@ -107,7 +121,7 @@ describe("borough detail page", () => {
 
     expect(html).toContain("Best Roast Dinners in Hackney");
     expect(html).toContain("Reviews:</strong> 2");
-    expect(html).toMatch(/Average rating:<\/strong>\s*8\.0\/10/);
+    expect(html).toMatch(/Average rating:<\/strong>\s*8\.00/);
     expect(html).toMatch(/Average price:<\/strong>\s*£25\.00/);
     expect(html).toContain('href="/hackney-high"');
     expect(html).toContain("#1");

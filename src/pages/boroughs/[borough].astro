@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 
   allPosts.forEach((post) => {
     const boroughName = post.boroughs?.nodes?.[0]?.name;
-    if (!boroughName) return;
+    if (!boroughName || boroughName.trim().toLowerCase() === "n/a") return;
 
     const boroughSlug = toOwnerSlug(boroughName);
     const current = postsByBorough.get(boroughSlug) ?? {
@@ -60,7 +60,7 @@ const { boroughName, posts } = Astro.props as BoroughPageProps;
 const ratings = posts.map(getPostRating).filter((r) => r > 0);
 const averageRating =
   ratings.length > 0
-    ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
+    ? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(2)
     : null;
 
 const prices = posts
@@ -72,7 +72,7 @@ const averagePrice =
     : null;
 
 const topPost = posts[0];
-const description = `Lord Gravy has reviewed ${posts.length} roast dinner${posts.length === 1 ? "" : "s"} in ${boroughName}.${averageRating ? ` Average rating: ${averageRating}/10.` : ""}${averagePrice ? ` Average price: £${averagePrice}.` : ""} Ranked by score.`;
+const description = `Lord Gravy has reviewed ${posts.length} roast dinner${posts.length === 1 ? "" : "s"} in ${boroughName}.${averageRating ? ` Average rating: ${averageRating}.` : ""}${averagePrice ? ` Average price: £${averagePrice}.` : ""} Ranked by score.`;
 ---
 
 <BaseLayout
@@ -95,7 +95,7 @@ const description = `Lord Gravy has reviewed ${posts.length} roast dinner${posts
         {
           averageRating && (
             <p>
-              <strong>Average rating:</strong> {averageRating}/10
+              <strong>Average rating:</strong> {averageRating}
             </p>
           )
         }

@@ -51,6 +51,11 @@ describe("boroughs hub page", () => {
         slug: "no-borough",
         ratings: { nodes: [{ name: "8.0" }] },
       },
+      {
+        slug: "na-borough",
+        boroughs: { nodes: [{ name: "N/A" }] },
+        ratings: { nodes: [{ name: "5.0" }] },
+      },
     ] as Post[]);
 
     const container = await AstroContainer.create();
@@ -60,9 +65,10 @@ describe("boroughs hub page", () => {
 
     expect(html).toContain("Best Roast Dinners by Borough");
     expect(html).toContain('href="/boroughs/hackney"');
-    expect(html).toMatch(/Hackney[\s\S]*?2[\s\S]*?7\.0\/10[\s\S]*?£25\.00/);
+    expect(html).toMatch(/Hackney[\s\S]*?2[\s\S]*?7\.00[\s\S]*?£25\.00/);
     expect(html).toContain("Solo Borough");
     expect(html).not.toContain('href="/boroughs/solo-borough"');
+    expect(html).not.toMatch(/data-name="N\/A"/i);
   });
 
   test("renders sort controls when boroughs are present", async () => {
