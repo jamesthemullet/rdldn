@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { toOwnerSlug } from "../lib/ownerSlug";
 import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
-import { toOwnerSlug } from "../lib/ownerSlug";
 import type { Post, PostsConnection } from "../types";
 import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
