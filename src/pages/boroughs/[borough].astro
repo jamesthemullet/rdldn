@@ -90,32 +90,30 @@ const description = `Lord Gravy has reviewed ${posts.length} roast dinner${posts
     imageAlt={topPost?.featuredImage?.node?.altText ||
       `Photo of the best roast dinner in ${boroughName}`}
     title={`Best Roast Dinners in ${boroughName}`}
-  >
-    <Fragment slot="meta">
-      <a class="borough-back-link" href="/boroughs">← Browse all boroughs</a>
-      <div class="borough-summary">
-        <p>
-          <strong>Reviews:</strong> {posts.length}
-        </p>
-        {
-          averageRating && (
-            <p>
-              <strong>Average rating:</strong> {averageRating}
-            </p>
-          )
-        }
-        {
-          averagePrice && (
-            <p>
-              <strong>Average price:</strong> £{averagePrice}
-            </p>
-          )
-        }
-      </div>
-    </Fragment>
-  </FeaturedPostHeader>
+  />
 
   <div class="container borough-detail">
+    <a class="borough-back-link" href="/boroughs">← Browse all boroughs</a>
+    <div class="borough-summary">
+      <p>
+        <strong>Reviews:</strong> {posts.length}
+      </p>
+      {
+        averageRating && (
+          <p>
+            <strong>Average rating:</strong> {averageRating}
+          </p>
+        )
+      }
+      {
+        averagePrice && (
+          <p>
+            <strong>Average price:</strong> £{averagePrice}
+          </p>
+        )
+      }
+    </div>
+
     <section class="home-list">
       <ul>
         {
