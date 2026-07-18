@@ -1,0 +1,216 @@
+---
+import FeaturedPostHeader from "../../components/featured-post-header/featured-post-header.astro";
+import logo3 from "../../images/logo-3.png";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
+import { toOwnerSlug } from "../../lib/ownerSlug";
+import { getPostRating, isClosedDownPost } from "../../lib/utils";
+import "../../styles/post.css";
+import "../../styles/boroughs.css";
+import type { Post } from "../../types";
+
+export const prerender = true;
+
+const MIN_POSTS_FOR_PAGE = 2;
+
+type BoroughStat = {
+  name: string;
+  slug: string;
+  count: number;
+  averageRating: number | null;
+  averagePrice: number | null;
+  hasPage: boolean;
+};
+
+const parsePrice = (priceStr: string | undefined): number | null => {
+  if (!priceStr) return null;
+  const match = priceStr.match(/[\d,.]+/);
+  if (!match) return null;
+  const price = Number.parseFloat(match[0].replace(",", ""));
+  return !Number.isNaN(price) && price > 0 ? price : null;
+};
+
+const allPosts = await getAllRoastDinnerPosts();
+const postsByBorough = new Map<string, Post[]>();
+
+allPosts.forEach((post) => {
+  const boroughName = post.boroughs?.nodes?.[0]?.name;
+  if (
+    !boroughName ||
+    boroughName.trim().toLowerCase() === "n/a" ||
+    isClosedDownPost(post)
+  )
+    return;
+
+  const current = postsByBorough.get(boroughName) ?? [];
+  current.push(post);
+  postsByBorough.set(boroughName, current);
+});
+
+const boroughStats: BoroughStat[] = [...postsByBorough.entries()]
+  .map(([name, posts]) => {
+    const ratings = posts.map(getPostRating).filter((r) => r > 0);
+    const averageRating =
+      ratings.length > 0
+        ? Number.parseFloat(
+            (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(
+              2
+            )
+          )
+        : null;
+
+    const prices = posts
+      .map((p) => parsePrice(p.prices?.nodes?.[0]?.name))
+      .filter((p): p is number => p !== null);
+    const averagePrice =
+      prices.length > 0
+        ? Number.parseFloat(
+            (prices.reduce((sum, p) => sum + p, 0) / prices.length).toFixed(2)
+          )
+        : null;
+
+    return {
+      name,
+      slug: toOwnerSlug(name),
+      count: posts.length,
+      averageRating,
+      averagePrice,
+      hasPage: posts.length >= MIN_POSTS_FOR_PAGE,
+    };
+  })
+  .sort((a, b) => b.count - a.count);
+---
+
+<BaseLayout
+  pageTitle="Best Roast Dinners by Borough | Roast Dinners in London"
+  description={`Browse ${boroughStats.length} London boroughs Lord Gravy has reviewed roast dinners in — ranked list, average rating and average price for each.`}
+>
+  <FeaturedPostHeader imageSrc={logo3.src} title="Best Roast Dinners by Borough">
+    <p slot="meta" class="borough-hub-intro">
+      Every London borough Lord Gravy has reviewed a roast dinner in, with
+      average rating and average price. Boroughs with two or more reviews
+      get their own ranked page.
+    </p>
+  </FeaturedPostHeader>
+
+  <div class="container boroughs-hub">
+    {
+      boroughStats.length > 0 && (
+        <div class="boroughs-sort-controls">
+          <div class="sort-group">
+            <label for="sort-field">Sort by:</label>
+            <select id="sort-field">
+              <option value="count">Reviews</option>
+              <option value="rating">Rating</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+          <div class="sort-group">
+            <label for="sort-direction">Order:</label>
+            <select id="sort-direction">
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
+        </div>
+      )
+    }
+
+    <table class="boroughs-table" id="boroughs-table">
+      <thead>
+        <tr>
+          <th>Borough</th>
+          <th>Reviews</th>
+          <th>Avg rating</th>
+          <th>Avg price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          boroughStats.map((borough) => (
+            <tr
+              data-name={borough.name}
+              data-count={borough.count}
+              data-rating={borough.averageRating ?? ""}
+            >
+              <td>
+                {borough.hasPage ? (
+                  <a href={`/boroughs/${borough.slug}`}>{borough.name}</a>
+                ) : (
+                  borough.name
+                )}
+              </td>
+              <td>{borough.count}</td>
+              <td>
+                {borough.averageRating !== null
+                  ? borough.averageRating.toFixed(2)
+                  : "N/A"}
+              </td>
+              <td>
+                {borough.averagePrice !== null
+                  ? `£${borough.averagePrice.toFixed(2)}`
+                  : "N/A"}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</BaseLayout>
+
+<script>
+  const tbody = document.querySelector("#boroughs-table tbody");
+  const fieldSelect = document.getElementById("sort-field");
+  const directionSelect = document.getElementById("sort-direction");
+
+  if (
+    tbody &&
+    fieldSelect instanceof HTMLSelectElement &&
+    directionSelect instanceof HTMLSelectElement
+  ) {
+    const sortRows = () => {
+      const field = fieldSelect.value;
+      const direction = directionSelect.value;
+      const rows = [...tbody.querySelectorAll("tr")];
+
+      rows.sort((a, b) => {
+        let aVal: number | string;
+        let bVal: number | string;
+
+        if (field === "rating") {
+          const aRating = Number.parseFloat(a.dataset.rating ?? "");
+          const bRating = Number.parseFloat(b.dataset.rating ?? "");
+          aVal = Number.isNaN(aRating)
+            ? direction === "desc"
+              ? -Infinity
+              : Infinity
+            : aRating;
+          bVal = Number.isNaN(bRating)
+            ? direction === "desc"
+              ? -Infinity
+              : Infinity
+            : bRating;
+        } else if (field === "name") {
+          aVal = a.dataset.name ?? "";
+          bVal = b.dataset.name ?? "";
+          return direction === "desc"
+            ? bVal.localeCompare(aVal)
+            : aVal.localeCompare(bVal);
+        } else {
+          aVal = Number.parseFloat(a.dataset.count ?? "0");
+          bVal = Number.parseFloat(b.dataset.count ?? "0");
+        }
+
+        return direction === "desc"
+          ? (bVal as number) - (aVal as number)
+          : (aVal as number) - (bVal as number);
+      });
+
+      rows.forEach((row) => tbody.appendChild(row));
+    };
+
+    fieldSelect.addEventListener("change", sortRows);
+    directionSelect.addEventListener("change", sortRows);
+  }
+</script>

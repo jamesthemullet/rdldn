@@ -85,8 +85,13 @@ describe("which-borough-has-the-best-roast-dinners-in-london page", () => {
     expect(fetchGraphQLMock).toHaveBeenNthCalledWith(2, expect.anything(), { after: "cursor-1" });
 
     expect(html).toContain("Which Borough Has The Best Roast Dinners In London?");
-    expect(html).toMatch(/The average rating in\s+Hackney\s+is\s+8\.50\s*\(3\s+reviews\)/);
-    expect(html).toMatch(/The average rating in\s+Westminster\s+is\s+7\.50\s*\(3\s+reviews\)/);
+    expect(html).toMatch(
+      /The average rating in\s+<a href="\/boroughs\/hackney">\s*Hackney\s*<\/a>\s+is\s+8\.50\s*\(3\s+reviews\)/
+    );
+    expect(html).toMatch(
+      /The average rating in\s+<a href="\/boroughs\/westminster">\s*Westminster\s*<\/a>\s+is\s+7\.50\s*\(3\s+reviews\)/
+    );
+    expect(html).toContain('href="/boroughs"');
     expect(html).not.toContain("Camden");
     expect(html).not.toContain("Ignored Missing Rating");
     expect(html).not.toContain("Ignored Bad Rating");
