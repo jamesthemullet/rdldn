@@ -679,6 +679,9 @@ p {
   &.victoria {
     text-decoration-color: var(--victoria);
   }
+  &.elizabeth {
+    text-decoration-color: var(--elizabeth);
+  }
 }
 
 .tube-line-station {
