@@ -10,49 +10,73 @@ import { getSinglePageData } from "../lib/getSinglePageData";
 const variables = { id: "12272" };
 const singlePage = await getSinglePageData({ variables });
 
-const elizabethLineStations = [
-  "Reading",
-  "Twyford",
-  "Maidenhead",
-  "Taplow",
-  "Burnham",
-  "Slough",
-  "Langley",
-  "Iver",
-  "West Drayton",
-  "Hayes & Harlington",
-  "Southall",
-  "Hanwell",
-  "West Ealing",
-  "Ealing Broadway",
-  "Acton Main Line",
-  "Paddington",
-  "Bond Street",
-  "Tottenham Court Road",
-  "Farringdon",
-  "Liverpool Street",
-  "Whitechapel",
-  "Canary Wharf",
-  "Custom House",
-  "Woolwich",
-  "Abbey Wood",
-  "Heathrow Terminal 5",
-  "Heathrow Terminals 2 & 3",
-  "Heathrow Terminal 4",
-  "Stratford",
-  "Maryland",
-  "Forest Gate",
-  "Manor Park",
-  "Ilford",
-  "Seven Kings",
-  "Goodmayes",
-  "Chadwell Heath",
-  "Romford",
-  "Gidea Park",
-  "Harold Wood",
-  "Brentwood",
-  "Shenfield",
+const elizabethLineBranches = [
+  {
+    name: "Reading Branch",
+    stations: [
+      "Reading",
+      "Twyford",
+      "Maidenhead",
+      "Taplow",
+      "Burnham",
+      "Slough",
+      "Langley",
+      "Iver",
+      "West Drayton",
+      "Hayes & Harlington",
+      "Southall",
+      "Hanwell",
+      "West Ealing",
+      "Ealing Broadway",
+      "Acton Main Line",
+    ],
+  },
+  {
+    name: "Heathrow Branch",
+    stations: [
+      "Heathrow Terminal 5",
+      "Heathrow Terminals 2 & 3",
+      "Heathrow Terminal 4",
+    ],
+  },
+  {
+    name: "Central Section",
+    stations: [
+      "Paddington",
+      "Bond Street",
+      "Tottenham Court Road",
+      "Farringdon",
+      "Liverpool Street",
+      "Whitechapel",
+    ],
+  },
+  {
+    name: "Abbey Wood Branch",
+    stations: ["Canary Wharf", "Custom House", "Woolwich", "Abbey Wood"],
+  },
+  {
+    name: "Shenfield Branch",
+    stations: [
+      "Stratford",
+      "Maryland",
+      "Forest Gate",
+      "Manor Park",
+      "Ilford",
+      "Seven Kings",
+      "Goodmayes",
+      "Chadwell Heath",
+      "Romford",
+      "Gidea Park",
+      "Harold Wood",
+      "Brentwood",
+      "Shenfield",
+    ],
+  },
 ];
+
+const elizabethLineStations = elizabethLineBranches.flatMap(
+  (branch) => branch.stations
+);
 
 const roastPosts = await getTubeLineRoastPosts(elizabethLineStations);
 
@@ -63,7 +87,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   singlePage={singlePage}
   lineName="Elizabeth"
   headingClass="elizabeth"
-  stations={elizabethLineStations}
+  branches={elizabethLineBranches}
   roastPosts={roastPosts}
   threadedComments={threadedComments}
 />

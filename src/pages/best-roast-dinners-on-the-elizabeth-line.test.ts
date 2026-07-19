@@ -63,5 +63,10 @@ describe("best-roast-dinners-on-the-elizabeth-line page", () => {
     expect(html).toContain("Paddington Roast");
     expect(html).not.toContain("Not On Elizabeth");
     expect(html).toContain("Any comments?");
+    expect(html).toContain("Reading Branch");
+    expect(html).toContain("Heathrow Branch");
+    expect(html).toContain("Central Section");
+    expect(html).toContain("Abbey Wood Branch");
+    expect(html).toContain("Shenfield Branch");
   });
 });
