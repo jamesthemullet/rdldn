@@ -45,7 +45,7 @@ while (hasNextPage) {
   endCursor = posts.pageInfo.endCursor;
 }
 
-const yearStats = new Map();
+const yearStats = new Map<string, number[]>();
 
 for (const post of roastPricePosts) {
   const year = post.year;
@@ -56,15 +56,17 @@ for (const post of roastPricePosts) {
 
   if (!cleanedPrice || Number.isNaN(cleanedPrice)) continue;
 
-  if (!yearStats.has(year)) {
-    yearStats.set(year, []);
+  const existing = yearStats.get(year);
+  if (existing) {
+    existing.push(cleanedPrice);
+  } else {
+    yearStats.set(year, [cleanedPrice]);
   }
-  yearStats.get(year).push(cleanedPrice);
 }
 
 const averagePrices = [...yearStats.entries()].map(([year, prices]) => {
   const average =
-    prices.reduce((sum: number, price: string) => sum + price, 0) /
+    prices.reduce((sum, price) => sum + price, 0) /
     prices.length;
   return {
     year,

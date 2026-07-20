@@ -5,6 +5,16 @@ import "./layout.css";
 import { SEO } from "astro-seo";
 import logo1 from "../images/logo-1.png";
 
+type Props = {
+  pageTitle?: string;
+  description?: string;
+  opengraphImage?: string;
+  halloween?: boolean;
+  structuredData?: Record<string, unknown>;
+  ogType?: string;
+  noindex?: boolean;
+};
+
 const {
   pageTitle,
   description,
