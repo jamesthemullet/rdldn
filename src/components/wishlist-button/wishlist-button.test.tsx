@@ -158,4 +158,29 @@ describe("WishlistButton", () => {
 
     await act(async () => root.unmount());
   });
+
+  test("toggles from unsaved to saved when clicked in uncontrolled mode", async () => {
+    mockUseAuth.mockReturnValue({ isSignedIn: true, isLoaded: true });
+
+    const { host, root } = createHost();
+    await act(async () => {
+      root.render(<WishlistButton postSlug="my-slug" postTitle="My Post" />);
+    });
+    await waitForEffects();
+
+    const button = host.querySelector("button");
+    expect(button).not.toBeNull();
+    expect(button?.getAttribute("aria-pressed")).toBe("false");
+    expect(button?.textContent).toContain("Save to your list");
+
+    await act(async () => {
+      button?.click();
+    });
+    await waitForEffects();
+
+    expect(host.querySelector("button")?.getAttribute("aria-pressed")).toBe("true");
+    expect(host.querySelector("button")?.textContent).toContain("Saved to your list");
+
+    await act(async () => root.unmount());
+  });
 });
