@@ -192,4 +192,142 @@ describe("SundayRoastPlanner", () => {
 
     await act(async () => root.unmount());
   });
+
+  test("filters by borough when the 'By borough' tab is selected", async () => {
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    await act(async () => getButton(host, "By borough").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Westminster").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Find my roast").click());
+    await waitForEffects();
+
+    expect(host.textContent).toContain("Soho Roast");
+    expect(host.textContent).not.toContain("Camden Roast");
+
+    await act(async () => root.unmount());
+  });
+
+  test("filters by tube line when the 'By tube line' tab is selected", async () => {
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    await act(async () => getButton(host, "By tube line").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Bakerloo").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Find my roast").click());
+    await waitForEffects();
+
+    expect(host.textContent).toContain("Soho Roast");
+    expect(host.textContent).not.toContain("Camden Roast");
+
+    await act(async () => root.unmount());
+  });
+
+  test("back button returns to the previous step", async () => {
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    expect(host.textContent).toContain("Step 1 of 3");
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    expect(host.textContent).toContain("Step 2 of 3");
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    expect(host.textContent).toContain("Step 3 of 3");
+
+    await act(async () => getButton(host, "Back").click());
+    await waitForEffects();
+    expect(host.textContent).toContain("Step 2 of 3");
+
+    await act(async () => getButton(host, "Back").click());
+    await waitForEffects();
+    expect(host.textContent).toContain("Step 1 of 3");
+
+    await act(async () => root.unmount());
+  });
+
+  test("reset button returns to step 1 and clears selection", async () => {
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Soho").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Find my roast").click());
+    await waitForEffects();
+
+    expect(host.textContent).toContain("Soho Roast");
+    expect(host.textContent).not.toContain("Camden Roast");
+
+    await act(async () => getButton(host, "Try again").click());
+    await waitForEffects();
+
+    expect(host.textContent).toContain("Step 1 of 3");
+    expect(host.textContent).toContain("Where do you want to eat?");
+
+    await act(async () => root.unmount());
+  });
+
+  test("budget filter excludes posts priced above the selected maximum", async () => {
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Up to £20").click());
+    await waitForEffects();
+
+    await act(async () => getButton(host, "Next").click());
+    await waitForEffects();
+    await act(async () => getButton(host, "Find my roast").click());
+    await waitForEffects();
+
+    expect(host.textContent).toContain("Soho Roast");
+    expect(host.textContent).not.toContain("Camden Roast");
+
+    await act(async () => root.unmount());
+  });
+
+  test("restores from URL borough param and filters results by borough", async () => {
+    window.history.replaceState(null, "", "/?borough=Camden");
+
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    expect(host.textContent).not.toContain("Step 1 of 3");
+    expect(host.textContent).toContain("Camden Roast");
+    expect(host.textContent).not.toContain("Soho Roast");
+    expect(host.textContent).not.toContain("Closed Roast");
+
+    await act(async () => root.unmount());
+  });
 });
