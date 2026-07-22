@@ -266,7 +266,7 @@ const SortPosts = ({
             </div>{" "}
             <div>
               <label htmlFor="area-filter">Filter by Area: </label>
-              <select id="area-filter" name="area" onChange={handleFilterChange}>
+              <select id="area-filter" name="area" value={filters.area} onChange={handleFilterChange}>
                 <option value="">All</option>
                 {uniqueAreas.map((area) => (
                   <option key={area} value={area}>
@@ -277,7 +277,7 @@ const SortPosts = ({
             </div>{" "}
             <div>
               <label htmlFor="borough-filter">Filter by Borough: </label>
-              <select id="borough-filter" name="borough" onChange={handleFilterChange}>
+              <select id="borough-filter" name="borough" value={filters.borough} onChange={handleFilterChange}>
                 <option value="">All</option>
                 {uniqueBoroughs.map((borough) => (
                   <option key={borough} value={borough}>
@@ -288,7 +288,7 @@ const SortPosts = ({
             </div>{" "}
             <div>
               <label htmlFor="owner-filter">Filter by Owner: </label>
-              <select id="owner-filter" name="owner" onChange={handleFilterChange}>
+              <select id="owner-filter" name="owner" value={filters.owner} onChange={handleFilterChange}>
                 <option value="">All</option>
                 {uniqueOwners.map((owner) => (
                   <option key={owner} value={owner}>
@@ -299,7 +299,7 @@ const SortPosts = ({
             </div>{" "}
             <div>
               <label htmlFor="closed-down-filter">Filter by Closed Down: </label>
-              <select id="closed-down-filter" name="closedDown" onChange={handleFilterChange}>
+              <select id="closed-down-filter" name="closedDown" value={filters.closedDown} onChange={handleFilterChange}>
                 <option value="">All</option>
                 <option value="open">Open</option>
                 {uniqueClosedDowns.map((closedDown) => (
@@ -311,7 +311,7 @@ const SortPosts = ({
             </div>
             <div>
               <label htmlFor="year-filter">Filter by Year: </label>
-              <select id="year-filter" name="year" onChange={handleFilterChange}>
+              <select id="year-filter" name="year" value={filters.year} onChange={handleFilterChange}>
                 <option value="">All</option>
                 {uniqueYears.map((year) => (
                   <option key={year} value={year}>

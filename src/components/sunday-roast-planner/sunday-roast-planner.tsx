@@ -167,12 +167,12 @@ const SundayRoastPlanner = ({
     window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
   }, []);
 
-  function showResults(): void {
+  const showResults = useCallback((): void => {
     updateUrl(locationType, area, borough, tubeLine, budget, minRating);
     setStep("results");
-  }
+  }, [updateUrl, locationType, area, borough, tubeLine, budget, minRating]);
 
-  function reset(): void {
+  const reset = useCallback((): void => {
     setLocationType("area");
     setArea("");
     setBorough("");
@@ -181,30 +181,30 @@ const SundayRoastPlanner = ({
     setMinRating("");
     setStep(1);
     window.history.replaceState(null, "", window.location.pathname);
-  }
+  }, []);
 
-  function copyLink(): void {
+  const copyLink = useCallback((): void => {
     navigator.clipboard.writeText(window.location.href).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }
+  }, []);
 
-  function handleSaveToggle(slug: string, nowSaved: boolean): void {
+  const handleSaveToggle = useCallback((slug: string, nowSaved: boolean): void => {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
       if (nowSaved) next.add(slug);
       else next.delete(slug);
       return next;
     });
-  }
+  }, []);
 
-  function switchLocationType(lt: LocationType): void {
+  const switchLocationType = useCallback((lt: LocationType): void => {
     setLocationType(lt);
     setArea("");
     setBorough("");
     setTubeLine("");
-  }
+  }, []);
 
   const locationLabel = locationType === "borough"
     ? (borough || "no preference")
