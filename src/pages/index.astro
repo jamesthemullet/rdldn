@@ -6,13 +6,10 @@ import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListIte
 import Newsletter from "../components/newsletter/newsletter.astro";
 import NewsletterPopup from "../components/newsletter-popup/newsletter-popup.astro";
 import Search from "../components/search/search.astro";
-import { fetchGraphQL } from "../lib/api";
-
-export const prerender = true;
-
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import findARoastImg from "../images/find-a-roast.png";
 import guessTheScoreImg from "../images/guess-the-score.png";
+import { fetchGraphQL } from "../lib/api";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 import GET_ALL_PAGES from "../lib/queries/getAllPages";
 import GET_FEATURE_POSTS from "../lib/queries/getFeaturePosts.ts";
