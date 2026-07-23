@@ -539,10 +539,10 @@
     fast-wrap-ansi "^0.2.0"
     sisteransi "^1.0.5"
 
-"@clerk/astro@^3.0.21":
-  version "3.4.20"
-  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-3.4.20.tgz#a23fbe7e135cc254e28d6595f3ef3e684ca461d5"
-  integrity sha512-HKhMVWKsX2wvQSwoPJfIZ6NO24GMU0JiGvpihvsxPAHg0huExtjCsS2+K4t7qn7A0beiVrYxkuOuSYfO4KqBow==
+"@clerk/astro@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-4.0.0.tgz#3344ce77a136af78c8e3ce9e05e1eaebbc3acbc6"
+  integrity sha512-co24NuaIgHG3+LWkf4tMEvB1M5GgSV+VtIUYMqD4S+mnwx97kt292ZdB50plX2+brXQ6thCroFBIyeBu8azZ2g==
   dependencies:
     "@clerk/backend" "^3.12.0"
     "@clerk/shared" "^4.25.6"
