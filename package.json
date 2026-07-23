@@ -38,7 +38,7 @@
     "@astrojs/react": "6.0.1",
     "@astrojs/sitemap": "3.7.3",
     "@astrojs/vercel": "11.0.3",
-    "@clerk/astro": "^3.0.21",
+    "@clerk/astro": "^4.0.0",
     "@neondatabase/serverless": "^1.1.0",
     "@types/alpinejs": "^3.13.11",
     "@types/react": "^19.1.6",
