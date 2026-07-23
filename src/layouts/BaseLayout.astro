@@ -88,6 +88,7 @@ const canonicalURL = Astro.site
         imageAlt: pageTitle || "Roast Dinners In London",
       }}
     />
+    <meta property="og:image:alt" content={pageTitle || "Roast Dinners In London"} />
     <meta property="og:locale" content="en_GB" />
     {noindex && <meta name="robots" content="noindex" />}
     {

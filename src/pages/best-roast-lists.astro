@@ -84,7 +84,7 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       <p>
         <a href="/boroughs"
           >See every London borough Lord Gravy has reviewed a roast dinner
-          in →</a
+          in <span aria-hidden="true">→</span></a
         >
       </p>
     </section>
@@ -97,11 +97,11 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             .filter((post) => !post.title?.toLowerCase().includes("line"))
             .map((post) => (
               <li class="heading">
-                <h3>
+                <h4>
                   <a href={`/${post?.slug}`} rel="noopener noreferrer">
                     <Fragment set:html={sanitizeTitle(post?.title)} />
                   </a>
-                </h3>
+                </h4>
                 <a
                   href={`/${post?.slug}`}
                   rel="noopener noreferrer"
@@ -129,11 +129,11 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
             .filter((post) => post.title?.toLowerCase().includes("line"))
             .map((post, index) => (
               <li class="heading">
-                <h3>
+                <h4>
                   <a href={`/${post?.slug}`} rel="noopener noreferrer">
                     <Fragment set:html={sanitizeTitle(post?.title)} />
                   </a>
-                </h3>
+                </h4>
                 <a
                   href={`/${post?.slug}`}
                   rel="noopener noreferrer"
