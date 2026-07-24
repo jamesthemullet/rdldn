@@ -146,6 +146,82 @@ const topMeats = Array.from(meatCounts.entries())
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .slice(0, 10);
 
+const ratingsByYear = new Map<string, number[]>();
+roastPosts.forEach((post) => {
+  const year = post.yearsOfVisit?.nodes?.[0]?.name;
+  const rating = parseFirstNumericValue(post.ratings?.nodes?.[0]?.name);
+  if (!year || rating === null) return;
+  if (!ratingsByYear.has(year)) ratingsByYear.set(year, []);
+  ratingsByYear.get(year)?.push(rating);
+});
+
+const averageRatingsByYear = Array.from(ratingsByYear.entries())
+  .map(([year, ratings]) => ({
+    year,
+    average: ratings.reduce((sum, value) => sum + value, 0) / ratings.length,
+    count: ratings.length,
+  }))
+  .sort((a, b) => Number.parseInt(a.year, 10) - Number.parseInt(b.year, 10));
+
+const qualityChartWidth = 600;
+const qualityChartHeight = 240;
+const qualityChartPadding = { top: 20, right: 20, bottom: 32, left: 48 };
+const qualityPlotWidth =
+  qualityChartWidth - qualityChartPadding.left - qualityChartPadding.right;
+const qualityPlotHeight =
+  qualityChartHeight - qualityChartPadding.top - qualityChartPadding.bottom;
+
+const qualityRatingValues = averageRatingsByYear.map(({ average }) => average);
+const minQualityRating = qualityRatingValues.length
+  ? Math.min(...qualityRatingValues)
+  : 0;
+const maxQualityRating = qualityRatingValues.length
+  ? Math.max(...qualityRatingValues)
+  : 0;
+const qualityRatingRange = maxQualityRating - minQualityRating || 1;
+
+const qualityChartPoints = averageRatingsByYear.map(
+  ({ year, average, count }, index) => {
+    const x =
+      averageRatingsByYear.length > 1
+        ? qualityChartPadding.left +
+          (index / (averageRatingsByYear.length - 1)) * qualityPlotWidth
+        : qualityChartPadding.left + qualityPlotWidth / 2;
+    const y =
+      qualityChartPadding.top +
+      qualityPlotHeight -
+      ((average - minQualityRating) / qualityRatingRange) * qualityPlotHeight;
+
+    return { year, average, count, x, y };
+  }
+);
+
+const qualityChartLinePoints = qualityChartPoints
+  .map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`)
+  .join(" ");
+
+const maxAreaCount = Math.max(1, ...topAreas.map(([, count]) => count));
+const maxBoroughCount = Math.max(1, ...topBoroughs.map(([, count]) => count));
+const maxMeatCount = Math.max(1, ...topMeats.map(([, count]) => count));
+
+const ratingBuckets = [
+  { label: "0-2", min: 0, max: 2 },
+  { label: "2-4", min: 2, max: 4 },
+  { label: "4-6", min: 4, max: 6 },
+  { label: "6-8", min: 6, max: 8 },
+  { label: "8-10", min: 8, max: 10.01 },
+];
+
+const ratingDistribution = ratingBuckets.map(({ label, min, max }) => ({
+  label,
+  count: ratingValues.filter((value) => value >= min && value < max).length,
+}));
+
+const maxDistributionCount = Math.max(
+  1,
+  ...ratingDistribution.map(({ count }) => count)
+);
+
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
 
@@ -164,6 +240,50 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       Select a year to see your roast dinner averages and where in London you
       reviewed roasts.
     </p>
+
+    {
+      qualityChartPoints.length > 1 && (
+        <figure class="price-chart">
+          <figcaption>The London Roast Dinner Quality Index</figcaption>
+          <svg
+            viewBox={`0 0 ${qualityChartWidth} ${qualityChartHeight}`}
+            role="img"
+            aria-label={`Line chart of average roast dinner rating by year, from ${qualityChartPoints[0].average.toFixed(2)} in ${qualityChartPoints[0].year} to ${qualityChartPoints[qualityChartPoints.length - 1].average.toFixed(2)} in ${qualityChartPoints[qualityChartPoints.length - 1].year}`}
+          >
+            <line
+              class="axis"
+              x1={qualityChartPadding.left}
+              y1={qualityChartPadding.top + qualityPlotHeight}
+              x2={qualityChartPadding.left + qualityPlotWidth}
+              y2={qualityChartPadding.top + qualityPlotHeight}
+            />
+            <line
+              class="axis"
+              x1={qualityChartPadding.left}
+              y1={qualityChartPadding.top}
+              x2={qualityChartPadding.left}
+              y2={qualityChartPadding.top + qualityPlotHeight}
+            />
+            <polyline class="price-line" points={qualityChartLinePoints} />
+            {qualityChartPoints.map(({ year, average, x, y }) => (
+              <g>
+                <circle class="price-point" cx={x} cy={y} r="4" />
+                <text class="price-label" x={x} y={y - 10}>
+                  {average.toFixed(2)}
+                </text>
+                <text
+                  class="year-label"
+                  x={x}
+                  y={qualityChartPadding.top + qualityPlotHeight + 20}
+                >
+                  {year}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </figure>
+      )
+    }
 
     {
       years.length > 0 ? (
@@ -229,9 +349,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
           <h3>Most visited areas</h3>
           {topAreas.length > 0 ? (
-            <ul>
+            <ul class="month-chart" aria-label="Most visited areas">
               {topAreas.map(([area, count]) => (
-                <li>
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxAreaCount) * 100)}%`}
+                    />
+                  </div>
                   {area}: {count}
                 </li>
               ))}
@@ -242,9 +368,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
           <h3>Most visited boroughs</h3>
           {topBoroughs.length > 0 ? (
-            <ul>
+            <ul class="month-chart" aria-label="Most visited boroughs">
               {topBoroughs.map(([borough, count]) => (
-                <li>
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxBoroughCount) * 100)}%`}
+                    />
+                  </div>
                   {borough}: {count}
                 </li>
               ))}
@@ -255,15 +387,40 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
           <h3>Most eaten meats</h3>
           {topMeats.length > 0 ? (
-            <ul>
+            <ul class="month-chart" aria-label="Most eaten meats">
               {topMeats.map(([meat, count]) => (
-                <li>
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxMeatCount) * 100)}%`}
+                    />
+                  </div>
                   {meat}: {count}
                 </li>
               ))}
             </ul>
           ) : (
             <p>No meat data for this year.</p>
+          )}
+
+          <h3>Rating distribution for {selectedYear}</h3>
+          {ratingValues.length > 0 ? (
+            <ul class="month-chart" aria-label={`Rating distribution for ${selectedYear}`}>
+              {ratingDistribution.map(({ label, count }) => (
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxDistributionCount) * 100)}%`}
+                    />
+                  </div>
+                  Rating {label}: {count} {count === 1 ? "roast" : "roasts"}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No ratings recorded for this year.</p>
           )}
         </section>
       ) : (
@@ -275,3 +432,72 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
+
+<style>
+  .price-chart {
+    margin: 1.5rem 0;
+    max-width: 640px;
+  }
+
+  .price-chart figcaption {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .price-chart svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .axis {
+    stroke: #d1d5db;
+    stroke-width: 1;
+  }
+
+  .price-line {
+    fill: none;
+    stroke: var(--roast-new-blue);
+    stroke-width: 2;
+  }
+
+  .price-point {
+    fill: var(--roast-new-blue);
+  }
+
+  .price-label,
+  .year-label {
+    font-size: 11px;
+    fill: #4b5563;
+    text-anchor: middle;
+  }
+
+  .month-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0 1.5rem;
+    padding: 0;
+  }
+
+  .month-chart-row {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .bar-track {
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 0.75rem;
+    overflow: hidden;
+    max-width: 400px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--roast-new-blue);
+    border-radius: 4px;
+    min-width: 2px;
+  }
+</style>
