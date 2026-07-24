@@ -62,16 +62,23 @@ for (const post of roastPricePosts) {
   yearStats.get(year).push(cleanedPrice);
 }
 
-const averagePrices = [...yearStats.entries()].map(([year, prices]) => {
-  const average =
-    prices.reduce((sum: number, price: string) => sum + price, 0) /
-    prices.length;
-  return {
-    year,
-    average: average.toFixed(2),
-    count: prices.length,
-  };
-});
+const averagePrices = [...yearStats.entries()]
+  .map(([year, prices]) => {
+    const average =
+      prices.reduce((sum: number, price: string) => sum + price, 0) /
+      prices.length;
+    return {
+      year,
+      average: average.toFixed(2),
+      count: prices.length,
+    };
+  })
+  .sort((a, b) => Number.parseInt(a.year, 10) - Number.parseInt(b.year, 10));
+
+const maxAveragePrice = Math.max(
+  ...averagePrices.map(({ average }) => Number.parseFloat(average)),
+  0,
+);
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
@@ -88,15 +95,19 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   <div class="container">
     <div set:html={sanitizeContent(singlePage.content)} />
 
-    <ul>
+    <ul class="price-chart" aria-label="Average roast dinner price by year">
       {
-        averagePrices
-          .sort((a, b) => parseInt(a.year) - parseInt(b.year))
-          .map(({ year, average, count }) => (
-            <li>
-              The average price in {year} is £{average} ({count} reviews)
-            </li>
-          ))
+        averagePrices.map(({ year, average, count }) => (
+          <li class="price-chart-row">
+            <div class="bar-track" role="presentation" aria-hidden="true">
+              <div
+                class="bar-fill"
+                style={`width: ${maxAveragePrice > 0 ? Math.round((Number.parseFloat(average) / maxAveragePrice) * 100) : 0}%`}
+              />
+            </div>
+            The average price in {year} is £{average} ({count} reviews)
+          </li>
+        ))
       }
     </ul>
 
@@ -108,3 +119,35 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
+
+<style>
+  .price-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    padding: 0;
+  }
+
+  .price-chart-row {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .bar-track {
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 0.75rem;
+    overflow: hidden;
+    max-width: 400px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--roast-new-blue);
+    border-radius: 4px;
+    min-width: 2px;
+  }
+</style>
