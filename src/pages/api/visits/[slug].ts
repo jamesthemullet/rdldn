@@ -12,12 +12,16 @@ export async function DELETE(context: APIContext): Promise<Response> {
 
   const { slug } = context.params;
 
+  if (!slug) {
+    return new Response(JSON.stringify({ error: "Missing slug" }), { status: 400 });
+  }
+
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
   if (!user) {
     return new Response(JSON.stringify({ error: "Not found" }), { status: 404 });
   }
 
-  await db.delete(visits).where(and(eq(visits.userId, user.id), eq(visits.postSlug, slug!)));
+  await db.delete(visits).where(and(eq(visits.userId, user.id), eq(visits.postSlug, slug)));
 
   return new Response(null, { status: 204 });
 }

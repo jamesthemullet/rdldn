@@ -34,12 +34,11 @@ const initialFilterState: FilterState = {
 
 const isFilterKey = (key: string): key is keyof FilterState => key in initialFilterState;
 
+const SORT_COLUMNS: readonly SortColumn[] = ["rating", "price", "yearVisited", "meat", "tubeStation", "area", "borough", "owner", "closedDown", "title"];
 const SORT_ORDERS: readonly SortOrder[] = ["asc", "desc"];
-const SORT_COLUMNS: readonly SortColumn[] = [
-  "rating", "price", "yearVisited", "meat", "tubeStation", "area", "borough", "owner", "closedDown", "title",
-];
-const isSortOrder = (v: string): v is SortOrder => (SORT_ORDERS as readonly string[]).includes(v);
-const isSortColumn = (v: string): v is SortColumn => (SORT_COLUMNS as readonly string[]).includes(v);
+
+const isSortColumn = (val: string): val is SortColumn => (SORT_COLUMNS as readonly string[]).includes(val);
+const isSortOrder = (val: string): val is SortOrder => (SORT_ORDERS as readonly string[]).includes(val);
 
 const filterReducer = (state: FilterState, action: FilterAction): FilterState => {
   switch (action.type) {
@@ -186,12 +185,12 @@ const getInitialStateFromUrl = (): URLSearchParams | null => {
 
 export const useSortFilter = (posts: Post[]) => {
   const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
-    const v = getInitialStateFromUrl()?.get("order") ?? "desc";
-    return isSortOrder(v) ? v : "desc";
+    const val = getInitialStateFromUrl()?.get("order") ?? "desc";
+    return isSortOrder(val) ? val : "desc";
   });
   const [sortColumn, setSortColumn] = useState<SortColumn>(() => {
-    const v = getInitialStateFromUrl()?.get("sort") ?? "rating";
-    return isSortColumn(v) ? v : "rating";
+    const val = getInitialStateFromUrl()?.get("sort") ?? "rating";
+    return isSortColumn(val) ? val : "rating";
   });
   const [filters, dispatch] = useReducer(filterReducer, undefined, () => {
     const params = getInitialStateFromUrl();
@@ -246,7 +245,10 @@ export const useSortFilter = (posts: Post[]) => {
   );
 
   const handleSortChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
-    setSortColumn(e.target.value as SortColumn);
+    const val = e.target.value;
+    if (isSortColumn(val)) {
+      setSortColumn(val);
+    }
   }, []);
 
   const toggleSortOrder = useCallback((): void => {
