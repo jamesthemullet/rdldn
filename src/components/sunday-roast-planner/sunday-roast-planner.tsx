@@ -167,12 +167,12 @@ const SundayRoastPlanner = ({
     window.history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
   }, []);
 
-  function showResults() {
+  function showResults(): void {
     updateUrl(locationType, area, borough, tubeLine, budget, minRating);
     setStep("results");
   }
 
-  function reset() {
+  function reset(): void {
     setLocationType("area");
     setArea("");
     setBorough("");
@@ -183,14 +183,14 @@ const SundayRoastPlanner = ({
     window.history.replaceState(null, "", window.location.pathname);
   }
 
-  function copyLink() {
+  function copyLink(): void {
     navigator.clipboard.writeText(window.location.href).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
   }
 
-  function handleSaveToggle(slug: string, nowSaved: boolean) {
+  function handleSaveToggle(slug: string, nowSaved: boolean): void {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
       if (nowSaved) next.add(slug);
@@ -199,7 +199,7 @@ const SundayRoastPlanner = ({
     });
   }
 
-  function switchLocationType(lt: LocationType) {
+  function switchLocationType(lt: LocationType): void {
     setLocationType(lt);
     setArea("");
     setBorough("");
@@ -223,6 +223,7 @@ const SundayRoastPlanner = ({
             <button
               type="button"
               className={`planner__tab ${locationType === "area" ? "planner__tab--active" : ""}`}
+              aria-pressed={locationType === "area"}
               onClick={() => switchLocationType("area")}
             >
               By area
@@ -230,6 +231,7 @@ const SundayRoastPlanner = ({
             <button
               type="button"
               className={`planner__tab ${locationType === "borough" ? "planner__tab--active" : ""}`}
+              aria-pressed={locationType === "borough"}
               onClick={() => switchLocationType("borough")}
             >
               By borough
@@ -237,6 +239,7 @@ const SundayRoastPlanner = ({
             <button
               type="button"
               className={`planner__tab ${locationType === "tubeLine" ? "planner__tab--active" : ""}`}
+              aria-pressed={locationType === "tubeLine"}
               onClick={() => switchLocationType("tubeLine")}
             >
               By tube line

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Comment, Comments, Post } from "../types";
-import { getTopRoastDinnerPosts, organiseComments } from "./utils";
+import { getPostRating, getTopRoastDinnerPosts, isRoastDinnerPost, organiseComments } from "./utils";
 
 const createComment = (id: string, overrides: Partial<Comment> = {}): Comment => ({
   id,
@@ -152,5 +152,50 @@ describe("getTopRoastDinnerPosts", () => {
     });
 
     expect(result.map((post) => post.title)).toEqual(["Top50-1"]);
+  });
+});
+
+describe("getPostRating", () => {
+  it("returns 0 when the post has no ratings field", () => {
+    const post = { date: "2024-01-01" } as Post;
+    expect(getPostRating(post)).toBe(0);
+  });
+
+  it("returns 0 when the ratings nodes array is empty", () => {
+    const post = { date: "2024-01-01", ratings: { nodes: [] } } as Post;
+    expect(getPostRating(post)).toBe(0);
+  });
+
+  it("parses a decimal rating string as a float", () => {
+    const post = { date: "2024-01-01", ratings: { nodes: [{ name: "8.5" }] } } as Post;
+    expect(getPostRating(post)).toBe(8.5);
+  });
+
+  it("returns NaN for a non-numeric rating string", () => {
+    const post = { date: "2024-01-01", ratings: { nodes: [{ name: "great" }] } } as Post;
+    expect(Number.isNaN(getPostRating(post))).toBe(true);
+  });
+});
+
+describe("isRoastDinnerPost", () => {
+  it("returns true when typesOfPost includes Roast Dinner", () => {
+    const post = {
+      date: "2024-01-01",
+      typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+    } as Post;
+    expect(isRoastDinnerPost(post)).toBe(true);
+  });
+
+  it("returns false when typesOfPost contains a different type", () => {
+    const post = {
+      date: "2024-01-01",
+      typesOfPost: { nodes: [{ name: "Pub Review" }] },
+    } as Post;
+    expect(isRoastDinnerPost(post)).toBe(false);
+  });
+
+  it("returns false when typesOfPost is absent", () => {
+    const post = { date: "2024-01-01" } as Post;
+    expect(isRoastDinnerPost(post)).toBe(false);
   });
 });

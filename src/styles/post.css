@@ -636,6 +636,10 @@ p {
     }
   }
 
+  .station-name {
+    padding-right: 1rem;
+  }
+
   .station-post {
     margin-left: auto;
     text-align: right;
@@ -646,6 +650,14 @@ p {
       color: var(--roast-main-text);
     }
   }
+}
+
+.tube-branch-heading {
+  margin: 1.5rem 0 0;
+}
+
+.station-rating {
+  padding-left: 0.5rem;
 }
 
 .heading-underline {
@@ -678,6 +690,9 @@ p {
   }
   &.victoria {
     text-decoration-color: var(--victoria);
+  }
+  &.elizabeth {
+    text-decoration-color: var(--elizabeth);
   }
 }
 
