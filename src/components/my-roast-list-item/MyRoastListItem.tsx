@@ -1,14 +1,5 @@
-import { memo, useEffect, useState } from "react";
-
-function useAuthFlag(): boolean | null {
-  const [enabled, setEnabled] = useState<boolean | null>(null);
-  useEffect(() => {
-    const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
-    const val = match ? match[2] : null;
-    setEnabled(val === null ? false : val === "true");
-  }, []);
-  return enabled;
-}
+import { memo } from "react";
+import { useAuthFlag } from "../../hooks/useAuthFlag";
 
 type MyRoastListItemProps = {
   imgSrc: string;

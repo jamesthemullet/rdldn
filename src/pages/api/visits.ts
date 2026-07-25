@@ -8,7 +8,7 @@ async function getUserId(clerkId: string): Promise<string | null> {
   return user?.id ?? null;
 }
 
-export async function GET(context: APIContext) {
+export async function GET(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {
@@ -27,7 +27,7 @@ export async function GET(context: APIContext) {
   });
 }
 
-export async function POST(context: APIContext) {
+export async function POST(context: APIContext): Promise<Response> {
   const { userId: clerkId } = context.locals.auth();
 
   if (!clerkId) {

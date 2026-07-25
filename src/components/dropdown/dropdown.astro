@@ -32,7 +32,7 @@ const {
   center = false,
 } = Astro.props;
 
-const getDisplayLabel = (labelToFormat: string) => {
+const getDisplayLabel = (labelToFormat: string): string => {
   if (!maxOptionLabelLength || labelToFormat.length <= maxOptionLabelLength) {
     return labelToFormat;
   }

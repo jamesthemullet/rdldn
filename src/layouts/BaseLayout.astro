@@ -70,6 +70,7 @@ const canonicalURL = Astro.site
           title: pageTitle || "Roast Dinners In London",
           type: ogType,
           image: opengraphImage || logo1.src,
+          url: canonicalURL,
         },
         image: {
           alt: description || "Roast Dinners In London",
@@ -88,9 +89,11 @@ const canonicalURL = Astro.site
           description ||
           "Lord Gravy bringing you a guide to the best and worst roast dinners in London.",
         image: opengraphImage || logo1.src,
-        imageAlt: description || "Roast Dinners In London",
+        imageAlt: pageTitle || "Roast Dinners In London",
       }}
     />
+    <meta property="og:locale" content="en_GB" />
+    {noindex && <meta name="robots" content="noindex" />}
     {
       structuredData && (
         <script
