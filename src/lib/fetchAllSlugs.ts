@@ -17,7 +17,7 @@ export async function fetchAllSlugs(entity: GraphEntity, query: string): Promise
   let endCursor: string | null = null;
 
   while (hasNextPage) {
-    const data = await fetchGraphQL<SlugsResponse>(query, {
+    const data: SlugsResponse = await fetchGraphQL<SlugsResponse>(query, {
       first: 100,
       after: endCursor,
     });
