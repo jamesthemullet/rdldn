@@ -38,13 +38,6 @@ export default defineConfig({
   },
   vite: {
     plugins: [clerkVirtualConfig],
-    ssr: {
-      // sanitize-html's nested htmlparser2 dependency ships ESM-only with no
-      // CJS build; left external it breaks Node's require() on Vercel at
-      // request time (ERR_REQUIRE_ESM). Bundling it lets Vite/Rollup resolve
-      // the ESM/CJS interop instead.
-      noExternal: ["sanitize-html", "htmlparser2"],
-    },
     ...(isTesting && { server: { hmr: { overlay: false } } }),
   },
   integrations: [
