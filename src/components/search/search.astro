@@ -7,7 +7,7 @@ const { resultLimit = 4 } = Astro.props;
 ---
 
 <div x-data="searchComponent" data-result-limit={resultLimit}>
-  <form @submit.prevent="handleSearch">
+  <form @submit.prevent="handleSearch" role="search">
     <label for="search-input" class="sr-only">Search posts</label>
     <input
       id="search-input"
