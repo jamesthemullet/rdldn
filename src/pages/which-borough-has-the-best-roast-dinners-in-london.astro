@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { toOwnerSlug } from "../lib/ownerSlug";
 import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
 import type { Post, PostsConnection } from "../types";
@@ -78,15 +79,19 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         districtStats.map((district) => (
           <li>
-            The average rating in {district.name} is{" "}
-            {district.average.toFixed(2)} ({district.count} reviews)
+            The average rating in{" "}
+            <a href={`/boroughs/${toOwnerSlug(district.name)}`}>
+              {district.name}
+            </a>{" "}
+            is {district.average.toFixed(2)} ({district.count} reviews)
           </li>
         ))
       }
     </ul>
     <p>
       Do note that I am only including boroughs where I've had 3 roast dinners
-      or more.
+      or more. See the <a href="/boroughs">full borough hub</a> for every
+      borough reviewed.
     </p>
     <Newsletter />
 
