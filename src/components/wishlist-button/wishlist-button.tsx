@@ -1,5 +1,5 @@
 import { useAuth } from "@clerk/astro/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthFlag } from "../../lib/useAuthFlag";
 import "./wishlist-button.css";
 
