@@ -13,7 +13,7 @@ export async function DELETE(context: APIContext): Promise<Response> {
   const { slug } = context.params;
 
   if (!slug) {
-    return new Response(JSON.stringify({ error: "Bad request" }), { status: 400 });
+    return new Response(JSON.stringify({ error: "Missing slug" }), { status: 400 });
   }
 
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
