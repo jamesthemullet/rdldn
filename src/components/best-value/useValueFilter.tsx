@@ -1,4 +1,4 @@
-import { type ChangeEvent, useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { type ChangeEvent, type SetStateAction, useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import type { ValueScoredPost } from "../../lib/valueScore";
 
 type FilterState = {
@@ -49,7 +49,18 @@ const filterScoredPosts = (scoredPosts: ValueScoredPost[], filters: FilterState)
 const sortByValueScoreDesc = (scoredPosts: ValueScoredPost[]): ValueScoredPost[] =>
   [...scoredPosts].sort((a, b) => b.valueScore - a.valueScore);
 
-export const useValueFilter = (scoredPosts: ValueScoredPost[]) => {
+type UseValueFilterReturn = {
+  filters: FilterState;
+  showOptions: boolean;
+  setShowOptions: (value: SetStateAction<boolean>) => void;
+  handleFilterChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  clearFilters: () => void;
+  copyShareableLink: () => void;
+  copied: boolean;
+  sortedPosts: ValueScoredPost[];
+};
+
+export const useValueFilter = (scoredPosts: ValueScoredPost[]): UseValueFilterReturn => {
   const urlParams = getInitialStateFromUrl();
 
   const [filters, dispatch] = useReducer(filterReducer, {
