@@ -13,7 +13,7 @@ export const getPostRating = (post: Post): number =>
 export const isRoastDinnerPost = (post: Post): boolean =>
   post.typesOfPost?.nodes?.some((node) => node.name === "Roast Dinner") ?? false;
 
-const isClosedDownPost = (post: Post): boolean =>
+export const isClosedDownPost = (post: Post): boolean =>
   (post.closedDowns?.nodes?.length ?? 0) > 0;
 
 export const getTopRoastDinnerPosts = (

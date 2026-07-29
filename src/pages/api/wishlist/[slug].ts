@@ -12,6 +12,10 @@ export async function DELETE(context: APIContext): Promise<Response> {
 
   const { slug } = context.params;
 
+  if (!slug) {
+    return new Response(JSON.stringify({ error: "Missing slug" }), { status: 400 });
+  }
+
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
   if (!user) {
     return new Response(JSON.stringify({ error: "Not found" }), { status: 404 });
@@ -19,7 +23,7 @@ export async function DELETE(context: APIContext): Promise<Response> {
 
   await db
     .delete(wishlistItems)
-    .where(and(eq(wishlistItems.userId, user.id), eq(wishlistItems.postSlug, slug!)));
+    .where(and(eq(wishlistItems.userId, user.id), eq(wishlistItems.postSlug, slug)));
 
   return new Response(null, { status: 204 });
 }

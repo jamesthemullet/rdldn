@@ -1,0 +1,68 @@
+.boroughs-hub {
+  .borough-hub-intro {
+    margin-bottom: 1.5rem;
+  }
+
+  .boroughs-sort-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0 1rem 1rem;
+  }
+
+  .sort-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .boroughs-sort-controls select {
+    width: 140px;
+  }
+
+  .boroughs-table {
+    margin-top: 1rem;
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--roast-main-text);
+
+    th,
+    td {
+      text-align: left;
+      padding: 0.5rem;
+    }
+
+    thead th {
+      border-bottom: 1px solid var(--border-color, #ccc);
+    }
+
+    th {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    a {
+      text-decoration: underline;
+      color: var(--roast-main-text);
+    }
+  }
+}
+
+.borough-detail {
+  .borough-summary {
+    margin-bottom: 1.5rem;
+  }
+
+  .borough-back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .borough-rank {
+    color: var(--text-muted, var(--roast-main-text));
+    font-weight: normal;
+  }
+}
