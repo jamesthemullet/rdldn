@@ -227,7 +227,7 @@ const reviewStructuredData =
           onclick="
             const el = document.getElementById('summary');
             if (el) {
-              const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+              const y = el.getBoundingClientRect().top + window.scrollY - 120;
               window.scrollTo({ top: y, behavior: 'smooth' });
               el.setAttribute('tabindex', '-1');
               el.focus({ preventScroll: true });
