@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
-import { MyRoastListItem } from "../components/my-roast-list-item/MyRoastListItem";
+import { Image } from "astro:assets";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import NewsletterPopup from "../components/newsletter-popup/newsletter-popup.astro";
 import Search from "../components/search/search.astro";
@@ -68,7 +68,7 @@ if (recentPostCursor) {
   }
 }
 
-const posts = [recentPost, ...otherPosts];
+const posts = [recentPost, ...otherPosts].filter(Boolean);
 
 const locationPageIds = ["5614", "5612", "5616", "5594"];
 
@@ -279,6 +279,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -304,7 +306,7 @@ try {
                 <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
-            <a href={page?.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
               <img
                 src={page?.featuredImageUrl}
                 alt={`Preview image for ${page?.title}`}
@@ -323,15 +325,27 @@ try {
     <ul>
       <li class="heading">
         <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
-        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image">
-          <img src={findARoastImg.src} alt="Find a roast" width="400" height="300" loading="lazy" />
+        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
+          <Image src={findARoastImg} alt="Find a roast" width={400} height={300} loading="lazy" />
         </a>
       </li>
-      <MyRoastListItem imgSrc={dreamingOfRoastDinners.src} client:idle />
+      <li
+        class="heading"
+        x-data
+        x-show="document.cookie.includes('flag_authFeatures=true')"
+        style="display: none"
+      >
+        <h3>
+          <a href="/my-roasts" rel="noopener noreferrer">My Roast List</a>
+        </h3>
+        <a href="/my-roasts" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
+          <Image src={dreamingOfRoastDinners} alt="My roast list" width={400} height={300} loading="lazy" />
+        </a>
+      </li>
       <li class="heading">
         <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
-        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image">
-          <img src={guessTheScoreImg.src} alt="Guess the score" width="400" height="300" loading="lazy" />
+        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
+          <Image src={guessTheScoreImg} alt="Guess the score" width={400} height={300} loading="lazy" />
         </a>
       </li>
       <li class="heading interactive-features__placeholder" aria-hidden="true"></li>
@@ -348,7 +362,7 @@ try {
                 <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
-            <a href={page?.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
               <img
                 src={page?.featuredImageUrl}
                 alt={`Preview image for ${page?.title}`}
@@ -411,6 +425,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -442,6 +458,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -471,6 +489,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
