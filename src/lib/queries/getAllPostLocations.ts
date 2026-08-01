@@ -20,6 +20,11 @@ const GET_ALL_POST_LOCATIONS = `
             name
           }
         }
+        yearsOfVisit {
+          nodes {
+            name
+          }
+        }
       }
       pageInfo {
         endCursor
