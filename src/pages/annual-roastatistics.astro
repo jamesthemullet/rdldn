@@ -77,9 +77,16 @@ const selectedYearPosts = roastPosts.filter(
   (post) => post.yearsOfVisit?.nodes?.[0]?.name === selectedYear
 );
 
-const ratingValues = selectedYearPosts
-  .map((post) => parseFirstNumericValue(post.ratings?.nodes?.[0]?.name))
-  .filter((value): value is number => value !== null);
+const ratingEntries = selectedYearPosts
+  .map((post) => ({
+    post,
+    rating: parseFirstNumericValue(post.ratings?.nodes?.[0]?.name),
+  }))
+  .filter(
+    (entry): entry is { post: Post; rating: number } => entry.rating !== null
+  );
+
+const ratingValues = ratingEntries.map((entry) => entry.rating);
 
 const priceValues = selectedYearPosts
   .map((post) => parsePriceValue(post.prices?.nodes?.[0]?.name))
@@ -90,9 +97,18 @@ const averageRating =
     ? ratingValues.reduce((sum, value) => sum + value, 0) / ratingValues.length
     : null;
 
-const highestRating =
-  ratingValues.length > 0 ? Math.max(...ratingValues) : null;
-const lowestRating = ratingValues.length > 0 ? Math.min(...ratingValues) : null;
+const highestRatingEntry =
+  ratingEntries.length > 0
+    ? ratingEntries.reduce((best, entry) =>
+        entry.rating > best.rating ? entry : best
+      )
+    : null;
+const lowestRatingEntry =
+  ratingEntries.length > 0
+    ? ratingEntries.reduce((worst, entry) =>
+        entry.rating < worst.rating ? entry : worst
+      )
+    : null;
 
 const excellentRoasts = ratingValues.filter((value) => value >= 8).length;
 const crapRoasts = ratingValues.filter((value) => value < 6).length;
@@ -104,6 +120,100 @@ const averagePrice =
 
 const mostExpensive = priceValues.length > 0 ? Math.max(...priceValues) : null;
 const leastExpensive = priceValues.length > 0 ? Math.min(...priceValues) : null;
+
+const selectedYearIndex = years.indexOf(selectedYear);
+const previousYear =
+  selectedYearIndex >= 0 && selectedYearIndex < years.length - 1
+    ? years[selectedYearIndex + 1]
+    : null;
+
+const previousYearPosts = previousYear
+  ? roastPosts.filter(
+      (post) => post.yearsOfVisit?.nodes?.[0]?.name === previousYear
+    )
+  : [];
+
+const previousYearRatingValues = previousYearPosts
+  .map((post) => parseFirstNumericValue(post.ratings?.nodes?.[0]?.name))
+  .filter((value): value is number => value !== null);
+
+const previousYearPriceValues = previousYearPosts
+  .map((post) => parsePriceValue(post.prices?.nodes?.[0]?.name))
+  .filter((value): value is number => value !== null);
+
+const previousYearAverageRating =
+  previousYearRatingValues.length > 0
+    ? previousYearRatingValues.reduce((sum, value) => sum + value, 0) /
+      previousYearRatingValues.length
+    : null;
+
+const previousYearAveragePrice =
+  previousYearPriceValues.length > 0
+    ? previousYearPriceValues.reduce((sum, value) => sum + value, 0) /
+      previousYearPriceValues.length
+    : null;
+
+const formatYearComparison = (
+  current: number | null,
+  previous: number | null,
+  formatValue: (value: number) => string
+): string | null => {
+  if (current === null || previous === null) return null;
+  const diff = current - previous;
+  if (Math.abs(diff) < 0.005) return `unchanged vs ${previousYear}`;
+  const direction = diff > 0 ? "up" : "down";
+  return `${direction} ${formatValue(Math.abs(diff))} vs ${previousYear} (${formatValue(previous)})`;
+};
+
+const showYearComparison = selectedYearPosts.length >= 5 && previousYear !== null;
+
+const ratingComparisonText = showYearComparison
+  ? formatYearComparison(averageRating, previousYearAverageRating, (value) =>
+      value.toFixed(2)
+    )
+  : null;
+
+const priceComparisonText = showYearComparison
+  ? formatYearComparison(
+      averagePrice,
+      previousYearAveragePrice,
+      (value) => `£${value.toFixed(2)}`
+    )
+  : null;
+
+const parsePostDate = (post: Post): Date | null => {
+  if (!post.date) return null;
+  const parsed = new Date(post.date);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const datedRoastPosts = roastPosts
+  .map((post) => ({
+    post,
+    date: parsePostDate(post),
+    rating: parseFirstNumericValue(post.ratings?.nodes?.[0]?.name),
+  }))
+  .filter(
+    (entry): entry is { post: Post; date: Date; rating: number | null } =>
+      entry.date !== null
+  )
+  .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+const lastGreatRoastIndex = datedRoastPosts.findIndex(
+  (entry) => entry.rating !== null && entry.rating >= 8
+);
+
+const lastGreatRoast =
+  lastGreatRoastIndex >= 0 ? datedRoastPosts[lastGreatRoastIndex] : null;
+
+const roastsSinceLastGreatRoast =
+  lastGreatRoastIndex >= 0 ? lastGreatRoastIndex : datedRoastPosts.length;
+
+const daysSinceLastGreatRoast = lastGreatRoast
+  ? Math.floor(
+      (Date.now() - lastGreatRoast.date.getTime()) / (1000 * 60 * 60 * 24)
+    )
+  : null;
 
 const areaCounts = new Map<string, number>();
 const boroughCounts = new Map<string, number>();
@@ -146,6 +256,26 @@ const topMeats = Array.from(meatCounts.entries())
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   .slice(0, 10);
 
+const maxAreaCount = Math.max(1, ...topAreas.map(([, count]) => count));
+const maxBoroughCount = Math.max(1, ...topBoroughs.map(([, count]) => count));
+const maxMeatCount = Math.max(1, ...topMeats.map(([, count]) => count));
+
+const ratingBuckets = Array.from({ length: 11 }, (_, whole) => ({
+  label: `${whole}'s`,
+  min: whole,
+  max: whole === 10 ? 10.01 : whole + 1,
+}));
+
+const ratingDistribution = ratingBuckets.map(({ label, min, max }) => ({
+  label,
+  count: ratingValues.filter((value) => value >= min && value < max).length,
+}));
+
+const maxDistributionCount = Math.max(
+  1,
+  ...ratingDistribution.map(({ count }) => count)
+);
+
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
 
@@ -181,6 +311,32 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     }
 
     {
+      datedRoastPosts.length > 0 ? (
+        <section>
+          <h3>Current streak</h3>
+          {lastGreatRoast ? (
+            <p>
+              It's been {daysSinceLastGreatRoast}{" "}
+              {daysSinceLastGreatRoast === 1 ? "day" : "days"} (
+              {roastsSinceLastGreatRoast}{" "}
+              {roastsSinceLastGreatRoast === 1 ? "roast dinner" : "roast dinners"})
+              since our last 8+ rated roast dinner:{" "}
+              <a href={`/${lastGreatRoast.post.slug}`}>
+                {lastGreatRoast.post.title}
+              </a>{" "}
+              ({lastGreatRoast.rating?.toFixed(2)}).
+            </p>
+          ) : (
+            <p>
+              We've never had an 8+ rated roast dinner yet —{" "}
+              {roastsSinceLastGreatRoast} roast dinners and counting.
+            </p>
+          )}
+        </section>
+      ) : null
+    }
+
+    {
       selectedYear ? (
         <section>
           <h2>{selectedYear} overview</h2>
@@ -191,24 +347,44 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
               {averageRating !== null
                 ? averageRating.toFixed(2)
                 : "No rating data"}
+              {ratingComparisonText ? ` (${ratingComparisonText})` : null}
             </li>
             <li>
               Highest rating:{" "}
-              {highestRating !== null
-                ? highestRating.toFixed(2)
-                : "No rating data"}
+              {highestRatingEntry ? (
+                <>
+                  {highestRatingEntry.rating.toFixed(2)}{" "}
+                  (
+                  <a href={`/${highestRatingEntry.post.slug}`}>
+                    {highestRatingEntry.post.title}
+                  </a>
+                  )
+                </>
+              ) : (
+                "No rating data"
+              )}
             </li>
             <li>
               Lowest rating:{" "}
-              {lowestRating !== null
-                ? lowestRating.toFixed(2)
-                : "No rating data"}
+              {lowestRatingEntry ? (
+                <>
+                  {lowestRatingEntry.rating.toFixed(2)}{" "}
+                  (
+                  <a href={`/${lowestRatingEntry.post.slug}`}>
+                    {lowestRatingEntry.post.title}
+                  </a>
+                  )
+                </>
+              ) : (
+                "No rating data"
+              )}
             </li>
             <li>
               Average price:{" "}
               {averagePrice !== null
                 ? `£${averagePrice.toFixed(2)}`
                 : "No price data"}
+              {priceComparisonText ? ` (${priceComparisonText})` : null}
             </li>
             <li>
               Most expensive:{" "}
@@ -229,9 +405,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
           <h3>Most visited areas</h3>
           {topAreas.length > 0 ? (
-            <ul>
+            <ul class="month-chart" aria-label="Most visited areas">
               {topAreas.map(([area, count]) => (
-                <li>
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxAreaCount) * 100)}%`}
+                    />
+                  </div>
                   {area}: {count}
                 </li>
               ))}
@@ -242,9 +424,15 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
           <h3>Most visited boroughs</h3>
           {topBoroughs.length > 0 ? (
-            <ul>
+            <ul class="month-chart" aria-label="Most visited boroughs">
               {topBoroughs.map(([borough, count]) => (
-                <li>
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxBoroughCount) * 100)}%`}
+                    />
+                  </div>
                   {borough}: {count}
                 </li>
               ))}
@@ -255,15 +443,40 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
           <h3>Most eaten meats</h3>
           {topMeats.length > 0 ? (
-            <ul>
+            <ul class="month-chart" aria-label="Most eaten meats">
               {topMeats.map(([meat, count]) => (
-                <li>
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxMeatCount) * 100)}%`}
+                    />
+                  </div>
                   {meat}: {count}
                 </li>
               ))}
             </ul>
           ) : (
             <p>No meat data for this year.</p>
+          )}
+
+          <h3>Rating distribution for {selectedYear}</h3>
+          {ratingValues.length > 0 ? (
+            <ul class="month-chart" aria-label={`Rating distribution for ${selectedYear}`}>
+              {ratingDistribution.map(({ label, count }) => (
+                <li class="month-chart-row">
+                  <div class="bar-track" role="presentation" aria-hidden="true">
+                    <div
+                      class="bar-fill"
+                      style={`width: ${Math.round((count / maxDistributionCount) * 100)}%`}
+                    />
+                  </div>
+                  Rating {label}: {count} {count === 1 ? "roast" : "roasts"}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No ratings recorded for this year.</p>
           )}
         </section>
       ) : (
@@ -275,3 +488,72 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
+
+<style>
+  .price-chart {
+    margin: 1.5rem 0;
+    max-width: 640px;
+  }
+
+  .price-chart figcaption {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .price-chart svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .axis {
+    stroke: #d1d5db;
+    stroke-width: 1;
+  }
+
+  .price-line {
+    fill: none;
+    stroke: var(--roast-new-blue);
+    stroke-width: 2;
+  }
+
+  .price-point {
+    fill: var(--roast-new-blue);
+  }
+
+  .price-label,
+  .year-label {
+    font-size: 11px;
+    fill: #4b5563;
+    text-anchor: middle;
+  }
+
+  .month-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0 1.5rem;
+    padding: 0;
+  }
+
+  .month-chart-row {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .bar-track {
+    background: #e5e7eb;
+    border-radius: 4px;
+    height: 0.75rem;
+    overflow: hidden;
+    max-width: 400px;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--roast-new-blue);
+    border-radius: 4px;
+    min-width: 2px;
+  }
+</style>

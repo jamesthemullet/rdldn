@@ -83,7 +83,12 @@ const getSouthWestTopRatedRoasts = async (): Promise<{ topRated: Post[]; highRat
   return { topRated, highRated };
 };
 
-const { topRated, highRated } = await getSouthWestTopRatedRoasts();
+const { topRated, highRated: highRatedPosts } = await getSouthWestTopRatedRoasts();
+const highRated = highRatedPosts.map((post) => ({
+  slug: post.slug ?? "",
+  name: post.title ?? "",
+  rating: Number.parseFloat(post.ratings?.nodes?.[0]?.name ?? "0").toFixed(2),
+}));
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
 

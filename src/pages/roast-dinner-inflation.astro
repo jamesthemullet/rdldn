@@ -45,7 +45,7 @@ while (hasNextPage) {
   endCursor = posts.pageInfo.endCursor;
 }
 
-const yearStats = new Map();
+const yearStats = new Map<string, number[]>();
 
 for (const post of roastPricePosts) {
   const year = post.year;
@@ -56,15 +56,17 @@ for (const post of roastPricePosts) {
 
   if (!cleanedPrice || Number.isNaN(cleanedPrice)) continue;
 
-  if (!yearStats.has(year)) {
-    yearStats.set(year, []);
+  const existing = yearStats.get(year);
+  if (existing) {
+    existing.push(cleanedPrice);
+  } else {
+    yearStats.set(year, [cleanedPrice]);
   }
-  yearStats.get(year).push(cleanedPrice);
 }
 
 const averagePrices = [...yearStats.entries()].map(([year, prices]) => {
   const average =
-    prices.reduce((sum: number, price: string) => sum + price, 0) /
+    prices.reduce((sum, price) => sum + price, 0) /
     prices.length;
   return {
     year,
@@ -72,6 +74,38 @@ const averagePrices = [...yearStats.entries()].map(([year, prices]) => {
     count: prices.length,
   };
 });
+
+const sortedAveragePrices = averagePrices.sort(
+  (a, b) => Number.parseInt(a.year, 10) - Number.parseInt(b.year, 10),
+);
+
+const chartWidth = 600;
+const chartHeight = 240;
+const chartPadding = { top: 20, right: 20, bottom: 32, left: 48 };
+const plotWidth = chartWidth - chartPadding.left - chartPadding.right;
+const plotHeight = chartHeight - chartPadding.top - chartPadding.bottom;
+
+const chartPrices = sortedAveragePrices.map(({ average }) => Number(average));
+const minPrice = chartPrices.length ? Math.min(...chartPrices) : 0;
+const maxPrice = chartPrices.length ? Math.max(...chartPrices) : 0;
+const priceRange = maxPrice - minPrice || 1;
+
+const chartPoints = sortedAveragePrices.map(({ year, average, count }, index) => {
+  const x =
+    sortedAveragePrices.length > 1
+      ? chartPadding.left + (index / (sortedAveragePrices.length - 1)) * plotWidth
+      : chartPadding.left + plotWidth / 2;
+  const y =
+    chartPadding.top +
+    plotHeight -
+    ((Number(average) - minPrice) / priceRange) * plotHeight;
+
+  return { year, average, count, x, y };
+});
+
+const chartLinePoints = chartPoints
+  .map(({ x, y }) => `${x.toFixed(1)},${y.toFixed(1)}`)
+  .join(" ");
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
 ---
@@ -87,6 +121,50 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
   />
   <div class="container">
     <div set:html={sanitizeContent(singlePage.content)} />
+
+    {
+      chartPoints.length > 1 && (
+        <figure class="price-chart">
+          <figcaption>The London Roast Dinner Price Index</figcaption>
+          <svg
+            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+            role="img"
+            aria-label={`Line chart of average roast dinner price by year, from £${chartPoints[0].average} in ${chartPoints[0].year} to £${chartPoints[chartPoints.length - 1].average} in ${chartPoints[chartPoints.length - 1].year}`}
+          >
+            <line
+              class="axis"
+              x1={chartPadding.left}
+              y1={chartPadding.top + plotHeight}
+              x2={chartPadding.left + plotWidth}
+              y2={chartPadding.top + plotHeight}
+            />
+            <line
+              class="axis"
+              x1={chartPadding.left}
+              y1={chartPadding.top}
+              x2={chartPadding.left}
+              y2={chartPadding.top + plotHeight}
+            />
+            <polyline class="price-line" points={chartLinePoints} />
+            {chartPoints.map(({ year, average, x, y }) => (
+              <g>
+                <circle class="price-point" cx={x} cy={y} r="4" />
+                <text class="price-label" x={x} y={y - 10}>
+                  £{average}
+                </text>
+                <text
+                  class="year-label"
+                  x={x}
+                  y={chartPadding.top + plotHeight + 20}
+                >
+                  {year}
+                </text>
+              </g>
+            ))}
+          </svg>
+        </figure>
+      )
+    }
 
     <ul>
       {
@@ -108,3 +186,42 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>
+
+<style>
+  .price-chart {
+    margin: 1.5rem 0;
+    max-width: 640px;
+  }
+
+  .price-chart figcaption {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .price-chart svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .axis {
+    stroke: #d1d5db;
+    stroke-width: 1;
+  }
+
+  .price-line {
+    fill: none;
+    stroke: var(--roast-new-blue);
+    stroke-width: 2;
+  }
+
+  .price-point {
+    fill: var(--roast-new-blue);
+  }
+
+  .price-label,
+  .year-label {
+    font-size: 11px;
+    fill: #4b5563;
+    text-anchor: middle;
+  }
+</style>

@@ -144,14 +144,18 @@ const featuredImageUrl = (singlePost.featuredImage?.node?.sourceUrl || logo3.src
 
 const rawContent = singlePost.content?.replace(/i\d+\.wp\.com\/rdldn\.co\.uk/g, "blog.rdldn.co.uk") ?? "";
 const safeContent = sanitizeHtml(rawContent, {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "iframe"]),
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "figure", "figcaption", "iframe", "script"]),
   allowedAttributes: {
     ...sanitizeHtml.defaults.allowedAttributes,
     img: ["src", "srcset", "alt", "width", "height", "loading", "class"],
     iframe: ["src", "width", "height", "allowfullscreen", "frameborder", "title"],
+    script: ["src", "async", "charset"],
+    blockquote: ["data-bluesky-uri", "data-bluesky-cid", "data-bluesky-embed-color-mode"],
     "*": ["class", "id"],
   },
   allowedSchemes: ["http", "https", "mailto"],
+  allowedScriptHostnames: ["embed.bsky.app"],
+  allowVulnerableTags: true,
 });
 
 const threadedComments = organiseComments(
@@ -227,7 +231,7 @@ const reviewStructuredData =
           onclick="
             const el = document.getElementById('summary');
             if (el) {
-              const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+              const y = el.getBoundingClientRect().top + window.scrollY - 120;
               window.scrollTo({ top: y, behavior: 'smooth' });
               el.setAttribute('tabindex', '-1');
               el.focus({ preventScroll: true });
