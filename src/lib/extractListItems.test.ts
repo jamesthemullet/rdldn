@@ -31,4 +31,39 @@ describe("extractListItems", () => {
 
     expect(extractListItems(html)).toEqual([]);
   });
+
+  test("falls back to splitting <br>-separated lines within a paragraph", () => {
+    const html =
+      '<p class="wp-block-paragraph">Some intro text.</p>' +
+      '<p class="wp-block-paragraph"><br />Prospect Of Whitby – Wapping<br />The Ned, Bank<br />' +
+      "Rules, The Strand (Monday to Sunday)</p>";
+
+    expect(extractListItems(html)).toEqual([
+      "Prospect Of Whitby – Wapping",
+      "The Ned, Bank",
+      "Rules, The Strand (Monday to Sunday)"
+    ]);
+  });
+
+  test("ignores plain paragraphs with no <br> line breaks", () => {
+    const html =
+      '<p class="wp-block-paragraph">Everyone needs a to-do list.</p>' +
+      '<p class="wp-block-paragraph">Now also featuring recommender.</p>';
+
+    expect(extractListItems(html)).toEqual([]);
+  });
+
+  test("ignores a paragraph with too few <br>-separated lines to be a list", () => {
+    const html = '<p class="wp-block-paragraph">First line<br />Second line</p>';
+
+    expect(extractListItems(html)).toEqual([]);
+  });
+
+  test("prefers <li> items over <br>-separated paragraphs when both exist", () => {
+    const html =
+      "<ul><li>The Marksman</li></ul>" +
+      '<p class="wp-block-paragraph">A<br />B<br />C</p>';
+
+    expect(extractListItems(html)).toEqual(["The Marksman"]);
+  });
 });
