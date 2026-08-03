@@ -94,6 +94,14 @@ const sampleMarkers = [
   { lat: 51.52, lng: -0.12, label: "NaN Rating", rating: Number.NaN, slug: "nan-rating" }
 ];
 
+const yearMarkers = [
+  { lat: 51.51, lng: -0.1, label: "Visited 2022", rating: 9.0, slug: "visited-2022", year: "2022" },
+  { lat: 51.52, lng: -0.11, label: "Visited 2023", rating: 8.9, slug: "visited-2023", year: "2023" },
+  { lat: 51.53, lng: -0.12, label: "Visited 2024", rating: 8.8, slug: "visited-2024", year: "2024" },
+  { lat: 51.54, lng: -0.13, label: "Visited 2025", rating: 8.7, slug: "visited-2025", year: "2025" },
+  { lat: 51.55, lng: -0.14, label: "No Year", rating: 8.6, slug: "no-year" }
+];
+
 const colourBandMarkers = [
   { lat: 51.501, lng: -0.101, label: "Nine Plus", rating: 9.0, slug: "nine-plus" },
   { lat: 51.502, lng: -0.102, label: "Eight Point Five", rating: 8.5, slug: "eight-five" },
@@ -243,6 +251,70 @@ describe("roast-map component", () => {
       icon: expect.anything(),
       title: "Open One (9.2/10)",
       alt: "Open One (9.2/10)"
+    });
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("does not render a year filter when no markers have a year", async () => {
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<RoastMap markers={sampleMarkers} />);
+    });
+    await waitForRender();
+
+    expect(host.querySelector("fieldset")).toBeNull();
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("shows all years by default and filters markers by one or more selected years", async () => {
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<RoastMap markers={yearMarkers} />);
+    });
+    await waitForRender();
+
+    const yearCheckboxes = Array.from(
+      host.querySelectorAll('fieldset input[type="checkbox"]')
+    ) as HTMLInputElement[];
+    expect(yearCheckboxes.map((cb) => cb.parentElement?.textContent?.trim())).toEqual([
+      "2022",
+      "2023",
+      "2024",
+      "2025"
+    ]);
+
+    let counts = host.querySelector('[data-test-id="map-marker-counts"]');
+    expect(counts?.getAttribute("data-visible-markers")).toBe("5");
+
+    const getCheckboxForYear = (year: string) =>
+      yearCheckboxes.find((cb) => cb.parentElement?.textContent?.trim() === year) as HTMLInputElement;
+
+    leafletMocks.markerMock.mockClear();
+    await act(async () => {
+      getCheckboxForYear("2022").click();
+      getCheckboxForYear("2024").click();
+    });
+    await waitForRender();
+
+    counts = host.querySelector('[data-test-id="map-marker-counts"]');
+    expect(counts?.getAttribute("data-visible-markers")).toBe("2");
+    expect(leafletMocks.markerMock).toHaveBeenCalledWith([51.51, -0.1], {
+      icon: expect.anything(),
+      title: "Visited 2022 (9.0/10)",
+      alt: "Visited 2022 (9.0/10)"
+    });
+    expect(leafletMocks.markerMock).toHaveBeenCalledWith([51.53, -0.12], {
+      icon: expect.anything(),
+      title: "Visited 2024 (8.8/10)",
+      alt: "Visited 2024 (8.8/10)"
     });
 
     await act(async () => {
