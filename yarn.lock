@@ -549,29 +549,29 @@
     fast-wrap-ansi "^0.2.0"
     sisteransi "^1.0.5"
 
-"@clerk/astro@^3.0.21":
-  version "3.4.20"
-  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-3.4.20.tgz#a23fbe7e135cc254e28d6595f3ef3e684ca461d5"
-  integrity sha512-HKhMVWKsX2wvQSwoPJfIZ6NO24GMU0JiGvpihvsxPAHg0huExtjCsS2+K4t7qn7A0beiVrYxkuOuSYfO4KqBow==
+"@clerk/astro@^4.0.0":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-4.0.5.tgz#aab2edd3ca40a7ed1610fa22de138b891e1bd98c"
+  integrity sha512-+wG1hk6dKIH2ikbDoSoUNUvoqxGW2VayXN50g4fG4NodkQkc+GlKim3Tllgsz+0xE/RcCf0bnbHYuN5rrVkE9g==
   dependencies:
-    "@clerk/backend" "^3.12.0"
-    "@clerk/shared" "^4.25.6"
+    "@clerk/backend" "^3.15.0"
+    "@clerk/shared" "^4.25.10"
     nanoid "5.1.6"
     nanostores "1.0.1"
 
-"@clerk/backend@^3.12.0":
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.12.0.tgz#4f170ad1263a03be60bfbcae88f38605f7134eb0"
-  integrity sha512-AyrNvel4KcLSjQCf6wXKXtzz7VZbpIuM4lNkA3Tsfs0CAT+XKJiV3HyrJKgpGnL29K3TeWeYfzPbQvL/Gcy59g==
+"@clerk/backend@^3.15.0":
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.15.0.tgz#40e751cd6f05def7a8ab40294b1a93bf61b9e5b7"
+  integrity sha512-m8/X0hAjX9HyBD0IdfIFIxP1fbbSvnq5DB6mPLeIc53Ya9XCLn/hlQkaIM8pobKsM/jquRt9DQLT9IvV6z6bFQ==
   dependencies:
-    "@clerk/shared" "^4.25.6"
+    "@clerk/shared" "^4.25.10"
     standardwebhooks "^1.0.0"
     tslib "2.8.1"
 
-"@clerk/shared@^4.25.6":
-  version "4.25.6"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.25.6.tgz#6d87f7236254a14d442215b156beeb7206aaaf3f"
-  integrity sha512-d7Yhi0T5QE0/NCm0ZHgokQMrWHjOCPqU5few3C6Fujw8VR6w16wdAEcGJPS1xo47SXMr8DptXwDE9myyHj71MQ==
+"@clerk/shared@^4.25.10":
+  version "4.25.10"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.25.10.tgz#5cd02d5c832c61f6967dafce331cf0682c29a851"
+  integrity sha512-Vjqk74nQGJ8y+cm+eSshoBzRvBhIzuKLOs3Gt13gEHdyQ6yV798Dl2SrBKt0jw2u6I1tOcD3s8/i9P4yJYo0dw==
   dependencies:
     "@tanstack/query-core" "^5.100.6"
     dequal "2.0.3"
