@@ -4,8 +4,25 @@ import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import { sanitizeContent } from "../lib/sanitize";
-import type { Post } from "../types";
+import type { Comments as CommentsType, Post } from "../types";
 import BaseLayout from "./BaseLayout.astro";
+
+type HighRatedItem = {
+  slug: string;
+  name: string;
+  rating?: string | number;
+};
+
+type Props = {
+  pageTitle: string;
+  description?: string;
+  opengraphImage?: string;
+  content: string;
+  topRated: Post[];
+  highRated?: HighRatedItem[];
+  threadedComments: CommentsType;
+  postId: string;
+};
 
 const {
   pageTitle,
@@ -24,13 +41,13 @@ const {
   description={description}
   opengraphImage={opengraphImage}
 >
-  <FeaturedPostHeader imageSrc={opengraphImage} title={pageTitle} />
+  <FeaturedPostHeader imageSrc={opengraphImage ?? ""} title={pageTitle} />
 
   <div class="container">
     <div set:html={sanitizeContent(content)} />
 
     {
-      topRated.map((post: Post) => (
+      topRated.map((post) => (
         <div class="best-container">
           <div class="best-container-details">
             <h2>
@@ -84,13 +101,11 @@ const {
         <section class="also-worth-a-try">
           <h3>Also Worth a Try</h3>
           <ul>
-            {highRated.map(
-              (roast: { slug: string; name: string; rating?: number }) => (
-                <li>
-                  <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
-                </li>
-              )
-            )}
+            {highRated.map((roast) => (
+              <li>
+                <a href={`/${roast.slug}`}>{roast.name}</a> - {roast?.rating}
+              </li>
+            ))}
           </ul>
         </section>
       )

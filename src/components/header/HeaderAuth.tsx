@@ -1,6 +1,6 @@
 import { Show, SignInButton, UserButton } from "@clerk/astro/react";
 import { memo } from "react";
-import { useAuthFlag } from "../../hooks/useAuthFlag";
+import { useAuthFlag } from "../../lib/useAuthFlag";
 
 export const HeaderAuthDesktop = memo(function HeaderAuthDesktop() {
   const enabled = useAuthFlag();

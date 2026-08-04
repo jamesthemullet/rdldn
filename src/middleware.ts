@@ -1,7 +1,12 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/astro/server";
+import { clerkMiddleware } from "@clerk/astro/server";
 import type { MiddlewareHandler } from "astro";
 
-const isProtectedRoute = createRouteMatcher(["/api/wishlist(.*)", "/api/profile(.*)", "/my-roasts"]);
+const protectedRoutePrefixes = ["/api/wishlist", "/api/profile", "/my-roasts"];
+
+const isProtectedRoute = (request: Request) => {
+  const { pathname } = new URL(request.url);
+  return protectedRoutePrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+};
 
 const clerkHandler = clerkMiddleware((auth, context) => {
   if (isProtectedRoute(context.request)) {

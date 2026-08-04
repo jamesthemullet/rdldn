@@ -1,11 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { extractListItems } from "../lib/extractListItems";
 import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
+import RandomPubPicker from "../components/random-pub-picker/random-pub-picker.tsx";
 
 export const prerender = true;
 
@@ -15,6 +17,8 @@ const variables = { id: "17" };
 const singlePage = await getSinglePageData({ variables });
 
 const threadedComments = organiseComments(singlePage.comments.nodes);
+const sanitizedContent = sanitizeContent(singlePage.content);
+const pubNames = extractListItems(sanitizedContent);
 ---
 
 <BaseLayout
@@ -27,7 +31,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     title={singlePage.title}
   />
   <div class="container">
-    <div set:html={sanitizeContent(singlePage.content)} />
+    <div set:html={sanitizedContent} />
+    <RandomPubPicker pubs={pubNames} client:only="react" />
     <Newsletter />
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />

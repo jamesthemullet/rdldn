@@ -89,8 +89,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       </p>
     </section>
 
-    <section class="other-list">
-      <h3>Best Roasts In...</h3>
+    <section class="other-list" aria-labelledby="best-roasts-in-heading">
+      <h3 id="best-roasts-in-heading">Best Roasts In...</h3>
       <ul>
         {
           bestRoasts
@@ -106,6 +106,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                   href={`/${post?.slug}`}
                   rel="noopener noreferrer"
                   class="featured-image"
+                  aria-hidden="true"
+                  tabindex="-1"
                 >
                   <img
                     src={post?.featuredImageUrl}
@@ -121,8 +123,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       </ul>
     </section>
 
-    <section class="other-list">
-      <h3>Best Roast Dinners on Tube Lines</h3>
+    <section class="other-list" aria-labelledby="best-tube-roasts-heading">
+      <h3 id="best-tube-roasts-heading">Best Roast Dinners on Tube Lines</h3>
       <ul>
         {
           bestRoasts
@@ -138,6 +140,8 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
                   href={`/${post?.slug}`}
                   rel="noopener noreferrer"
                   class="featured-image"
+                  aria-hidden="true"
+                  tabindex="-1"
                 >
                   <img
                     src={post?.featuredImageUrl}

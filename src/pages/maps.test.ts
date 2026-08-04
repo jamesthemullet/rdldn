@@ -61,7 +61,8 @@ describe("maps page", () => {
                 slug: "map-pub-one",
                 location: { latitude: "51.500", longitude: "-0.100" },
                 ratings: { nodes: [{ name: "4.8" }] },
-                closedDowns: { nodes: [] }
+                closedDowns: { nodes: [] },
+                yearsOfVisit: { nodes: [{ name: "2024" }] }
               },
               {
                 title: "Missing Latitude",
@@ -116,6 +117,7 @@ describe("maps page", () => {
     expect(html).toContain("Map Pub Two");
     expect(html).toContain("map-pub-two");
     expect(html).not.toContain("Missing Latitude");
+    expect(html).toContain("2024");
   });
 
   test("throws when single page data cannot be loaded", async () => {

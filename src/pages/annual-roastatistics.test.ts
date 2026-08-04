@@ -314,4 +314,167 @@ describe("annual-roastatistics page", () => {
     expect(html).toContain("Excellent roasts: 0");
     expect(html).toContain("Crap roasts: 0");
   });
+
+  test("links highest and lowest rating to their respective reviews", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./annual-roastatistics.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/annual-roastatistics")
+    });
+
+    expect(html).toMatch(/Highest rating:[\s\S]*Lambeth Roast/);
+    expect(html).toMatch(/Lowest rating:[\s\S]*Camden Roast/);
+  });
+
+  test("shows year-over-year comparison once the selected year has 5+ roasts", async () => {
+    fetchGraphQLMock.mockImplementation(async (_query: string, variables: Record<string, unknown> = {}) => {
+      if (!variables.after) {
+        return {
+          posts: {
+            nodes: [
+              {
+                title: "2025 Roast 1",
+                slug: "2025-roast-1",
+                typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+                yearsOfVisit: { nodes: [{ name: "2025" }] },
+                ratings: { nodes: [{ name: "8.0" }] },
+                prices: { nodes: [{ name: "GBP 30" }] }
+              },
+              {
+                title: "2025 Roast 2",
+                slug: "2025-roast-2",
+                typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+                yearsOfVisit: { nodes: [{ name: "2025" }] },
+                ratings: { nodes: [{ name: "8.0" }] },
+                prices: { nodes: [{ name: "GBP 30" }] }
+              },
+              {
+                title: "2025 Roast 3",
+                slug: "2025-roast-3",
+                typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+                yearsOfVisit: { nodes: [{ name: "2025" }] },
+                ratings: { nodes: [{ name: "8.0" }] },
+                prices: { nodes: [{ name: "GBP 30" }] }
+              },
+              {
+                title: "2025 Roast 4",
+                slug: "2025-roast-4",
+                typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+                yearsOfVisit: { nodes: [{ name: "2025" }] },
+                ratings: { nodes: [{ name: "8.0" }] },
+                prices: { nodes: [{ name: "GBP 30" }] }
+              },
+              {
+                title: "2025 Roast 5",
+                slug: "2025-roast-5",
+                typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+                yearsOfVisit: { nodes: [{ name: "2025" }] },
+                ratings: { nodes: [{ name: "8.0" }] },
+                prices: { nodes: [{ name: "GBP 30" }] }
+              }
+            ],
+            pageInfo: {
+              hasNextPage: true,
+              endCursor: "cursor-1"
+            }
+          }
+        };
+      }
+
+      return {
+        posts: {
+          nodes: [
+            {
+              title: "2024 Roast 1",
+              slug: "2024-roast-1",
+              typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+              yearsOfVisit: { nodes: [{ name: "2024" }] },
+              ratings: { nodes: [{ name: "7.0" }] },
+              prices: { nodes: [{ name: "GBP 20" }] }
+            }
+          ],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null
+          }
+        }
+      };
+    });
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./annual-roastatistics.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/annual-roastatistics?year=2025")
+    });
+
+    expect(html).toMatch(/Average rating:\s*8\.00\s*\(up 1\.00 vs 2024 \(7\.00\)\)/);
+    expect(html).toMatch(/Average price:\s*£\s*30\.00\s*\(up £10\.00 vs 2024 \(£20\.00\)\)/);
+  });
+
+  test("hides year-over-year comparison when the selected year has fewer than 5 roasts", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./annual-roastatistics.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/annual-roastatistics?year=2024")
+    });
+
+    expect(html).not.toContain("vs 2023");
+    expect(html).toMatch(/Average rating:\s*9\.00\s*<\/li>/);
+  });
+
+  test("shows the current streak since the last 8+ rated roast dinner", async () => {
+    const now = Date.now();
+    const fiveDaysAgo = new Date(now - 5 * 24 * 60 * 60 * 1000).toISOString();
+    const tenDaysAgo = new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString();
+    const twentyDaysAgo = new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString();
+
+    fetchGraphQLMock.mockResolvedValue({
+      posts: {
+        nodes: [
+          {
+            title: "Recent Decent Roast",
+            slug: "recent-decent-roast",
+            date: fiveDaysAgo,
+            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+            yearsOfVisit: { nodes: [{ name: "2026" }] },
+            ratings: { nodes: [{ name: "7.0" }] },
+            prices: { nodes: [{ name: "GBP 20" }] }
+          },
+          {
+            title: "Great Roast",
+            slug: "great-roast",
+            date: tenDaysAgo,
+            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+            yearsOfVisit: { nodes: [{ name: "2026" }] },
+            ratings: { nodes: [{ name: "9.0" }] },
+            prices: { nodes: [{ name: "GBP 25" }] }
+          },
+          {
+            title: "Old Roast",
+            slug: "old-roast",
+            date: twentyDaysAgo,
+            typesOfPost: { nodes: [{ name: "Roast Dinner" }] },
+            yearsOfVisit: { nodes: [{ name: "2026" }] },
+            ratings: { nodes: [{ name: "6.0" }] },
+            prices: { nodes: [{ name: "GBP 15" }] }
+          }
+        ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null
+        }
+      }
+    });
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./annual-roastatistics.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/annual-roastatistics")
+    });
+
+    expect(html).toContain("Current streak");
+    expect(html).toMatch(/It's been 10 days \(1 roast dinner\)/);
+    expect(html).toMatch(/great-roast/);
+    expect(html).toContain("Great Roast");
+  });
 });
