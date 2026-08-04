@@ -1,0 +1,141 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sanitizeContent } from "../lib/sanitize";
+import { organiseComments } from "../lib/utils";
+import type { Post, PostsConnection } from "../types";
+import "../styles/post.css";
+import "../styles/tube-line-stats.css";
+import Comments from "../components/comments/comments.astro";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import Newsletter from "../components/newsletter/newsletter.astro";
+import { fetchGraphQL } from "../lib/api";
+
+export const prerender = true;
+
+import { getSinglePageData } from "../lib/getSinglePageData";
+import GET_ALL_POSTS from "../lib/queries/getAllPosts";
+
+const variables = { id: "12357" };
+const singlePage = await getSinglePageData({ variables });
+
+const MIN_REVIEWS = 3;
+
+const tubeLinePageSlugs: Record<string, string> = {
+  Bakerloo: "best-roast-dinners-on-the-bakerloo-line",
+  Central: "best-roast-dinners-on-the-central-line",
+  Elizabeth: "best-roast-dinners-on-the-elizabeth-line",
+  Jubilee: "best-roast-dinners-on-the-jubilee-line",
+  Metropolitan: "best-roast-dinners-on-the-metropolitan-line",
+  Piccadilly: "best-roast-dinners-on-the-piccadilly-line",
+  Victoria: "best-roast-dinners-on-the-victoria-line",
+};
+
+type LineStats = {
+  total: number;
+  count: number;
+  bestPost?: { title: string; slug: string; rating: number };
+};
+
+const lineStats: Record<string, LineStats> = {};
+
+let hasNextPage = true;
+let endCursor: string | null = null;
+
+while (hasNextPage) {
+  const variables: { after?: string } = endCursor ? { after: endCursor } : {};
+  const { posts } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POSTS, variables);
+
+  // b: <explanation>
+  posts.nodes.forEach((post: Post) => {
+    const lineName = post.tubeLines?.nodes?.[0]?.name;
+    const ratingStr = post.ratings?.nodes?.[0]?.name;
+    const match = ratingStr?.match(/[\d.]+/);
+    const rating = match ? Number.parseFloat(match[0]) : null;
+
+    if (!lineName || !rating || Number.isNaN(rating)) return;
+
+    if (!lineStats[lineName]) {
+      lineStats[lineName] = { total: 0, count: 0 };
+    }
+
+    lineStats[lineName].total += rating;
+    lineStats[lineName].count += 1;
+
+    const currentBest = lineStats[lineName].bestPost;
+    if (post.slug && post.title && (!currentBest || rating > currentBest.rating)) {
+      lineStats[lineName].bestPost = { title: post.title, slug: post.slug, rating };
+    }
+  });
+
+  hasNextPage = posts.pageInfo.hasNextPage;
+  endCursor = posts.pageInfo.endCursor;
+}
+
+const lineComparison = Object.entries(lineStats)
+  .filter(([_, stats]) => stats.count >= MIN_REVIEWS)
+  .map(([name, stats]) => ({
+    name,
+    average: +(stats.total / stats.count).toFixed(2),
+    count: stats.count,
+    bestPost: stats.bestPost,
+  }))
+  .sort((a, b) => b.average - a.average);
+
+const threadedComments = organiseComments(singlePage.comments.nodes);
+---
+
+<BaseLayout
+  pageTitle={singlePage.title}
+  description={singlePage?.seo?.opengraphDescription}
+  opengraphImage={singlePage?.seo?.opengraphImage?.sourceUrl}
+>
+  <FeaturedPostHeader
+    imageSrc={singlePage?.featuredImage?.node?.sourceUrl}
+    title={singlePage.title}
+  />
+  <div class="container">
+    <div set:html={sanitizeContent(singlePage.content)} />
+    <ul class="tube-line-chart">
+      {
+        lineComparison.map((line) => {
+          const lineSlug = tubeLinePageSlugs[line.name];
+          return (
+            <li class="tube-line-chart-row">
+              <div class="bar-track" role="presentation" aria-hidden="true">
+                <div
+                  class="bar-fill"
+                  style={`width: ${Math.round((line.average / 10) * 100)}%`}
+                />
+              </div>
+              The{" "}
+              {lineSlug ? (
+                <a href={`/${lineSlug}`}>{line.name} line</a>
+              ) : (
+                <>{line.name} line</>
+              )}{" "}
+              averages {line.average.toFixed(2)} based on {line.count}{" "}
+              {line.count === 1 ? "review" : "reviews"}
+              {line.bestPost && (
+                <>
+                  {" "}
+                  – best roast:{" "}
+                  <a href={`/${line.bestPost.slug}`}>{line.bestPost.title}</a>
+                </>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+    <p>
+      Do note that I am only including tube lines where I've had {MIN_REVIEWS}{" "}
+      roast dinners or more. See the{" "}
+      <a href="/tube-stations-with-roast-dinner-reviews">
+        tube station tracker
+      </a> for every station reviewed.
+    </p>
+
+    <Newsletter />
+    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+  </div>
+</BaseLayout>

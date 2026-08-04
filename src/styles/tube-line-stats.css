@@ -1,0 +1,29 @@
+.tube-line-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+  padding: 0;
+}
+
+.tube-line-chart-row {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tube-line-chart-row .bar-track {
+  background: #e5e7eb;
+  border-radius: 4px;
+  height: 0.75rem;
+  overflow: hidden;
+  max-width: 400px;
+}
+
+.tube-line-chart-row .bar-fill {
+  height: 100%;
+  background: var(--roast-new-blue);
+  border-radius: 4px;
+  min-width: 2px;
+}
