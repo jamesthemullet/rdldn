@@ -168,7 +168,8 @@ try {
         featuredImageUrl: smallImage,
       };
     })
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0);
   bestRoasts = bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
 } catch (error) {
   console.error("Error fetching best roasts:", error);
