@@ -1,7 +1,6 @@
 .tube-line-chart {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   margin: 1.5rem 0;
   padding: 0;
 }
@@ -11,6 +10,15 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.tube-line-chart-row:last-child {
+  margin-bottom: 0;
+}
+
+.tube-line-summary {
+  margin: 0;
 }
 
 .tube-line-chart-row .bar-track {
@@ -26,4 +34,41 @@
   background: var(--roast-new-blue);
   border-radius: 4px;
   min-width: 2px;
+
+  &.bakerloo {
+    background: var(--bakerloo);
+  }
+  &.central {
+    background: var(--central);
+  }
+  &.circle {
+    background: var(--circle);
+  }
+  &.district {
+    background: var(--district);
+  }
+  &.hammersmithandcity {
+    background: var(--hammersmithandcity);
+  }
+  &.jubilee {
+    background: var(--jubilee);
+  }
+  &.metropolitan {
+    background: var(--metropolitan);
+  }
+  &.northern {
+    background: var(--northern);
+  }
+  &.piccadilly {
+    background: var(--piccadilly);
+  }
+  &.victoria {
+    background: var(--victoria);
+  }
+  &.elizabeth {
+    background: var(--elizabeth);
+  }
+  &.overground {
+    background: var(--overground);
+  }
 }

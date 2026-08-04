@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { toOwnerSlug } from "../lib/ownerSlug";
 import { sanitizeContent } from "../lib/sanitize";
 import { organiseComments } from "../lib/utils";
 import type { Post, PostsConnection } from "../types";
@@ -30,6 +31,9 @@ const tubeLinePageSlugs: Record<string, string> = {
   Victoria: "best-roast-dinners-on-the-victoria-line",
 };
 
+// Matches the --<line> custom properties defined in layouts/layout.css
+const toLineColorClass = (lineName: string) => toOwnerSlug(lineName).replace(/-/g, "");
+
 type LineStats = {
   total: number;
   count: number;
@@ -47,24 +51,29 @@ while (hasNextPage) {
 
   // b: <explanation>
   posts.nodes.forEach((post: Post) => {
-    const lineName = post.tubeLines?.nodes?.[0]?.name;
+    const lineNames = post.tubeLines?.nodes?.map((line) => line.name) ?? [];
     const ratingStr = post.ratings?.nodes?.[0]?.name;
     const match = ratingStr?.match(/[\d.]+/);
     const rating = match ? Number.parseFloat(match[0]) : null;
 
-    if (!lineName || !rating || Number.isNaN(rating)) return;
+    if (!lineNames.length || !rating || Number.isNaN(rating)) return;
 
-    if (!lineStats[lineName]) {
-      lineStats[lineName] = { total: 0, count: 0 };
-    }
+    const isClosedDown = (post.closedDowns?.nodes.length ?? 0) > 0;
 
-    lineStats[lineName].total += rating;
-    lineStats[lineName].count += 1;
+    // A station can serve more than one line, so credit the review to every line it's on
+    lineNames.forEach((lineName) => {
+      if (!lineStats[lineName]) {
+        lineStats[lineName] = { total: 0, count: 0 };
+      }
 
-    const currentBest = lineStats[lineName].bestPost;
-    if (post.slug && post.title && (!currentBest || rating > currentBest.rating)) {
-      lineStats[lineName].bestPost = { title: post.title, slug: post.slug, rating };
-    }
+      lineStats[lineName].total += rating;
+      lineStats[lineName].count += 1;
+
+      const currentBest = lineStats[lineName].bestPost;
+      if (post.slug && post.title && !isClosedDown && (!currentBest || rating > currentBest.rating)) {
+        lineStats[lineName].bestPost = { title: post.title, slug: post.slug, rating };
+      }
+    });
   });
 
   hasNextPage = posts.pageInfo.hasNextPage;
@@ -99,37 +108,27 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       {
         lineComparison.map((line) => {
           const lineSlug = tubeLinePageSlugs[line.name];
+          const lineNameLink = lineSlug ? <a href={`/${lineSlug}`}>{line.name} line</a> : <>{line.name} line</>;
+          const reviewWord = line.count === 1 ? "review" : "reviews";
           return (
             <li class="tube-line-chart-row">
               <div class="bar-track" role="presentation" aria-hidden="true">
                 <div
-                  class="bar-fill"
+                  class={`bar-fill ${toLineColorClass(line.name)}`}
                   style={`width: ${Math.round((line.average / 10) * 100)}%`}
                 />
               </div>
-              The{" "}
-              {lineSlug ? (
-                <a href={`/${lineSlug}`}>{line.name} line</a>
-              ) : (
-                <>{line.name} line</>
-              )}{" "}
-              averages {line.average.toFixed(2)} based on {line.count}{" "}
-              {line.count === 1 ? "review" : "reviews"}
-              {line.bestPost && (
-                <>
-                  {" "}
-                  – best roast:{" "}
-                  <a href={`/${line.bestPost.slug}`}>{line.bestPost.title}</a>
-                </>
-              )}
+              <p class="tube-line-summary">
+                The {lineNameLink} averages {line.average.toFixed(2)} based on {line.count} {reviewWord}
+                {line.bestPost && <> – best roast: <a href={`/${line.bestPost.slug}`}>{line.bestPost.title}</a></>}
+              </p>
             </li>
           );
         })
       }
     </ul>
     <p>
-      Do note that I am only including tube lines where I've had {MIN_REVIEWS}{" "}
-      roast dinners or more. See the{" "}
+      See the{" "}
       <a href="/tube-stations-with-roast-dinner-reviews">
         tube station tracker
       </a> for every station reviewed.

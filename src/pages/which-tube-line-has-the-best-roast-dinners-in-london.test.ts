@@ -43,46 +43,47 @@ beforeEach(() => {
         posts: {
           nodes: [
             {
-              tubeLines: { nodes: [{ name: "Elizabeth" }] },
+              // Interchange station – rated on both the Elizabeth and Jubilee lines
+              tubeLines: { nodes: [{ name: "Elizabeth" }, { name: "Jubilee" }] },
               ratings: { nodes: [{ name: "9.0" }] },
               slug: "the-elizabeth-arms",
-              title: "The Elizabeth Arms"
+              title: "The Elizabeth Arms",
+              closedDowns: { nodes: [{ name: "Closed" }] }
             },
             {
               tubeLines: { nodes: [{ name: "Elizabeth" }] },
               ratings: { nodes: [{ name: "7.0" }] },
               slug: "the-elizabeth-pub",
-              title: "The Elizabeth Pub"
+              title: "The Elizabeth Pub",
+              closedDowns: { nodes: [] }
             },
             {
               tubeLines: { nodes: [{ name: "Jubilee" }] },
               ratings: { nodes: [{ name: "6.0" }] },
               slug: "the-jubilee-arms",
-              title: "The Jubilee Arms"
-            },
-            {
-              tubeLines: { nodes: [{ name: "Jubilee" }] },
-              ratings: { nodes: [{ name: "7.0" }] },
-              slug: "the-jubilee-inn",
-              title: "The Jubilee Inn"
+              title: "The Jubilee Arms",
+              closedDowns: { nodes: [] }
             },
             {
               tubeLines: { nodes: [{ name: "Overground" }] },
               ratings: { nodes: [{ name: "10.0" }] },
               slug: "the-overground-arms",
-              title: "The Overground Arms"
+              title: "The Overground Arms",
+              closedDowns: { nodes: [] }
             },
             {
               tubeLines: { nodes: [{ name: "Elizabeth" }] },
               ratings: { nodes: [{ name: "not-a-number" }] },
               slug: "bad-rating",
-              title: "Bad Rating Roast"
+              title: "Bad Rating Roast",
+              closedDowns: { nodes: [] }
             },
             {
               tubeLines: { nodes: [] },
               ratings: { nodes: [{ name: "8.2" }] },
               slug: "no-line",
-              title: "No Line Roast"
+              title: "No Line Roast",
+              closedDowns: { nodes: [] }
             }
           ],
           pageInfo: { hasNextPage: true, endCursor: "cursor-1" }
@@ -97,19 +98,22 @@ beforeEach(() => {
             tubeLines: { nodes: [{ name: "Elizabeth" }] },
             ratings: { nodes: [{ name: "8.0" }] },
             slug: "the-elizabeth-tavern",
-            title: "The Elizabeth Tavern"
+            title: "The Elizabeth Tavern",
+            closedDowns: { nodes: [] }
           },
           {
             tubeLines: { nodes: [{ name: "Jubilee" }] },
             ratings: { nodes: [{ name: "8.0" }] },
             slug: "the-jubilee-tavern",
-            title: "The Jubilee Tavern"
+            title: "The Jubilee Tavern",
+            closedDowns: { nodes: [] }
           },
           {
             tubeLines: { nodes: [{ name: "Jubilee" }] },
             ratings: undefined,
             slug: "missing-rating",
-            title: "Missing Rating Roast"
+            title: "Missing Rating Roast",
+            closedDowns: { nodes: [] }
           }
         ],
         pageInfo: { hasNextPage: false, endCursor: null }
@@ -137,15 +141,23 @@ describe("which-tube-line-has-the-best-roast-dinners-in-london page", () => {
 
     expect(html).toContain("Which Tube Line Has The Best Roast Dinners In London?");
 
+    // Elizabeth: The Elizabeth Arms (9.0) + The Elizabeth Pub (7.0) + The Elizabeth Tavern (8.0) = 3 reviews, avg 8.00
     expect(html).toContain('href="/best-roast-dinners-on-the-elizabeth-line"');
     expect(html).toContain("Elizabeth line");
     expect(html).toMatch(/averages\s+8\.00\s+based on\s+3\s+reviews/);
 
+    // Jubilee: The Elizabeth Arms (interchange, 9.0) + The Jubilee Arms (6.0) + The Jubilee Tavern (8.0) = 3 reviews, avg 7.67
     expect(html).toContain('href="/best-roast-dinners-on-the-jubilee-line"');
-    expect(html).toMatch(/averages\s+7\.00\s+based on\s+3\s+reviews/);
+    expect(html).toMatch(/averages\s+7\.67\s+based on\s+3\s+reviews/);
 
-    expect(html).toContain('href="/the-elizabeth-arms"');
-    expect(html).toContain("The Elizabeth Arms");
+    // The Elizabeth Arms has the highest rating (9.0) but is closed down, so it must not be linked as "best roast"
+    expect(html).not.toContain('href="/the-elizabeth-arms"');
+    expect(html).toContain('href="/the-elizabeth-tavern"');
+    expect(html).toContain("The Elizabeth Tavern");
+
+    // Jubilee's best open review is The Jubilee Tavern (8.0) — The Jubilee Arms (6.0) is lower
+    expect(html).toContain('href="/the-jubilee-tavern"');
+    expect(html).toContain("The Jubilee Tavern");
 
     // Overground has only 1 review, below the minimum threshold — excluded
     expect(html).not.toContain("Overground line");
@@ -155,9 +167,14 @@ describe("which-tube-line-has-the-best-roast-dinners-in-london page", () => {
     expect(html).not.toContain("No Line Roast");
     expect(html).not.toContain("Bad Rating Roast");
 
+    // Elizabeth (8.00) outranks Jubilee (7.67)
     const elizabethIndex = html.indexOf("Elizabeth line");
     const jubileeIndex = html.indexOf("Jubilee line");
     expect(elizabethIndex).toBeLessThan(jubileeIndex);
+
+    // Bars are coloured per tube line
+    expect(html).toContain('bar-fill elizabeth');
+    expect(html).toContain('bar-fill jubilee');
 
     expect(html).toContain('href="/tube-stations-with-roast-dinner-reviews"');
   });
