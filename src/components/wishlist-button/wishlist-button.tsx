@@ -1,6 +1,6 @@
 import { useAuth } from "@clerk/astro/react";
 import { useEffect, useState } from "react";
-import { useAuthFlag } from "../../lib/useAuthFlag";
+import { useAuthFlag } from "../../hooks/useAuthFlag";
 import "./wishlist-button.css";
 
 type Props = {
