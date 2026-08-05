@@ -51,6 +51,8 @@ const { resultLimit = 4 } = Astro.props;
               :href="`/${post.slug}`"
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 :src="post.featuredImage?.node?.sourceUrl"

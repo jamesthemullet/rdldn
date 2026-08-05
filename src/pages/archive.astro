@@ -73,15 +73,17 @@ try {
         <ul>
           {posts.map((post: Post) => (
             <li class="heading">
-              <h2>
+              <h3>
                 <a href={`/${post?.slug}`} rel="noopener noreferrer">
                   <Fragment set:html={sanitizeTitle(post?.title)} />
                 </a>
-              </h2>
+              </h3>
               <a
                 href={`/${post?.slug}`}
                 rel="noopener noreferrer"
                 class="featured-image"
+                aria-hidden="true"
+                tabindex="-1"
               >
                 <img
                   src={post?.featuredImage?.node?.sourceUrl}
