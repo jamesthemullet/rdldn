@@ -61,8 +61,10 @@ test("custom 404 page renders and home link works", async ({ page }) => {
 
   const homeLink = page.locator("a.safety-link");
   await expect(homeLink).toBeVisible();
-  await homeLink.click();
-  await expect(page).toHaveURL(/\/$/, { timeout: 15000 });
+  await Promise.all([
+    page.waitForURL(/\/$/, { timeout: 15000 }),
+    homeLink.click(),
+  ]);
   await expect(page.getByRole("heading", { level: 1, name: "Roast Dinners in London" })).toBeVisible();
 });
 
