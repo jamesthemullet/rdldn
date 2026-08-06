@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { useAuthFlag } from "../../hooks/useAuthFlag";
+import { useAuthFlag } from "../../lib/useAuthFlag";
 
 type MyRoastListItemProps = {
   imgSrc: string;
