@@ -22,7 +22,7 @@ afterEach(() => {
 
 const createContainer = async () => AstroContainer.create();
 
-describe("maps page", () => {
+describe("maps page ", () => {
   test("renders map page and builds markers from paginated post locations", async () => {
     const { fetchGraphQL } = await import("../lib/api");
     const fetchGraphQLMock = vi.mocked(fetchGraphQL);
