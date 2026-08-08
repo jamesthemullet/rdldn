@@ -12,8 +12,8 @@ type VisitButtonProps = {
   postRating: string | null;
 };
 
-function isAuthFeaturesFlagEnabled(): boolean {
-  const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
+function isVisitTrackingFlagEnabled(): boolean {
+  const match = document.cookie.match(/(^| )flag_visitTracking=([^;]+)/);
   const val = match ? match[2] : null;
   return val === "true";
 }
@@ -26,11 +26,9 @@ export default (alpine: AlpineInstance) => {
     return {
       saved: false,
       signedOut: false,
-      flagEnabled: isAuthFeaturesFlagEnabled(),
       loading: false,
 
       async init() {
-        if (!this.flagEnabled) return;
         const clerk = window.Clerk;
         if (!clerk) {
           this.signedOut = true;
@@ -83,7 +81,7 @@ export default (alpine: AlpineInstance) => {
     return {
       visited: false,
       signedOut: false,
-      flagEnabled: isAuthFeaturesFlagEnabled(),
+      flagEnabled: isVisitTrackingFlagEnabled(),
       loading: false,
 
       async init() {
