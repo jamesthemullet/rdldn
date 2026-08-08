@@ -1,0 +1,63 @@
+.passport-stats {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.passport-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.passport-stat__value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--roast-new-blue);
+}
+
+.passport-stat__label {
+  font-size: 0.875rem;
+  color: var(--roast-main-text);
+}
+
+.badge-grid {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.badge--earned {
+  opacity: 1;
+  border-color: var(--roast-new-blue);
+}
+
+.badge__name {
+  font-weight: bold;
+  color: var(--roast-main-text);
+}
+
+.badge__description {
+  font-size: 0.875rem;
+  color: #555;
+}
