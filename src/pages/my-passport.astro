@@ -5,12 +5,21 @@ import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { BADGES, computeEarnedBadges } from "../lib/badges";
 import { db } from "../lib/db";
+import { FLAG_DEFINITIONS } from "../lib/featureFlags";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { computePassportStats } from "../lib/passportStats";
 import { users, visits as visitsTable } from "../lib/schema";
 import type { Post } from "../types";
 import "../styles/post.css";
 import "./my-passport.css";
+
+const myPassportFlagCookie = Astro.cookies.get("flag_myPassport");
+const myPassportFlagEnabled = myPassportFlagCookie
+  ? myPassportFlagCookie.value === "true"
+  : FLAG_DEFINITIONS.myPassport.defaultValue;
+if (!myPassportFlagEnabled) {
+  return Astro.redirect("/404");
+}
 
 const auth = Astro.locals.auth();
 const { userId: clerkId } = auth;

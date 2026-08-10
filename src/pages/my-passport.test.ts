@@ -48,10 +48,29 @@ function makeVisitsSelectChain(result: unknown[] = []) {
   };
 }
 
+function passportRequest() {
+  return new Request("https://rdldn.co.uk/my-passport", {
+    headers: { cookie: "flag_myPassport=true" },
+  });
+}
+
 describe("my-passport page", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     getAllRoastDinnerPostsMock.mockResolvedValue([]);
+  });
+
+  test("redirects to 404 when the feature flag is disabled", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./my-passport.astro");
+
+    const response = await container.renderToResponse(Page, {
+      request: new Request("https://rdldn.co.uk/my-passport"),
+      locals: { auth: () => ({ userId: "clerk_abc" }) } as App.Locals,
+    });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get("location")).toBe("/404");
   });
 
   test("redirects to sign-in when not authenticated", async () => {
@@ -59,7 +78,7 @@ describe("my-passport page", () => {
     const { default: Page } = await import("./my-passport.astro");
 
     const response = await container.renderToResponse(Page, {
-      request: new Request("https://rdldn.co.uk/my-passport"),
+      request: passportRequest(),
       locals: { auth: () => ({ userId: null }) } as App.Locals,
     });
 
@@ -75,7 +94,7 @@ describe("my-passport page", () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import("./my-passport.astro");
     const html = await container.renderToString(Page, {
-      request: new Request("https://rdldn.co.uk/my-passport"),
+      request: passportRequest(),
       locals: { auth: () => ({ userId: "clerk_abc" }) } as App.Locals,
     });
 
@@ -114,7 +133,7 @@ describe("my-passport page", () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import("./my-passport.astro");
     const html = await container.renderToString(Page, {
-      request: new Request("https://rdldn.co.uk/my-passport"),
+      request: passportRequest(),
       locals: { auth: () => ({ userId: "clerk_abc" }) } as App.Locals,
     });
 
@@ -132,7 +151,7 @@ describe("my-passport page", () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import("./my-passport.astro");
     const html = await container.renderToString(Page, {
-      request: new Request("https://rdldn.co.uk/my-passport"),
+      request: passportRequest(),
       locals: { auth: () => ({ userId: "clerk_abc" }) } as App.Locals,
     });
 
