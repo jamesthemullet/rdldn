@@ -508,7 +508,7 @@ p {
     gap: 0.5rem;
     margin-top: 1rem;
 
-    h3 {
+    :is(h3, h4) {
       text-decoration: none;
 
       a {

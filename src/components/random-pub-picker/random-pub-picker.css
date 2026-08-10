@@ -1,0 +1,32 @@
+.random-pub-picker {
+  margin: 10px 0;
+}
+
+.random-pub-picker__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--roast-main-text);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: none;
+  height: auto;
+  margin: 10px 0;
+  min-width: 13rem;
+  text-decoration: none;
+  justify-content: center;
+}
+
+.random-pub-picker__result {
+  margin: 10px 0;
+  font-size: 1.1rem;
+}
+
+.random-pub-picker__result strong {
+  color: var(--roast-pink);
+}

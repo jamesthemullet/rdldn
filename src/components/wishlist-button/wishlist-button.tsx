@@ -1,6 +1,5 @@
 import { useAuth } from "@clerk/astro/react";
 import { useEffect, useState } from "react";
-import { useAuthFlag } from "../../lib/useAuthFlag";
 import "./wishlist-button.css";
 
 type Props = {
@@ -13,7 +12,6 @@ type Props = {
 };
 
 export default function WishlistButton({ postSlug, postTitle, postRating, iconOnly = false, isSaved, onSaveToggle }: Props) {
-  const flagEnabled = useAuthFlag();
   const { isSignedIn, isLoaded } = useAuth();
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -38,7 +36,7 @@ export default function WishlistButton({ postSlug, postTitle, postRating, iconOn
       .finally(() => setLoading(false));
   }, [isLoaded, isSignedIn, postSlug, controlled]);
 
-  if (!flagEnabled || !isLoaded || loading) return null;
+  if (!isLoaded || loading) return null;
 
   if (!isSignedIn) {
     if (iconOnly) return null;

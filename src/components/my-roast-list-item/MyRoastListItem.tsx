@@ -1,13 +1,10 @@
 import { memo } from "react";
-import { useAuthFlag } from "../../hooks/useAuthFlag";
 
 type MyRoastListItemProps = {
   imgSrc: string;
 };
 
 export const MyRoastListItem = memo(function MyRoastListItem({ imgSrc }: MyRoastListItemProps) {
-  const enabled = useAuthFlag();
-  if (!enabled) return null;
   return (
     <>
       <h3>

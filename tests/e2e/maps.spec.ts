@@ -91,4 +91,30 @@ test.describe("maps page", () => {
     const filteredRendered = await getRenderedMarkerCount(page);
     expect(filteredRendered).toBe(filteredCounts.visible);
   });
+
+  test("year filter narrows visible markers and supports selecting multiple years", async ({ page }) => {
+    await page.goto("/maps");
+    await waitForMapTiles(page);
+
+    const yearFieldset = page.locator("fieldset", { hasText: "Filter by year visited" });
+    if ((await yearFieldset.count()) === 0) {
+      test.skip(true, "No markers with a year to filter by");
+    }
+
+    const initialCounts = await getMarkerCounts(page);
+
+    const yearCheckboxes = yearFieldset.locator('input[type="checkbox"]');
+    const yearCount = await yearCheckboxes.count();
+    expect(yearCount).toBeGreaterThan(0);
+
+    await yearCheckboxes.first().check();
+    const singleYearCounts = await getMarkerCounts(page);
+    expect(singleYearCounts.visible).toBeLessThanOrEqual(initialCounts.visible);
+
+    if (yearCount > 1) {
+      await yearCheckboxes.nth(1).check();
+      const twoYearCounts = await getMarkerCounts(page);
+      expect(twoYearCounts.visible).toBeGreaterThanOrEqual(singleYearCounts.visible);
+    }
+  });
 });
