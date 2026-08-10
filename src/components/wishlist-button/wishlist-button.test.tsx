@@ -27,18 +27,9 @@ const createHost = () => {
   return { host, root: createRoot(host) };
 };
 
-const setCookie = (value: string) => {
-  document.cookie = `flag_authFeatures=${value}; path=/`;
-};
-
-const clearCookie = () => {
-  document.cookie = "flag_authFeatures=; max-age=0; path=/";
-};
-
 beforeEach(() => {
   document.body.innerHTML = "";
   vi.clearAllMocks();
-  setCookie("true");
   global.fetch = vi.fn().mockResolvedValue({
     json: vi.fn().mockResolvedValue([]),
   });
@@ -46,25 +37,9 @@ beforeEach(() => {
 
 afterEach(() => {
   document.body.innerHTML = "";
-  clearCookie();
 });
 
 describe("WishlistButton", () => {
-  test("renders nothing when the auth features flag is off, even when signed out", async () => {
-    setCookie("false");
-    mockUseAuth.mockReturnValue({ isSignedIn: false, isLoaded: true });
-
-    const { host, root } = createHost();
-    await act(async () => {
-      root.render(<WishlistButton postSlug="test-slug" postTitle="Test Post" />);
-    });
-    await waitForEffects();
-
-    expect(host.innerHTML).toBe("");
-
-    await act(async () => root.unmount());
-  });
-
   test("renders nothing while Clerk has not finished loading", async () => {
     mockUseAuth.mockReturnValue({ isSignedIn: false, isLoaded: false });
 
@@ -155,6 +130,31 @@ describe("WishlistButton", () => {
     expect(button?.getAttribute("aria-label")).toBe("Remove from your list");
     expect(button?.getAttribute("aria-pressed")).toBe("true");
     expect(button?.textContent).toContain("Saved to your list");
+
+    await act(async () => root.unmount());
+  });
+
+  test("toggles from unsaved to saved when clicked in uncontrolled mode", async () => {
+    mockUseAuth.mockReturnValue({ isSignedIn: true, isLoaded: true });
+
+    const { host, root } = createHost();
+    await act(async () => {
+      root.render(<WishlistButton postSlug="my-slug" postTitle="My Post" />);
+    });
+    await waitForEffects();
+
+    const button = host.querySelector("button");
+    expect(button).not.toBeNull();
+    expect(button?.getAttribute("aria-pressed")).toBe("false");
+    expect(button?.textContent).toContain("Save to your list");
+
+    await act(async () => {
+      button?.click();
+    });
+    await waitForEffects();
+
+    expect(host.querySelector("button")?.getAttribute("aria-pressed")).toBe("true");
+    expect(host.querySelector("button")?.textContent).toContain("Saved to your list");
 
     await act(async () => root.unmount());
   });

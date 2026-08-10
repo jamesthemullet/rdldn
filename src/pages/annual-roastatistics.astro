@@ -77,9 +77,16 @@ const selectedYearPosts = roastPosts.filter(
   (post) => post.yearsOfVisit?.nodes?.[0]?.name === selectedYear
 );
 
-const ratingValues = selectedYearPosts
-  .map((post) => parseFirstNumericValue(post.ratings?.nodes?.[0]?.name))
-  .filter((value): value is number => value !== null);
+const ratingEntries = selectedYearPosts
+  .map((post) => ({
+    post,
+    rating: parseFirstNumericValue(post.ratings?.nodes?.[0]?.name),
+  }))
+  .filter(
+    (entry): entry is { post: Post; rating: number } => entry.rating !== null
+  );
+
+const ratingValues = ratingEntries.map((entry) => entry.rating);
 
 const priceValues = selectedYearPosts
   .map((post) => parsePriceValue(post.prices?.nodes?.[0]?.name))
@@ -90,9 +97,18 @@ const averageRating =
     ? ratingValues.reduce((sum, value) => sum + value, 0) / ratingValues.length
     : null;
 
-const highestRating =
-  ratingValues.length > 0 ? Math.max(...ratingValues) : null;
-const lowestRating = ratingValues.length > 0 ? Math.min(...ratingValues) : null;
+const highestRatingEntry =
+  ratingEntries.length > 0
+    ? ratingEntries.reduce((best, entry) =>
+        entry.rating > best.rating ? entry : best
+      )
+    : null;
+const lowestRatingEntry =
+  ratingEntries.length > 0
+    ? ratingEntries.reduce((worst, entry) =>
+        entry.rating < worst.rating ? entry : worst
+      )
+    : null;
 
 const excellentRoasts = ratingValues.filter((value) => value >= 8).length;
 const crapRoasts = ratingValues.filter((value) => value < 6).length;
@@ -104,6 +120,100 @@ const averagePrice =
 
 const mostExpensive = priceValues.length > 0 ? Math.max(...priceValues) : null;
 const leastExpensive = priceValues.length > 0 ? Math.min(...priceValues) : null;
+
+const selectedYearIndex = years.indexOf(selectedYear);
+const previousYear =
+  selectedYearIndex >= 0 && selectedYearIndex < years.length - 1
+    ? years[selectedYearIndex + 1]
+    : null;
+
+const previousYearPosts = previousYear
+  ? roastPosts.filter(
+      (post) => post.yearsOfVisit?.nodes?.[0]?.name === previousYear
+    )
+  : [];
+
+const previousYearRatingValues = previousYearPosts
+  .map((post) => parseFirstNumericValue(post.ratings?.nodes?.[0]?.name))
+  .filter((value): value is number => value !== null);
+
+const previousYearPriceValues = previousYearPosts
+  .map((post) => parsePriceValue(post.prices?.nodes?.[0]?.name))
+  .filter((value): value is number => value !== null);
+
+const previousYearAverageRating =
+  previousYearRatingValues.length > 0
+    ? previousYearRatingValues.reduce((sum, value) => sum + value, 0) /
+      previousYearRatingValues.length
+    : null;
+
+const previousYearAveragePrice =
+  previousYearPriceValues.length > 0
+    ? previousYearPriceValues.reduce((sum, value) => sum + value, 0) /
+      previousYearPriceValues.length
+    : null;
+
+const formatYearComparison = (
+  current: number | null,
+  previous: number | null,
+  formatValue: (value: number) => string
+): string | null => {
+  if (current === null || previous === null) return null;
+  const diff = current - previous;
+  if (Math.abs(diff) < 0.005) return `unchanged vs ${previousYear}`;
+  const direction = diff > 0 ? "up" : "down";
+  return `${direction} ${formatValue(Math.abs(diff))} vs ${previousYear} (${formatValue(previous)})`;
+};
+
+const showYearComparison = selectedYearPosts.length >= 5 && previousYear !== null;
+
+const ratingComparisonText = showYearComparison
+  ? formatYearComparison(averageRating, previousYearAverageRating, (value) =>
+      value.toFixed(2)
+    )
+  : null;
+
+const priceComparisonText = showYearComparison
+  ? formatYearComparison(
+      averagePrice,
+      previousYearAveragePrice,
+      (value) => `£${value.toFixed(2)}`
+    )
+  : null;
+
+const parsePostDate = (post: Post): Date | null => {
+  if (!post.date) return null;
+  const parsed = new Date(post.date);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const datedRoastPosts = roastPosts
+  .map((post) => ({
+    post,
+    date: parsePostDate(post),
+    rating: parseFirstNumericValue(post.ratings?.nodes?.[0]?.name),
+  }))
+  .filter(
+    (entry): entry is { post: Post; date: Date; rating: number | null } =>
+      entry.date !== null
+  )
+  .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+const lastGreatRoastIndex = datedRoastPosts.findIndex(
+  (entry) => entry.rating !== null && entry.rating >= 8
+);
+
+const lastGreatRoast =
+  lastGreatRoastIndex >= 0 ? datedRoastPosts[lastGreatRoastIndex] : null;
+
+const roastsSinceLastGreatRoast =
+  lastGreatRoastIndex >= 0 ? lastGreatRoastIndex : datedRoastPosts.length;
+
+const daysSinceLastGreatRoast = lastGreatRoast
+  ? Math.floor(
+      (Date.now() - lastGreatRoast.date.getTime()) / (1000 * 60 * 60 * 24)
+    )
+  : null;
 
 const areaCounts = new Map<string, number>();
 const boroughCounts = new Map<string, number>();
@@ -201,6 +311,32 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
     }
 
     {
+      datedRoastPosts.length > 0 ? (
+        <section>
+          <h3>Current streak</h3>
+          {lastGreatRoast ? (
+            <p>
+              It's been {daysSinceLastGreatRoast}{" "}
+              {daysSinceLastGreatRoast === 1 ? "day" : "days"} (
+              {roastsSinceLastGreatRoast}{" "}
+              {roastsSinceLastGreatRoast === 1 ? "roast dinner" : "roast dinners"})
+              since our last 8+ rated roast dinner:{" "}
+              <a href={`/${lastGreatRoast.post.slug}`}>
+                {lastGreatRoast.post.title}
+              </a>{" "}
+              ({lastGreatRoast.rating?.toFixed(2)}).
+            </p>
+          ) : (
+            <p>
+              We've never had an 8+ rated roast dinner yet —{" "}
+              {roastsSinceLastGreatRoast} roast dinners and counting.
+            </p>
+          )}
+        </section>
+      ) : null
+    }
+
+    {
       selectedYear ? (
         <section>
           <h2>{selectedYear} overview</h2>
@@ -211,24 +347,44 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
               {averageRating !== null
                 ? averageRating.toFixed(2)
                 : "No rating data"}
+              {ratingComparisonText ? ` (${ratingComparisonText})` : null}
             </li>
             <li>
               Highest rating:{" "}
-              {highestRating !== null
-                ? highestRating.toFixed(2)
-                : "No rating data"}
+              {highestRatingEntry ? (
+                <>
+                  {highestRatingEntry.rating.toFixed(2)}{" "}
+                  (
+                  <a href={`/${highestRatingEntry.post.slug}`}>
+                    {highestRatingEntry.post.title}
+                  </a>
+                  )
+                </>
+              ) : (
+                "No rating data"
+              )}
             </li>
             <li>
               Lowest rating:{" "}
-              {lowestRating !== null
-                ? lowestRating.toFixed(2)
-                : "No rating data"}
+              {lowestRatingEntry ? (
+                <>
+                  {lowestRatingEntry.rating.toFixed(2)}{" "}
+                  (
+                  <a href={`/${lowestRatingEntry.post.slug}`}>
+                    {lowestRatingEntry.post.title}
+                  </a>
+                  )
+                </>
+              ) : (
+                "No rating data"
+              )}
             </li>
             <li>
               Average price:{" "}
               {averagePrice !== null
                 ? `£${averagePrice.toFixed(2)}`
                 : "No price data"}
+              {priceComparisonText ? ` (${priceComparisonText})` : null}
             </li>
             <li>
               Most expensive:{" "}

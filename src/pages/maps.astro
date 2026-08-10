@@ -63,6 +63,7 @@ const markers = allPosts
     rating: Number(post.ratings?.nodes[0]?.name),
     slug: post.slug,
     closed: post.closedDowns?.nodes[0]?.name || "",
+    year: post.yearsOfVisit?.nodes[0]?.name || "",
   }));
 ---
 
