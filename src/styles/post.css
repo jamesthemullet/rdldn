@@ -176,7 +176,6 @@ h4 {
   .featured-image {
     margin: 0 auto;
     max-width: 100%;
-    height: auto;
     margin-top: 64px;
 
     @media (min-width: 1024px) {
@@ -208,7 +207,8 @@ h4 {
 .featured-image {
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 .copyright-overlay {
