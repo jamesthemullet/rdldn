@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
+import "./roast-map.css";
 
 type Marker = {
   lat: number;
@@ -160,7 +161,7 @@ export default function RoastMap({ markers }: Props) {
         <fieldset>
           <legend>Filter by year visited:</legend>
           {availableYears.map((year) => (
-            <label key={year} style={{ marginRight: "1rem" }}>
+            <label key={year} className="roast-map__year-label">
               <input type="checkbox" checked={selectedYears.includes(year)} onChange={() => toggleYear(year)} />
               {year}
             </label>
@@ -180,7 +181,7 @@ export default function RoastMap({ markers }: Props) {
         hidden
       />
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
-      <section id="map" ref={mapRef} style={{ height: "600px" }} aria-label="Map of reviewed roast dinner locations in London" />
+      <section id="map" ref={mapRef} className="roast-map__container" aria-label="Map of reviewed roast dinner locations in London" />
     </>
   );
 }
