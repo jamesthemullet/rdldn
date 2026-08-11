@@ -12,7 +12,7 @@ const mockReactRenderer = {
   ssr: {
     check: async (Component: unknown) =>
       typeof Component === "function" &&
-      typeof (Component as Record<string, unknown>).mock === "object",
+      typeof (Component as unknown as Record<string, unknown>).mock === "object",
     renderToStaticMarkup: async () => ({ html: "", attrs: undefined }),
   },
 };
