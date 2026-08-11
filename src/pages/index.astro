@@ -13,11 +13,10 @@ import { fetchGraphQL } from "../lib/api";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 import GET_ALL_PAGES from "../lib/queries/getAllPages";
 import GET_FEATURE_POSTS from "../lib/queries/getFeaturePosts.ts";
-import GET_LOCATIONS from "../lib/queries/getLocations";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
-import type { Location, Page, Post, Size } from "../types";
+import type { Page, Post, Size } from "../types";
 
 type PostWithFeaturedImage = Post & { featuredImage: string };
 type PageWithFeaturedImage = Page & { featuredImage: string };
@@ -126,25 +125,6 @@ try {
       };
     })
     .filter(Boolean) as PageWithFeaturedImage[];
-} catch (error) {
-  console.error("Error fetching location pages:", error);
-}
-
-const allLocations: Location[] = [];
-
-try {
-  const locations = (await fetchGraphQL(GET_LOCATIONS)) as {
-    areas: { nodes: Location[] };
-    boroughs: { nodes: Location[] };
-  };
-
-  if (locations?.areas?.nodes) {
-    allLocations.push(...locations.areas.nodes);
-  }
-
-  if (locations?.boroughs?.nodes) {
-    allLocations.push(...locations.boroughs.nodes);
-  }
 } catch (error) {
   console.error("Error fetching location pages:", error);
 }
@@ -329,12 +309,7 @@ try {
           <Image src={findARoastImg} alt="Find a roast" width={400} height={300} loading="lazy" />
         </a>
       </li>
-      <li
-        class="heading"
-        x-data
-        x-show="document.cookie.includes('flag_authFeatures=true')"
-        style="display: none"
-      >
+      <li class="heading">
         <h3>
           <a href="/my-roasts" rel="noopener noreferrer">My Roast List</a>
         </h3>

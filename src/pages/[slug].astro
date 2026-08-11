@@ -86,11 +86,12 @@ export async function getStaticPaths() {
     const { slug } = Astro.params;
     const { contentType } = Astro.props;
 
-const { inflationIndex, mostRecentYear } = await buildInflationIndex();
-
-const data = await fetchGraphQL<{ page: Page | null; post: Post | null }>(
-  contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug)
-);
+const [{ inflationIndex, mostRecentYear }, data] = await Promise.all([
+  buildInflationIndex(),
+  fetchGraphQL<{ page: Page | null; post: Post | null }>(
+    contentType === "page" ? SINGLE_PAGE_QUERY(slug) : SINGLE_POST_QUERY(slug)
+  ),
+]);
 
 const singlePost = contentType === "page" ? data.page : data.post;
 

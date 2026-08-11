@@ -53,6 +53,7 @@ jobs:
     env:
       SCORE_SECRET: test-secret-for-ci
       PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
+      DATABASE_URL: postgres://user:password@localhost:5432/test-db
     steps:
       - uses: actions/checkout@v7
       - name: Use Node.js 18.x
