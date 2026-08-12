@@ -6,8 +6,6 @@ type MyRoastListItemProps = {
 };
 
 export const MyRoastListItem = memo(function MyRoastListItem({ imgSrc }: MyRoastListItemProps) {
-  const enabled = useAuthFlag();
-  if (!enabled) return null;
   return (
     <>
       <h3>

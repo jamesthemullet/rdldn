@@ -1,0 +1,130 @@
+---
+import { eq } from "drizzle-orm";
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { BADGES, computeEarnedBadges } from "../lib/badges";
+import { db } from "../lib/db";
+import { FLAG_DEFINITIONS } from "../lib/featureFlags";
+import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
+import { computePassportStats } from "../lib/passportStats";
+import { users, visits as visitsTable } from "../lib/schema";
+import type { Post } from "../types";
+import "../styles/post.css";
+import "./my-passport.css";
+
+const myPassportFlagCookie = Astro.cookies.get("flag_myPassport");
+const myPassportFlagEnabled = myPassportFlagCookie
+  ? myPassportFlagCookie.value === "true"
+  : FLAG_DEFINITIONS.myPassport.defaultValue;
+if (!myPassportFlagEnabled) {
+  return Astro.redirect("/404");
+}
+
+const auth = Astro.locals.auth();
+const { userId: clerkId } = auth;
+
+if (!clerkId) {
+  return Astro.redirect("/sign-in");
+}
+
+let userVisits: (typeof visitsTable.$inferSelect)[] = [];
+let posts: Post[] = [];
+let dbError = false;
+
+try {
+  const [user] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.clerkId, clerkId))
+    .limit(1);
+
+  if (user) {
+    userVisits = await db
+      .select()
+      .from(visitsTable)
+      .where(eq(visitsTable.userId, user.id));
+  }
+
+  posts = await getAllRoastDinnerPosts();
+} catch {
+  dbError = true;
+}
+
+const earnedBadges = computeEarnedBadges(userVisits, posts);
+const earnedKeys = new Set(earnedBadges.map((badge) => badge.key));
+const stats = computePassportStats(userVisits, posts);
+---
+
+<BaseLayout
+  pageTitle="My Roast Dinner Passport"
+  description="Your roast dinner visit stats and earned badges"
+  noindex={true}
+>
+  <FeaturedPostHeader
+    imageSrc={dreamingOfRoastDinners.src}
+    title="My Roast Dinner Passport"
+  />
+  <div class="container">
+    <h2>Your Passport</h2>
+    <p>
+      Every restaurant you mark as "Visited" counts towards your passport
+      stats and unlocks badges below.
+    </p>
+
+    {
+      dbError ? (
+        <p>
+          Sorry, we couldn't load your passport right now. Please try again
+          later.
+        </p>
+      ) : (
+        <>
+          <ul class="passport-stats">
+            <li class="passport-stat">
+              <span class="passport-stat__value">{stats.totalVisits}</span>
+              <span class="passport-stat__label">Restaurants Visited</span>
+            </li>
+            <li class="passport-stat">
+              <span class="passport-stat__value">{stats.zonesVisited}</span>
+              <span class="passport-stat__label">Fare Zones Covered</span>
+            </li>
+            <li class="passport-stat">
+              <span class="passport-stat__value">
+                {stats.favouriteMeat ?? "—"}
+              </span>
+              <span class="passport-stat__label">Favourite Meat</span>
+            </li>
+            <li class="passport-stat">
+              <span class="passport-stat__value">
+                {stats.topRatedVisit
+                  ? `${stats.topRatedVisit.rating}`
+                  : "—"}
+              </span>
+              <span class="passport-stat__label">
+                {stats.topRatedVisit
+                  ? `Top Rated: ${stats.topRatedVisit.postTitle}`
+                  : "Top Rated Visit"}
+              </span>
+            </li>
+          </ul>
+
+          <h3>Badges</h3>
+          <ul class="badge-grid">
+            {BADGES.map((badge) => (
+              <li
+                class:list={[
+                  "badge",
+                  { "badge--earned": earnedKeys.has(badge.key) },
+                ]}
+              >
+                <span class="badge__name">{badge.name}</span>
+                <span class="badge__description">{badge.description}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+  </div>
+</BaseLayout>

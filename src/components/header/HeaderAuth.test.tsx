@@ -20,14 +20,6 @@ const waitForEffect = async () => {
   });
 };
 
-const setCookie = (value: string) => {
-  document.cookie = `flag_authFeatures=${value}; path=/`;
-};
-
-const clearCookie = () => {
-  document.cookie = "flag_authFeatures=; max-age=0; path=/";
-};
-
 const createHost = () => {
   const host = document.createElement("div");
   document.body.appendChild(host);
@@ -36,7 +28,6 @@ const createHost = () => {
 
 beforeEach(() => {
   document.body.innerHTML = "";
-  clearCookie();
 });
 
 afterEach(() => {
@@ -44,25 +35,7 @@ afterEach(() => {
 });
 
 describe("HeaderAuthDesktop", () => {
-  test("renders nothing by default when no cookie is set", async () => {
-    const { host, root } = createHost();
-    await act(async () => root.render(<HeaderAuthDesktop />));
-    await waitForEffect();
-    expect(host.innerHTML).toBe("");
-    await act(async () => root.unmount());
-  });
-
-  test("renders nothing when flag cookie is false", async () => {
-    setCookie("false");
-    const { host, root } = createHost();
-    await act(async () => root.render(<HeaderAuthDesktop />));
-    await waitForEffect();
-    expect(host.innerHTML).toBe("");
-    await act(async () => root.unmount());
-  });
-
-  test("renders auth UI when flag cookie is true", async () => {
-    setCookie("true");
+  test("renders auth UI", async () => {
     const { host, root } = createHost();
     await act(async () => root.render(<HeaderAuthDesktop />));
     await waitForEffect();
@@ -73,26 +46,7 @@ describe("HeaderAuthDesktop", () => {
 });
 
 describe("HeaderAuthMobile", () => {
-  test("renders nothing by default when no cookie is set", async () => {
-    const { host, root } = createHost();
-    await act(async () => root.render(<HeaderAuthMobile />));
-    await waitForEffect();
-    expect(host.innerHTML).toBe("");
-    await act(async () => root.unmount());
-  });
-
-  test("renders nothing when flag cookie is false", async () => {
-    setCookie("false");
-    const { host, root } = createHost();
-    await act(async () => root.render(<HeaderAuthMobile />));
-    await waitForEffect();
-    expect(host.innerHTML).toBe("");
-    expect(host.querySelector('a[href="/my-roasts"]')).toBeNull();
-    await act(async () => root.unmount());
-  });
-
-  test("renders My Roasts link and sign-in button when flag cookie is true", async () => {
-    setCookie("true");
+  test("renders My Roasts link and sign-in button", async () => {
     const { host, root } = createHost();
     await act(async () => root.render(<HeaderAuthMobile />));
     await waitForEffect();

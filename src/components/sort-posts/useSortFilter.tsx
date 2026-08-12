@@ -177,13 +177,48 @@ export const translateClosedDown = (
 
 type BooleanStateSetter = (value: SetStateAction<boolean>) => void;
 
+type UseSortFilterReturn = {
+  sortOrder: SortOrder;
+  sortColumn: SortColumn;
+  filters: FilterState;
+  showOptions: boolean;
+  setShowOptions: BooleanStateSetter;
+  showYearVisited: boolean;
+  showMeat: boolean;
+  showPrice: boolean;
+  showTubeStation: boolean;
+  showArea: boolean;
+  showBorough: boolean;
+  showOwner: boolean;
+  showClosedDown: boolean;
+  showInflationPrice: boolean;
+  handleCheckboxChange: (setter: BooleanStateSetter) => () => void;
+  handleSortChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  toggleSortOrder: () => void;
+  handleFilterChange: (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => void;
+  clearFilters: () => void;
+  sortedPosts: Post[];
+  uniqueMeats: string[];
+  setShowYearVisited: BooleanStateSetter;
+  setShowMeat: BooleanStateSetter;
+  setShowPrice: BooleanStateSetter;
+  setShowTubeStation: BooleanStateSetter;
+  setShowArea: BooleanStateSetter;
+  setShowBorough: BooleanStateSetter;
+  setShowOwner: BooleanStateSetter;
+  setShowClosedDown: BooleanStateSetter;
+  setShowInflationPrice: BooleanStateSetter;
+  copyShareableLink: () => void;
+  copied: boolean;
+};
+
 const getInitialStateFromUrl = (): URLSearchParams | null => {
   if (typeof window === "undefined") return null;
   const params = new URLSearchParams(window.location.search);
   return params;
 };
 
-export const useSortFilter = (posts: Post[]) => {
+export const useSortFilter = (posts: Post[]): UseSortFilterReturn => {
   const [sortOrder, setSortOrder] = useState<SortOrder>(() => {
     const val = getInitialStateFromUrl()?.get("order") ?? "desc";
     return isSortOrder(val) ? val : "desc";
