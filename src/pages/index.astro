@@ -70,172 +70,210 @@ if (recentPostCursor) {
 const posts = [recentPost, ...otherPosts].filter(Boolean);
 
 const locationPageIds = ["5614", "5612", "5616", "5594"];
-
-let locationPages: Array<PageWithFeaturedImage> = [];
-
-try {
-  const pageResponses = (await Promise.all(
-    locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
-  )) as Array<{ page: Page | null }>;
-
-  locationPages = pageResponses
-    .map((response) => {
-      if (!response?.page) return null;
-
-      const featuredImage = response.page.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
-
-      return {
-        ...response.page,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean) as PageWithFeaturedImage[];
-} catch (error) {
-  console.error("Error fetching location pages:", error);
-}
-
 const findYourFavouriteRoastPageIds = ["267", "631", "10368", "17"];
 
-let findYourFavouriteRoastPages: Array<PageWithFeaturedImage> = [];
+const fetchLocationPages = async (): Promise<PageWithFeaturedImage[]> => {
+  try {
+    const pageResponses = (await Promise.all(
+      locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
+    )) as Array<{ page: Page | null }>;
 
-try {
-  const pageResponses = (await Promise.all(
-    findYourFavouriteRoastPageIds.map((id) =>
-      fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id })
-    )
-  )) as Array<{ page: Page | null }>;
+    return pageResponses
+      .map((response) => {
+        if (!response?.page) return null;
 
-  findYourFavouriteRoastPages = pageResponses
-    .map((response) => {
-      if (!response?.page) return null;
+        const featuredImage = response.page.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
 
-      const featuredImage = response.page.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
+        return {
+          ...response.page,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean) as PageWithFeaturedImage[];
+  } catch (error) {
+    console.error("Error fetching location pages:", error);
+    return [];
+  }
+};
 
-      return {
-        ...response.page,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean) as PageWithFeaturedImage[];
-} catch (error) {
-  console.error("Error fetching location pages:", error);
-}
+const fetchFindYourFavouriteRoastPages = async (): Promise<PageWithFeaturedImage[]> => {
+  try {
+    const pageResponses = (await Promise.all(
+      findYourFavouriteRoastPageIds.map((id) =>
+        fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id })
+      )
+    )) as Array<{ page: Page | null }>;
 
-let bestRoasts: Post[] = [];
+    return pageResponses
+      .map((response) => {
+        if (!response?.page) return null;
 
-try {
-  const response = (await fetchGraphQL(GET_BEST_ROASTS)) as {
-    posts: { nodes: Post[] };
-  };
-  bestRoasts = response?.posts?.nodes
-    ?.map((post: Post) => {
-      const featuredImage = post.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
+        const featuredImage = response.page.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
 
-      return {
-        ...post,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean);
-  bestRoasts = bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
-} catch (error) {
-  console.error("Error fetching best roasts:", error);
-}
+        return {
+          ...response.page,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean) as PageWithFeaturedImage[];
+  } catch (error) {
+    console.error("Error fetching favourite roast pages:", error);
+    return [];
+  }
+};
 
-let allPages: Page[] = [];
-let allFeaturesPages: Page[] = [];
-let allRoastStatisticsPages: Page[] = [];
-let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [];
-let roastStatistics: Array<PageWithFeaturedImage> = [];
+const fetchBestRoasts = async (): Promise<Post[]> => {
+  try {
+    const response = (await fetchGraphQL(GET_BEST_ROASTS)) as {
+      posts: { nodes: Post[] };
+    };
+    const bestRoasts = response?.posts?.nodes
+      ?.map((post: Post) => {
+        const featuredImage = post.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
 
-try {
-  const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
-    pages: { nodes: Page[] };
-  };
-  allPages = response?.pages?.nodes
-    ?.map((page: Page) => {
-      const featuredImage = page.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
+        return {
+          ...post,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean);
+    return bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
+  } catch (error) {
+    console.error("Error fetching best roasts:", error);
+    return [];
+  }
+};
 
+const fetchAllPagesData = async (): Promise<{
+  pageFeatures: PageWithFeaturedImage[];
+  roastStatistics: PageWithFeaturedImage[];
+}> => {
+  try {
+    const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
+      pages: { nodes: Page[] };
+    };
+    const allPages = response?.pages?.nodes
+      ?.map((page: Page) => {
+        const featuredImage = page.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
+
+        return {
+          ...page,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean);
+
+    const allFeaturesPages = allPages.filter(
+      (page: Page) => page?.highlights?.tag === "feature"
+    );
+    const allRoastStatisticsPages = allPages.filter(
+      (page: Page) => page?.highlights?.tag === "roastatistics"
+    );
+
+    const pageFeatures = allFeaturesPages.map((page: Page) => {
+      const featuredImage = page.featuredImage?.node?.sourceUrl || "";
       return {
         ...page,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean);
+        featuredImage,
+      } as PageWithFeaturedImage;
+    });
 
-  allFeaturesPages = allPages.filter(
-    (page: Page) => page?.highlights?.tag === "feature"
-  );
-  allRoastStatisticsPages = allPages.filter(
-    (page: Page) => page?.highlights?.tag === "roastatistics"
-  );
+    const roastStatistics = allRoastStatisticsPages.map((page: Page) => {
+      const featuredImage = page.featuredImage?.node?.sourceUrl || "";
+      return {
+        ...page,
+        featuredImage,
+      } as PageWithFeaturedImage;
+    });
 
-  allFeaturesPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-    features.push({
-      ...page,
-      featuredImage,
-    } as PageWithFeaturedImage);
-  });
+    return { pageFeatures, roastStatistics };
+  } catch (error) {
+    console.error("Error fetching features data:", error);
+    return { pageFeatures: [], roastStatistics: [] };
+  }
+};
 
-  allRoastStatisticsPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-    roastStatistics.push({
-      ...page,
-      featuredImage,
-    } as PageWithFeaturedImage);
-  });
+const fetchFeaturePosts = async (): Promise<PostWithFeaturedImage[]> => {
+  try {
+    const postsResponse = (await fetchGraphQL(GET_FEATURE_POSTS)) as {
+      posts: { edges: Array<{ node: Post }> };
+    };
 
-  const postsResponse = (await fetchGraphQL(GET_FEATURE_POSTS)) as {
-    posts: { edges: Array<{ node: Post }> };
-  };
-
-  features.push(
-    ...(postsResponse.posts.edges.map((edge: { node: Post }) => ({
+    return postsResponse.posts.edges.map((edge: { node: Post }) => ({
       ...edge.node,
       featuredImageUrl:
         edge.node.featuredImage?.node?.mediaDetails?.sizes?.find(
           (size: Size) => size.name === "homepage"
         )?.sourceUrl || edge.node.featuredImage?.node?.sourceUrl,
-    })) as unknown as PostWithFeaturedImage[])
-  );
+    })) as unknown as PostWithFeaturedImage[];
+  } catch (error) {
+    console.error("Error fetching feature posts:", error);
+    return [];
+  }
+};
 
-  features = features.sort(() => Math.random() - 0.5).slice(0, 4);
+const fetchRoastStatsSinglePage = async (): Promise<PageWithFeaturedImage | null> => {
+  try {
+    const response = (await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
+      id: "4102",
+    })) as { page: Page };
+    return {
+      ...response.page,
+      featuredImageUrl:
+        response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
+    } as PageWithFeaturedImage;
+  } catch (error) {
+    console.error("Error fetching features data:", error);
+    return null;
+  }
+};
 
-  roastStatistics = roastStatistics.sort(() => Math.random() - 0.5).slice(0, 3);
-} catch (error) {
-  console.error("Error fetching features data:", error);
-}
+const [
+  locationPages,
+  findYourFavouriteRoastPages,
+  bestRoasts,
+  allPagesData,
+  featurePosts,
+  roastStatsSinglePage,
+] = await Promise.all([
+  fetchLocationPages(),
+  fetchFindYourFavouriteRoastPages(),
+  fetchBestRoasts(),
+  fetchAllPagesData(),
+  fetchFeaturePosts(),
+  fetchRoastStatsSinglePage(),
+]);
 
-try {
-  const response = (await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
-    id: "4102",
-  })) as { page: Page };
-  roastStatistics.unshift({
-    ...response.page,
-    featuredImageUrl:
-      response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
-        (size: Size) => size.name === "homepage"
-      )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
-  } as PageWithFeaturedImage);
-} catch (error) {
-  console.error("Error fetching features data:", error);
+let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [
+  ...allPagesData.pageFeatures,
+  ...featurePosts,
+];
+features = features.sort(() => Math.random() - 0.5).slice(0, 4);
+
+const roastStatistics: Array<PageWithFeaturedImage> = allPagesData.roastStatistics
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 3);
+
+if (roastStatsSinglePage) {
+  roastStatistics.unshift(roastStatsSinglePage);
 }
 ---
 

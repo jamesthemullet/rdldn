@@ -506,7 +506,7 @@ describe("index page", () => {
     const html = await container.renderToString(Page);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching location pages:",
+      "Error fetching favourite roast pages:",
       expect.any(Error)
     );
     expect(html).toContain("Find Your Favourite Roast:");
@@ -563,7 +563,7 @@ describe("index page", () => {
       expect.any(Error)
     );
     expect(html).toContain("Features:");
-    expect(html).not.toContain("Feature Post 1");
+    expect(html).toContain("Feature Post 1");
   });
 
   test("logs and continues when roastatistics single page fetch fails", async () => {
