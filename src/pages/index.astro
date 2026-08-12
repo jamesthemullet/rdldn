@@ -148,7 +148,8 @@ const fetchBestRoasts = async (): Promise<Post[]> => {
           featuredImageUrl: smallImage,
         };
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0);
     return bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
   } catch (error) {
     console.error("Error fetching best roasts:", error);
