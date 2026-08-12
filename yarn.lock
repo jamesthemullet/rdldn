@@ -550,28 +550,28 @@
     sisteransi "^1.0.5"
 
 "@clerk/astro@^4.0.0":
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-4.0.8.tgz#bd38b08a759fd6a4e75e7a08fdd9a94d2193a816"
-  integrity sha512-Lb8DBR/sghqM5s+NRA9cwn/EQNDmrkaovAIlen2BLB7FkKjerM/XBYKcodn8AIXRW+5V4qWPPJPhG9DsEEMl0Q==
+  version "4.0.11"
+  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-4.0.11.tgz#affa8f769d98842af97f942b27d2cc2e5d9736a4"
+  integrity sha512-FSIB30rpJA2goqsQRaFcFLCudB1i6oX6wHxgyrr92LWI4LM66/xfrmQXmTMmpflchLVVRZywtQKfqnnh+ZgQNg==
   dependencies:
-    "@clerk/backend" "^3.16.1"
-    "@clerk/shared" "^4.27.1"
+    "@clerk/backend" "^3.16.4"
+    "@clerk/shared" "^4.28.1"
     nanoid "5.1.6"
     nanostores "1.0.1"
 
-"@clerk/backend@^3.16.1":
-  version "3.16.1"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.16.1.tgz#101be57e7dc65971a0dc6cd6584a696642f7f22a"
-  integrity sha512-tbsrGqw45ar7PDnEV3gwkHE/HM1EwRcYPPLyL3Hw9H0Ms5fG7hZ8+EJegPJ4DpKdfvOw5M+hYMeCVKwv3NxahA==
+"@clerk/backend@^3.16.4":
+  version "3.16.4"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.16.4.tgz#6707c84a411cf8af5fd828d542fed92172be43cc"
+  integrity sha512-7A9YlBLesYgKFn4DcaCq64Ggezmbzx+xYdWsiQLrMQV+U4Bm9LtDdyaNirQ0SStSsZy6PzL8RHw5zMmmEt0zMA==
   dependencies:
-    "@clerk/shared" "^4.27.1"
+    "@clerk/shared" "^4.28.1"
     standardwebhooks "^1.0.0"
     tslib "2.8.1"
 
-"@clerk/shared@^4.27.1":
-  version "4.27.1"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.27.1.tgz#6130a77a224b55fc28c18441cb5a4c30d7c04d7c"
-  integrity sha512-eAin1Iy42P3vkytTebD99BhxDm6Yh72Kf8xnpM401Yz/hPUe/Ut4jFqU64xzlhf/RTCPfoTkOHaNDWdMACwXjQ==
+"@clerk/shared@^4.28.1":
+  version "4.28.1"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.28.1.tgz#9e6050666bdfe614a6ee486446fd1497fd6d08cd"
+  integrity sha512-OhpUczN6t8CYJ+g8HdzN1O4SFC2EANOZRDwlE3rXxKu13eNtyFbLspt+d6Nhb/PmcThS/fIAKYnQQrwv0vIEwg==
   dependencies:
     "@tanstack/query-core" "^5.100.6"
     dequal "2.0.3"
@@ -2360,9 +2360,9 @@ ajv@^8.17.1:
     require-from-string "^2.0.2"
 
 alpinejs@^3.14.9:
-  version "3.15.12"
-  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.15.12.tgz#2ccd224961ba6236ca379c2abbcfa0bfeade07ee"
-  integrity sha512-nJvPAQVNPdZZ0NrExJ/kzQco3ijR8LwvCOadQecllESiqT4NyZ/57sN9V2XyvhlBGAbmlKYgeWZvYdKq99ij/Q==
+  version "3.16.1"
+  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.16.1.tgz#c943232cf429e44c7c065734c62e133c4f83ad6a"
+  integrity sha512-QXcW8MK9JoG8GZ7vCt2cXJlcEPIA7Xk/7IQ1+L2iLp7sXcIxct0PrgidmHzK97gD9QlfUjHXPxujdZ1mC2PYVg==
   dependencies:
     "@vue/reactivity" "~3.1.1"
 
