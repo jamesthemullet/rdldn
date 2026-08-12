@@ -667,6 +667,57 @@ describe("index page", () => {
     expect(html).toContain('src="https://example.com/best-fallback-source.jpg"');
   });
 
+  test("excludes closed down pubs from the best roasts section", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
+
+    fetchGraphQLMock.mockImplementation(
+      async (query: string, variables: Record<string, unknown> = {}) => {
+        if (query.includes("where: {tag: \"best\"}")) {
+          return {
+            posts: {
+              nodes: [
+                {
+                  slug: "best-roast",
+                  title: "Best Roast",
+                  featuredImage: createFeaturedImageNode("https://example.com/best-homepage.jpg"),
+                  ratings: { nodes: [{ name: "9.1" }] },
+                  yearsOfVisit: { nodes: [{ name: "2025" }] },
+                  closedDowns: { nodes: [] },
+                },
+                {
+                  slug: "closed-down-roast",
+                  title: "Closed Down Roast",
+                  featuredImage: createFeaturedImageNode("https://example.com/closed-homepage.jpg"),
+                  ratings: { nodes: [{ name: "9.5" }] },
+                  yearsOfVisit: { nodes: [{ name: "2024" }] },
+                  closedDowns: { nodes: [{ name: "closeddown" }] },
+                },
+                {
+                  slug: "popup-moved-roast",
+                  title: "Popup Moved Roast",
+                  featuredImage: createFeaturedImageNode("https://example.com/popup-homepage.jpg"),
+                  ratings: { nodes: [{ name: "8.0" }] },
+                  yearsOfVisit: { nodes: [{ name: "2023" }] },
+                  closedDowns: { nodes: [{ name: "popupmoved" }] },
+                },
+              ],
+            },
+          };
+        }
+
+        return getDefaultResponseByQuery(query, variables);
+      }
+    );
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./index.astro");
+    const html = await container.renderToString(Page);
+
+    expect(html).toContain("Best Roast");
+    expect(html).not.toContain("Closed Down Roast");
+    expect(html).not.toContain("Popup Moved Roast");
+  });
+
   test("uses feature post sourceUrl when homepage image size is missing", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0.5);
 
