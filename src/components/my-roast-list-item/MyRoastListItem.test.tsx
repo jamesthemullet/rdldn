@@ -7,14 +7,6 @@ import { MyRoastListItem } from "./MyRoastListItem";
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
-const setCookie = (value: string) => {
-  document.cookie = `flag_authFeatures=${value}; path=/`;
-};
-
-const clearCookie = () => {
-  document.cookie = "flag_authFeatures=; max-age=0; path=/";
-};
-
 const createHost = () => {
   const host = document.createElement("div");
   document.body.appendChild(host);
@@ -29,34 +21,14 @@ const waitForEffect = async () => {
 
 beforeEach(() => {
   document.body.innerHTML = "";
-  clearCookie();
 });
 
 afterEach(() => {
   document.body.innerHTML = "";
-  clearCookie();
 });
 
 describe("MyRoastListItem", () => {
-  test("renders nothing when no auth flag cookie is set", async () => {
-    const { host, root } = createHost();
-    await act(async () => root.render(<MyRoastListItem imgSrc="/test.jpg" />));
-    await waitForEffect();
-    expect(host.innerHTML).toBe("");
-    await act(async () => root.unmount());
-  });
-
-  test("renders nothing when the flag cookie is false", async () => {
-    setCookie("false");
-    const { host, root } = createHost();
-    await act(async () => root.render(<MyRoastListItem imgSrc="/test.jpg" />));
-    await waitForEffect();
-    expect(host.innerHTML).toBe("");
-    await act(async () => root.unmount());
-  });
-
-  test("renders a list item linking to /my-roasts when the flag cookie is true", async () => {
-    setCookie("true");
+  test("renders a list item linking to /my-roasts", async () => {
     const { host, root } = createHost();
     await act(async () => root.render(<MyRoastListItem imgSrc="/test.jpg" />));
     await waitForEffect();
@@ -69,7 +41,6 @@ describe("MyRoastListItem", () => {
   });
 
   test("renders the image with the provided imgSrc and correct alt text", async () => {
-    setCookie("true");
     const { host, root } = createHost();
     await act(async () => root.render(<MyRoastListItem imgSrc="/my-image.png" />));
     await waitForEffect();

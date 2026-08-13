@@ -263,11 +263,18 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       personalBest: null,
       isNewPersonalBest: false,
 
-      init() {
+      async init() {
         this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
-        const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
-        const authEnabled = match ? match[2] === "true" : false;
-        if (authEnabled) this.fetchPersonalBest();
+        if (await this.isSignedIn()) this.fetchPersonalBest();
+      },
+
+      async isSignedIn() {
+        const clerk = window.Clerk;
+        if (!clerk) return false;
+        if (!clerk.loaded) {
+          await new Promise((resolve) => clerk.addListener(() => resolve()));
+        }
+        return !!clerk.user;
       },
 
       async fetchPersonalBest() {
@@ -381,9 +388,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       },
 
       async savePersonalBest() {
-        const match = document.cookie.match(/(^| )flag_authFeatures=([^;]+)/);
-        const authEnabled = match ? match[2] === "true" : false;
-        if (!authEnabled) return;
+        if (!(await this.isSignedIn())) return;
         try {
           const res = await fetch("/guessthescore/api/personal-best", {
             method: "POST",

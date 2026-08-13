@@ -15,8 +15,16 @@ const clerkHandler = clerkMiddleware((auth, context) => {
   }
 });
 
+const testAuthHandler: MiddlewareHandler = (context, next) => {
+  context.locals.auth = (() => ({
+    userId: null,
+    redirectToSignIn: () => context.redirect("/sign-in"),
+  })) as typeof context.locals.auth;
+  return next();
+};
+
 export const onRequest: MiddlewareHandler =
-  process.env.PLAYWRIGHT === "true" ? (_, next) => next() : (clerkHandler as MiddlewareHandler);
+  process.env.PLAYWRIGHT === "true" ? testAuthHandler : (clerkHandler as MiddlewareHandler);
 
 export const config = {
   matcher: ["/((?!_astro|images|favicon\\.ico|.*\\..*).*)"],

@@ -79,11 +79,6 @@ export type PostsConnection = {
   };
 };
 
-export type Location = {
-  name: string;
-  slug: string;
-};
-
 export type Page = {
   id: string;
   pageId: string;
