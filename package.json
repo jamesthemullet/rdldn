@@ -49,7 +49,7 @@
     "@vercel/kv": "^3.0.0",
     "accented": "^1.2.0",
     "alpinejs": "^3.14.9",
-    "astro": "7.2.0",
+    "astro": "7.2.1",
     "astro-seo": "^1.0.0",
     "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
@@ -59,7 +59,7 @@
     "typescript": "6.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.7",
+    "@biomejs/biome": "2.5.8",
     "@playwright/test": "1.62.1",
     "@types/leaflet": "^1.9.18",
     "@types/node": "^24.10.0",
