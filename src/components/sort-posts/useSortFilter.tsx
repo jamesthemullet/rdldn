@@ -142,6 +142,15 @@ const filterPosts = (posts: Post[], filters: FilterState): Post[] => {
   });
 };
 
+const buildFilterContextLine = (filters: FilterState): string => {
+  const subject = filters.meat ? `Best ${filters.meat}` : "Top Picks";
+  const location = filters.borough || filters.area;
+  const parts = [subject];
+  if (location) parts.push(`in ${location}`);
+  if (filters.score) parts.push(`rated ${filters.score}+`);
+  return parts.join(" ");
+};
+
 export const translateClosedDown = (
   closedDown: string | undefined,
   newSlug: string | undefined
@@ -210,6 +219,9 @@ type UseSortFilterReturn = {
   setShowInflationPrice: BooleanStateSetter;
   copyShareableLink: () => void;
   copied: boolean;
+  copyFilteredResults: () => void;
+  copiedResults: boolean;
+  hasActiveFilters: boolean;
 };
 
 const getInitialStateFromUrl = (): URLSearchParams | null => {
@@ -251,6 +263,7 @@ export const useSortFilter = (posts: Post[]): UseSortFilterReturn => {
   const [showOwner, setShowOwner] = useState(false);
   const [showClosedDown, setShowClosedDown] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [copiedResults, setCopiedResults] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -313,6 +326,24 @@ export const useSortFilter = (posts: Post[]): UseSortFilterReturn => {
     [posts]
   );
 
+  const hasActiveFilters = useMemo(
+    () => Object.values(filters).some((value) => value !== ""),
+    [filters]
+  );
+
+  const copyFilteredResults = useCallback(() => {
+    const contextLine = buildFilterContextLine(filters);
+    const topPicks = sortedPosts
+      .slice(0, 5)
+      .map((post) => `${post.title} ${post.ratings?.nodes[0]?.name ?? ""}/10`)
+      .join(" | ");
+    const text = `${contextLine} — ${topPicks} | ${window.location.href}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedResults(true);
+      setTimeout(() => setCopiedResults(false), 2000);
+    });
+  }, [filters, sortedPosts]);
+
   return {
     sortOrder,
     sortColumn,
@@ -344,6 +375,9 @@ export const useSortFilter = (posts: Post[]): UseSortFilterReturn => {
     setShowClosedDown,
     copyShareableLink,
     copied,
+    copyFilteredResults,
+    copiedResults,
+    hasActiveFilters,
     showInflationPrice,
     setShowInflationPrice,
   };

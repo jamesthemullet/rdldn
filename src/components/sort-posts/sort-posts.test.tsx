@@ -2,7 +2,7 @@
 
 import { act } from "react";
 import { createRoot } from "react-dom/client";
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import type { Post } from "../../types";
 import SortPosts from "./sort-posts";
 
@@ -737,6 +737,69 @@ describe("sort-posts component", () => {
 
     await forceSort("closedDown");
     expect(getRoastTitles(host)[0]).toBe("Has Everything");
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("only shows Share My Top Picks button once a filter is applied", async () => {
+    const { host, root } = createHost();
+
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+
+    await act(async () => {
+      root.render(<SortPosts posts={posts} />);
+    });
+    await waitForRender();
+
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
+    const findShareTopPicksButton = () =>
+      host.querySelector('[data-test-id="share-top-picks-button"]') as HTMLButtonElement | null;
+
+    expect(findShareTopPicksButton()).toBeNull();
+
+    const meatFilter = host.querySelector('select[name="meat"]') as HTMLSelectElement;
+    await act(async () => {
+      meatFilter.value = "Beef";
+      meatFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    const shareTopPicksButton = findShareTopPicksButton();
+    expect(shareTopPicksButton).not.toBeNull();
+
+    await act(async () => {
+      shareTopPicksButton?.click();
+    });
+    await waitForRender();
+
+    expect(writeText).toHaveBeenCalledTimes(1);
+    expect(writeText.mock.calls[0][0]).toContain("Alpha Arms");
+    expect(findShareTopPicksButton()?.textContent).toBe("Copied!");
+
+    const clearButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Clear All Filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      clearButton.click();
+    });
+    await waitForRender();
+
+    expect(findShareTopPicksButton()).toBeNull();
 
     await act(async () => {
       root.unmount();

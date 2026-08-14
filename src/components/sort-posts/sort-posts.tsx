@@ -71,6 +71,9 @@ const SortPosts = ({
     setShowClosedDown,
     copyShareableLink,
     copied,
+    copyFilteredResults,
+    copiedResults,
+    hasActiveFilters,
     setShowInflationPrice,
   } = useSortFilter(posts);
 
@@ -339,6 +342,16 @@ const SortPosts = ({
           <button type="button" className="share-button" onClick={copyShareableLink}>
             {copied ? "Copied!" : "Copy shareable link"}
           </button>
+          {hasActiveFilters && sortedPosts.length > 0 && (
+            <button
+              type="button"
+              className="share-button"
+              data-test-id="share-top-picks-button"
+              onClick={copyFilteredResults}
+            >
+              {copiedResults ? "Copied!" : "Share My Top Picks"}
+            </button>
+          )}
         </div>
       )}
 
