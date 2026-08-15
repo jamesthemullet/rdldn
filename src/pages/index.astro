@@ -390,36 +390,6 @@ if (roastStatsSinglePage) {
       }
     </ul>
   </section>
-  <!-- <section class="home-list preferred-locations">
-    <p>
-      Select your preferred location from the list below and we'll highlight appropriate reviews to
-      you in the future.
-    </p>
-
-    <div class="custom-select">
-      <button class="dropdown-btn" id="dropdown-btn">Select Locations</button>
-      <div class="dropdown-content">
-        {
-          allLocations.map((location) => (
-            <label class="dropdown-item">
-              <input
-                type="checkbox"
-                value={location.slug}
-                class="hidden-checkbox location-checkbox"
-                data-location={location.slug}
-              />
-              <span>{location.name}</span>
-            </label>
-          ))
-        }
-      </div>
-    </div>
-    <div id="selected-locations">
-      <p>Your selected locations:</p>
-      <ul id="selected-locations-list"></ul>
-    </div>
-  </section> -->
-
   <section class="home" aria-labelledby="search-heading">
     <h2 id="search-heading">Search:</h2>
     <Search resultLimit={4} />
