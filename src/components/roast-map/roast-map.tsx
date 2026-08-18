@@ -17,6 +17,10 @@ type Props = {
   markers: Marker[];
 };
 
+const LONDON_CENTER: [number, number] = [51.505, -0.09];
+const MAP_DEFAULT_ZOOM = 10;
+const TOOLTIP_OPACITY = 0.9;
+
 const getMarkerColor = (rating: number): { colour: string; backgroundColour: string } => {
   if (rating >= 9) return { colour: "#fff", backgroundColour: "#4B0082" };
   if (rating >= 8.5) return { colour: "#fff", backgroundColour: "#83539B" };
@@ -90,7 +94,7 @@ export default function RoastMap({ markers }: Props) {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    const map = L.map(mapRef.current).setView([51.505, -0.09], 10);
+    const map = L.map(mapRef.current).setView(LONDON_CENTER, MAP_DEFAULT_ZOOM);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
@@ -123,7 +127,7 @@ export default function RoastMap({ markers }: Props) {
         alt: markerLabel,
       })
         .addTo(layer)
-        .bindTooltip(markerLabel, { direction: "top", opacity: 0.9 })
+        .bindTooltip(markerLabel, { direction: "top", opacity: TOOLTIP_OPACITY })
         .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
   }, [filteredMarkers]);
