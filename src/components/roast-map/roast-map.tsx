@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
+import "./roast-map.css";
 
 type Marker = {
   lat: number;
@@ -15,6 +16,10 @@ type Marker = {
 type Props = {
   markers: Marker[];
 };
+
+const LONDON_CENTER: [number, number] = [51.505, -0.09];
+const MAP_DEFAULT_ZOOM = 10;
+const TOOLTIP_OPACITY = 0.9;
 
 const getMarkerColor = (rating: number): { colour: string; backgroundColour: string } => {
   if (rating >= 9) return { colour: "#fff", backgroundColour: "#4B0082" };
@@ -89,7 +94,7 @@ export default function RoastMap({ markers }: Props) {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    const map = L.map(mapRef.current).setView([51.505, -0.09], 10);
+    const map = L.map(mapRef.current).setView(LONDON_CENTER, MAP_DEFAULT_ZOOM);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
@@ -122,7 +127,7 @@ export default function RoastMap({ markers }: Props) {
         alt: markerLabel,
       })
         .addTo(layer)
-        .bindTooltip(markerLabel, { direction: "top", opacity: 0.9 })
+        .bindTooltip(markerLabel, { direction: "top", opacity: TOOLTIP_OPACITY })
         .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
   }, [filteredMarkers]);
@@ -160,7 +165,7 @@ export default function RoastMap({ markers }: Props) {
         <fieldset>
           <legend>Filter by year visited:</legend>
           {availableYears.map((year) => (
-            <label key={year} style={{ marginRight: "1rem" }}>
+            <label key={year} className="roast-map__year-label">
               <input type="checkbox" checked={selectedYears.includes(year)} onChange={() => toggleYear(year)} />
               {year}
             </label>
@@ -180,7 +185,7 @@ export default function RoastMap({ markers }: Props) {
         hidden
       />
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
-      <section id="map" ref={mapRef} style={{ height: "600px" }} aria-label="Map of reviewed roast dinner locations in London" />
+      <section id="map" ref={mapRef} className="roast-map__container" aria-label="Map of reviewed roast dinner locations in London" />
     </>
   );
 }

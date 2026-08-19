@@ -1,5 +1,5 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 vi.mock("../components/header/HeaderAuth");
 
@@ -11,39 +11,51 @@ vi.mock("astro:assets", () => ({
   ),
 }));
 
-afterEach(() => {
-  vi.restoreAllMocks();
-});
-
 describe("flags page", () => {
-  test("renders the Feature Flags heading and flag labels from FLAG_DEFINITIONS", async () => {
+  test("renders a toggle for each defined flag, unchecked when no cookie is set", async () => {
     const container = await AstroContainer.create();
     const { default: Page } = await import("./flags.astro");
-    const html = await container.renderToString(Page);
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/flags"),
+    });
 
     expect(html).toContain("Feature Flags");
+    expect(html).toContain("flag_visitTracking");
+    expect(html).not.toMatch(/name="flag_visitTracking"[^>]*checked/);
+  });
+
+  test("renders the flag toggle as checked when its cookie is set to true", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./flags.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/flags", {
+        headers: { Cookie: "flag_visitTracking=true" },
+      }),
+    });
+
+    expect(html).toMatch(/name="flag_visitTracking"[^>]*checked/);
+  });
+
+  test("renders the flag toggle as unchecked when its cookie is set to false", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./flags.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/flags", {
+        headers: { Cookie: "flag_visitTracking=false" },
+      }),
+    });
+
+    expect(html).not.toMatch(/name="flag_visitTracking"[^>]*checked/);
+  });
+
+  test("renders the flag label and description from FLAG_DEFINITIONS", async () => {
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./flags.astro");
+    const html = await container.renderToString(Page, {
+      request: new Request("https://rdldn.co.uk/flags"),
+    });
+
     expect(html).toContain("Mark As Visited");
     expect(html).toContain("Controls visibility of the mark as visited feature on review pages.");
-  });
-
-  test("renders visitTracking checkbox unchecked when no cookie is set", async () => {
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./flags.astro");
-    const html = await container.renderToString(Page);
-
-    expect(html).toContain('name="flag_visitTracking"');
-    expect(html).not.toContain("checked");
-  });
-
-  test("renders visitTracking checkbox checked when flag_visitTracking cookie is true", async () => {
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./flags.astro");
-    const request = new Request("http://localhost:4321/flags", {
-      headers: { Cookie: "flag_visitTracking=true" },
-    });
-    const html = await container.renderToString(Page, { request });
-
-    expect(html).toContain('name="flag_visitTracking"');
-    expect(html).toContain("checked");
   });
 });
