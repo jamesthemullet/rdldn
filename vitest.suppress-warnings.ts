@@ -1,14 +1,18 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
 
-// Minimal renderer that accepts any function component (our mocks return null,
-// not a React element, so the real renderer's check() rejects them).
-// renderToStaticMarkup returns empty HTML — fine for mocked components.
+// Renderer that handles vi.fn() mocks used in place of React components.
+// Auto-mocked modules (via vi.mock) produce vi.fn() instances which have a
+// .mock property; real Astro slot factories and components do not.
+// Narrowing the check to vi.fn() prevents Astro's slot factory functions from
+// being intercepted here and silently rendered as empty HTML.
 const mockReactRenderer = {
   name: "@astrojs/react",
   clientEntrypoint: "@astrojs/react/client.js",
   serverEntrypoint: "@astrojs/react/server.js",
   ssr: {
-    check: async (Component: unknown) => typeof Component === "function",
+    check: async (Component: unknown) =>
+      typeof Component === "function" &&
+      typeof (Component as unknown as Record<string, unknown>).mock === "object",
     renderToStaticMarkup: async () => ({ html: "", attrs: undefined }),
   },
 };
