@@ -54,6 +54,7 @@ const SundayRoastPlanner = ({
   const [budget, setBudget] = useState("");
   const [minRating, setMinRating] = useState("");
   const [copied, setCopied] = useState(false);
+  const [textCopied, setTextCopied] = useState(false);
 
   const openPosts = useMemo(
     () => posts.filter((p) => !p.closedDowns?.nodes[0]?.name),
@@ -190,6 +191,13 @@ const SundayRoastPlanner = ({
     });
   }, []);
 
+  const shareUrl = useCallback((medium: string) => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("utm_source", "planner_share");
+    url.searchParams.set("utm_medium", medium);
+    return url.toString();
+  }, []);
+
   const handleSaveToggle = useCallback((slug: string, nowSaved: boolean): void => {
     setSavedSlugs((prev) => {
       const next = new Set(prev);
@@ -209,6 +217,25 @@ const SundayRoastPlanner = ({
   const locationLabel = locationType === "borough"
     ? (borough || "no preference")
     : (area || "no preference");
+
+  const shareText = useMemo(() => {
+    if (results.length === 0) return "";
+    const picks = results
+      .map((post) => {
+        const rating = post.ratings?.nodes[0]?.name;
+        return rating ? `${post.title} (${rating}/10)` : post.title;
+      })
+      .join(", ");
+    const budgetSuffix = budget ? ` (under £${budget})` : "";
+    return `🍖 My top Sunday roast picks in ${locationLabel}${budgetSuffix}: ${picks}`;
+  }, [results, locationLabel, budget]);
+
+  const copyShareText = useCallback(() => {
+    navigator.clipboard.writeText(`${shareText} ${shareUrl("copy")}`).then(() => {
+      setTextCopied(true);
+      setTimeout(() => setTextCopied(false), 2000);
+    });
+  }, [shareText, shareUrl]);
 
   return (
     <div className="planner">
@@ -448,6 +475,46 @@ const SundayRoastPlanner = ({
                   {copied ? "Copied!" : "Copy shareable link"}
                 </button>
               </div>
+              <section className="planner__result-actions" aria-labelledby="planner-share-heading">
+                <p className="planner__share-label" id="planner-share-heading">
+                  Share with friends:
+                </p>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl("whatsapp")}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="planner__share-btn"
+                  aria-label="Share your roast picks on WhatsApp"
+                >
+                  WhatsApp
+                </a>
+                <a
+                  href={`https://bsky.app/intent/compose?text=${encodeURIComponent(`${shareText} ${shareUrl("bluesky")}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="planner__share-btn"
+                  aria-label="Share your roast picks on Bluesky"
+                >
+                  Bluesky
+                </a>
+                <a
+                  href={`https://www.threads.net/intent/post?text=${encodeURIComponent(`${shareText} ${shareUrl("threads")}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="planner__share-btn"
+                  aria-label="Share your roast picks on Threads"
+                >
+                  Threads
+                </a>
+                <button
+                  type="button"
+                  className="planner__share-btn"
+                  onClick={copyShareText}
+                  aria-label="Copy your roast picks text to clipboard"
+                >
+                  {textCopied ? "Copied!" : "Copy text"}
+                </button>
+              </section>
             </>
           )}
         </div>
