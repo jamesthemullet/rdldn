@@ -178,6 +178,51 @@ describe("SundayRoastPlanner", () => {
     await act(async () => root.unmount());
   });
 
+  test("shows social share links with encoded picks text and utm params on the results screen", async () => {
+    window.history.replaceState(null, "", "/?area=Soho&budget=25");
+
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    const whatsapp = host.querySelector('a[aria-label="Share your roast picks on WhatsApp"]') as HTMLAnchorElement;
+    const bluesky = host.querySelector('a[aria-label="Share your roast picks on Bluesky"]') as HTMLAnchorElement;
+    const threads = host.querySelector('a[aria-label="Share your roast picks on Threads"]') as HTMLAnchorElement;
+
+    expect(whatsapp).not.toBeNull();
+    expect(whatsapp.href).toContain("https://wa.me/?text=");
+    expect(whatsapp.href).toContain(encodeURIComponent("Soho Roast (8.5/10)"));
+    expect(whatsapp.href).toContain(encodeURIComponent("utm_source=planner_share"));
+    expect(whatsapp.href).toContain(encodeURIComponent("utm_medium=whatsapp"));
+
+    expect(bluesky.href).toContain("https://bsky.app/intent/compose?text=");
+    expect(bluesky.href).toContain(encodeURIComponent("utm_medium=bluesky"));
+
+    expect(threads.href).toContain("https://www.threads.net/intent/post?text=");
+    expect(threads.href).toContain(encodeURIComponent("utm_medium=threads"));
+
+    await act(async () => root.unmount());
+  });
+
+  test("copies the share text to the clipboard when Copy text is clicked", async () => {
+    window.history.replaceState(null, "", "/?area=Soho&budget=25");
+
+    const { host, root } = createHost();
+    await act(async () => root.render(<SundayRoastPlanner posts={openPosts} />));
+    await waitForEffects();
+
+    const copyTextBtn = getButton(host, "Copy text");
+    await act(async () => copyTextBtn.click());
+    await waitForEffects();
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      expect.stringContaining("My top Sunday roast picks in Soho (under £25): Soho Roast (8.5/10)")
+    );
+    expect(host.textContent).toContain("Copied!");
+
+    await act(async () => root.unmount());
+  });
+
   test("restores from URL params and jumps directly to results step", async () => {
     window.history.replaceState(null, "", "/?area=Soho");
 

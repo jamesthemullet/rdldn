@@ -153,6 +153,22 @@
   cursor: pointer;
 }
 
+.planner__share-label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.planner__share-btn {
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  color: var(--roast-main-text);
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
 .planner__no-results {
   display: flex;
   flex-direction: column;
