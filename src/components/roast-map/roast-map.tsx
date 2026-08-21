@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
+import "./roast-map.css";
 
 type Marker = {
   lat: number;
@@ -9,11 +10,16 @@ type Marker = {
   rating: number;
   slug?: string;
   closed?: string;
+  year?: string;
 };
 
 type Props = {
   markers: Marker[];
 };
+
+const LONDON_CENTER: [number, number] = [51.505, -0.09];
+const MAP_DEFAULT_ZOOM = 10;
+const TOOLTIP_OPACITY = 0.9;
 
 const getMarkerColor = (rating: number): { colour: string; backgroundColour: string } => {
   if (rating >= 9) return { colour: "#fff", backgroundColour: "#4B0082" };
@@ -57,15 +63,25 @@ export default function RoastMap({ markers }: Props) {
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const [showClosed, setShowClosed] = useState(false);
   const [minRating, setMinRating] = useState(0);
+  const [selectedYears, setSelectedYears] = useState<string[]>([]);
+  const availableYears = useMemo(
+    () =>
+      Array.from(new Set(markers.map(({ year }) => year).filter((year): year is string => Boolean(year)))).sort(),
+    [markers]
+  );
+  const toggleYear = (year: string) => {
+    setSelectedYears((prev) => (prev.includes(year) ? prev.filter((y) => y !== year) : [...prev, year]));
+  };
   const filteredMarkers = useMemo(
     () =>
-      markers.filter(({ lat, lng, closed, rating }) => {
+      markers.filter(({ lat, lng, closed, rating, year }) => {
         if (!showClosed && closed) return false;
         if (!Number.isFinite(rating)) return false;
         if (rating < minRating) return false;
+        if (selectedYears.length > 0 && (!year || !selectedYears.includes(year))) return false;
         return Boolean(lat && lng);
       }),
-    [markers, showClosed, minRating]
+    [markers, showClosed, minRating, selectedYears]
   );
   const visibleMarkers = filteredMarkers.length;
   const closedMarkers = useMemo(
@@ -78,7 +94,7 @@ export default function RoastMap({ markers }: Props) {
   useEffect(() => {
     if (!mapRef.current) return;
 
-    const map = L.map(mapRef.current).setView([51.505, -0.09], 10);
+    const map = L.map(mapRef.current).setView(LONDON_CENTER, MAP_DEFAULT_ZOOM);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
@@ -111,7 +127,7 @@ export default function RoastMap({ markers }: Props) {
         alt: markerLabel,
       })
         .addTo(layer)
-        .bindTooltip(markerLabel, { direction: "top", opacity: 0.9 })
+        .bindTooltip(markerLabel, { direction: "top", opacity: TOOLTIP_OPACITY })
         .bindPopup(`<a href="/${slug}">${label}</a> - ${rating}/10`);
     });
   }, [filteredMarkers]);
@@ -143,6 +159,19 @@ export default function RoastMap({ markers }: Props) {
         value={minRating}
         onChange={(e) => setMinRating(Number(e.target.value))}
       />
+      <br />
+      <br />
+      {availableYears.length > 0 && (
+        <fieldset>
+          <legend>Filter by year visited:</legend>
+          {availableYears.map((year) => (
+            <label key={year} className="roast-map__year-label">
+              <input type="checkbox" checked={selectedYears.includes(year)} onChange={() => toggleYear(year)} />
+              {year}
+            </label>
+          ))}
+        </fieldset>
+      )}
       <p aria-live="polite" className="sr-only">
         {visibleMarkers} {visibleMarkers === 1 ? "restaurant" : "restaurants"} shown on map
       </p>
@@ -156,7 +185,7 @@ export default function RoastMap({ markers }: Props) {
         hidden
       />
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
-      <section id="map" ref={mapRef} style={{ height: "600px" }} aria-label="Map of reviewed roast dinner locations in London" />
+      <section id="map" ref={mapRef} className="roast-map__container" aria-label="Map of reviewed roast dinner locations in London" />
     </>
   );
 }

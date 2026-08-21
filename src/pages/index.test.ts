@@ -79,13 +79,6 @@ const getDefaultResponseByQuery = (query: string, variables: Record<string, unkn
     };
   }
 
-  if (query.includes("areas") && query.includes("boroughs")) {
-    return {
-      areas: { nodes: [{ name: "Camden", slug: "camden" }] },
-      boroughs: { nodes: [{ name: "Hackney", slug: "hackney" }] },
-    };
-  }
-
   if (query.includes("where: {tag: \"best\"}")) {
     return {
       posts: {
@@ -167,7 +160,7 @@ describe("index page", () => {
     const { default: Page } = await import("./index.astro");
     const html = await container.renderToString(Page);
 
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(15);
+    expect(fetchGraphQLMock).toHaveBeenCalledTimes(14);
     expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
       after: "cursor-1",
     });
@@ -211,7 +204,7 @@ describe("index page", () => {
     const { default: Page } = await import("./index.astro");
     const html = await container.renderToString(Page);
 
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(14);
+    expect(fetchGraphQLMock).toHaveBeenCalledTimes(13);
     expect(fetchGraphQLMock).not.toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
       after: "cursor-1",
     });
@@ -252,7 +245,7 @@ describe("index page", () => {
     const { default: Page } = await import("./index.astro");
     const html = await container.renderToString(Page);
 
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(14);
+    expect(fetchGraphQLMock).toHaveBeenCalledTimes(13);
     expect(fetchGraphQLMock).not.toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
       after: "cursor-1",
     });
@@ -326,7 +319,7 @@ describe("index page", () => {
     const { default: Page } = await import("./index.astro");
     const html = await container.renderToString(Page);
 
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(15);
+    expect(fetchGraphQLMock).toHaveBeenCalledTimes(14);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       "Error fetching other posts:",
       expect.any(Error)
@@ -513,38 +506,12 @@ describe("index page", () => {
     const html = await container.renderToString(Page);
 
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching location pages:",
+      "Error fetching favourite roast pages:",
       expect.any(Error)
     );
     expect(html).toContain("Find Your Favourite Roast:");
     expect(html).not.toContain("Page 631");
     expect(html).toContain("Roast By Location:");
-  });
-
-  test("logs and continues when fetching locations list fails", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("areas") && query.includes("boroughs")) {
-          throw new Error("Locations request failed");
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching location pages:",
-      expect.any(Error)
-    );
-    expect(html).toContain("Roast By Location:");
-    expect(html).toContain("A few of the best roasts:");
   });
 
   test("logs and continues when fetching best roasts fails", async () => {
@@ -596,7 +563,7 @@ describe("index page", () => {
       expect.any(Error)
     );
     expect(html).toContain("Features:");
-    expect(html).not.toContain("Feature Post 1");
+    expect(html).toContain("Feature Post 1");
   });
 
   test("logs and continues when roastatistics single page fetch fails", async () => {
@@ -698,6 +665,57 @@ describe("index page", () => {
 
     expect(html).toContain("Best Roast Fallback");
     expect(html).toContain('src="https://example.com/best-fallback-source.jpg"');
+  });
+
+  test("excludes closed down pubs from the best roasts section", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
+
+    fetchGraphQLMock.mockImplementation(
+      async (query: string, variables: Record<string, unknown> = {}) => {
+        if (query.includes("where: {tag: \"best\"}")) {
+          return {
+            posts: {
+              nodes: [
+                {
+                  slug: "best-roast",
+                  title: "Best Roast",
+                  featuredImage: createFeaturedImageNode("https://example.com/best-homepage.jpg"),
+                  ratings: { nodes: [{ name: "9.1" }] },
+                  yearsOfVisit: { nodes: [{ name: "2025" }] },
+                  closedDowns: { nodes: [] },
+                },
+                {
+                  slug: "closed-down-roast",
+                  title: "Closed Down Roast",
+                  featuredImage: createFeaturedImageNode("https://example.com/closed-homepage.jpg"),
+                  ratings: { nodes: [{ name: "9.5" }] },
+                  yearsOfVisit: { nodes: [{ name: "2024" }] },
+                  closedDowns: { nodes: [{ name: "closeddown" }] },
+                },
+                {
+                  slug: "popup-moved-roast",
+                  title: "Popup Moved Roast",
+                  featuredImage: createFeaturedImageNode("https://example.com/popup-homepage.jpg"),
+                  ratings: { nodes: [{ name: "8.0" }] },
+                  yearsOfVisit: { nodes: [{ name: "2023" }] },
+                  closedDowns: { nodes: [{ name: "popupmoved" }] },
+                },
+              ],
+            },
+          };
+        }
+
+        return getDefaultResponseByQuery(query, variables);
+      }
+    );
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./index.astro");
+    const html = await container.renderToString(Page);
+
+    expect(html).toContain("Best Roast");
+    expect(html).not.toContain("Closed Down Roast");
+    expect(html).not.toContain("Popup Moved Roast");
   });
 
   test("uses feature post sourceUrl when homepage image size is missing", async () => {
@@ -822,24 +840,4 @@ describe("index page", () => {
     expect(html).toContain('src="https://example.com/roastatistics-fallback-source.jpg"');
   });
 
-  test("renders when locations areas and borough nodes are missing", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("areas") && query.includes("boroughs")) {
-          return {};
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(html).toContain("Roast By Location:");
-    expect(html).toContain("Search:");
-  });
 });

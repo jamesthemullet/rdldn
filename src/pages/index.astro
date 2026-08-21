@@ -6,21 +6,17 @@ import { Image } from "astro:assets";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import NewsletterPopup from "../components/newsletter-popup/newsletter-popup.astro";
 import Search from "../components/search/search.astro";
-import { fetchGraphQL } from "../lib/api";
-
-export const prerender = true;
-
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import findARoastImg from "../images/find-a-roast.png";
 import guessTheScoreImg from "../images/guess-the-score.png";
+import { fetchGraphQL } from "../lib/api";
 import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
 import GET_ALL_PAGES from "../lib/queries/getAllPages";
 import GET_FEATURE_POSTS from "../lib/queries/getFeaturePosts.ts";
-import GET_LOCATIONS from "../lib/queries/getLocations";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
-import type { Location, Page, Post, Size } from "../types";
+import type { Page, Post, Size } from "../types";
 
 type PostWithFeaturedImage = Post & { featuredImage: string };
 type PageWithFeaturedImage = Page & { featuredImage: string };
@@ -74,191 +70,211 @@ if (recentPostCursor) {
 const posts = [recentPost, ...otherPosts].filter(Boolean);
 
 const locationPageIds = ["5614", "5612", "5616", "5594"];
-
-let locationPages: Array<PageWithFeaturedImage> = [];
-
-try {
-  const pageResponses = (await Promise.all(
-    locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
-  )) as Array<{ page: Page | null }>;
-
-  locationPages = pageResponses
-    .map((response) => {
-      if (!response?.page) return null;
-
-      const featuredImage = response.page.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
-
-      return {
-        ...response.page,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean) as PageWithFeaturedImage[];
-} catch (error) {
-  console.error("Error fetching location pages:", error);
-}
-
 const findYourFavouriteRoastPageIds = ["267", "631", "10368", "17"];
 
-let findYourFavouriteRoastPages: Array<PageWithFeaturedImage> = [];
+const fetchLocationPages = async (): Promise<PageWithFeaturedImage[]> => {
+  try {
+    const pageResponses = (await Promise.all(
+      locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
+    )) as Array<{ page: Page | null }>;
 
-try {
-  const pageResponses = (await Promise.all(
-    findYourFavouriteRoastPageIds.map((id) =>
-      fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id })
-    )
-  )) as Array<{ page: Page | null }>;
+    return pageResponses
+      .map((response) => {
+        if (!response?.page) return null;
 
-  findYourFavouriteRoastPages = pageResponses
-    .map((response) => {
-      if (!response?.page) return null;
+        const featuredImage = response.page.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
 
-      const featuredImage = response.page.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
-
-      return {
-        ...response.page,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean) as PageWithFeaturedImage[];
-} catch (error) {
-  console.error("Error fetching location pages:", error);
-}
-
-const allLocations: Location[] = [];
-
-try {
-  const locations = (await fetchGraphQL(GET_LOCATIONS)) as {
-    areas: { nodes: Location[] };
-    boroughs: { nodes: Location[] };
-  };
-
-  if (locations?.areas?.nodes) {
-    allLocations.push(...locations.areas.nodes);
+        return {
+          ...response.page,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean) as PageWithFeaturedImage[];
+  } catch (error) {
+    console.error("Error fetching location pages:", error);
+    return [];
   }
+};
 
-  if (locations?.boroughs?.nodes) {
-    allLocations.push(...locations.boroughs.nodes);
+const fetchFindYourFavouriteRoastPages = async (): Promise<PageWithFeaturedImage[]> => {
+  try {
+    const pageResponses = (await Promise.all(
+      findYourFavouriteRoastPageIds.map((id) =>
+        fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id })
+      )
+    )) as Array<{ page: Page | null }>;
+
+    return pageResponses
+      .map((response) => {
+        if (!response?.page) return null;
+
+        const featuredImage = response.page.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
+
+        return {
+          ...response.page,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean) as PageWithFeaturedImage[];
+  } catch (error) {
+    console.error("Error fetching favourite roast pages:", error);
+    return [];
   }
-} catch (error) {
-  console.error("Error fetching location pages:", error);
-}
+};
 
-let bestRoasts: Post[] = [];
+const fetchBestRoasts = async (): Promise<Post[]> => {
+  try {
+    const response = (await fetchGraphQL(GET_BEST_ROASTS)) as {
+      posts: { nodes: Post[] };
+    };
+    const bestRoasts = response?.posts?.nodes
+      ?.map((post: Post) => {
+        const featuredImage = post.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
 
-try {
-  const response = (await fetchGraphQL(GET_BEST_ROASTS)) as {
-    posts: { nodes: Post[] };
-  };
-  bestRoasts = response?.posts?.nodes
-    ?.map((post: Post) => {
-      const featuredImage = post.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
+        return {
+          ...post,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean)
+      .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0);
+    return bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
+  } catch (error) {
+    console.error("Error fetching best roasts:", error);
+    return [];
+  }
+};
 
-      return {
-        ...post,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean);
-  bestRoasts = bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
-} catch (error) {
-  console.error("Error fetching best roasts:", error);
-}
+const fetchAllPagesData = async (): Promise<{
+  pageFeatures: PageWithFeaturedImage[];
+  roastStatistics: PageWithFeaturedImage[];
+}> => {
+  try {
+    const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
+      pages: { nodes: Page[] };
+    };
+    const allPages = response?.pages?.nodes
+      ?.map((page: Page) => {
+        const featuredImage = page.featuredImage?.node;
+        const smallImage =
+          featuredImage?.mediaDetails?.sizes.find(
+            (size: Size) => size.name === "homepage"
+          )?.sourceUrl || featuredImage?.sourceUrl;
 
-let allPages: Page[] = [];
-let allFeaturesPages: Page[] = [];
-let allRoastStatisticsPages: Page[] = [];
-let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [];
-let roastStatistics: Array<PageWithFeaturedImage> = [];
+        return {
+          ...page,
+          featuredImageUrl: smallImage,
+        };
+      })
+      .filter(Boolean);
 
-try {
-  const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
-    pages: { nodes: Page[] };
-  };
-  allPages = response?.pages?.nodes
-    ?.map((page: Page) => {
-      const featuredImage = page.featuredImage?.node;
-      const smallImage =
-        featuredImage?.mediaDetails?.sizes.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || featuredImage?.sourceUrl;
+    const allFeaturesPages = allPages.filter(
+      (page: Page) => page?.highlights?.tag === "feature"
+    );
+    const allRoastStatisticsPages = allPages.filter(
+      (page: Page) => page?.highlights?.tag === "roastatistics"
+    );
 
+    const pageFeatures = allFeaturesPages.map((page: Page) => {
+      const featuredImage = page.featuredImage?.node?.sourceUrl || "";
       return {
         ...page,
-        featuredImageUrl: smallImage,
-      };
-    })
-    .filter(Boolean);
+        featuredImage,
+      } as PageWithFeaturedImage;
+    });
 
-  allFeaturesPages = allPages.filter(
-    (page: Page) => page?.highlights?.tag === "feature"
-  );
-  allRoastStatisticsPages = allPages.filter(
-    (page: Page) => page?.highlights?.tag === "roastatistics"
-  );
+    const roastStatistics = allRoastStatisticsPages.map((page: Page) => {
+      const featuredImage = page.featuredImage?.node?.sourceUrl || "";
+      return {
+        ...page,
+        featuredImage,
+      } as PageWithFeaturedImage;
+    });
 
-  allFeaturesPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-    features.push({
-      ...page,
-      featuredImage,
-    } as PageWithFeaturedImage);
-  });
+    return { pageFeatures, roastStatistics };
+  } catch (error) {
+    console.error("Error fetching features data:", error);
+    return { pageFeatures: [], roastStatistics: [] };
+  }
+};
 
-  allRoastStatisticsPages.forEach((page: Page) => {
-    const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-    roastStatistics.push({
-      ...page,
-      featuredImage,
-    } as PageWithFeaturedImage);
-  });
+const fetchFeaturePosts = async (): Promise<PostWithFeaturedImage[]> => {
+  try {
+    const postsResponse = (await fetchGraphQL(GET_FEATURE_POSTS)) as {
+      posts: { edges: Array<{ node: Post }> };
+    };
 
-  const postsResponse = (await fetchGraphQL(GET_FEATURE_POSTS)) as {
-    posts: { edges: Array<{ node: Post }> };
-  };
-
-  features.push(
-    ...(postsResponse.posts.edges.map((edge: { node: Post }) => ({
+    return postsResponse.posts.edges.map((edge: { node: Post }) => ({
       ...edge.node,
       featuredImageUrl:
         edge.node.featuredImage?.node?.mediaDetails?.sizes?.find(
           (size: Size) => size.name === "homepage"
         )?.sourceUrl || edge.node.featuredImage?.node?.sourceUrl,
-    })) as unknown as PostWithFeaturedImage[])
-  );
+    })) as unknown as PostWithFeaturedImage[];
+  } catch (error) {
+    console.error("Error fetching feature posts:", error);
+    return [];
+  }
+};
 
-  features = features.sort(() => Math.random() - 0.5).slice(0, 4);
+const fetchRoastStatsSinglePage = async (): Promise<PageWithFeaturedImage | null> => {
+  try {
+    const response = (await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
+      id: "4102",
+    })) as { page: Page };
+    return {
+      ...response.page,
+      featuredImageUrl:
+        response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
+          (size: Size) => size.name === "homepage"
+        )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
+    } as PageWithFeaturedImage;
+  } catch (error) {
+    console.error("Error fetching features data:", error);
+    return null;
+  }
+};
 
-  roastStatistics = roastStatistics.sort(() => Math.random() - 0.5).slice(0, 3);
-} catch (error) {
-  console.error("Error fetching features data:", error);
-}
+const [
+  locationPages,
+  findYourFavouriteRoastPages,
+  bestRoasts,
+  allPagesData,
+  featurePosts,
+  roastStatsSinglePage,
+] = await Promise.all([
+  fetchLocationPages(),
+  fetchFindYourFavouriteRoastPages(),
+  fetchBestRoasts(),
+  fetchAllPagesData(),
+  fetchFeaturePosts(),
+  fetchRoastStatsSinglePage(),
+]);
 
-try {
-  const response = (await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
-    id: "4102",
-  })) as { page: Page };
-  roastStatistics.unshift({
-    ...response.page,
-    featuredImageUrl:
-      response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
-        (size: Size) => size.name === "homepage"
-      )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
-  } as PageWithFeaturedImage);
-} catch (error) {
-  console.error("Error fetching features data:", error);
+let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [
+  ...allPagesData.pageFeatures,
+  ...featurePosts,
+];
+features = features.sort(() => Math.random() - 0.5).slice(0, 4);
+
+const roastStatistics: Array<PageWithFeaturedImage> = allPagesData.roastStatistics
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 3);
+
+if (roastStatsSinglePage) {
+  roastStatistics.unshift(roastStatsSinglePage);
 }
 ---
 
@@ -282,6 +298,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -307,7 +325,7 @@ try {
                 <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
-            <a href={page?.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
               <img
                 src={page?.featuredImageUrl}
                 alt={`Preview image for ${page?.title}`}
@@ -326,26 +344,21 @@ try {
     <ul>
       <li class="heading">
         <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
-        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image">
+        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
           <Image src={findARoastImg} alt="Find a roast" width={400} height={300} loading="lazy" />
         </a>
       </li>
-      <li
-        class="heading"
-        x-data
-        x-show="document.cookie.includes('flag_authFeatures=true')"
-        style="display: none"
-      >
+      <li class="heading">
         <h3>
           <a href="/my-roasts" rel="noopener noreferrer">My Roast List</a>
         </h3>
-        <a href="/my-roasts" rel="noopener noreferrer" class="featured-image">
+        <a href="/my-roasts" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
           <Image src={dreamingOfRoastDinners} alt="My roast list" width={400} height={300} loading="lazy" />
         </a>
       </li>
       <li class="heading">
         <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
-        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image">
+        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
           <Image src={guessTheScoreImg} alt="Guess the score" width={400} height={300} loading="lazy" />
         </a>
       </li>
@@ -363,7 +376,7 @@ try {
                 <Fragment set:html={sanitizeTitle(page?.title)} />
               </a>
             </h3>
-            <a href={page?.slug} rel="noopener noreferrer">
+            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
               <img
                 src={page?.featuredImageUrl}
                 alt={`Preview image for ${page?.title}`}
@@ -426,6 +439,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -457,6 +472,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
@@ -486,6 +503,8 @@ try {
               href={`/${post?.slug}`}
               rel="noopener noreferrer"
               class="featured-image"
+              aria-hidden="true"
+              tabindex="-1"
             >
               <img
                 src={post?.featuredImageUrl}
