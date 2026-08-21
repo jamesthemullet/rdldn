@@ -25,6 +25,11 @@ const GET_BEST_ROASTS = `
             name
           }
         }
+        closedDowns {
+          nodes {
+            name
+          }
+        }
       }
     }
   }
