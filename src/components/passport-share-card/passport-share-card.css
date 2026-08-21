@@ -1,0 +1,47 @@
+.passport-share-card {
+  margin: 2rem 0;
+}
+
+.passport-share-label {
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.passport-share-preview {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border: 2px solid var(--roast-new-blue);
+  margin-bottom: 0.75rem;
+}
+
+.passport-share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.passport-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin: 0;
+  color: var(--roast-main-text);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  text-decoration: none;
+  text-transform: none;
+  height: auto;
+  min-width: unset;
+}
+
+.passport-share-btn--copied {
+  border-color: var(--roast-pink);
+}
