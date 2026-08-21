@@ -346,6 +346,12 @@ header {
   margin: 0;
 }
 
+.header-top-right .cl-userButtonTrigger:focus-visible {
+  outline: 3px solid var(--roast-pink);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
 .header-top-right .cl-userButtonAvatarBox,
 .header-top-right .cl-userButtonAvatarImage {
   width: 2rem;
