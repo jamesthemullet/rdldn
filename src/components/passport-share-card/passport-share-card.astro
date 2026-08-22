@@ -1,0 +1,118 @@
+---
+type Props = {
+  visits: number;
+  zones: number;
+  favouriteMeat: string | null;
+  badgesEarned: number;
+  totalBadges: number;
+};
+
+const { visits, zones, favouriteMeat, badgesEarned, totalBadges } = Astro.props;
+
+const ogParams = new URLSearchParams({
+  visits: String(visits),
+  zones: String(zones),
+  badges: String(badgesEarned),
+});
+if (favouriteMeat) ogParams.set("meat", favouriteMeat);
+
+const ogImageUrl = `https://rdldn.co.uk/api/passport/og?${ogParams.toString()}`;
+
+const parts: string[] = [
+  "🍖 My Roast Dinner Passport",
+  `${visits} restaurant${visits === 1 ? "" : "s"} visited`,
+  `${badgesEarned}/${totalBadges} badges earned`,
+];
+if (favouriteMeat) parts.push(`Favourite meat: ${favouriteMeat}`);
+parts.push(ogImageUrl);
+
+const shareText = parts.join(" | ");
+const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+const threadsUrl = `https://www.threads.net/intent/post?text=${encodeURIComponent(shareText)}`;
+const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(ogImageUrl)}`;
+const blueskyUrl = `https://bsky.app/intent/compose?text=${encodeURIComponent(shareText)}`;
+
+import "./passport-share-card.css";
+---
+
+<div class="passport-share-card" role="region" aria-labelledby="passport-share-heading">
+  <p class="passport-share-label" id="passport-share-heading">Share your passport:</p>
+  <img
+    class="passport-share-preview"
+    src={ogImageUrl}
+    alt="Preview of your shareable Roast Dinner Passport card"
+    width="600"
+    height="315"
+    loading="lazy"
+  />
+  <div class="passport-share-buttons">
+    <a
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="passport-share-btn"
+      aria-label="Share my passport on WhatsApp"
+    >
+      WhatsApp
+    </a>
+    <a
+      href={threadsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="passport-share-btn"
+      aria-label="Share my passport on Threads"
+    >
+      Threads
+    </a>
+    <a
+      href={facebookUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="passport-share-btn"
+      aria-label="Share my passport on Facebook"
+    >
+      Facebook
+    </a>
+    <a
+      href={blueskyUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="passport-share-btn"
+      aria-label="Share my passport on Bluesky"
+    >
+      Bluesky
+    </a>
+    <button
+      type="button"
+      class="passport-share-btn"
+      id="copy-passport-image-btn"
+      data-image-url={ogImageUrl}
+      aria-label="Copy passport image link to clipboard"
+    >
+      Copy image link
+    </button>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById("copy-passport-image-btn");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      const imageUrl = btn.getAttribute("data-image-url");
+      if (!imageUrl) return;
+      try {
+        await navigator.clipboard.writeText(imageUrl);
+        btn.textContent = "Copied!";
+        btn.setAttribute("aria-label", "Passport image link copied to clipboard");
+        btn.classList.add("passport-share-btn--copied");
+        setTimeout(() => {
+          btn.textContent = "Copy image link";
+          btn.setAttribute("aria-label", "Copy passport image link to clipboard");
+          btn.classList.remove("passport-share-btn--copied");
+        }, 2000);
+      } catch {
+        // clipboard unavailable
+      }
+    });
+  }
+</script>
