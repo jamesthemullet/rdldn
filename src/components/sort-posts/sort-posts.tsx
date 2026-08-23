@@ -360,6 +360,7 @@ const SortPosts = ({
                 className={`${post.closedDowns?.nodes[0]?.name ? "closed-down" : ""}`}
                 data-test-id="roast-rating"
               >
+                <span className="sr-only">Rating: </span>
                 {post.ratings?.nodes[0]?.name}
                 <WishlistButton
                   postSlug={post.slug ?? ""}
