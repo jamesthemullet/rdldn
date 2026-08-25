@@ -281,6 +281,76 @@ describe("best-value component", () => {
       root.unmount();
     });
   });
+
+  test("applies area and borough filters simultaneously, keeping only posts matching both", async () => {
+    const combinedFilterPosts: Post[] = [
+      {
+        date: "2026-01-01",
+        title: "Matches Both",
+        slug: "matches-both",
+        ratings: { nodes: [{ name: "8" }] },
+        prices: { nodes: [{ name: "£15" }] },
+        areas: { nodes: [{ name: "Soho" }] },
+        boroughs: { nodes: [{ name: "Westminster" }] },
+      },
+      {
+        date: "2026-01-01",
+        title: "Matches Area Only",
+        slug: "matches-area-only",
+        ratings: { nodes: [{ name: "7" }] },
+        prices: { nodes: [{ name: "£15" }] },
+        areas: { nodes: [{ name: "Soho" }] },
+        boroughs: { nodes: [{ name: "Camden" }] },
+      },
+      {
+        date: "2026-01-01",
+        title: "Matches Neither",
+        slug: "matches-neither",
+        ratings: { nodes: [{ name: "9" }] },
+        prices: { nodes: [{ name: "£15" }] },
+        areas: { nodes: [{ name: "Hackney" }] },
+        boroughs: { nodes: [{ name: "Hackney" }] },
+      },
+    ];
+
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<BestValue posts={combinedFilterPosts} />);
+    });
+    await waitForRender();
+
+    const showOptionsButton = Array.from(host.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Show all options / filters")
+    ) as HTMLButtonElement;
+
+    await act(async () => {
+      showOptionsButton.click();
+    });
+    await waitForRender();
+
+    const areaFilter = host.querySelector('select[name="area"]') as HTMLSelectElement;
+    await act(async () => {
+      areaFilter.value = "Soho";
+      areaFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Matches Both", "Matches Area Only"]);
+
+    const boroughFilter = host.querySelector('select[name="borough"]') as HTMLSelectElement;
+    await act(async () => {
+      boroughFilter.value = "Westminster";
+      boroughFilter.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Matches Both"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
 });
 
 describe("URL param initialisation", () => {
