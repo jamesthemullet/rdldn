@@ -1,6 +1,7 @@
+import { type ReactElement } from "react";
 import type { PassportCardData } from "./passportCard";
 
-export function PassportCardImage(data: PassportCardData) {
+export function PassportCardImage(data: PassportCardData): ReactElement {
   return (
     <div
       style={{
