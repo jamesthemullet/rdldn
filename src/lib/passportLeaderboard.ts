@@ -1,8 +1,8 @@
 import { kv } from "./kv";
 
 export const LEADERBOARD_KEY = "passport-leaderboard";
-export const LEADERBOARD_SIZE = 10;
-export const MAX_DISPLAY_NAME_LENGTH = 30;
+const LEADERBOARD_SIZE = 10;
+const MAX_DISPLAY_NAME_LENGTH = 30;
 
 export type PassportLeaderboardEntry = {
   displayName: string;
