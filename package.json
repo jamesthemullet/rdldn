@@ -53,7 +53,7 @@
     "@vercel/og": "^1.0.1",
     "accented": "^1.2.0",
     "alpinejs": "^3.14.9",
-    "astro": "7.2.6",
+    "astro": "7.2.7",
     "astro-seo": "^1.0.0",
     "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
