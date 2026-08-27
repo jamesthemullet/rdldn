@@ -1,10 +1,12 @@
-import { integer, numeric, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { boolean, integer, numeric, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   clerkId: text("clerk_id").unique().notNull(),
   email: text("email").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  leaderboardOptIn: boolean("leaderboard_opt_in").default(false).notNull(),
+  leaderboardDisplayName: text("leaderboard_display_name"),
 });
 
 export const wishlistItems = pgTable(

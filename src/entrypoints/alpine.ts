@@ -12,6 +12,11 @@ type VisitButtonProps = {
   postRating: string | null;
 };
 
+type PassportLeaderboardOptInProps = {
+  initialOptIn: boolean;
+  initialDisplayName: string | null;
+};
+
 function isVisitTrackingFlagEnabled(): boolean {
   const match = document.cookie.match(/(^| )flag_visitTracking=([^;]+)/);
   const val = match ? match[2] : null;
@@ -132,6 +137,49 @@ export default (alpine: AlpineInstance) => {
       },
     };
   });
+
+  alpine.data(
+    "passportLeaderboardOptIn",
+    (props: PassportLeaderboardOptInProps = {} as PassportLeaderboardOptInProps) => {
+      const { initialOptIn, initialDisplayName } = props;
+      return {
+        optedIn: initialOptIn,
+        displayName: initialDisplayName ?? "",
+        saving: false,
+        error: "",
+
+        async toggleOptIn() {
+          if (this.saving) return;
+          const nextOptIn = !this.optedIn;
+
+          if (nextOptIn && !this.displayName.trim()) {
+            this.error = "Enter a display name to join the leaderboard.";
+            return;
+          }
+
+          this.saving = true;
+          this.error = "";
+          try {
+            const res = await fetch("/api/passport/leaderboard/opt-in", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ optIn: nextOptIn, displayName: this.displayName.trim() }),
+            });
+            if (res.ok) {
+              this.optedIn = nextOptIn;
+            } else {
+              const data = await res.json().catch(() => ({}));
+              this.error = data.error || "Something went wrong.";
+            }
+          } catch {
+            this.error = "Could not connect. Please try again.";
+          } finally {
+            this.saving = false;
+          }
+        },
+      };
+    }
+  );
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => alpine.start());

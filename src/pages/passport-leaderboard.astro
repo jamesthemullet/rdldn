@@ -1,0 +1,60 @@
+---
+import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { FLAG_DEFINITIONS } from "../lib/featureFlags";
+import { getLeaderboardEntries } from "../lib/passportLeaderboard";
+import "../styles/post.css";
+import "./passport-leaderboard.css";
+
+const leaderboardFlagCookie = Astro.cookies.get("flag_passportLeaderboard");
+const leaderboardFlagEnabled = leaderboardFlagCookie
+  ? leaderboardFlagCookie.value === "true"
+  : FLAG_DEFINITIONS.passportLeaderboard.defaultValue;
+
+if (!leaderboardFlagEnabled) {
+  return Astro.redirect("/404");
+}
+
+const entries = await getLeaderboardEntries();
+---
+
+<BaseLayout
+  pageTitle="Passport Leaderboard"
+  description="See who has visited the most roast dinners and earned the most badges"
+>
+  <FeaturedPostHeader
+    imageSrc={dreamingOfRoastDinners.src}
+    title="Passport Leaderboard"
+  />
+  <div class="container">
+    <h2>Top Roast Dinner Passports</h2>
+    <p>
+      Players who've opted in to the public leaderboard, ranked by
+      restaurants visited.
+    </p>
+
+    {
+      entries.length === 0 ? (
+        <p>No one has joined the leaderboard yet — be the first!</p>
+      ) : (
+        <ol class="passport-leaderboard-list">
+          {entries.map((entry, index) => (
+            <li class="passport-leaderboard-item">
+              <span class="passport-leaderboard-item__rank">{index + 1}</span>
+              <span class="passport-leaderboard-item__name">
+                {entry.displayName}
+              </span>
+              <span class="passport-leaderboard-item__stat">
+                {entry.visits} visited
+              </span>
+              <span class="passport-leaderboard-item__stat">
+                {entry.badges} badges
+              </span>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </div>
+</BaseLayout>

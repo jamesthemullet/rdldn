@@ -1,0 +1,34 @@
+.passport-leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.passport-leaderboard-item {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.passport-leaderboard-item__rank {
+  font-weight: bold;
+  color: var(--roast-new-blue);
+}
+
+.passport-leaderboard-item__name {
+  font-weight: bold;
+  color: var(--roast-main-text);
+}
+
+.passport-leaderboard-item__stat {
+  font-size: 0.875rem;
+  color: #555;
+  white-space: nowrap;
+}

@@ -1,0 +1,45 @@
+.leaderboard-optin {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.leaderboard-optin__form {
+  margin: 0.75rem 0;
+}
+
+.leaderboard-optin__name-input {
+  width: 100%;
+  max-width: 20rem;
+  padding: 0.5rem;
+  font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.leaderboard-optin__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--roast-main-text);
+  font-family: inherit;
+  font-size: 1rem;
+  min-width: 10rem;
+}
+
+.leaderboard-optin__btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.leaderboard-optin__error {
+  color: var(--roast-pink);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}

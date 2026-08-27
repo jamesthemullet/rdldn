@@ -1,6 +1,7 @@
 ---
 import { eq } from "drizzle-orm";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import PassportLeaderboardOptIn from "../components/passport-leaderboard-optin/passport-leaderboard-optin.astro";
 import PassportShareCard from "../components/passport-share-card/passport-share-card.astro";
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -22,6 +23,11 @@ if (!myPassportFlagEnabled) {
   return Astro.redirect("/404");
 }
 
+const leaderboardFlagCookie = Astro.cookies.get("flag_passportLeaderboard");
+const leaderboardFlagEnabled = leaderboardFlagCookie
+  ? leaderboardFlagCookie.value === "true"
+  : FLAG_DEFINITIONS.passportLeaderboard.defaultValue;
+
 const auth = Astro.locals.auth();
 const { userId: clerkId } = auth;
 
@@ -32,10 +38,16 @@ if (!clerkId) {
 let userVisits: (typeof visitsTable.$inferSelect)[] = [];
 let posts: Post[] = [];
 let dbError = false;
+let leaderboardOptIn = false;
+let leaderboardDisplayName: string | null = null;
 
 try {
   const [user] = await db
-    .select({ id: users.id })
+    .select({
+      id: users.id,
+      leaderboardOptIn: users.leaderboardOptIn,
+      leaderboardDisplayName: users.leaderboardDisplayName,
+    })
     .from(users)
     .where(eq(users.clerkId, clerkId))
     .limit(1);
@@ -45,6 +57,8 @@ try {
       .select()
       .from(visitsTable)
       .where(eq(visitsTable.userId, user.id));
+    leaderboardOptIn = user.leaderboardOptIn;
+    leaderboardDisplayName = user.leaderboardDisplayName;
   }
 
   posts = await getAllRoastDinnerPosts();
@@ -133,6 +147,15 @@ const stats = computePassportStats(userVisits, posts);
                 favouriteMeat={stats.favouriteMeat}
                 badgesEarned={earnedBadges.length}
                 totalBadges={BADGES.length}
+              />
+            )
+          }
+
+          {
+            leaderboardFlagEnabled && stats.totalVisits > 0 && (
+              <PassportLeaderboardOptIn
+                initialOptIn={leaderboardOptIn}
+                initialDisplayName={leaderboardDisplayName}
               />
             )
           }
