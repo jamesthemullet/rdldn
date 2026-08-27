@@ -2481,10 +2481,10 @@ astro-seo@^1.0.0:
   dependencies:
     "@astrojs/check" "^0.9.0"
 
-astro@7.2.6:
-  version "7.2.6"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-7.2.6.tgz#b457f105ec209c1efbdaf62609aadc6d61886a32"
-  integrity sha512-qzT4tAhgHYX/6/MUGslAkF0PVkM4WNsMw2A1GrbfA9cXp68hmdqF3f7MuF5rRFvwQbjowqjOf90ao9whfgV5mw==
+astro@7.2.7:
+  version "7.2.7"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-7.2.7.tgz#5b04a4f348cef0cf58d962cddb93a50f5f042e17"
+  integrity sha512-+XW7Z1x03hq/zV8tiEnvS8E7JYKo5iyYVPJFt5RhEj3dOE+zSwhVaUabcqNsEDVJcneQX2mqxo4fPgoSO+Jc2w==
   dependencies:
     "@astrojs/compiler-rs" "^0.4.0"
     "@astrojs/internal-helpers" "0.10.4"
@@ -3805,9 +3805,9 @@ js-tokens@^4.0.0:
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
 js-yaml@^4.3.0, js-yaml@^5.0.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.3.0.tgz#526430a6da31065127528ae695ce168cfc5f91f0"
-  integrity sha512-muutsYr+e2+d3rTgUGslq5rxbBlUy3cJ61IsHag2QNDQV+7zXWjkUpmALIajhrlLlrgRUiymj6U3zUr/TMK84Q==
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.4.1.tgz#4629d91d4b4551f300435f0e4127899710f816fb"
+  integrity sha512-28R/k+NAjeuf7+CKlTxWZVExJGwVVLwY06DgEnOMz2gEpfNkDcD7QvyiVPT0xy0XXhU8vHsd4Ot42OOPdJG7dQ==
   dependencies:
     argparse "^2.0.1"
 
@@ -3847,9 +3847,9 @@ kleur@^4.1.5:
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
 knip@^6.0.0:
-  version "6.32.2"
-  resolved "https://registry.yarnpkg.com/knip/-/knip-6.32.2.tgz#619cb5cb61d1da27b0d03ee8984fa18703ea0f54"
-  integrity sha512-WXTXbmocrw7gqm1A1TQvFN0OgJ7hUSU6E1g6SPRIzzHFogUBhXByc7cYeOFVtJ2uODg7DP4VbESYBYnfbtBYsg==
+  version "6.32.3"
+  resolved "https://registry.yarnpkg.com/knip/-/knip-6.32.3.tgz#1219459fee0420efd7d360ad0655c639341cd976"
+  integrity sha512-wOJ1Av8PwKqFO0wU7F64vzIcUjxhrieA3Tc2lmeK9C9prpxq+TeG2ewNH5tCaBVZwXNPp6lJkrr+IhZ20iqkMA==
   dependencies:
     fdir "^6.5.0"
     formatly "^0.3.0"
