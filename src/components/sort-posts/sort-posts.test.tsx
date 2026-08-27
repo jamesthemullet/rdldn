@@ -437,8 +437,8 @@ describe("sort-posts component", () => {
       (el.textContent ?? "").trim()
     );
 
-    expect(ratings).toContain("8.8");
-    expect(ratings.filter((value) => value === "")).toHaveLength(2);
+    expect(ratings).toContain("Rating: 8.8");
+    expect(ratings.filter((value) => value === "Rating:")).toHaveLength(2);
 
     await act(async () => {
       root.unmount();

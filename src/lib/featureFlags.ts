@@ -1,4 +1,4 @@
-export type FlagKey = "visitTracking" | "myPassport";
+type FlagKey = "visitTracking" | "myPassport";
 
 export const FLAG_DEFINITIONS: Record<FlagKey, { label: string; description: string; defaultValue: boolean }> = {
   visitTracking: {
