@@ -36,6 +36,9 @@ export default defineConfig({
   devToolbar: {
     enabled: !isTesting,
   },
+  experimental: {
+    incrementalBuild: true,
+  },
   vite: {
     plugins: [clerkVirtualConfig],
     ...(isTesting && { server: { hmr: { overlay: false } } }),
