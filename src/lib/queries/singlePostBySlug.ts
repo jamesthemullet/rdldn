@@ -1,3 +1,5 @@
+import { SEO_FIELDS } from "./fragments";
+
 const SINGLE_POST_QUERY = (slug: string) => `
   query SinglePost($id: ID = "${slug}") {
     post(idType: SLUG, id: $id) {
@@ -10,23 +12,7 @@ const SINGLE_POST_QUERY = (slug: string) => `
           sourceUrl
         }
       }
-      seo {
-        opengraphTitle
-        opengraphDescription
-        opengraphSiteName
-        opengraphImage {
-          uri
-          altText
-          mediaDetails {
-            file
-            height
-            width
-          }
-          mediaItemUrl
-          sourceUrl
-          srcSet
-        }
-      }
+      ${SEO_FIELDS}
       areas {
         nodes {
           name

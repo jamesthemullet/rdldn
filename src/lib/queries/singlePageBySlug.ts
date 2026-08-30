@@ -1,3 +1,5 @@
+import { SEO_FIELDS } from "./fragments";
+
 const SINGLE_PAGE_QUERY = (slug: string) => `
   query SinglePage($id: ID = "${slug}") {
     page(idType: URI, id: $id) {
@@ -10,23 +12,7 @@ const SINGLE_PAGE_QUERY = (slug: string) => `
           sourceUrl
         }
       }
-      seo {
-        opengraphTitle
-        opengraphDescription
-        opengraphSiteName
-        opengraphImage {
-          uri
-          altText
-          mediaDetails {
-            file
-            height
-            width
-          }
-          mediaItemUrl
-          sourceUrl
-          srcSet
-        }
-      }
+      ${SEO_FIELDS}
       comments(where: { order: DESC }) {
         nodes {
           id

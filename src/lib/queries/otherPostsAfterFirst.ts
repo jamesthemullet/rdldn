@@ -1,3 +1,5 @@
+import { SEO_FIELDS } from "./fragments";
+
 const OTHER_POSTS_AFTER_FIRST_QUERY = `
   query GetOtherPosts($after: String) {
     posts(first: 3, after: $after) {
@@ -16,23 +18,7 @@ const OTHER_POSTS_AFTER_FIRST_QUERY = `
             }
           }
         }
-        seo {
-          opengraphTitle
-          opengraphDescription
-          opengraphSiteName
-          opengraphImage {
-            uri
-            altText
-            mediaDetails {
-              file
-              height
-              width
-            }
-            mediaItemUrl
-            sourceUrl
-            srcSet
-          }
-        }
+        ${SEO_FIELDS}
       }
     }
   }
