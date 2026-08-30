@@ -33,6 +33,28 @@ const getAdjustedPrice = (post: Post, inflationIndex: Record<string, number>): n
   return raw * multiplier;
 };
 
+const PriceDisplay = ({
+  post,
+  inflationIndex,
+  mostRecentYear,
+}: {
+  post: Post;
+  inflationIndex: Record<string, number>;
+  mostRecentYear: string;
+}) => {
+  const adjusted = getAdjustedPrice(post, inflationIndex);
+  const raw = post.prices?.nodes[0]?.name;
+  if (!raw) return null;
+  if (adjusted !== null && mostRecentYear) {
+    return (
+      <span className="planner__result-price" title={`Originally ${raw}; estimated ${mostRecentYear} price`}>
+        ~£{adjusted.toFixed(2)}
+      </span>
+    );
+  }
+  return <span className="planner__result-price">{raw}</span>;
+};
+
 const SundayRoastPlanner = ({
   posts,
   inflationIndex = {},
@@ -437,19 +459,7 @@ const SundayRoastPlanner = ({
                             {post.ratings.nodes[0].name}/10
                           </span>
                         )}
-                        {(() => {
-                          const adjusted = getAdjustedPrice(post, inflationIndex);
-                          const raw = post.prices?.nodes[0]?.name;
-                          if (!raw) return null;
-                          if (adjusted !== null && mostRecentYear) {
-                            return (
-                              <span className="planner__result-price" title={`Originally ${raw}; estimated ${mostRecentYear} price`}>
-                                ~£{adjusted.toFixed(2)}
-                              </span>
-                            );
-                          }
-                          return <span className="planner__result-price">{raw}</span>;
-                        })()}
+                        <PriceDisplay post={post} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
                         {post.boroughs?.nodes[0]?.name && (
                           <span className="planner__result-area">
                             {post.boroughs.nodes[0].name}
