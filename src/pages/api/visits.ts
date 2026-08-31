@@ -3,6 +3,13 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users, visits } from "../../lib/schema";
 
+type VisitsPostBody = {
+  postSlug: string;
+  postTitle: string;
+  postRating?: string | null;
+  notes?: string | null;
+};
+
 async function getUserId(clerkId: string): Promise<string | null> {
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
   return user?.id ?? null;
@@ -34,13 +41,8 @@ export async function POST(context: APIContext): Promise<Response> {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const body = await context.request.json();
-  const { postSlug, postTitle, postRating, notes } = body as {
-    postSlug: string;
-    postTitle: string;
-    postRating?: string | null;
-    notes?: string | null;
-  };
+  const body = (await context.request.json()) as VisitsPostBody;
+  const { postSlug, postTitle, postRating, notes } = body;
 
   if (!postSlug || !postTitle) {
     return new Response(JSON.stringify({ error: "postSlug and postTitle are required" }), { status: 400 });

@@ -1,6 +1,7 @@
 ---
 import { eq } from "drizzle-orm";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import PassportShareCard from "../components/passport-share-card/passport-share-card.astro";
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { BADGES, computeEarnedBadges } from "../lib/badges";
@@ -123,6 +124,18 @@ const stats = computePassportStats(userVisits, posts);
               </li>
             ))}
           </ul>
+
+          {
+            stats.totalVisits > 0 && (
+              <PassportShareCard
+                visits={stats.totalVisits}
+                zones={stats.zonesVisited}
+                favouriteMeat={stats.favouriteMeat}
+                badgesEarned={earnedBadges.length}
+                totalBadges={BADGES.length}
+              />
+            )
+          }
         </>
       )
     }
