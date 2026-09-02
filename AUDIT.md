@@ -7,6 +7,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 ## Run log
 
 - 2026-08-31 — initial audit: 76 findings (13 test coverage, 6 a11y, 10 perf, 11 SEO, 5 responsive/UX, 9 security, 17 README alignment, 21 code quality — some categories combined closely related sub-items per-file)
+- 2026-09-02 — resolved: `src/pages/api/passport/og.ts` missing `Cache-Control` header (performance, section 3)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -42,7 +43,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [ ] `src/pages/api/passport/badges.ts:23` calls `getAllRoastDinnerPosts()` (the entire post catalog) on every request with no caching and no `Cache-Control` header (found: 2026-08-31)
 - [ ] `src/pages/archive.astro:9` (`prerender = false`) calls `fetchPostsByDate` on every request with no `Cache-Control` header, unlike `annual-roastatistics.astro:14-19` which sets `s-maxage=3600, stale-while-revalidate=86400` — apply the same pattern (found: 2026-08-31)
 - [ ] `src/pages/api/homepage-highlights.json.ts:4-10` runs four parallel GraphQL fetches on every request (called client-side from `index.astro:376-377`) with no `Cache-Control` header and no KV caching despite infrequently-changing data (found: 2026-08-31)
-- [ ] `src/pages/api/passport/og.ts:6-10` regenerates a `@vercel/og` image on every request with no `Cache-Control` header, so neither CDN nor browser caches it despite repeatable params (found: 2026-08-31)
+- [x] `src/pages/api/passport/og.ts:6-10` regenerates a `@vercel/og` image on every request with no `Cache-Control` header, so neither CDN nor browser caches it despite repeatable params (found: 2026-08-31) (resolved: 2026-09-02, PR #TBD)
 - [ ] `src/components/featured-post-header/featured-post-header.astro:12` renders the hero image as a raw `<img loading="eager">` with no `width`/`height` (CLS risk); `astro.config.mjs` has no `image.domains`/`remotePatterns` for the WordPress media host, forcing all WP-hosted images through plain `<img>` with no AVIF/WebP conversion or responsive `srcset` — configure remote image domains (found: 2026-08-31)
 - [ ] `src/components/best-posts-list/best-posts-list.astro:44-53` has correct `width`/`height`/`loading="lazy"` but still serves the raw full-size WordPress `sourceUrl` rather than a resized/optimized variant, for the same remote-image-config reason above (found: 2026-08-31)
 
