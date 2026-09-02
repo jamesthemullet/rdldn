@@ -352,3 +352,53 @@ describe("best-value component", () => {
     });
   });
 });
+
+describe("URL param initialisation", () => {
+  test("pre-populates area filter from URL search params on first render", async () => {
+    window.history.replaceState(null, "", "/?area=Soho");
+
+    const { host, root } = createHost();
+    await act(async () => {
+      root.render(<BestValue posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Cheap And Great"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("pre-populates tubeLine filter from URL search params on first render", async () => {
+    window.history.replaceState(null, "", "/?tubeLine=Northern");
+
+    const { host, root } = createHost();
+    await act(async () => {
+      root.render(<BestValue posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Pricey And Mediocre"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("pre-populates borough filter from URL search params on first render", async () => {
+    window.history.replaceState(null, "", "/?borough=Westminster");
+
+    const { host, root } = createHost();
+    await act(async () => {
+      root.render(<BestValue posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getVenueNames(host)).toEqual(["Cheap And Great"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+});
