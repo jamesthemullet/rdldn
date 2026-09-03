@@ -552,28 +552,28 @@
     sisteransi "^1.0.5"
 
 "@clerk/astro@^4.0.0":
-  version "4.0.20"
-  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-4.0.20.tgz#a732f7b40e6daacc517c69e8c96f7faac2683ca9"
-  integrity sha512-24MLaMwmma5ei1ZLI54fhM009m/4flEdimZJicH0WfCczQY2nS3cA2Vm4OcRihhALPYqkBKsG0arTRGXnIRx+A==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@clerk/astro/-/astro-4.1.0.tgz#d701d1ac86eefbdfbb39ff0409e5fe90a761939a"
+  integrity sha512-+SLtYMFjIRFLbmxtj5hY9wdJEc0t5R0LqRcz9KmQ/ewP9u95npOAmybzkgGbVPs5ZmhGBNdu88pkLUvTKpYlfA==
   dependencies:
-    "@clerk/backend" "^3.16.13"
-    "@clerk/shared" "^4.30.2"
-    nanoid "5.1.6"
+    "@clerk/backend" "^3.17.1"
+    "@clerk/shared" "^4.31.0"
+    nanoid "5.1.16"
     nanostores "1.0.1"
 
-"@clerk/backend@^3.16.13":
-  version "3.16.13"
-  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.16.13.tgz#4605019cb45ca6aa256302cd1ec48fb743c62f03"
-  integrity sha512-L6+48rB8WVoxoiFDKv49KWxc58aGwuYnbuHBxNdqgTZO6PTyEH3KLpnqI/WaCqIxQW56MJE24EJREsU8WlWrWw==
+"@clerk/backend@^3.17.1":
+  version "3.17.1"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-3.17.1.tgz#0416e82e06569f1edd89e840d93847d6a311534a"
+  integrity sha512-HDBknkYVTMknYsRNHeI0lUE+e4QfOty/LDzWKpbnaaKJUMzHZDUcVo9RQnLdg18XvhaBN7z1OoRiphJ82nimRA==
   dependencies:
-    "@clerk/shared" "^4.30.2"
+    "@clerk/shared" "^4.31.0"
     standardwebhooks "^1.0.0"
     tslib "2.8.1"
 
-"@clerk/shared@^4.30.2":
-  version "4.30.2"
-  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.30.2.tgz#f711992d4b8e1d1ca7a66029313ba525e64e8570"
-  integrity sha512-2U8jE2Gno2uRxg5b2fv5uY3zxzxAvmBzjiaOPAfoAVUgJ2Ys9kPu+6k2TaBNTkeF0ncQ/5erECIx6dPt0d8XyQ==
+"@clerk/shared@^4.31.0":
+  version "4.31.0"
+  resolved "https://registry.yarnpkg.com/@clerk/shared/-/shared-4.31.0.tgz#f5dde8ece3bb682f81c537c88bd941773c20c733"
+  integrity sha512-jw7J8dmdcXzeGHFAaMA92r04Ej1eVhAeHlcF2XuCKU+teGt3SV4yc2I0eWSqoLmsYpzgBgA66SJ6lLk22R2+fQ==
   dependencies:
     "@tanstack/query-core" "^5.100.6"
     dequal "2.0.3"
@@ -2150,9 +2150,9 @@
     "@types/unist" "*"
 
 "@types/node@*", "@types/node@>=20.0.0":
-  version "26.4.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.4.0.tgz#4c4ca071c42241fe602741d02999f16b4e64c468"
-  integrity sha512-faiGnoIrLH/V8cibOMEAZ8pMw6oXqSukl29ra4mN8GdaB2ZewzeaLj+INpV5N+Z1eKWzY+IzaIZH2EIR6YZRNQ==
+  version "26.4.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.4.1.tgz#3d8dc80515894958448ee266cf5d6bc3e5205bd5"
+  integrity sha512-k97ENvZWtvA6yqz5/FS6a7duDgOPEeOQOc2iKS/nY6mX6qJUKtLnWzQS+Xj6tXweyj6ZcTAK2Qecetnvi9nCLA==
   dependencies:
     undici-types "~8.3.0"
 
@@ -3578,9 +3578,9 @@ h3@^1.15.10, h3@^1.15.9:
     uncrypto "^0.1.3"
 
 happy-dom@^20.1.0:
-  version "20.12.0"
-  resolved "https://registry.yarnpkg.com/happy-dom/-/happy-dom-20.12.0.tgz#5ae13e8186eb6ea11f03eecb38716659355c36fd"
-  integrity sha512-7uMYJu2SEwwL8vVcKp0C0lnt6d2LSGGe+T+oY79PiCJNNSgFpbxW8n5KuzpDQvrU4mt+fYiK1+Jy7Z2v39YR6g==
+  version "20.13.2"
+  resolved "https://registry.yarnpkg.com/happy-dom/-/happy-dom-20.13.2.tgz#0fe0c741e1a6cbca7342f0697aa823dbbc9aed9b"
+  integrity sha512-VC9HoEaT3Jf3K/1g/GjMYGAZCCg+ULgGVcXJlAeSzdTj8mIoPJRp14KVclP5gpUcF/kauuaVB2ri2/WxXbl4vg==
   dependencies:
     "@types/node" ">=20.0.0"
     "@types/whatwg-mimetype" "^3.0.2"
@@ -4746,7 +4746,7 @@ muggle-string@^0.4.1:
   resolved "https://registry.yarnpkg.com/muggle-string/-/muggle-string-0.4.1.tgz#3b366bd43b32f809dc20659534dd30e7c8a0d328"
   integrity sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==
 
-nanoid@5.1.6, nanoid@>=5.1.16:
+nanoid@5.1.16, nanoid@>=5.1.16:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-6.0.1.tgz#a04a2304f05b620c600ae8464d94c325ceeebd35"
   integrity sha512-3wVS3i51pE2pi1k5FFL/95BGfVS0kSsvDVuGXHOtxox/TywUmtgq+3qiTOTbs9J7KfHaXPiN171k/A6dBnaXFw==
