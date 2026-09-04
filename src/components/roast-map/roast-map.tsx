@@ -184,8 +184,12 @@ export default function RoastMap({ markers }: Props) {
         data-closed-markers={closedMarkers}
         hidden
       />
+      <a href="#roast-map-end" className="roast-map__skip-link">
+        Skip map markers
+      </a>
       {/** biome-ignore lint/correctness/useUniqueElementIds: <explanation> */}
       <section id="map" ref={mapRef} className="roast-map__container" aria-label="Map of reviewed roast dinner locations in London" />
+      <div id="roast-map-end" tabIndex={-1} />
     </>
   );
 }
