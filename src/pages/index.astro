@@ -10,15 +10,11 @@ import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import findARoastImg from "../images/find-a-roast.png";
 import guessTheScoreImg from "../images/guess-the-score.png";
 import { fetchGraphQL } from "../lib/api";
-import GET_BEST_ROASTS from "../lib/queries/bestRoasts";
-import GET_ALL_PAGES from "../lib/queries/getAllPages";
-import GET_FEATURE_POSTS from "../lib/queries/getFeaturePosts.ts";
 import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
 import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
 import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
 import type { Page, Post, Size } from "../types";
 
-type PostWithFeaturedImage = Post & { featuredImage: string };
 type PageWithFeaturedImage = Page & { featuredImage: string };
 
 let recentPost: Post | null = null;
@@ -130,152 +126,10 @@ const fetchFindYourFavouriteRoastPages = async (): Promise<PageWithFeaturedImage
   }
 };
 
-const fetchBestRoasts = async (): Promise<Post[]> => {
-  try {
-    const response = (await fetchGraphQL(GET_BEST_ROASTS)) as {
-      posts: { nodes: Post[] };
-    };
-    const bestRoasts = response?.posts?.nodes
-      ?.map((post: Post) => {
-        const featuredImage = post.featuredImage?.node;
-        const smallImage =
-          featuredImage?.mediaDetails?.sizes.find(
-            (size: Size) => size.name === "homepage"
-          )?.sourceUrl || featuredImage?.sourceUrl;
-
-        return {
-          ...post,
-          featuredImageUrl: smallImage,
-        };
-      })
-      .filter(Boolean)
-      .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0);
-    return bestRoasts.sort(() => Math.random() - 0.5).slice(0, 4);
-  } catch (error) {
-    console.error("Error fetching best roasts:", error);
-    return [];
-  }
-};
-
-const fetchAllPagesData = async (): Promise<{
-  pageFeatures: PageWithFeaturedImage[];
-  roastStatistics: PageWithFeaturedImage[];
-}> => {
-  try {
-    const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
-      pages: { nodes: Page[] };
-    };
-    const allPages = response?.pages?.nodes
-      ?.map((page: Page) => {
-        const featuredImage = page.featuredImage?.node;
-        const smallImage =
-          featuredImage?.mediaDetails?.sizes.find(
-            (size: Size) => size.name === "homepage"
-          )?.sourceUrl || featuredImage?.sourceUrl;
-
-        return {
-          ...page,
-          featuredImageUrl: smallImage,
-        };
-      })
-      .filter(Boolean);
-
-    const allFeaturesPages = allPages.filter(
-      (page: Page) => page?.highlights?.tag === "feature"
-    );
-    const allRoastStatisticsPages = allPages.filter(
-      (page: Page) => page?.highlights?.tag === "roastatistics"
-    );
-
-    const pageFeatures = allFeaturesPages.map((page: Page) => {
-      const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-      return {
-        ...page,
-        featuredImage,
-      } as PageWithFeaturedImage;
-    });
-
-    const roastStatistics = allRoastStatisticsPages.map((page: Page) => {
-      const featuredImage = page.featuredImage?.node?.sourceUrl || "";
-      return {
-        ...page,
-        featuredImage,
-      } as PageWithFeaturedImage;
-    });
-
-    return { pageFeatures, roastStatistics };
-  } catch (error) {
-    console.error("Error fetching features data:", error);
-    return { pageFeatures: [], roastStatistics: [] };
-  }
-};
-
-const fetchFeaturePosts = async (): Promise<PostWithFeaturedImage[]> => {
-  try {
-    const postsResponse = (await fetchGraphQL(GET_FEATURE_POSTS)) as {
-      posts: { edges: Array<{ node: Post }> };
-    };
-
-    return postsResponse.posts.edges.map((edge: { node: Post }) => ({
-      ...edge.node,
-      featuredImageUrl:
-        edge.node.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || edge.node.featuredImage?.node?.sourceUrl,
-    })) as unknown as PostWithFeaturedImage[];
-  } catch (error) {
-    console.error("Error fetching feature posts:", error);
-    return [];
-  }
-};
-
-const fetchRoastStatsSinglePage = async (): Promise<PageWithFeaturedImage | null> => {
-  try {
-    const response = (await fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, {
-      id: "4102",
-    })) as { page: Page };
-    return {
-      ...response.page,
-      featuredImageUrl:
-        response.page.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size: Size) => size.name === "homepage"
-        )?.sourceUrl || response.page.featuredImage?.node?.sourceUrl,
-    } as PageWithFeaturedImage;
-  } catch (error) {
-    console.error("Error fetching features data:", error);
-    return null;
-  }
-};
-
-const [
-  locationPages,
-  findYourFavouriteRoastPages,
-  bestRoasts,
-  allPagesData,
-  featurePosts,
-  roastStatsSinglePage,
-] = await Promise.all([
+const [locationPages, findYourFavouriteRoastPages] = await Promise.all([
   fetchLocationPages(),
   fetchFindYourFavouriteRoastPages(),
-  fetchBestRoasts(),
-  fetchAllPagesData(),
-  fetchFeaturePosts(),
-  fetchRoastStatsSinglePage(),
 ]);
-
-let features: Array<PostWithFeaturedImage | PageWithFeaturedImage> = [
-  ...allPagesData.pageFeatures,
-  ...featurePosts,
-];
-features = features.sort(() => Math.random() - 0.5).slice(0, 4);
-
-const roastStatistics: Array<PageWithFeaturedImage> = allPagesData.roastStatistics
-  .sort(() => Math.random() - 0.5)
-  .slice(0, 3);
-
-if (roastStatsSinglePage) {
-  roastStatistics.unshift(roastStatsSinglePage);
-}
 ---
 
 <BaseLayout
@@ -390,107 +244,147 @@ if (roastStatsSinglePage) {
       }
     </ul>
   </section>
+  <!-- <section class="home-list preferred-locations">
+    <p>
+      Select your preferred location from the list below and we'll highlight appropriate reviews to
+      you in the future.
+    </p>
+
+    <div class="custom-select">
+      <button class="dropdown-btn" id="dropdown-btn">Select Locations</button>
+      <div class="dropdown-content">
+        {
+          allLocations.map((location) => (
+            <label class="dropdown-item">
+              <input
+                type="checkbox"
+                value={location.slug}
+                class="hidden-checkbox location-checkbox"
+                data-location={location.slug}
+              />
+              <span>{location.name}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+    <div id="selected-locations">
+      <p>Your selected locations:</p>
+      <ul id="selected-locations-list"></ul>
+    </div>
+  </section> -->
+
   <section class="home" aria-labelledby="search-heading">
     <h2 id="search-heading">Search:</h2>
     <Search resultLimit={4} />
   </section>
-  <section class="home-list" aria-labelledby="best-roasts-heading">
-    <h2 id="best-roasts-heading">A few of the best roasts:</h2>
-    <ul>
-      {
-        bestRoasts.map((post, index) => (
+  <div x-data="homepageHighlights">
+    <section class="home-list" aria-labelledby="best-roasts-heading">
+      <h2 id="best-roasts-heading">A few of the best roasts:</h2>
+      <ul class="highlights-list">
+        <template x-for="(post, index) in bestRoasts" :key="post.slug">
           <li class="heading">
             <h3>
-              <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(post?.title)} />
-              </a>
+              <a :href="`/${post.slug}`" rel="noopener noreferrer" x-text="post.title"></a>
             </h3>
             <a
-              href={`/${post?.slug}`}
+              :href="`/${post.slug}`"
               rel="noopener noreferrer"
               class="featured-image"
               aria-hidden="true"
               tabindex="-1"
             >
               <img
-                src={post?.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${post?.title}`}
+                :src="post.featuredImageUrl"
+                :alt="`Photo of the roast dinner at ${post.title}`"
                 width="400"
                 height="300"
-                loading={index === 0 ? "eager" : "lazy"}
+                :loading="index === 0 ? 'eager' : 'lazy'"
               />
             </a>
-            <p>Rating: {post?.ratings?.nodes[0]?.name}</p>
-            <p>Year Visited: {post?.yearsOfVisit?.nodes[0]?.name}</p>
+            <p x-text="`Rating: ${post.rating ?? ''}`"></p>
+            <p x-text="`Year Visited: ${post.yearVisited ?? ''}`"></p>
           </li>
-        ))
-      }
-    </ul>
-  </section>
-  <section class="home-list" aria-labelledby="features-heading">
-    <h2 id="features-heading">Features:</h2>
-    <ul>
-      {
-        features.map((post, index) => (
+        </template>
+      </ul>
+    </section>
+    <section class="home-list" aria-labelledby="features-heading">
+      <h2 id="features-heading">Features:</h2>
+      <ul class="highlights-list">
+        <template x-for="(post, index) in features" :key="post.slug">
           <li class="heading">
             <h3>
-              <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(post?.title)} />
-              </a>
+              <a :href="`/${post.slug}`" rel="noopener noreferrer" x-text="post.title"></a>
             </h3>
             <a
-              href={`/${post?.slug}`}
+              :href="`/${post.slug}`"
               rel="noopener noreferrer"
               class="featured-image"
               aria-hidden="true"
               tabindex="-1"
             >
               <img
-                src={post?.featuredImageUrl}
-                alt={`Preview image for ${post?.title}`}
+                :src="post.featuredImageUrl"
+                :alt="`Preview image for ${post.title}`"
                 width="400"
                 height="300"
-                loading={index === 0 ? "eager" : "lazy"}
+                :loading="index === 0 ? 'eager' : 'lazy'"
               />
             </a>
           </li>
-        ))
-      }
-    </ul>
-  </section>
-  <section class="home-list" aria-labelledby="roastatistics-heading">
-    <h2 id="roastatistics-heading">Roastatistics:</h2>
-    <ul>
-      {
-        roastStatistics.map((post, index) => (
+        </template>
+      </ul>
+    </section>
+    <section class="home-list" aria-labelledby="roastatistics-heading">
+      <h2 id="roastatistics-heading">Roastatistics:</h2>
+      <ul class="highlights-list">
+        <template x-for="(post, index) in roastStatistics" :key="post.slug">
           <li class="heading">
             <h3>
-              <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(post?.title)} />
-              </a>
+              <a :href="`/${post.slug}`" rel="noopener noreferrer" x-text="post.title"></a>
             </h3>
             <a
-              href={`/${post?.slug}`}
+              :href="`/${post.slug}`"
               rel="noopener noreferrer"
               class="featured-image"
               aria-hidden="true"
               tabindex="-1"
             >
               <img
-                src={post?.featuredImageUrl}
-                alt={`Preview image for ${post?.title}`}
+                :src="post.featuredImageUrl"
+                :alt="`Preview image for ${post.title}`"
                 width="400"
                 height="300"
-                loading={index === 0 ? "eager" : "lazy"}
+                :loading="index === 0 ? 'eager' : 'lazy'"
               />
             </a>
           </li>
-        ))
-      }
-    </ul>
-  </section>
+        </template>
+      </ul>
+    </section>
+  </div>
   <Newsletter />
   <NewsletterPopup />
+  <script is:inline>
+    document.addEventListener("alpine:init", () => {
+      Alpine.data("homepageHighlights", () => ({
+        bestRoasts: [],
+        features: [],
+        roastStatistics: [],
+        async init() {
+          try {
+            const response = await fetch("/api/homepage-highlights.json");
+            const data = await response.json();
+            this.bestRoasts = data.bestRoasts || [];
+            this.features = data.features || [];
+            this.roastStatistics = data.roastStatistics || [];
+          } catch (error) {
+            console.error("Error fetching homepage highlights:", error);
+          }
+        },
+      }));
+    });
+  </script>
   <script lang="ts">
     document.addEventListener("DOMContentLoaded", function () {
       const dropdownButton = document.getElementById("dropdown-btn");
