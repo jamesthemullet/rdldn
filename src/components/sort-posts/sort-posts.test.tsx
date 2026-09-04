@@ -819,4 +819,90 @@ describe("sort-posts component", () => {
       root.unmount();
     });
   });
+
+  describe("URL state initialization", () => {
+    test("initializes sort column and order from URL query params", async () => {
+      window.history.replaceState(null, "", "?sort=price&order=asc");
+      const { host, root } = createHost();
+
+      await act(async () => {
+        root.render(<SortPosts posts={posts} />);
+      });
+      await waitForRender();
+
+      // With price asc, cheapest first: Alpha Arms £18, Bravo House £21, Charlie Tavern £25
+      expect(getRoastTitles(host)).toEqual(["Alpha Arms", "Bravo House", "Charlie Tavern"]);
+
+      await act(async () => {
+        root.unmount();
+      });
+    });
+
+    test("initializes active meat filter from URL query params", async () => {
+      window.history.replaceState(null, "", "?meat=Beef");
+      const { host, root } = createHost();
+
+      await act(async () => {
+        root.render(<SortPosts posts={posts} />);
+      });
+      await waitForRender();
+
+      expect(getRoastTitles(host)).toEqual(["Alpha Arms"]);
+
+      await act(async () => {
+        root.unmount();
+      });
+    });
+
+    test("falls back to default sort when URL contains invalid sort params", async () => {
+      window.history.replaceState(null, "", "?sort=nonexistent&order=invalid");
+      const { host, root } = createHost();
+
+      await act(async () => {
+        root.render(<SortPosts posts={posts} />);
+      });
+      await waitForRender();
+
+      // Default: rating desc — Charlie Tavern 9.4, Bravo House 8.0, Alpha Arms 7.1
+      expect(getRoastTitles(host)).toEqual(["Charlie Tavern", "Bravo House", "Alpha Arms"]);
+
+      await act(async () => {
+        root.unmount();
+      });
+    });
+  });
+});
+
+describe("URL parameter initialization", () => {
+  test("applies a meat filter pre-set in the URL on first render", async () => {
+    window.history.replaceState(null, "", "?meat=Beef");
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<SortPosts posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getRoastTitles(host)).toEqual(["Alpha Arms"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("initializes sort column and order from URL search params", async () => {
+    window.history.replaceState(null, "", "?sort=title&order=asc");
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<SortPosts posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getRoastTitles(host)).toEqual(["Alpha Arms", "Bravo House", "Charlie Tavern"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
 });
