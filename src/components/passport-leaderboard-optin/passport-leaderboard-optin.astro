@@ -1,0 +1,47 @@
+---
+type Props = {
+  initialOptIn: boolean;
+  initialDisplayName: string | null;
+};
+
+const { initialOptIn, initialDisplayName } = Astro.props;
+
+import "./passport-leaderboard-optin.css";
+---
+
+<div
+  class="leaderboard-optin"
+  x-data={`passportLeaderboardOptIn(${JSON.stringify({ initialOptIn, initialDisplayName })})`}
+>
+  <h3>Public Leaderboard</h3>
+  <p x-show="!optedIn">
+    Join the public leaderboard to show off your visit count and badges to
+    other players.
+  </p>
+  <p x-show="optedIn">
+    You're on the public leaderboard as <strong x-text="displayName"></strong>.
+  </p>
+
+  <div x-show="!optedIn" class="leaderboard-optin__form">
+    <label for="leaderboard-display-name" class="sr-only">Display name</label>
+    <input
+      id="leaderboard-display-name"
+      type="text"
+      x-model="displayName"
+      placeholder="Your display name"
+      maxlength="30"
+      class="leaderboard-optin__name-input"
+    />
+  </div>
+
+  <button
+    type="button"
+    x-on:click="toggleOptIn()"
+    x-bind:disabled="saving"
+    class="leaderboard-optin__btn"
+    x-text="saving ? 'Saving…' : optedIn ? 'Leave leaderboard' : 'Join leaderboard'"
+  >
+  </button>
+
+  <p x-show="error" x-text="error" class="leaderboard-optin__error"></p>
+</div>

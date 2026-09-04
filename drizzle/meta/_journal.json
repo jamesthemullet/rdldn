@@ -22,6 +22,13 @@
       "when": 1783539927075,
       "tag": "0002_abandoned_ronan",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787818129046,
+      "tag": "0003_cold_firebird",
+      "breakpoints": true
     }
   ]
 }
