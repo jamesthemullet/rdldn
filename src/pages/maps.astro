@@ -18,6 +18,14 @@ const variables = { id: "631" };
 let singlePage: Page | null = null;
 let allPosts: Post[] = [];
 
+const firstPagePromise = fetchGraphQL<{ posts: PostsConnection }>(
+  GET_ALL_POST_LOCATIONS,
+  { after: null }
+);
+// Attach a no-op handler now so a rejection isn't reported as unhandled
+// while it awaits pickup in the pagination try/catch below.
+firstPagePromise.catch(() => {});
+
 try {
   const { page } = (await fetchGraphQL(
     SINGLE_PAGE_QUERY_PREVIEW,
@@ -31,11 +39,16 @@ try {
 try {
   let after: string | null = null;
   let hasNextPage = true;
+  let isFirstFetch = true;
 
   while (hasNextPage) {
-    const { posts }: { posts: PostsConnection } = await fetchGraphQL<{ posts: PostsConnection }>(GET_ALL_POST_LOCATIONS, {
-      after,
-    });
+    const { posts }: { posts: PostsConnection } = isFirstFetch
+      ? await firstPagePromise
+      : await fetchGraphQL<{ posts: PostsConnection }>(
+          GET_ALL_POST_LOCATIONS,
+          { after }
+        );
+    isFirstFetch = false;
 
     allPosts = allPosts.concat(posts.nodes);
 
