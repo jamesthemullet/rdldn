@@ -30,7 +30,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 ## 2. Accessibility
 
 - [ ] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31)
-- [x] `/maps` has 317 individually keyboard-focusable Leaflet markers (`tabindex="0"`, `role="button"`) with no "skip past markers" mechanism, forcing keyboard/screen-reader users to tab through all of them to reach content below the map — add a skip link (found: 2026-08-31) (resolved: 2026-09-04, PR #TBD)
+- [x] `/maps` has 317 individually keyboard-focusable Leaflet markers (`tabindex="0"`, `role="button"`) with no "skip past markers" mechanism, forcing keyboard/screen-reader users to tab through all of them to reach content below the map — add a skip link (found: 2026-08-31) (resolved: 2026-09-04, PR #638)
 - [ ] Browser-tool viewport resizing did not work in this audit session (`window.innerWidth` stayed ~2560px regardless of requested width) — mobile-viewport a11y/layout (~375px) and the mobile hamburger nav's interactive open/close were not verified this run; re-check with working device emulation (found: 2026-08-31)
 - [ ] `/my-passport` could not be a11y-checked — it's gated behind an off-by-default `myPassport` feature flag and Clerk auth; re-verify once flag/auth can be exercised in a test environment (found: 2026-08-31)
 - [ ] `/my-roasts` could not be a11y-checked — redirects straight to hosted Clerk sign-in; re-verify with a authenticated test session (found: 2026-08-31)
