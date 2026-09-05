@@ -15,7 +15,6 @@ export const prerender = true;
 import GET_ALL_PAGES from "../lib/queries/getAllPages";
 
 const variables = { id: "10368" };
-const singlePage = await getSinglePageData({ variables });
 
 type PageWithFeaturedImage = Page & { featuredImage: string };
 
@@ -23,10 +22,15 @@ let allPages: Page[] = [];
 let allBestListPages: Page[] = [];
 let bestRoasts: Array<PageWithFeaturedImage> = [];
 
+const singlePagePromise = getSinglePageData({ variables });
+const pagesPromise = fetchGraphQL(GET_ALL_PAGES) as Promise<{
+  pages: { nodes: Page[] };
+}>;
+
+const singlePage = await singlePagePromise;
+
 try {
-  const response = (await fetchGraphQL(GET_ALL_PAGES)) as {
-    pages: { nodes: Page[] };
-  };
+  const response = await pagesPromise;
   allPages = response?.pages?.nodes
     ?.map((page: Page) => {
       const featuredImage = page.featuredImage?.node;
