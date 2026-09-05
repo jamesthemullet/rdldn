@@ -7,6 +7,11 @@ import "../styles/index.css";
 import type { Post } from "../types";
 
 export const prerender = false;
+export const response = {
+  headers: {
+    "Cache-Control": "s-maxage=3600, stale-while-revalidate=86400",
+  },
+};
 
 const startDate = new Date("2016-12-01");
 const endDate = new Date();
