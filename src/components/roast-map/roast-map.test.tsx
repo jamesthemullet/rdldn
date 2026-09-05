@@ -354,6 +354,27 @@ describe("roast-map component", () => {
     });
   });
 
+  test("renders a skip link that jumps past the map markers", async () => {
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<RoastMap markers={sampleMarkers} />);
+    });
+    await waitForRender();
+
+    const skipLink = host.querySelector(".roast-map__skip-link") as HTMLAnchorElement;
+    expect(skipLink).not.toBeNull();
+    expect(skipLink.getAttribute("href")).toBe("#roast-map-end");
+
+    const target = host.querySelector("#roast-map-end");
+    expect(target).not.toBeNull();
+    expect(target?.getAttribute("tabindex")).toBe("-1");
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
   test("skips Leaflet initialisation when the map ref is unavailable", async () => {
     vi.resetModules();
 
