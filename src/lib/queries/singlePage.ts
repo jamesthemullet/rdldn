@@ -1,3 +1,5 @@
+import { SEO_FIELDS } from "./fragments";
+
 const SINGLE_PAGE_QUERY_PREVIEW = `
   query SinglePage($id: ID!) {
     page(idType: DATABASE_ID, id: $id) {
@@ -16,23 +18,7 @@ const SINGLE_PAGE_QUERY_PREVIEW = `
           }
         }
       }
-      seo {
-        opengraphTitle
-        opengraphDescription
-        opengraphSiteName
-        opengraphImage {
-          uri
-          altText
-          mediaDetails {
-            file
-            height
-            width
-          }
-          mediaItemUrl
-          sourceUrl
-          srcSet
-        }
-      }
+      ${SEO_FIELDS}
       comments(where: { order: DESC }, first: 100) {
         nodes {
           id
