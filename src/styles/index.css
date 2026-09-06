@@ -160,6 +160,10 @@ section {
   }
 }
 
+.home-list ul.highlights-list {
+  min-height: 340px;
+}
+
 .custom-select {
   position: relative;
   display: inline-block;

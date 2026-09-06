@@ -872,3 +872,37 @@ describe("sort-posts component", () => {
     });
   });
 });
+
+describe("URL parameter initialization", () => {
+  test("applies a meat filter pre-set in the URL on first render", async () => {
+    window.history.replaceState(null, "", "?meat=Beef");
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<SortPosts posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getRoastTitles(host)).toEqual(["Alpha Arms"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+
+  test("initializes sort column and order from URL search params", async () => {
+    window.history.replaceState(null, "", "?sort=title&order=asc");
+    const { host, root } = createHost();
+
+    await act(async () => {
+      root.render(<SortPosts posts={posts} />);
+    });
+    await waitForRender();
+
+    expect(getRoastTitles(host)).toEqual(["Alpha Arms", "Bravo House", "Charlie Tavern"]);
+
+    await act(async () => {
+      root.unmount();
+    });
+  });
+});
