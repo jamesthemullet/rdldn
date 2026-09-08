@@ -32,6 +32,7 @@ export const visits = pgTable(
     postSlug: text("post_slug").notNull(),
     postTitle: text("post_title").notNull(),
     postRating: numeric("post_rating"),
+    userRating: numeric("user_rating"),
     visitedAt: timestamp("visited_at").defaultNow().notNull(),
     notes: text("notes"),
   },

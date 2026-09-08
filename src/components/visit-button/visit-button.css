@@ -26,3 +26,8 @@
   opacity: 0.6;
   cursor: default;
 }
+
+.visit-btn__hint {
+  font-size: 0.85rem;
+  margin: -0.25rem 0 10px;
+}
