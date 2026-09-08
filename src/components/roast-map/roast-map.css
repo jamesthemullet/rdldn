@@ -5,3 +5,20 @@
 .roast-map__year-label {
   margin-right: 1rem;
 }
+
+.roast-map__skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background: var(--roast-new-blue);
+  color: var(--roast-white);
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+
+  &:focus {
+    top: 0;
+  }
+}
