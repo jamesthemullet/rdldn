@@ -1,26 +1,37 @@
-.rating-input__scale {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
+.rating-input__label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
 }
 
-.rating-input__option {
-  background: none;
+.rating-input__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rating-input__slider {
+  flex: 1;
+  accent-color: var(--roast-new-blue);
+}
+
+.rating-input__number {
+  width: 4.5rem;
   border: 2px solid var(--roast-new-blue);
-  color: var(--roast-main-text);
-  cursor: pointer;
+  padding: 0.25rem 0.4rem;
   font-family: inherit;
   font-size: 0.9rem;
-  padding: 0.35rem 0.6rem;
-  min-width: 2rem;
+  color: var(--roast-main-text);
+  background: none;
+  text-align: center;
 }
 
-.rating-input__option--selected {
-  background: var(--roast-new-blue);
-  color: var(--roast-background, #fff);
+.rating-input__scale {
+  opacity: 0.7;
+  font-size: 0.85rem;
 }
 
-.rating-input__option:disabled {
+.rating-input__controls :disabled {
   opacity: 0.6;
   cursor: default;
 }

@@ -12,7 +12,7 @@ import "./rating-average.css";
   <h3>User Ratings</h3>
   <p x-show="loading">Loading ratings…</p>
   <p x-show="!loading && average !== null">
-    <span class="rating-average__value" x-text="average.toFixed(1)"></span
+    <span class="rating-average__value" x-text="average.toFixed(2)"></span
     ><span class="rating-average__scale">/10</span>
     <span x-text="`based on ${ratingCount} ${ratingCount === 1 ? 'rating' : 'ratings'}`"></span>
   </p>

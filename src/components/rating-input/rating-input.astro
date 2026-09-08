@@ -13,20 +13,35 @@ import "./rating-input.css";
   class="rating-input"
   x-data={`ratingInput(${JSON.stringify({ postSlug, initialRating })})`}
 >
-  <div class="rating-input__scale" role="group" aria-label="Rate this place out of 10">
-    {
-      Array.from({ length: 11 }, (_, value) => (
-        <button
-          type="button"
-          class="rating-input__option"
-          x-bind:class={`rating === ${value} && 'rating-input__option--selected'`}
-          x-bind:disabled="saving"
-          x-on:click={`rate(${value})`}
-        >
-          {value}
-        </button>
-      ))
-    }
+  <label class="rating-input__label" for={`rating-slider-${postSlug}`}>
+    Your rating
+  </label>
+  <div class="rating-input__controls">
+    <input
+      type="range"
+      id={`rating-slider-${postSlug}`}
+      class="rating-input__slider"
+      min="0"
+      max="10"
+      step="0.01"
+      x-bind:value="rating ?? 0"
+      x-on:input="preview($event.target.value)"
+      x-on:change="rate($event.target.value)"
+      x-bind:disabled="saving"
+    />
+    <input
+      type="number"
+      class="rating-input__number"
+      min="0"
+      max="10"
+      step="0.01"
+      aria-label={`Your rating out of 10 for ${postSlug}`}
+      x-bind:value="rating ?? ''"
+      x-bind:placeholder="'—'"
+      x-on:change="rate($event.target.value)"
+      x-bind:disabled="saving"
+    />
+    <span class="rating-input__scale">/10</span>
   </div>
   <span class="rating-input__status" x-show="saved">Saved!</span>
 </div>

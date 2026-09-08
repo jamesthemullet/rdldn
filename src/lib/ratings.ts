@@ -13,7 +13,7 @@ export type PostRatingSummary = {
 export function parseUserRating(value: unknown): number | null {
   if (typeof value !== "number" || Number.isNaN(value)) return null;
   if (value < MIN_RATING || value > MAX_RATING) return null;
-  return value;
+  return Math.round(value * 100) / 100;
 }
 
 export async function getAverageRating(postSlug: string): Promise<PostRatingSummary> {

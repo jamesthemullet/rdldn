@@ -23,6 +23,11 @@ describe("parseUserRating", () => {
     expect(parseUserRating(10)).toBe(10);
   });
 
+  test("rounds to two decimal places", () => {
+    expect(parseUserRating(7.23456)).toBe(7.23);
+    expect(parseUserRating(9.999)).toBe(10);
+  });
+
   test("rejects out-of-range or non-numeric values", () => {
     expect(parseUserRating(-1)).toBeNull();
     expect(parseUserRating(11)).toBeNull();

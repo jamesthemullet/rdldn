@@ -173,18 +173,24 @@ export default (alpine: AlpineInstance) => {
       saving: false,
       saved: false,
 
-      async rate(value: number) {
-        if (this.saving) return;
+      preview(value: string) {
+        this.saved = false;
+        this.rating = Number(value);
+      },
+
+      async rate(value: string) {
+        const numericValue = Number(value);
+        if (this.saving || Number.isNaN(numericValue)) return;
         this.saving = true;
         this.saved = false;
         try {
           const res = await fetch(`/api/visits/${postSlug}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userRating: value }),
+            body: JSON.stringify({ userRating: numericValue }),
           });
           if (res.ok) {
-            this.rating = value;
+            this.rating = numericValue;
             this.saved = true;
           }
         } finally {
