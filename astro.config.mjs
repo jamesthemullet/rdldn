@@ -9,6 +9,7 @@ import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import { defineConfig } from "astro/config";
 import { EnumChangefreq } from "sitemap";
+import { shouldIncludeInSitemap } from "./src/lib/sitemapFilter";
 
 // Workaround: @clerk/astro 3.x virtual module doesn't propagate to all Vite 8 environments
 const clerkVirtualConfig = {
@@ -55,6 +56,7 @@ export default defineConfig({
       changefreq: EnumChangefreq.MONTHLY,
       priority: 0.7,
       lastmod: new Date(),
+      filter: shouldIncludeInSitemap,
       serialize(item) {
         if (item.url.includes("/about") || item.url.includes("/advertise-with-us")) {
           item.priority = 0.5;
