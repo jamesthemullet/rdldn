@@ -1,7 +1,7 @@
 # Product Roadmap — Roast Dinners in London
 
-The site already does the hard part: hundreds of reviews, boroughs, tube lines, a stats engine, a
-passport with badges, and a scoring game. What it's missing is a reason to come back on a
+The site already does the hard part: hundreds of reviews, boroughs, tube lines, a stats engine,
+and a scoring game. What it's missing is a reason to come back on a
 **Wednesday** — not just a Sunday, and a way for the content it already has to surface itself
 better. This roadmap isn't only new features: it also covers making existing content easier to
 find, SEO, and sharpening features/pages that already exist but are underbaked. Everything below
@@ -19,7 +19,7 @@ PRs that don't work standalone, they're left combined and marked accordingly.
 ## Now (ship in weeks — reuses existing infra)
 
 Everything here leans on plumbing that already exists: the stats engine behind Roastatistics, the
-OG-image generator built for the Passport, the leaderboard behind Guess the Score, the Leaflet map.
+leaderboard behind Guess the Score, the Leaflet map.
 
 ### 1. Roast Wrapped — *Acquisition, Fun, Retention*
 A personal, shareable year-in-review card: roasts visited, favourite borough, best-value find, your
@@ -27,8 +27,7 @@ A personal, shareable year-in-review card: roasts visited, favourite borough, be
 
 1. Query: aggregate a signed-in user's yearly stats (visits, boroughs, best-value find) from
    existing visit/wishlist tables — data layer only, no UI.
-2. Share-card page + OG image, copying the existing passport-share-card / `api/passport/og.ts`
-   pattern with the new data.
+2. Share-card page + OG image — a new dynamic OG-image route rendering the year's stats.
 3. "Roast personality" label — a small pure function mapping stats to a label, plus tests.
 
 ### 2. Roastle — *Engagement, Retention, Acquisition*
@@ -107,14 +106,14 @@ A quick "which roast wins" head-to-head swipe that quietly feeds a crowdsourced 
 5. Surface the Elo column as a sortable option in League of Roasts.
 
 ### 11. Roast crews — *Retention, Engagement*
-Follow other roast-hunters, compare Passports, run a private leaderboard for your group of mates.
+Follow other roast-hunters, compare stats, run a private leaderboard for your group of mates.
 
 1. Migration: a `follows` table (follower/following user IDs).
 2. Follow / unfollow API endpoints + tests.
 3. "Find people" search UI.
 4. Scoped leaderboard query — visit counts filtered to a user's follows — pure function + tests.
 5. Group leaderboard UI, reusing the existing League of Roasts table component.
-6. Side-by-side Passport comparison view (optional, can ship later independently).
+6. Side-by-side stats comparison view (optional, can ship later independently).
 
 ### 12. The Sunday Post — *Retention, Acquisition*
 A weekly digest email: new reviews near your wishlist or borough, this week's Roastle streaks, one
@@ -188,7 +187,7 @@ single 15-minute PR on their own, and several features depend on the same one:
 | **Web push** (Wishlist Alerts step 1) | Wishlist Alerts and streak reminders. |
 | **Moderation queue** (Community Reviews steps 1 & 4) | Community Reviews. |
 | **Structured data** (Rich Search Snippets) | Rich Search Snippets and the embeddable badge's credibility. |
-| **Sitemap hygiene** | Fix before shipping more acquisition plays — private routes (`/my-passport`, `/my-roasts`, `/flags`) still leak into the sitemap, and no page carries a visible, page-specific `<h1>`. Both blunt the SEO wins above. This is itself one small PR. |
+| **Sitemap hygiene** | Fix before shipping more acquisition plays — private routes (`/my-roasts`, `/flags`) still leak into the sitemap, and no page carries a visible, page-specific `<h1>`. Both blunt the SEO wins above. This is itself one small PR. |
 
 ---
 *Roast Dinners in London — product roadmap, 1 September 2026*
