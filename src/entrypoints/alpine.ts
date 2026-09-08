@@ -21,12 +21,6 @@ type RatingInputProps = {
   initialRating: number | null;
 };
 
-function isVisitTrackingFlagEnabled(): boolean {
-  const match = document.cookie.match(/(^| )flag_visitTracking=([^;]+)/);
-  const val = match ? match[2] : null;
-  return val === "true";
-}
-
 export default (alpine: AlpineInstance) => {
   window.Alpine = alpine;
 
@@ -90,11 +84,9 @@ export default (alpine: AlpineInstance) => {
     return {
       visited: false,
       signedOut: false,
-      flagEnabled: isVisitTrackingFlagEnabled(),
       loading: false,
 
       async init() {
-        if (!this.flagEnabled) return;
         const clerk = window.Clerk;
         if (!clerk) {
           this.signedOut = true;
