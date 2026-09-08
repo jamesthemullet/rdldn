@@ -80,6 +80,21 @@ describe("PATCH /api/visits/[slug]", () => {
     expect(response.status).toBe(200);
     expect((await response.json()).userRating).toBe(8);
   });
+
+  test("clears the rating when userRating is null", async () => {
+    vi.mocked(db.select).mockReturnValue(makeSelectChain([{ id: "user-uuid" }]) as never);
+    const set = vi.fn().mockReturnValue({
+      where: vi.fn().mockReturnValue({
+        returning: vi.fn().mockResolvedValue([{ id: "visit-uuid" }]),
+      }),
+    });
+    vi.mocked(db.update).mockReturnValue({ set } as never);
+
+    const response = await PATCH(makeContext("clerk_abc", "test-slug", { userRating: null }));
+    expect(response.status).toBe(200);
+    expect((await response.json()).userRating).toBeNull();
+    expect(set).toHaveBeenCalledWith({ userRating: null });
+  });
 });
 
 describe("DELETE /api/visits/[slug]", () => {

@@ -9,12 +9,12 @@ import "./rating-average.css";
 ---
 
 <div class="rating-average" x-data={`ratingAverage(${JSON.stringify({ postSlug })})`}>
-  <h3>User Ratings</h3>
+  <h3>Public Rating</h3>
   <p x-show="loading">Loading ratings…</p>
   <p x-show="!loading && average !== null">
     <span class="rating-average__value" x-text="average.toFixed(2)"></span
     ><span class="rating-average__scale">/10</span>
     <span x-text="`based on ${ratingCount} ${ratingCount === 1 ? 'rating' : 'ratings'}`"></span>
   </p>
-  <p x-show="!loading && average === null">No user ratings yet — be the first!</p>
+  <p x-show="!loading && average === null">No public ratings yet — be the first!</p>
 </div>

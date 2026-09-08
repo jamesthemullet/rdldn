@@ -27,8 +27,9 @@ export async function PATCH(context: APIContext): Promise<Response> {
     return new Response(JSON.stringify({ error: "Invalid request body" }), { status: 400 });
   }
 
-  const userRating = parseUserRating(body.userRating);
-  if (userRating === null) {
+  const clearing = body.userRating === null;
+  const userRating = clearing ? null : parseUserRating(body.userRating);
+  if (!clearing && userRating === null) {
     return new Response(JSON.stringify({ error: "userRating must be a number between 0 and 10" }), {
       status: 400,
     });
@@ -41,7 +42,7 @@ export async function PATCH(context: APIContext): Promise<Response> {
 
   const updated = await db
     .update(visits)
-    .set({ userRating: String(userRating) })
+    .set({ userRating: userRating === null ? null : String(userRating) })
     .where(and(eq(visits.userId, user.id), eq(visits.postSlug, slug)))
     .returning({ id: visits.id });
 

@@ -42,6 +42,15 @@ import "./rating-input.css";
       x-bind:disabled="saving"
     />
     <span class="rating-input__scale">/10</span>
+    <button
+      type="button"
+      class="rating-input__remove"
+      x-show="rating !== null"
+      x-on:click="clear()"
+      x-bind:disabled="saving"
+    >
+      Remove rating
+    </button>
   </div>
   <span class="rating-input__status" x-show="saved">Saved!</span>
 </div>

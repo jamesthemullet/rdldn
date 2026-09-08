@@ -197,6 +197,24 @@ export default (alpine: AlpineInstance) => {
           this.saving = false;
         }
       },
+
+      async clear() {
+        if (this.saving) return;
+        this.saving = true;
+        this.saved = false;
+        try {
+          const res = await fetch(`/api/visits/${postSlug}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userRating: null }),
+          });
+          if (res.ok) {
+            this.rating = null;
+          }
+        } finally {
+          this.saving = false;
+        }
+      },
     };
   });
 
