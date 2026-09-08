@@ -18,6 +18,7 @@ import sanitizeHtml from "sanitize-html";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
+import RatingAverage from "../components/rating-average/rating-average.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
 import ShareReviewButton from "../components/share-review-button/share-review-button.astro";
 import VisitButton from "../components/visit-button/visit-button.astro";
@@ -346,6 +347,8 @@ const reviewStructuredData =
       postTitle={singlePost.title ?? ""}
       postRating={rating ?? null}
     />
+
+    <RatingAverage postSlug={String(slug)} />
 
     <RoastByTagSection
       type="location"

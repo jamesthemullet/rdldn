@@ -299,6 +299,7 @@ const SundayRoastPlanner = ({
               <button
                 type="button"
                 className={`planner__option ${area === "" ? "planner__option--selected" : ""}`}
+                aria-pressed={area === ""}
                 onClick={() => setArea("")}
               >
                 No preference
@@ -308,6 +309,7 @@ const SundayRoastPlanner = ({
                   key={a}
                   type="button"
                   className={`planner__option ${area === a ? "planner__option--selected" : ""}`}
+                  aria-pressed={area === a}
                   onClick={() => setArea(a)}
                 >
                   {a}
@@ -320,6 +322,7 @@ const SundayRoastPlanner = ({
               <button
                 type="button"
                 className={`planner__option ${borough === "" ? "planner__option--selected" : ""}`}
+                aria-pressed={borough === ""}
                 onClick={() => setBorough("")}
               >
                 No preference
@@ -329,6 +332,7 @@ const SundayRoastPlanner = ({
                   key={b}
                   type="button"
                   className={`planner__option ${borough === b ? "planner__option--selected" : ""}`}
+                  aria-pressed={borough === b}
                   onClick={() => setBorough(b)}
                 >
                   {b}
@@ -341,6 +345,7 @@ const SundayRoastPlanner = ({
               <button
                 type="button"
                 className={`planner__option ${tubeLine === "" ? "planner__option--selected" : ""}`}
+                aria-pressed={tubeLine === ""}
                 onClick={() => setTubeLine("")}
               >
                 No preference
@@ -350,6 +355,7 @@ const SundayRoastPlanner = ({
                   key={tl}
                   type="button"
                   className={`planner__option ${tubeLine === tl ? "planner__option--selected" : ""}`}
+                  aria-pressed={tubeLine === tl}
                   onClick={() => setTubeLine(tl)}
                 >
                   {tl}
@@ -380,6 +386,7 @@ const SundayRoastPlanner = ({
                 key={opt.value}
                 type="button"
                 className={`planner__option ${budget === opt.value ? "planner__option--selected" : ""}`}
+                aria-pressed={budget === opt.value}
                 onClick={() => setBudget(opt.value)}
               >
                 {opt.label}
@@ -411,6 +418,7 @@ const SundayRoastPlanner = ({
                 key={opt.value}
                 type="button"
                 className={`planner__option ${minRating === opt.value ? "planner__option--selected" : ""}`}
+                aria-pressed={minRating === opt.value}
                 onClick={() => setMinRating(opt.value)}
               >
                 {opt.label}

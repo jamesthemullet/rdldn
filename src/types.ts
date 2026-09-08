@@ -3,7 +3,7 @@ export type Size = {
   sourceUrl: string;
 };
 
-export type Sizes = {
+type Sizes = {
   name: string;
   sourceUrl: string;
 }[];

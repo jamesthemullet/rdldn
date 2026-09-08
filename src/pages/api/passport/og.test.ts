@@ -32,7 +32,11 @@ describe("GET /api/passport/og", () => {
     expect(response.status).toBe(200);
     expect(imageResponseMock).toHaveBeenCalledTimes(1);
     const [, options] = imageResponseMock.mock.calls[0];
-    expect(options).toEqual({ width: 1200, height: 630 });
+    expect(options).toEqual({
+      width: 1200,
+      height: 630,
+      headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=31536000" },
+    });
   });
 
   it("bakes the parsed stats into the rendered element tree", async () => {
