@@ -1,0 +1,32 @@
+---
+type Props = {
+  postSlug: string;
+  initialRating: number | null;
+};
+
+const { postSlug, initialRating } = Astro.props;
+
+import "./rating-input.css";
+---
+
+<div
+  class="rating-input"
+  x-data={`ratingInput(${JSON.stringify({ postSlug, initialRating })})`}
+>
+  <div class="rating-input__scale" role="group" aria-label="Rate this place out of 10">
+    {
+      Array.from({ length: 11 }, (_, value) => (
+        <button
+          type="button"
+          class="rating-input__option"
+          x-bind:class={`rating === ${value} && 'rating-input__option--selected'`}
+          x-bind:disabled="saving"
+          x-on:click={`rate(${value})`}
+        >
+          {value}
+        </button>
+      ))
+    }
+  </div>
+  <span class="rating-input__status" x-show="saved">Saved!</span>
+</div>

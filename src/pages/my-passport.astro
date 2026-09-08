@@ -2,6 +2,7 @@
 import { eq } from "drizzle-orm";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import PassportShareCard from "../components/passport-share-card/passport-share-card.astro";
+import RatingInput from "../components/rating-input/rating-input.astro";
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { BADGES, computeEarnedBadges } from "../lib/badges";
@@ -124,6 +125,29 @@ const stats = computePassportStats(userVisits, posts);
               </li>
             ))}
           </ul>
+
+          <h3>Your Visited Places</h3>
+          {
+            userVisits.length === 0 ? (
+              <p>Mark a restaurant as visited to see it here.</p>
+            ) : (
+              <ul class="visited-places">
+                {userVisits.map((visit) => (
+                  <li class="visited-place">
+                    <span class="visited-place__title">{visit.postTitle}</span>
+                    <RatingInput
+                      postSlug={visit.postSlug}
+                      initialRating={
+                        visit.userRating !== null
+                          ? Number.parseFloat(visit.userRating)
+                          : null
+                      }
+                    />
+                  </li>
+                ))}
+              </ul>
+            )
+          }
 
           {
             stats.totalVisits > 0 && (

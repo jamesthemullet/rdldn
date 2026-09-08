@@ -1,0 +1,32 @@
+.rating-input__scale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.rating-input__option {
+  background: none;
+  border: 2px solid var(--roast-new-blue);
+  color: var(--roast-main-text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.6rem;
+  min-width: 2rem;
+}
+
+.rating-input__option--selected {
+  background: var(--roast-new-blue);
+  color: var(--roast-background, #fff);
+}
+
+.rating-input__option:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.rating-input__status {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}

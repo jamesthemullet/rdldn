@@ -12,6 +12,15 @@ type VisitButtonProps = {
   postRating: string | null;
 };
 
+type RatingAverageProps = {
+  postSlug: string;
+};
+
+type RatingInputProps = {
+  postSlug: string;
+  initialRating: number | null;
+};
+
 function isVisitTrackingFlagEnabled(): boolean {
   const match = document.cookie.match(/(^| )flag_visitTracking=([^;]+)/);
   const val = match ? match[2] : null;
@@ -128,6 +137,58 @@ export default (alpine: AlpineInstance) => {
           }
         } finally {
           this.loading = false;
+        }
+      },
+    };
+  });
+
+  alpine.data("ratingAverage", (props: RatingAverageProps = {} as RatingAverageProps) => {
+    const { postSlug } = props;
+    return {
+      loading: true,
+      average: null as number | null,
+      ratingCount: 0,
+
+      async init() {
+        try {
+          const res = await fetch(`/api/ratings/${postSlug}`);
+          if (res.ok) {
+            const data: { average: number | null; count: number } = await res.json();
+            this.average = data.average;
+            this.ratingCount = data.count;
+          }
+        } catch {
+          // ignore — no average shown
+        } finally {
+          this.loading = false;
+        }
+      },
+    };
+  });
+
+  alpine.data("ratingInput", (props: RatingInputProps = {} as RatingInputProps) => {
+    const { postSlug, initialRating } = props;
+    return {
+      rating: initialRating,
+      saving: false,
+      saved: false,
+
+      async rate(value: number) {
+        if (this.saving) return;
+        this.saving = true;
+        this.saved = false;
+        try {
+          const res = await fetch(`/api/visits/${postSlug}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userRating: value }),
+          });
+          if (res.ok) {
+            this.rating = value;
+            this.saved = true;
+          }
+        } finally {
+          this.saving = false;
         }
       },
     };
