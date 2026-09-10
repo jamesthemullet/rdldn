@@ -11,6 +11,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-02 — resolved: `src/pages/api/passport/og.ts` missing `Cache-Control` header (performance, section 3)
 - 2026-09-04 — resolved: `/maps` skip link past Leaflet markers (accessibility, section 2)
 - 2026-09-08 — resolved: sitemap includes noindex/private routes (SEO, section 4)
+- 2026-09-10 — scheduled maintenance run: resolved SEO item "robots.txt disallows /404.html but the real route is /404" (section 4)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -54,7 +55,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 - [x] `astro.config.mjs`'s `sitemap()` integration (~lines 55-92) has no `filter`/`exclude` option, so noindex/private routes (`/my-passport`, `/my-roasts`, `/flags`, `/sign-in`, `/404`, `/search`, `/guessthescore`) likely still get emitted into the sitemap — add a filter (found: 2026-08-31) (resolved: 2026-09-08, PR #643)
 - [ ] `public/robots.txt` disallows `/flags` and `/sign-in`, but both also set `noindex={true}` via BaseLayout — blocking crawl access prevents Googlebot from ever seeing the noindex tag, so de-indexing can silently fail if the URL is linked elsewhere; allow crawl and rely on noindex, or vice versa consistently (found: 2026-08-31)
-- [ ] `public/robots.txt` disallows `/404.html` but the real 404 route is `/404` (`src/pages/404.astro`, no `.html`) — fix the Disallow rule to match the actual route (found: 2026-08-31)
+- [x] `public/robots.txt` disallows `/404.html` but the real 404 route is `/404` (`src/pages/404.astro`, no `.html`) — fix the Disallow rule to match the actual route (found: 2026-08-31) (resolved: 2026-09-10, PR #TBD)
 - [ ] Root-level `./middleware.js` (bad-bot blocking logic) is not the file Astro actually loads (`src/middleware.ts` is, and only handles Clerk auth) and isn't wired into the `@astrojs/vercel` build — appears to be dead code, meaning bad bots aren't actually being blocked despite the code existing; wire it in or remove it (found: 2026-08-31)
 - [ ] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31)
 - [ ] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31)
