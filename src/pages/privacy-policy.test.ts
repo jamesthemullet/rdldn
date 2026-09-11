@@ -19,5 +19,7 @@ describe("privacy policy page", () => {
 
     expect(html).toContain("Privacy Policy");
     expect(html).toContain("Clerk");
+    expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    expect(html).toContain("<h2>Privacy Policy</h2>");
   });
 });
