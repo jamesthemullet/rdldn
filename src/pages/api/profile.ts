@@ -18,6 +18,8 @@ export async function GET(context: APIContext): Promise<Response> {
 
   if (existing.length === 0) {
     await db.insert(users).values({ clerkId, email });
+  } else {
+    await db.update(users).set({ lastSeenAt: new Date() }).where(eq(users.clerkId, clerkId));
   }
 
   const [profile] = await db.select().from(users).where(eq(users.clerkId, clerkId)).limit(1);

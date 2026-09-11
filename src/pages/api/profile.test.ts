@@ -5,6 +5,7 @@ vi.mock("../../lib/db", () => ({
   db: {
     select: vi.fn(),
     insert: vi.fn(),
+    update: vi.fn(),
   },
 }));
 
@@ -24,6 +25,15 @@ function makeSelectChain(result: unknown[]) {
 
 function makeInsertChain() {
   return { values: vi.fn().mockResolvedValue(undefined) } as unknown as ReturnType<typeof db.insert>;
+}
+
+function makeUpdateChain() {
+  const chain = {
+    set: vi.fn(),
+    where: vi.fn().mockResolvedValue(undefined),
+  };
+  chain.set.mockReturnValue(chain);
+  return chain as unknown as ReturnType<typeof db.update>;
 }
 
 function makeContext({
@@ -66,6 +76,7 @@ describe("GET /api/profile", () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([profile]))
       .mockReturnValueOnce(makeSelectChain([profile]));
+    vi.mocked(db.update).mockReturnValue(makeUpdateChain());
 
     const response = await GET(makeContext({ clerkId: "clerk-abc", email: "user@example.com" }));
 
@@ -73,6 +84,20 @@ describe("GET /api/profile", () => {
     const data = await response.json();
     expect(data).toEqual(profile);
     expect(db.insert).not.toHaveBeenCalled();
+  });
+
+  test("updates lastSeenAt for an existing user on each visit", async () => {
+    const profile = { id: "user-1", clerkId: "clerk-abc", email: "user@example.com" };
+    vi.mocked(db.select)
+      .mockReturnValueOnce(makeSelectChain([profile]))
+      .mockReturnValueOnce(makeSelectChain([profile]));
+    const updateChain = makeUpdateChain();
+    vi.mocked(db.update).mockReturnValue(updateChain);
+
+    await GET(makeContext({ clerkId: "clerk-abc", email: "user@example.com" }));
+
+    expect(db.update).toHaveBeenCalledTimes(1);
+    expect(updateChain.set).toHaveBeenCalledWith({ lastSeenAt: expect.any(Date) });
   });
 
   test("inserts a new user and returns their profile when the user does not yet exist", async () => {
@@ -86,6 +111,7 @@ describe("GET /api/profile", () => {
 
     expect(response.status).toBe(200);
     expect(db.insert).toHaveBeenCalledTimes(1);
+    expect(db.update).not.toHaveBeenCalled();
     const data = await response.json();
     expect(data).toEqual(profile);
   });
@@ -121,6 +147,7 @@ describe("GET /api/profile", () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([profile]))
       .mockReturnValueOnce(makeSelectChain([profile]));
+    vi.mocked(db.update).mockReturnValue(makeUpdateChain());
 
     const response = await GET(makeContext({ clerkId: "clerk-headers", email: "h@example.com" }));
 

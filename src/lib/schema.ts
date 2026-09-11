@@ -5,6 +5,7 @@ export const users = pgTable("users", {
   clerkId: text("clerk_id").unique().notNull(),
   email: text("email").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
 });
 
 export const wishlistItems = pgTable(
