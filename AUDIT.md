@@ -12,6 +12,8 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-04 — resolved: `/maps` skip link past Leaflet markers (accessibility, section 2)
 - 2026-09-08 — resolved: sitemap includes noindex/private routes (SEO, section 4)
 - 2026-09-10 — scheduled maintenance run: resolved SEO item "robots.txt disallows /404.html but the real route is /404" (section 4)
+- 2026-09-11 — scheduled maintenance run: resolved SEO item "privacy-policy.astro renders a duplicate visible h1" (section 4)
+- 2026-09-12 — scheduled maintenance run: resolved accessibility item "Bluesky embed iframe missing accessible name" (section 2)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -32,7 +34,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 2. Accessibility
 
-- [ ] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31)
+- [x] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31) (resolved: 2026-09-12, PR #652)
 - [x] `/maps` has 317 individually keyboard-focusable Leaflet markers (`tabindex="0"`, `role="button"`) with no "skip past markers" mechanism, forcing keyboard/screen-reader users to tab through all of them to reach content below the map — add a skip link (found: 2026-08-31) (resolved: 2026-09-04, PR #638)
 - [ ] Browser-tool viewport resizing did not work in this audit session (`window.innerWidth` stayed ~2560px regardless of requested width) — mobile-viewport a11y/layout (~375px) and the mobile hamburger nav's interactive open/close were not verified this run; re-check with working device emulation (found: 2026-08-31)
 - [ ] `/my-passport` could not be a11y-checked — it's gated behind an off-by-default `myPassport` feature flag and Clerk auth; re-verify once flag/auth can be exercised in a test environment (found: 2026-08-31)
@@ -58,7 +60,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] `public/robots.txt` disallows `/404.html` but the real 404 route is `/404` (`src/pages/404.astro`, no `.html`) — fix the Disallow rule to match the actual route (found: 2026-08-31) (resolved: 2026-09-10, PR #648)
 - [ ] Root-level `./middleware.js` (bad-bot blocking logic) is not the file Astro actually loads (`src/middleware.ts` is, and only handles Clerk auth) and isn't wired into the `@astrojs/vercel` build — appears to be dead code, meaning bad bots aren't actually being blocked despite the code existing; wire it in or remove it (found: 2026-08-31)
 - [ ] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31)
-- [ ] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31)
+- [x] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31) (resolved: 2026-09-11, PR #651)
 - [ ] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31)
 - [ ] `src/pages/my-passport.astro` (BaseLayout call ~line 60) never passes `opengraphImage`, even though a dynamic per-user OG image already exists at `src/pages/api/passport/og.ts` — wire it into the page's own `og:image` meta tag, not just the manual share-card links in `passport-share-card.astro:19` (found: 2026-08-31)
 
