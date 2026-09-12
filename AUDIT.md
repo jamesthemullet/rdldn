@@ -13,6 +13,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-08 — resolved: sitemap includes noindex/private routes (SEO, section 4)
 - 2026-09-10 — scheduled maintenance run: resolved SEO item "robots.txt disallows /404.html but the real route is /404" (section 4)
 - 2026-09-11 — scheduled maintenance run: resolved SEO item "privacy-policy.astro renders a duplicate visible h1" (section 4)
+- 2026-09-12 — scheduled maintenance run: resolved accessibility item "Bluesky embed iframe missing accessible name" (section 2)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -33,7 +34,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 2. Accessibility
 
-- [ ] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31)
+- [x] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31) (resolved: 2026-09-12, PR #TBD)
 - [x] `/maps` has 317 individually keyboard-focusable Leaflet markers (`tabindex="0"`, `role="button"`) with no "skip past markers" mechanism, forcing keyboard/screen-reader users to tab through all of them to reach content below the map — add a skip link (found: 2026-08-31) (resolved: 2026-09-04, PR #638)
 - [ ] Browser-tool viewport resizing did not work in this audit session (`window.innerWidth` stayed ~2560px regardless of requested width) — mobile-viewport a11y/layout (~375px) and the mobile hamburger nav's interactive open/close were not verified this run; re-check with working device emulation (found: 2026-08-31)
 - [ ] `/my-passport` could not be a11y-checked — it's gated behind an off-by-default `myPassport` feature flag and Clerk auth; re-verify once flag/auth can be exercised in a test environment (found: 2026-08-31)
