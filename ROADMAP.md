@@ -126,17 +126,7 @@ Roast Battle prompt. The site's first outbound channel.
 4. Scheduled job (Vercel cron) that assembles and sends the digest weekly.
 5. Unsubscribe / preference handling — a small settings toggle + honouring it in step 4.
 
-### 13. Dietary & occasion filters — *Acquisition, Fun*
-Filter Search and League of Roasts by veggie/vegan nut roast, gluten-free Yorkshires, kid-friendly.
-
-1. **Not a PR — a content task.** Tag existing posts with dietary/occasion metadata in the
-   WordPress backend before any code can filter on it. Tracked as
-   [#632](https://github.com/jamesthemullet/rdldn/issues/632).
-2. Filter support in the Search query layer (accept a tag param) + tests.
-3. Filter UI control on the Search page.
-4. Same filter added to League of Roasts, reusing the Search filter component from step 3.
-
-### 14. Price history, per venue — *Engagement*
+### 13. Price history, per venue — *Engagement*
 A small sparkline on each post showing how that specific roast's price has moved over time.
 
 1. **Data check first, not really a PR:** confirm venues actually have multiple price points over
@@ -151,7 +141,7 @@ A small sparkline on each post showing how that specific roast's price has moved
 Each needs a kitchen upgrade first, but they're what turns the site from "a list someone
 maintains" into "a community that maintains itself."
 
-### 15. Community reviews — *Engagement, Retention*
+### 14. Community reviews — *Engagement, Retention*
 Users add their own short review and photo alongside the editorial one, moderated before going live.
 
 1. Migration: a `community_reviews` table with a status (`pending` / `approved` / `rejected`).
@@ -160,7 +150,7 @@ Users add their own short review and photo alongside the editorial one, moderate
 4. Admin moderation queue UI — list pending reviews, approve/reject buttons.
 5. Render approved community reviews on the post page.
 
-### 16. Wishlist alerts — *Retention*
+### 15. Wishlist alerts — *Retention*
 Opt-in push notification when a wishlisted pub gets a new review, or a Roastle streak is about to lapse.
 
 1. **Infra (Mise en Place):** web push setup — service worker registration + VAPID keys, no feature logic yet.
@@ -168,7 +158,7 @@ Opt-in push notification when a wishlisted pub gets a new review, or a Roastle s
 3. Trigger: on a new review matching a user's wishlist, send a push — server-side, reuses step 1's send utility.
 4. Trigger: streak-about-to-lapse reminder, reusing the same send utility from step 3.
 
-### 17. Roast Crawl planner — *Fun, Acquisition*
+### 16. Roast Crawl planner — *Fun, Acquisition*
 Extend the Sunday Roast Planner into a shareable, multi-stop itinerary across boroughs or tube stops.
 
 1. Extend the planner's state model from one stop to N stops (data model change inside the
