@@ -2,6 +2,11 @@ name: CI Tests For Roast Dinners In London
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   issues: write
@@ -68,15 +73,15 @@ jobs:
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
       - name: Install Playwright OS dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps
-      - name: Run end-to-end tests
-        run: yarn test:e2e
+        run: npx playwright install-deps chromium
+      - name: Run end-to-end tests (Chromium)
+        run: yarn test:e2e --project=chromium
   axe:
     runs-on: ubuntu-latest
     env:
