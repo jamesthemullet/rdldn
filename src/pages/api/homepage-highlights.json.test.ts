@@ -19,6 +19,7 @@ describe("GET /api/homepage-highlights.json", () => {
     const response = await GET({} as never);
 
     expect(response.headers.get("Content-Type")).toBe("application/json");
+    expect(response.headers.get("Cache-Control")).toBe("s-maxage=3600, stale-while-revalidate=86400");
     const data = await response.json();
     expect(data).toEqual(highlights);
   });
