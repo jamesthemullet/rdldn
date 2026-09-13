@@ -40,14 +40,7 @@ to share the result. Turns an existing game into a daily habit.
 3. Emoji-grid share text generator — pure function + tests, reusing the share-button pattern.
 4. UI: wire "daily mode" into the existing Guess the Score page (single attempt, streak display).
 
-### 3. Since you last ate — *Retention*
-A quiet banner for signed-in users: "4 new roasts reviewed since your last visit, 2 in Hackney."
-
-1. Persist a last-seen timestamp for signed-in users, updated on each visit.
-2. Query: posts published since a given timestamp, optionally scoped by borough — pure function + tests.
-3. Banner component on the homepage rendering the result.
-
-### 4. Nearest roast — *Acquisition*
+### 3. Nearest roast — *Acquisition*
 One-tap, geolocation-based "closest great roast to me right now."
 
 1. Haversine distance util + unit tests (pure function, no UI).
@@ -55,20 +48,20 @@ One-tap, geolocation-based "closest great roast to me right now."
 
 *Small enough that these two could land as one PR if a reviewer prefers — flagged as optional split.*
 
-### 5. Rich search snippets — *Acquisition*
+### 4. Rich search snippets — *Acquisition*
 Review/LocalBusiness structured data on every post so Google shows star ratings and price directly
 in search results.
 
 1. **One PR.** A single JSON-LD block added to the post template from fields that already exist —
    no new logic, nothing to split.
 
-### 6. Embeddable rating badge — *Acquisition*
+### 5. Embeddable rating badge — *Acquisition*
 A small "As rated on Roast Dinners in London — 4.2★" badge pubs can embed on their own site.
 
 1. **One PR.** One new API route rendering a static SVG per venue slug — self-contained, nothing
    else depends on or feeds it.
 
-### 7. Related roasts — *Engagement, Retention*
+### 6. Related roasts — *Engagement, Retention*
 "You might also like" links at the bottom of every post — same borough, same tube line, or a
 similar rating/price band — so a single visit doesn't dead-end after one review.
 
@@ -76,14 +69,14 @@ similar rating/price band — so a single visit doesn't dead-end after one revie
    + tests, using data already fetched for boroughs/chains pages.
 2. Component rendering the related-posts list on `[slug].astro`.
 
-### 8. Internal search upgrade — *Engagement, Acquisition*
+### 7. Internal search upgrade — *Engagement, Acquisition*
 `search.astro` exists but is a plain keyword box — no filters, no sort, no "search within
 borough." Improving an existing page rather than building a new one.
 
 1. Extend the existing search query layer to accept a borough/sort param — pure function + tests.
 2. Filter/sort controls added to the existing search UI.
 
-### 9. Roast Wrapped's SEO cousin: borough guides — *Acquisition, Fun*
+### 8. Roast Wrapped's SEO cousin: borough guides — *Acquisition, Fun*
 Static, editorial-light "Best Sunday Roasts in [Borough]" landing pages generated from data
 that's already there (Roastatistics + League of Roasts), targeting search terms the site can
 already answer but doesn't have a dedicated page for.
@@ -97,7 +90,7 @@ already answer but doesn't have a dedicated page for.
 
 Bigger dishes: new mechanics and a first outbound channel.
 
-### 10. Roast Battle — *Engagement, Fun*
+### 9. Roast Battle — *Engagement, Fun*
 A quick "which roast wins" head-to-head swipe that quietly feeds a crowdsourced Elo ranking.
 
 1. Migration: add an `elo_score` column to posts (or a companion table).
@@ -106,7 +99,7 @@ A quick "which roast wins" head-to-head swipe that quietly feeds a crowdsourced 
 4. Vote API route — wires the swipe UI to the Elo update function.
 5. Surface the Elo column as a sortable option in League of Roasts.
 
-### 11. Roast crews — *Retention, Engagement*
+### 10. Roast crews — *Retention, Engagement*
 Follow other roast-hunters, compare Passports, run a private leaderboard for your group of mates.
 
 1. Migration: a `follows` table (follower/following user IDs).
@@ -116,7 +109,7 @@ Follow other roast-hunters, compare Passports, run a private leaderboard for you
 5. Group leaderboard UI, reusing the existing League of Roasts table component.
 6. Side-by-side Passport comparison view (optional, can ship later independently).
 
-### 12. The Sunday Post — *Retention, Acquisition*
+### 11. The Sunday Post — *Retention, Acquisition*
 A weekly digest email: new reviews near your wishlist or borough, this week's Roastle streaks, one
 Roast Battle prompt. The site's first outbound channel.
 
@@ -126,7 +119,7 @@ Roast Battle prompt. The site's first outbound channel.
 4. Scheduled job (Vercel cron) that assembles and sends the digest weekly.
 5. Unsubscribe / preference handling — a small settings toggle + honouring it in step 4.
 
-### 13. Dietary & occasion filters — *Acquisition, Fun*
+### 12. Dietary & occasion filters — *Acquisition, Fun*
 Filter Search and League of Roasts by veggie/vegan nut roast, gluten-free Yorkshires, kid-friendly.
 
 1. **Not a PR — a content task.** Tag existing posts with dietary/occasion metadata in the
@@ -136,7 +129,7 @@ Filter Search and League of Roasts by veggie/vegan nut roast, gluten-free Yorksh
 3. Filter UI control on the Search page.
 4. Same filter added to League of Roasts, reusing the Search filter component from step 3.
 
-### 14. Price history, per venue — *Engagement*
+### 13. Price history, per venue — *Engagement*
 A small sparkline on each post showing how that specific roast's price has moved over time.
 
 1. **Data check first, not really a PR:** confirm venues actually have multiple price points over
@@ -151,7 +144,7 @@ A small sparkline on each post showing how that specific roast's price has moved
 Each needs a kitchen upgrade first, but they're what turns the site from "a list someone
 maintains" into "a community that maintains itself."
 
-### 15. Community reviews — *Engagement, Retention*
+### 14. Community reviews — *Engagement, Retention*
 Users add their own short review and photo alongside the editorial one, moderated before going live.
 
 1. Migration: a `community_reviews` table with a status (`pending` / `approved` / `rejected`).
@@ -160,7 +153,7 @@ Users add their own short review and photo alongside the editorial one, moderate
 4. Admin moderation queue UI — list pending reviews, approve/reject buttons.
 5. Render approved community reviews on the post page.
 
-### 16. Wishlist alerts — *Retention*
+### 15. Wishlist alerts — *Retention*
 Opt-in push notification when a wishlisted pub gets a new review, or a Roastle streak is about to lapse.
 
 1. **Infra (Mise en Place):** web push setup — service worker registration + VAPID keys, no feature logic yet.
@@ -168,7 +161,7 @@ Opt-in push notification when a wishlisted pub gets a new review, or a Roastle s
 3. Trigger: on a new review matching a user's wishlist, send a push — server-side, reuses step 1's send utility.
 4. Trigger: streak-about-to-lapse reminder, reusing the same send utility from step 3.
 
-### 17. Roast Crawl planner — *Fun, Acquisition*
+### 16. Roast Crawl planner — *Fun, Acquisition*
 Extend the Sunday Roast Planner into a shareable, multi-stop itinerary across boroughs or tube stops.
 
 1. Extend the planner's state model from one stop to N stops (data model change inside the

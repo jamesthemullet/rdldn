@@ -1,0 +1,1 @@
+ALTER TABLE "visits" ADD COLUMN "user_rating" numeric;

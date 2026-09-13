@@ -1,0 +1,8 @@
+.rating-average__value {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.rating-average__scale {
+  opacity: 0.7;
+}

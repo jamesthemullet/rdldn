@@ -1,10 +1,11 @@
 ---
 import { eq } from "drizzle-orm";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import RatingInput from "../components/rating-input/rating-input.astro";
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { db } from "../lib/db";
-import { users, wishlistItems } from "../lib/schema";
+import { users, visits as visitsTable, wishlistItems } from "../lib/schema";
 import "../styles/post.css";
 import "./my-roasts.css";
 
@@ -16,6 +17,7 @@ if (!clerkId) {
 }
 
 let items: (typeof wishlistItems.$inferSelect)[] = [];
+let userVisits: (typeof visitsTable.$inferSelect)[] = [];
 let dbError = false;
 
 try {
@@ -31,6 +33,11 @@ try {
       .from(wishlistItems)
       .where(eq(wishlistItems.userId, user.id))
       .orderBy(wishlistItems.savedAt);
+
+    userVisits = await db
+      .select()
+      .from(visitsTable)
+      .where(eq(visitsTable.userId, user.id));
   }
 } catch {
   dbError = true;
@@ -83,6 +90,30 @@ try {
               >
                 Remove
               </button>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <h3 class="visited-places-heading">Visited Places</h3>
+    <p>Rate the places you've visited out of 10 — your rating adds to that restaurant's public average.</p>
+    {
+      dbError ? null : userVisits.length === 0 ? (
+        <p>Mark a restaurant as visited to see it here.</p>
+      ) : (
+        <ul class="visited-places">
+          {userVisits.map((visit) => (
+            <li class="visited-place">
+              <span class="visited-place__title">{visit.postTitle}</span>
+              <RatingInput
+                postSlug={visit.postSlug}
+                initialRating={
+                  visit.userRating !== null
+                    ? Number.parseFloat(visit.userRating)
+                    : null
+                }
+              />
             </li>
           ))}
         </ul>

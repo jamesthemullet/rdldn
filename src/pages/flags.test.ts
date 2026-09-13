@@ -20,8 +20,8 @@ describe("flags page", () => {
     });
 
     expect(html).toContain("Feature Flags");
-    expect(html).toContain("flag_visitTracking");
-    expect(html).not.toMatch(/name="flag_visitTracking"[^>]*checked/);
+    expect(html).toContain("flag_myPassport");
+    expect(html).not.toMatch(/name="flag_myPassport"[^>]*checked/);
   });
 
   test("renders the flag toggle as checked when its cookie is set to true", async () => {
@@ -29,11 +29,11 @@ describe("flags page", () => {
     const { default: Page } = await import("./flags.astro");
     const html = await container.renderToString(Page, {
       request: new Request("https://rdldn.co.uk/flags", {
-        headers: { Cookie: "flag_visitTracking=true" },
+        headers: { Cookie: "flag_myPassport=true" },
       }),
     });
 
-    expect(html).toMatch(/name="flag_visitTracking"[^>]*checked/);
+    expect(html).toMatch(/name="flag_myPassport"[^>]*checked/);
   });
 
   test("renders the flag toggle as unchecked when its cookie is set to false", async () => {
@@ -41,11 +41,11 @@ describe("flags page", () => {
     const { default: Page } = await import("./flags.astro");
     const html = await container.renderToString(Page, {
       request: new Request("https://rdldn.co.uk/flags", {
-        headers: { Cookie: "flag_visitTracking=false" },
+        headers: { Cookie: "flag_myPassport=false" },
       }),
     });
 
-    expect(html).not.toMatch(/name="flag_visitTracking"[^>]*checked/);
+    expect(html).not.toMatch(/name="flag_myPassport"[^>]*checked/);
   });
 
   test("renders the flag label and description from FLAG_DEFINITIONS", async () => {
@@ -55,7 +55,7 @@ describe("flags page", () => {
       request: new Request("https://rdldn.co.uk/flags"),
     });
 
-    expect(html).toContain("Mark As Visited");
-    expect(html).toContain("Controls visibility of the mark as visited feature on review pages.");
+    expect(html).toContain("My Passport");
+    expect(html).toContain("Controls access to the My Roast Dinner Passport page.");
   });
 });
