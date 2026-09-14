@@ -364,3 +364,20 @@ const reviewStructuredData =
     )}
   </div>
 </BaseLayout>
+
+<script>
+  import { addBlueskyIframeTitles } from "../lib/blueskyEmbedAccessibility";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const contentContainer = document.querySelector(".container");
+    if (!contentContainer) return;
+
+    addBlueskyIframeTitles(contentContainer);
+
+    const observer = new MutationObserver(() => addBlueskyIframeTitles(contentContainer));
+    observer.observe(contentContainer, { childList: true, subtree: true });
+
+    // Bluesky's embed script injects the iframe asynchronously; stop watching once it's had time to load.
+    setTimeout(() => observer.disconnect(), 10000);
+  });
+</script>

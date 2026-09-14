@@ -5,6 +5,9 @@ export const GET: APIRoute = async () => {
   const data = await getHomepageHighlights();
 
   return new Response(JSON.stringify(data), {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "s-maxage=3600, stale-while-revalidate=86400",
+    },
   });
 };

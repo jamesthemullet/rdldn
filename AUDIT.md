@@ -10,8 +10,13 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-01 — scheduled maintenance run: resolved performance item "archive.astro missing Cache-Control header" (section 3)
 - 2026-09-02 — resolved: `src/pages/api/passport/og.ts` missing `Cache-Control` header (performance, section 3)
 - 2026-09-04 — resolved: `/maps` skip link past Leaflet markers (accessibility, section 2)
+- 2026-09-07 — scheduled maintenance run: resolved performance item "homepage-highlights.json.ts missing Cache-Control header" (section 3)
 - 2026-09-08 — resolved: sitemap includes noindex/private routes (SEO, section 4)
 - 2026-09-09 — scheduled maintenance run: resolved robots.txt disallowing noindex'd routes (`/flags`, `/sign-in`), preventing Googlebot from seeing their noindex tags (SEO, section 4)
+- 2026-09-10 — scheduled maintenance run: resolved SEO item "robots.txt disallows /404.html but the real route is /404" (section 4)
+- 2026-09-11 — scheduled maintenance run: resolved SEO item "privacy-policy.astro renders a duplicate visible h1" (section 4)
+- 2026-09-12 — scheduled maintenance run: resolved accessibility item "Bluesky embed iframe missing accessible name" (section 2)
+- 2026-09-14 — scheduled maintenance run: resolved responsive/UX item "Alpine has already been initialized" double-start console warning (section 5)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -32,7 +37,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 2. Accessibility
 
-- [ ] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31)
+- [x] Serious axe violation "frame-title": the Bluesky embed iframe on post pages (e.g. `/ember-yard-soho`, via `src/pages/[slug].astro`) has no accessible name — give the injected `iframe[data-bluesky-id]` a `title` attribute (found: 2026-08-31) (resolved: 2026-09-12, PR #652)
 - [x] `/maps` has 317 individually keyboard-focusable Leaflet markers (`tabindex="0"`, `role="button"`) with no "skip past markers" mechanism, forcing keyboard/screen-reader users to tab through all of them to reach content below the map — add a skip link (found: 2026-08-31) (resolved: 2026-09-04, PR #638)
 - [ ] Browser-tool viewport resizing did not work in this audit session (`window.innerWidth` stayed ~2560px regardless of requested width) — mobile-viewport a11y/layout (~375px) and the mobile hamburger nav's interactive open/close were not verified this run; re-check with working device emulation (found: 2026-08-31)
 - [ ] `/my-passport` could not be a11y-checked — it's gated behind an off-by-default `myPassport` feature flag and Clerk auth; re-verify once flag/auth can be exercised in a test environment (found: 2026-08-31)
@@ -46,7 +51,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [ ] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31)
 - [ ] `src/pages/api/passport/badges.ts:23` calls `getAllRoastDinnerPosts()` (the entire post catalog) on every request with no caching and no `Cache-Control` header (found: 2026-08-31)
 - [x] `src/pages/archive.astro:9` (`prerender = false`) calls `fetchPostsByDate` on every request with no `Cache-Control` header, unlike `annual-roastatistics.astro:14-19` which sets `s-maxage=3600, stale-while-revalidate=86400` — apply the same pattern (found: 2026-08-31) (resolved: 2026-09-01, PR #629)
-- [ ] `src/pages/api/homepage-highlights.json.ts:4-10` runs four parallel GraphQL fetches on every request (called client-side from `index.astro:376-377`) with no `Cache-Control` header and no KV caching despite infrequently-changing data (found: 2026-08-31)
+- [x] `src/pages/api/homepage-highlights.json.ts:4-10` runs four parallel GraphQL fetches on every request (called client-side from `index.astro:376-377`) with no `Cache-Control` header and no KV caching despite infrequently-changing data (found: 2026-08-31) (resolved: 2026-09-07, PR #642)
 - [x] `src/pages/api/passport/og.ts:6-10` regenerates a `@vercel/og` image on every request with no `Cache-Control` header, so neither CDN nor browser caches it despite repeatable params (found: 2026-08-31) (resolved: 2026-09-02, PR #631)
 - [ ] `src/components/featured-post-header/featured-post-header.astro:12` renders the hero image as a raw `<img loading="eager">` with no `width`/`height` (CLS risk); `astro.config.mjs` has no `image.domains`/`remotePatterns` for the WordPress media host, forcing all WP-hosted images through plain `<img>` with no AVIF/WebP conversion or responsive `srcset` — configure remote image domains (found: 2026-08-31)
 - [ ] `src/components/best-posts-list/best-posts-list.astro:44-53` has correct `width`/`height`/`loading="lazy"` but still serves the raw full-size WordPress `sourceUrl` rather than a resized/optimized variant, for the same remote-image-config reason above (found: 2026-08-31)
@@ -55,16 +60,16 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 - [x] `astro.config.mjs`'s `sitemap()` integration (~lines 55-92) has no `filter`/`exclude` option, so noindex/private routes (`/my-passport`, `/my-roasts`, `/flags`, `/sign-in`, `/404`, `/search`, `/guessthescore`) likely still get emitted into the sitemap — add a filter (found: 2026-08-31) (resolved: 2026-09-08, PR #643)
 - [x] `public/robots.txt` disallows `/flags` and `/sign-in`, but both also set `noindex={true}` via BaseLayout — blocking crawl access prevents Googlebot from ever seeing the noindex tag, so de-indexing can silently fail if the URL is linked elsewhere; allow crawl and rely on noindex, or vice versa consistently (found: 2026-08-31) (resolved: 2026-09-09, PR #647)
-- [ ] `public/robots.txt` disallows `/404.html` but the real 404 route is `/404` (`src/pages/404.astro`, no `.html`) — fix the Disallow rule to match the actual route (found: 2026-08-31)
+- [x] `public/robots.txt` disallows `/404.html` but the real 404 route is `/404` (`src/pages/404.astro`, no `.html`) — fix the Disallow rule to match the actual route (found: 2026-08-31) (resolved: 2026-09-10, PR #648)
 - [ ] Root-level `./middleware.js` (bad-bot blocking logic) is not the file Astro actually loads (`src/middleware.ts` is, and only handles Clerk auth) and isn't wired into the `@astrojs/vercel` build — appears to be dead code, meaning bad bots aren't actually being blocked despite the code existing; wire it in or remove it (found: 2026-08-31)
 - [ ] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31)
-- [ ] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31)
+- [x] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31) (resolved: 2026-09-11, PR #651)
 - [ ] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31)
 - [ ] `src/pages/my-passport.astro` (BaseLayout call ~line 60) never passes `opengraphImage`, even though a dynamic per-user OG image already exists at `src/pages/api/passport/og.ts` — wire it into the page's own `og:image` meta tag, not just the manual share-card links in `passport-share-card.astro:19` (found: 2026-08-31)
 
 ## 5. Responsive / UX
 
-- [ ] Console warning on every page load: "Alpine Warning: Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems" — check `src/entrypoints/alpine.ts` and its invocation sites for a double-start (found: 2026-08-31)
+- [x] Console warning on every page load: "Alpine Warning: Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems" — check `src/entrypoints/alpine.ts` and its invocation sites for a double-start (found: 2026-08-31) (resolved: 2026-09-14, PR #658)
 - [ ] `/search` page's help copy includes the example query "Trump is a paedo" — reads as a leftover joke/placeholder naming a real public figure with a defamatory claim; replace with an innocuous example before any public-facing use (found: 2026-08-31)
 - [ ] True small-viewport (~375px) layout and the mobile hamburger nav's interactive behavior were not verifiable this run due to a browser-tool viewport-resize limitation — re-run a manual/device-emulated check across homepage, post page, borough/chain listing, guessthescore, and the newsletter popup for mobile overlap (found: 2026-08-31)
 - [ ] One transient observation: on a single early visit to `/boroughs`, both `.header-signin-desktop` and `.header-signin-mobile` briefly rendered simultaneously before `.header-signin-mobile` correctly hid via its `@media (min-width:1024px)` rule; did not reproduce on reload — likely a dev-only HMR/hydration timing artifact, but worth a quick look at `src/components/header/HeaderAuth.tsx` if it recurs in production (found: 2026-08-31)
