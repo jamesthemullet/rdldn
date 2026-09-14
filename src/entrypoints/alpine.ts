@@ -209,10 +209,4 @@ export default (alpine: AlpineInstance) => {
       },
     };
   });
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => alpine.start());
-  } else {
-    alpine.start();
-  }
 };

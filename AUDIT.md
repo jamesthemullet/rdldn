@@ -15,6 +15,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-10 — scheduled maintenance run: resolved SEO item "robots.txt disallows /404.html but the real route is /404" (section 4)
 - 2026-09-11 — scheduled maintenance run: resolved SEO item "privacy-policy.astro renders a duplicate visible h1" (section 4)
 - 2026-09-12 — scheduled maintenance run: resolved accessibility item "Bluesky embed iframe missing accessible name" (section 2)
+- 2026-09-14 — scheduled maintenance run: resolved responsive/UX item "Alpine has already been initialized" double-start console warning (section 5)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -67,7 +68,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 5. Responsive / UX
 
-- [ ] Console warning on every page load: "Alpine Warning: Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems" — check `src/entrypoints/alpine.ts` and its invocation sites for a double-start (found: 2026-08-31)
+- [x] Console warning on every page load: "Alpine Warning: Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems" — check `src/entrypoints/alpine.ts` and its invocation sites for a double-start (found: 2026-08-31) (resolved: 2026-09-14, PR #TBD)
 - [ ] `/search` page's help copy includes the example query "Trump is a paedo" — reads as a leftover joke/placeholder naming a real public figure with a defamatory claim; replace with an innocuous example before any public-facing use (found: 2026-08-31)
 - [ ] True small-viewport (~375px) layout and the mobile hamburger nav's interactive behavior were not verifiable this run due to a browser-tool viewport-resize limitation — re-run a manual/device-emulated check across homepage, post page, borough/chain listing, guessthescore, and the newsletter popup for mobile overlap (found: 2026-08-31)
 - [ ] One transient observation: on a single early visit to `/boroughs`, both `.header-signin-desktop` and `.header-signin-mobile` briefly rendered simultaneously before `.header-signin-mobile` correctly hid via its `@media (min-width:1024px)` rule; did not reproduce on reload — likely a dev-only HMR/hydration timing artifact, but worth a quick look at `src/components/header/HeaderAuth.tsx` if it recurs in production (found: 2026-08-31)
