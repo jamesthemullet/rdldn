@@ -71,7 +71,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 ## 5. Responsive / UX
 
 - [x] Console warning on every page load: "Alpine Warning: Alpine has already been initialized on this page. Calling Alpine.start() more than once can cause problems" — check `src/entrypoints/alpine.ts` and its invocation sites for a double-start (found: 2026-08-31) (resolved: 2026-09-14, PR #658)
-- [x] `/search` page's help copy includes the example query "Trump is a paedo" — reads as a leftover joke/placeholder naming a real public figure with a defamatory claim; replace with an innocuous example before any public-facing use (found: 2026-08-31) (resolved: 2026-09-15, PR #TBD)
+- [x] `/search` page's help copy includes the example query "Trump is a paedo" — reads as a leftover joke/placeholder naming a real public figure with a defamatory claim; replace with an innocuous example before any public-facing use (found: 2026-08-31) (resolved: 2026-09-15, PR #659)
 - [ ] True small-viewport (~375px) layout and the mobile hamburger nav's interactive behavior were not verifiable this run due to a browser-tool viewport-resize limitation — re-run a manual/device-emulated check across homepage, post page, borough/chain listing, guessthescore, and the newsletter popup for mobile overlap (found: 2026-08-31)
 - [ ] One transient observation: on a single early visit to `/boroughs`, both `.header-signin-desktop` and `.header-signin-mobile` briefly rendered simultaneously before `.header-signin-mobile` correctly hid via its `@media (min-width:1024px)` rule; did not reproduce on reload — likely a dev-only HMR/hydration timing artifact, but worth a quick look at `src/components/header/HeaderAuth.tsx` if it recurs in production (found: 2026-08-31)
 
