@@ -1,6 +1,24 @@
 import { clerkMiddleware } from "@clerk/astro/server";
 import type { MiddlewareHandler } from "astro";
 
+const badBots = [
+  "Bytespider",
+  "AhrefsBot",
+  "SemrushBot",
+  "MJ12bot",
+  "dotbot",
+  "PetalBot",
+  "Crawlers",
+  "Python-requests",
+];
+
+export const blockBadBots = (request: Request): Response | undefined => {
+  const userAgent = request.headers.get("user-agent") || "";
+  if (badBots.some((bot) => userAgent.includes(bot))) {
+    return new Response("Blocked", { status: 403 });
+  }
+};
+
 const protectedRoutePrefixes = ["/api/wishlist", "/api/profile", "/my-roasts"];
 
 const isProtectedRoute = (request: Request) => {
@@ -23,8 +41,14 @@ const testAuthHandler: MiddlewareHandler = (context, next) => {
   return next();
 };
 
-export const onRequest: MiddlewareHandler =
+const baseHandler: MiddlewareHandler =
   process.env.PLAYWRIGHT === "true" ? testAuthHandler : (clerkHandler as MiddlewareHandler);
+
+export const onRequest: MiddlewareHandler = (context, next) => {
+  const blocked = blockBadBots(context.request);
+  if (blocked) return blocked;
+  return baseHandler(context, next);
+};
 
 export const config = {
   matcher: ["/((?!_astro|images|favicon\\.ico|.*\\..*).*)"],
