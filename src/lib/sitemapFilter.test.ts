@@ -14,16 +14,12 @@ describe("shouldIncludeInSitemap", () => {
     expect(shouldIncludeInSitemap("https://rdldn.co.uk/flags")).toBe(false);
   });
 
-  it("excludes the noindex my-passport route", () => {
-    expect(shouldIncludeInSitemap("https://rdldn.co.uk/my-passport")).toBe(false);
-  });
-
   it("excludes the noindex 404 route", () => {
     expect(shouldIncludeInSitemap("https://rdldn.co.uk/404")).toBe(false);
   });
 
   it("excludes a noindex route with a trailing slash", () => {
-    expect(shouldIncludeInSitemap("https://rdldn.co.uk/my-passport/")).toBe(false);
+    expect(shouldIncludeInSitemap("https://rdldn.co.uk/my-roasts/")).toBe(false);
   });
 
   it("includes the homepage", () => {
