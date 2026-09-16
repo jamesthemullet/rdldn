@@ -1,9 +1,7 @@
 # robots.txt
 
 User-agent: *
-Disallow: /404.html
-Disallow: /flags
-Disallow: /sign-in
+Disallow: /404
 Disallow: /api/
 
 # Allow all other pages

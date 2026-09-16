@@ -1,0 +1,35 @@
+name: E2E Full Browser Matrix
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    env:
+      SCORE_SECRET: test-secret-for-ci
+      PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
+      DATABASE_URL: postgres://user:password@localhost:5432/test-db
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Cache Playwright browsers
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-full-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+      - name: Install Playwright OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
+      - name: Run end-to-end tests (all browsers)
+        run: yarn test:e2e
