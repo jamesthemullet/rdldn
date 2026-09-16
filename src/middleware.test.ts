@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
-import { middleware } from "../middleware.js";
+import { blockBadBots } from "./middleware.js";
 
 const makeRequest = (userAgent: string): Request =>
 	new Request("http://localhost/", {
 		headers: { "user-agent": userAgent },
 	});
 
-describe("middleware", () => {
+describe("blockBadBots", () => {
 	test.each([
 		["Bytespider", "Mozilla/5.0 (compatible; Bytespider; spider-feedback@bytedance.com)"],
 		["AhrefsBot", "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)"],
@@ -17,7 +17,7 @@ describe("middleware", () => {
 		["Crawlers", "Mozilla/5.0 (compatible; Crawlers/1.0)"],
 		["Python-requests", "Python-requests/2.28.0"],
 	])("blocks %s user agent with 403", async (_botName, userAgent) => {
-		const response = middleware(makeRequest(userAgent));
+		const response = blockBadBots(makeRequest(userAgent));
 		expect(response).toBeInstanceOf(Response);
 		expect(response?.status).toBe(403);
 		const text = await response?.text();
@@ -30,12 +30,12 @@ describe("middleware", () => {
 		["curl", "curl/7.68.0"],
 		["empty string", ""],
 	])("allows %s user agent", (_label, userAgent) => {
-		const response = middleware(makeRequest(userAgent));
+		const response = blockBadBots(makeRequest(userAgent));
 		expect(response).toBeUndefined();
 	});
 
 	test("blocks when bot string appears in the middle of a user agent", () => {
-		const response = middleware(makeRequest("Custom AhrefsBot 2.0 spider"));
+		const response = blockBadBots(makeRequest("Custom AhrefsBot 2.0 spider"));
 		expect(response?.status).toBe(403);
 	});
 });
