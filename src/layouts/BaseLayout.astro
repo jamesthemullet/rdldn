@@ -29,6 +29,12 @@ const canonicalURL = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).href
   : Astro.url.href;
 
+const siteName = "Roast Dinners In London";
+const formattedTitle =
+  pageTitle && !pageTitle.toLowerCase().endsWith(siteName.toLowerCase())
+    ? `${pageTitle} | ${siteName}`
+    : pageTitle || siteName;
+
 ---
 
 <html lang="en">
@@ -70,14 +76,14 @@ const canonicalURL = Astro.site
     <meta name="theme-color" content="#ffffff" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <SEO
-      title={pageTitle || "Roast Dinners In London"}
+      title={formattedTitle}
       description={description ||
         "Lord Gravy bringing you a guide to the best and worst roast dinners in London."}
       canonical={canonicalURL}
       noindex={noindex}
       openGraph={{
         basic: {
-          title: pageTitle || "Roast Dinners In London",
+          title: formattedTitle,
           type: ogType,
           image: opengraphImage || logo1.src,
           url: canonicalURL,
@@ -94,7 +100,7 @@ const canonicalURL = Astro.site
       }}
       twitter={{
         card: "summary_large_image",
-        title: pageTitle || "Roast Dinners In London",
+        title: formattedTitle,
         description:
           description ||
           "Lord Gravy bringing you a guide to the best and worst roast dinners in London.",
