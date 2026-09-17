@@ -1,4 +1,4 @@
-const NOINDEX_PATHS = ["/my-roasts", "/sign-in", "/flags", "/my-passport", "/404"];
+const NOINDEX_PATHS = ["/my-roasts", "/sign-in", "/flags", "/404"];
 
 export const shouldIncludeInSitemap = (url: string): boolean => {
   const { pathname } = new URL(url);
