@@ -147,6 +147,33 @@ describe("best-roast-lists page", () => {
     expect(html).toContain("https://example.com/gravy-full.jpg");
   });
 
+  test("sanitizes the page content before rendering", async () => {
+    fetchGraphQLMock.mockImplementation(async (_query: string, variables?: { id?: string }) => {
+      if (variables?.id) {
+        return {
+          page: {
+            ...mockSinglePage,
+            content: '<p>Safe content</p><script>alert("xss")</script>'
+          }
+        };
+      }
+
+      return {
+        pages: {
+          nodes: mockPages
+        }
+      };
+    });
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./best-roast-lists.astro");
+    const html = await container.renderToString(Page);
+
+    expect(html).toContain("Safe content");
+    expect(html).not.toContain('<script>alert("xss")</script>');
+    expect(html).not.toContain('alert("xss")');
+  });
+
   test("logs and still renders when fetching best list pages fails", async () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => { });
 
