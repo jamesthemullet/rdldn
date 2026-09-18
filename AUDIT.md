@@ -75,7 +75,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 6. Security
 
-- [x] `src/pages/best-roast-lists.astro:80` renders `singlePage.content` via `set:html` without calling `sanitizeContent`, unlike every other CMS-content page — a compromised/malicious WP editor account could inject script/HTML that executes for all visitors; add sanitization (found: 2026-08-31) (resolved: 2026-09-18, PR #<pr-number>)
+- [x] `src/pages/best-roast-lists.astro:80` renders `singlePage.content` via `set:html` without calling `sanitizeContent`, unlike every other CMS-content page — a compromised/malicious WP editor account could inject script/HTML that executes for all visitors; add sanitization (found: 2026-08-31) (resolved: 2026-09-18, PR #667)
 - [ ] `src/pages/roastatistics.astro:89` has the same issue — `set:html={singlePage.content}` bypasses `sanitizeContent` — add sanitization (found: 2026-08-31)
 - [ ] `src/middleware.ts:4` only lists `/api/wishlist`, `/api/profile`, and `/my-roasts` as protected prefixes; `/api/visits` and `/api/visits/[slug]` aren't covered by middleware (each handler independently checks auth so there's no current bypass, but a future new route could easily forget the manual check) — centralize the protected-route list (found: 2026-08-31)
 - [ ] No Content-Security-Policy header is set in `vercel.json` (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy are already present and correctly apply to all routes via the `/(.*)` catch-all) — nice-to-have for a small project, add a CSP header (found: 2026-08-31)
