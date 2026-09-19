@@ -19,6 +19,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-14 — scheduled maintenance run: resolved responsive/UX item "Alpine has already been initialized" double-start console warning (section 5)
 - 2026-09-15 — scheduled maintenance run: resolved responsive/UX item "/search page example query names a real public figure with a defamatory claim" (section 5)
 - 2026-09-16 — scheduled maintenance run: resolved SEO item "root-level middleware.js bad-bot blocking logic is dead code" by wiring the check into `src/middleware.ts` and removing the orphaned file (section 4)
+- 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -75,7 +76,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 ## 6. Security
 
 - [ ] `src/pages/best-roast-lists.astro:80` renders `singlePage.content` via `set:html` without calling `sanitizeContent`, unlike every other CMS-content page — a compromised/malicious WP editor account could inject script/HTML that executes for all visitors; add sanitization (found: 2026-08-31)
-- [ ] `src/pages/roastatistics.astro:89` has the same issue — `set:html={singlePage.content}` bypasses `sanitizeContent` — add sanitization (found: 2026-08-31)
+- [x] `src/pages/roastatistics.astro:89` has the same issue — `set:html={singlePage.content}` bypasses `sanitizeContent` — add sanitization (found: 2026-08-31) (resolved: 2026-09-19, PR #TBD)
 - [ ] `src/middleware.ts:4` only lists `/api/wishlist`, `/api/profile`, and `/my-roasts` as protected prefixes; `/api/visits` and `/api/visits/[slug]` aren't covered by middleware (each handler independently checks auth so there's no current bypass, but a future new route could easily forget the manual check) — centralize the protected-route list (found: 2026-08-31)
 - [ ] No Content-Security-Policy header is set in `vercel.json` (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy are already present and correctly apply to all routes via the `/(.*)` catch-all) — nice-to-have for a small project, add a CSP header (found: 2026-08-31)
 
