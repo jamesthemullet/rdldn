@@ -19,6 +19,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-14 — scheduled maintenance run: resolved responsive/UX item "Alpine has already been initialized" double-start console warning (section 5)
 - 2026-09-15 — scheduled maintenance run: resolved responsive/UX item "/search page example query names a real public figure with a defamatory claim" (section 5)
 - 2026-09-16 — scheduled maintenance run: resolved SEO item "root-level middleware.js bad-bot blocking logic is dead code" by wiring the check into `src/middleware.ts` and removing the orphaned file (section 4)
+- 2026-09-17 — scheduled maintenance run: resolved SEO item "page titles inconsistently branded" by adding a shared title-suffix helper to `BaseLayout.astro` (section 4)
 - 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 - 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
 
@@ -65,7 +66,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] Root-level `./middleware.js` (bad-bot blocking logic) is not the file Astro actually loads (`src/middleware.ts` is, and only handles Clerk auth) and isn't wired into the `@astrojs/vercel` build — appears to be dead code, meaning bad bots aren't actually being blocked despite the code existing; wire it in or remove it (found: 2026-08-31) (resolved: 2026-09-16, PR #661)
 - [ ] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31)
 - [x] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31) (resolved: 2026-09-11, PR #651)
-- [ ] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31)
+- [x] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31) (resolved: 2026-09-17, PR #663)
 
 ## 5. Responsive / UX
 
