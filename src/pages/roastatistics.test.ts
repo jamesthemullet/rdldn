@@ -140,6 +140,51 @@ describe("roastatistics page", () => {
     expect(html).toContain("No comments yet. Be the first to comment!");
   });
 
+  test("sanitizes unsafe HTML in the page content", async () => {
+    fetchGraphQLMock.mockImplementation(async (query: string) => {
+      if (query.includes("query SinglePage($id: ID!)")) {
+        return {
+          page: {
+            pageId: "4102",
+            title: "Roastatistics",
+            content: '<p>Safe content.</p><script>alert("xss")</script>',
+            featuredImage: createFeaturedImageNode({
+              sourceUrl: "https://example.com/featured.jpg",
+              homepageUrl: "https://example.com/featured-homepage.jpg",
+            }),
+            comments: {
+              nodes: [],
+            },
+            seo: {
+              opengraphDescription: "Roastatistics description",
+              opengraphImage: {
+                sourceUrl: "https://example.com/og.jpg",
+              },
+            },
+          },
+        };
+      }
+
+      if (query.includes("pages(first: 100)")) {
+        return {
+          pages: {
+            nodes: [],
+          },
+        };
+      }
+
+      throw new Error(`Unhandled query in test mock: ${query.slice(0, 60)}`);
+    });
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./roastatistics.astro");
+    const html = await container.renderToString(Page);
+
+    expect(html).toContain("Safe content.");
+    expect(html).not.toContain('<script>alert("xss")</script>');
+    expect(html).not.toContain("alert(\"xss\")");
+  });
+
   test("continues rendering when roastatistics list query fails", async () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 

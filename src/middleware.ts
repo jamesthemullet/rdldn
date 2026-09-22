@@ -19,9 +19,9 @@ export const blockBadBots = (request: Request): Response | undefined => {
   }
 };
 
-const protectedRoutePrefixes = ["/api/wishlist", "/api/profile", "/my-roasts"];
+const protectedRoutePrefixes = ["/api/wishlist", "/api/profile", "/api/visits", "/my-roasts"];
 
-const isProtectedRoute = (request: Request) => {
+export const isProtectedRoute = (request: Request): boolean => {
   const { pathname } = new URL(request.url);
   return protectedRoutePrefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 };
