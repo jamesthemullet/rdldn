@@ -21,6 +21,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-16 — scheduled maintenance run: resolved SEO item "root-level middleware.js bad-bot blocking logic is dead code" by wiring the check into `src/middleware.ts` and removing the orphaned file (section 4)
 - 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 - 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
+- 2026-09-22 — scheduled maintenance run: resolved README alignment item "Commands table missing yarn lint:errors" (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -83,7 +84,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 7. README / feature alignment
 
-- [ ] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
+- [x] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31) (resolved: 2026-09-22, PR #TBD)
 - [ ] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31)
 - [ ] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31)
