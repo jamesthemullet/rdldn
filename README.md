@@ -26,6 +26,7 @@ The dev server starts at `http://localhost:4321`.
 | `yarn test:e2e` | Run end-to-end tests (Playwright) |
 | `yarn lint` | Check code with Biome |
 | `yarn lint:fix` | Auto-fix lint issues |
+| `yarn knip` | Find unused files, dependencies, and exports |
 | `yarn db:generate` | Generate Drizzle migrations |
 | `yarn db:migrate` | Run migrations |
 
