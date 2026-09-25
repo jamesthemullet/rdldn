@@ -22,6 +22,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-17 — scheduled maintenance run: resolved SEO item "page titles inconsistently branded" by adding a shared title-suffix helper to `BaseLayout.astro` (section 4)
 - 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 - 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
+- 2026-09-25 — scheduled maintenance run: resolved performance item "to-do-list.astro RandomPubPicker uses client:only instead of hydrating server-rendered markup" (section 3)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -49,7 +50,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 ## 3. Performance
 
 - [ ] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31)
-- [ ] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31)
+- [x] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31) (resolved: 2026-09-25, PR #676)
 - [ ] `src/lib/api.ts:1-65` (`fetchGraphQL`) only dedupes requests via a per-invocation in-memory `Map` — identical queries are refetched from WordPress on every cold/new serverless invocation; consider backing with `@vercel/kv` (already a dependency) (found: 2026-08-31)
 - [ ] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31)
 - [x] `src/pages/archive.astro:9` (`prerender = false`) calls `fetchPostsByDate` on every request with no `Cache-Control` header, unlike `annual-roastatistics.astro:14-19` which sets `s-maxage=3600, stale-while-revalidate=86400` — apply the same pattern (found: 2026-08-31) (resolved: 2026-09-01, PR #629)
