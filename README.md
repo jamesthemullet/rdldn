@@ -36,5 +36,6 @@ The dev server starts at `http://localhost:4321`.
 - **Testing:** Vitest (unit), Playwright (e2e)
 - **Linting:** Biome
 - **Database:** Neon (Postgres) + Drizzle ORM
+- **Caching:** `@vercel/kv` (guessthescore leaderboard/rate-limiting)
 - **Auth:** Clerk
 - **Deployment:** Vercel

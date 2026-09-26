@@ -22,6 +22,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-17 — scheduled maintenance run: resolved SEO item "page titles inconsistently branded" by adding a shared title-suffix helper to `BaseLayout.astro` (section 4)
 - 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 - 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
+- 2026-09-26 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @vercel/kv" (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -87,7 +88,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [ ] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
 - [ ] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31)
 - [ ] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31) (resolved: 2026-09-26, PR #TBD)
 - [ ] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31)
