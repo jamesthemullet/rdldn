@@ -32,6 +32,7 @@ The dev server starts at `http://localhost:4321`.
 ## Tech stack
 
 - **Framework:** Astro 6 with React and Alpine.js islands
+- **Maps:** Leaflet
 - **Styling:** CSS (per-component files)
 - **Testing:** Vitest (unit), Playwright (e2e)
 - **Linting:** Biome
