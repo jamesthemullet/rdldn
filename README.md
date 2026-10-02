@@ -27,6 +27,7 @@ The dev server starts at `http://localhost:4321`.
 | `yarn lint` | Check code with Biome |
 | `yarn lint:fix` | Auto-fix lint issues |
 | `yarn knip` | Find unused files, dependencies, and exports |
+| `yarn ts-check` | Type-check with Astro (`astro check`) |
 | `yarn db:generate` | Generate Drizzle migrations |
 | `yarn db:migrate` | Run migrations |
 
