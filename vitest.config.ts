@@ -11,7 +11,8 @@ const [{ default: astroPlugin }, config, { AstroLogger }] = await Promise.all([
 ]);
 
 const root = process.cwd();
-const { astroConfig } = await config.resolveConfig({ root }, "dev");
+// Disable the dev toolbar so the compiler doesn't add data-astro-source-* attributes to rendered HTML.
+const { astroConfig } = await config.resolveConfig({ root, devToolbar: { enabled: false } }, "dev");
 const settings = await config.createSettings(astroConfig, astroConfig.logLevel, root);
 const logger = new AstroLogger({
   level: "info",
