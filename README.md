@@ -42,5 +42,6 @@ The dev server starts at `http://localhost:4321`.
 - **Database:** Neon (Postgres) + Drizzle ORM
 - **Caching:** `@vercel/kv` (guessthescore leaderboard/rate-limiting)
 - **Third-party scripts:** `@astrojs/partytown` (offloads scripts like analytics to a web worker)
+- **Content:** `@astrojs/mdx` (MDX support)
 - **Auth:** Clerk
 - **Deployment:** Vercel
