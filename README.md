@@ -26,6 +26,9 @@ The dev server starts at `http://localhost:4321`.
 | `yarn test:e2e` | Run end-to-end tests (Playwright) |
 | `yarn lint` | Check code with Biome |
 | `yarn lint:fix` | Auto-fix lint issues |
+| `yarn lint:errors` | Check code with Biome, reporting only errors |
+| `yarn knip` | Find unused files, dependencies, and exports |
+| `yarn ts-check` | Type-check with Astro (`astro check`) |
 | `yarn db:generate` | Generate Drizzle migrations |
 | `yarn db:migrate` | Run migrations |
 
@@ -37,5 +40,7 @@ The dev server starts at `http://localhost:4321`.
 - **Testing:** Vitest (unit), Playwright (e2e)
 - **Linting:** Biome
 - **Database:** Neon (Postgres) + Drizzle ORM
+- **Caching:** `@vercel/kv` (guessthescore leaderboard/rate-limiting)
+- **Third-party scripts:** `@astrojs/partytown` (offloads scripts like analytics to a web worker)
 - **Auth:** Clerk
 - **Deployment:** Vercel

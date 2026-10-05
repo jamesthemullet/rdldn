@@ -23,6 +23,12 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 - 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
 - 2026-09-28 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention leaflet/@types/leaflet" (section 7)
+- 2026-09-22 — scheduled maintenance run: resolved README alignment item "Commands table missing yarn lint:errors" (section 7)
+- 2026-09-26 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @vercel/kv" (section 7)
+- 2026-09-24 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing yarn knip" (section 7)
+- 2026-09-23 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing `yarn ts-check`" (section 7)
+- 2026-09-25 — scheduled maintenance run: resolved performance item "to-do-list.astro RandomPubPicker uses client:only instead of hydrating server-rendered markup" (section 3)
+- 2026-10-04 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/partytown" (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -50,7 +56,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 ## 3. Performance
 
 - [ ] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31)
-- [ ] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31)
+- [x] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31) (resolved: 2026-09-25, PR #676)
 - [ ] `src/lib/api.ts:1-65` (`fetchGraphQL`) only dedupes requests via a per-invocation in-memory `Map` — identical queries are refetched from WordPress on every cold/new serverless invocation; consider backing with `@vercel/kv` (already a dependency) (found: 2026-08-31)
 - [ ] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31)
 - [x] `src/pages/archive.astro:9` (`prerender = false`) calls `fetchPostsByDate` on every request with no `Cache-Control` header, unlike `annual-roastatistics.astro:14-19` which sets `s-maxage=3600, stale-while-revalidate=86400` — apply the same pattern (found: 2026-08-31) (resolved: 2026-09-01, PR #629)
@@ -85,12 +91,12 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 7. README / feature alignment
 
-- [ ] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
-- [ ] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31)
-- [ ] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31)
-- [x] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31) (resolved: 2026-09-28, PR #678)
-- [ ] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31)
+- [x] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31) (resolved: 2026-09-26, PR #677)
+- [x] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31) (resolved: 2026-09-24, PR #675)
+- [x] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31) (resolved: 2026-09-23, PR #673)
+- [x] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31) (resolved: 2026-10-04, PR #682)
 - [ ] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
