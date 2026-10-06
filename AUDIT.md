@@ -30,6 +30,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-25 — scheduled maintenance run: resolved performance item "to-do-list.astro RandomPubPicker uses client:only instead of hydrating server-rendered markup" (section 3)
 - 2026-10-04 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/partytown" (section 7)
 - 2026-10-05 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/mdx" (section 7)
+- 2026-10-06 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention sanitize-html" (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -99,7 +100,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
 - [x] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31) (resolved: 2026-10-04, PR #682)
 - [x] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31) (resolved: 2026-10-05, PR #683)
-- [ ] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31) (resolved: 2026-10-06, PR #TBD)
 - [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31)
 - [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
