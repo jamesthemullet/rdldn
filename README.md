@@ -44,5 +44,6 @@ The dev server starts at `http://localhost:4321`.
 - **Third-party scripts:** `@astrojs/partytown` (offloads scripts like analytics to a web worker)
 - **Content:** `@astrojs/mdx` (MDX support)
 - **Sanitization:** `sanitize-html` (sanitizes CMS content rendered via `set:html`)
+- **Accessibility:** `accented` (dev-mode a11y issue highlighter)
 - **Auth:** Clerk
 - **Deployment:** Vercel

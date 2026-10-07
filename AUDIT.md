@@ -31,6 +31,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-10-04 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/partytown" (section 7)
 - 2026-10-05 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/mdx" (section 7)
 - 2026-10-06 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention sanitize-html" (section 7)
+- 2026-10-07 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention accented" (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -101,7 +102,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31) (resolved: 2026-10-04, PR #682)
 - [x] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31) (resolved: 2026-10-05, PR #683)
 - [x] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31) (resolved: 2026-10-06, PR #685)
-- [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31) (resolved: 2026-10-07, PR #686)
 - [ ] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31)
 - [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
 - [ ] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31)
