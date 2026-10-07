@@ -200,18 +200,18 @@
     is-docker "^4.0.0"
     package-manager-detector "^1.6.0"
 
-"@astrojs/vercel@11.0.10":
-  version "11.0.10"
-  resolved "https://registry.yarnpkg.com/@astrojs/vercel/-/vercel-11.0.10.tgz#37d8b5ee9d8ece205285c6b8918f56a1fadab1df"
-  integrity sha512-QqqG24F0D2Ho3zgleio5KImcE335HxnUjtSJX92FGPbg7DKiTk3urno2aqmBGIpVOq3AKtx6r1r7DudOK3xwnA==
+"@astrojs/vercel@11.0.11":
+  version "11.0.11"
+  resolved "https://registry.yarnpkg.com/@astrojs/vercel/-/vercel-11.0.11.tgz#329cc4616a1785ca5302cb589be249ed1348f036"
+  integrity sha512-OAh1CzR9eKlDBBpmp1VY95tFnAWDO46Ue7qxHjx0/2hdjHILvcZa6pnjjLOAOihuuR3CYpsZSPOscfJRKf8dOQ==
   dependencies:
     "@astrojs/internal-helpers" "0.11.0"
     "@vercel/analytics" "^2.0.1"
-    "@vercel/functions" "^3.7.5"
-    "@vercel/nft" "^1.10.2"
-    "@vercel/routing-utils" "^6.4.0"
+    "@vercel/functions" "^3.9.8"
+    "@vercel/nft" "^1.11.0"
+    "@vercel/routing-utils" "^6.6.0"
     esbuild "^0.28.0"
-    tinyglobby "^0.2.15"
+    tinyglobby "^0.2.17"
 
 "@astrojs/yaml2ts@^0.2.4":
   version "0.2.4"
@@ -1935,10 +1935,10 @@
   resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-2.0.1.tgz#d7d7bd37af7cfbeea95db5f132ae4889f4d26407"
   integrity sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==
 
-"@vercel/cli-config@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@vercel/cli-config/-/cli-config-0.3.0.tgz#3657e4e6886c6e5da93796c129e0d7958dad724c"
-  integrity sha512-kQLt5Pm8wKd7/imzDY9/9u0tf8OuRkAuXI+s7j057FSUrXapAmumJSKwDqnR4ZZqdWoUcNLlFAgVIAdiwcGTcw==
+"@vercel/cli-config@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@vercel/cli-config/-/cli-config-0.3.1.tgz#8baf0f6692c0b1d22d870cd9a57e34ab8d0485c0"
+  integrity sha512-sISbygqlFXYb8qfPu/+2Cf/A8IjrlAuZePdag3EDQr2PRA455s7UZtl9Ro674CWsB/saBRmz3jEkw0YsQs8OoQ==
   dependencies:
     xdg-app-paths "5"
     zod "4.1.11"
@@ -1950,12 +1950,12 @@
   dependencies:
     execa "5.1.1"
 
-"@vercel/functions@^3.7.5":
-  version "3.9.9"
-  resolved "https://registry.yarnpkg.com/@vercel/functions/-/functions-3.9.9.tgz#8f53f037e3f221ba868d4c1fc25c57f4cb8383c1"
-  integrity sha512-ocN/BNsIswReoyqfU1huilNyBM9tvY9kFXgYj0LlyPRATC1dt35gj2jN5hs9+Nag/CRyVQOX58L2FEhvL+0sSA==
+"@vercel/functions@^3.9.8":
+  version "3.9.11"
+  resolved "https://registry.yarnpkg.com/@vercel/functions/-/functions-3.9.11.tgz#593fff49e737d6eab48b85ea64b8d4adafffbe0e"
+  integrity sha512-DbqKqcbUHGBTYgHZieSNDuF1/L2iSPZV0OGm0Xkm/t+s61lFk4VX8yGQ22Og3WYGxypW1l4Elx1NP8BL928u8Q==
   dependencies:
-    "@vercel/oidc" "3.8.9"
+    "@vercel/oidc" "4.0.0"
 
 "@vercel/kv@^3.0.0":
   version "3.0.0"
@@ -1964,7 +1964,7 @@
   dependencies:
     "@upstash/redis" "^1.34.0"
 
-"@vercel/nft@^1.10.2":
+"@vercel/nft@^1.11.0":
   version "1.11.0"
   resolved "https://registry.yarnpkg.com/@vercel/nft/-/nft-1.11.0.tgz#ed2db36a90f54087f36c2d8aff9e91e289cdb3c0"
   integrity sha512-m1QFg+U+3yPOnP1xSYJ73UIRxLOXdts1JOhiOiyPYqEsALgrXFFINvgUaD6R6iNvaBFAjHllBCbkfx4FuOdpaA==
@@ -1982,16 +1982,16 @@
     picomatch "^4.0.4"
     resolve-from "^5.0.0"
 
-"@vercel/oidc@3.8.9":
-  version "3.8.9"
-  resolved "https://registry.yarnpkg.com/@vercel/oidc/-/oidc-3.8.9.tgz#4f93c73be236bcffb9176d29437f65fae3da025d"
-  integrity sha512-TcbdH3YtGS2KU98T99dN4sbf+E4vbJZsJTRN97wKQ7QWQ0BR7U02QX3KN4+5GHxBtKTj1c5CnvTTitc2ZRad0A==
+"@vercel/oidc@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@vercel/oidc/-/oidc-4.0.0.tgz#e53d15b994893e637314b83fa82e0e3444f9cc22"
+  integrity sha512-ko6ATeRUlHZMB5hLFdC7+/Q1dI2f3NX3gZHxtpALdkxurwjD5HFHGWYF+4o+4SF0E47jg6KzcHknmRpHcKgJ5A==
   dependencies:
-    "@vercel/cli-config" "0.3.0"
+    "@vercel/cli-config" "0.3.1"
     "@vercel/cli-exec" "1.0.1"
     jose "^5.9.6"
 
-"@vercel/routing-utils@^6.4.0":
+"@vercel/routing-utils@^6.6.0":
   version "6.6.0"
   resolved "https://registry.yarnpkg.com/@vercel/routing-utils/-/routing-utils-6.6.0.tgz#3fce2551cb5543569aa4a7afbebfa5e329d1d51e"
   integrity sha512-Z74zwk1ixcIsMN7Sp788SsZuOEqmJZ4N36WHusr6Vtck5eFAcjyD4oBpjDYRhkxovsh8t13s0L+uVbJYxUPa5w==
@@ -3738,10 +3738,10 @@ path-scurry@^2.0.2:
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.3.0.tgz#2b6a26a337737a8e1416f9272ed0766b1c0389f4"
   integrity sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==
 
-path-to-regexp@6.1.0, path-to-regexp@^8.0.0:
-  version "8.4.2"
-  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-8.4.2.tgz#795c420c4f7ca45c5b887366f622ee0c9852cccd"
-  integrity sha512-qRcuIdP69NPm4qbACK+aDogI5CBDMi1jKe0ry5rSQJz8JVLsC7jV8XpiJjGRLLol3N+R5ihGYcrPLTno6pAdBA==
+path-to-regexp@6.1.0, path-to-regexp@6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.3.0.tgz#2b6a26a337737a8e1416f9272ed0766b1c0389f4"
+  integrity sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==
 
 piccolore@^0.1.3:
   version "0.1.3"
