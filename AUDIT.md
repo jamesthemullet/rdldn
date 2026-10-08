@@ -22,10 +22,16 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-17 — scheduled maintenance run: resolved SEO item "page titles inconsistently branded" by adding a shared title-suffix helper to `BaseLayout.astro` (section 4)
 - 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
 - 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
+- 2026-09-28 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention leaflet/@types/leaflet" (section 7)
+- 2026-09-22 — scheduled maintenance run: resolved README alignment item "Commands table missing yarn lint:errors" (section 7)
+- 2026-09-26 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @vercel/kv" (section 7)
 - 2026-09-24 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing yarn knip" (section 7)
 - 2026-09-23 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing `yarn ts-check`" (section 7)
 - 2026-09-25 — scheduled maintenance run: resolved performance item "to-do-list.astro RandomPubPicker uses client:only instead of hydrating server-rendered markup" (section 3)
 - 2026-10-03 — scheduled maintenance run: resolved performance item "league-of-roasts.astro/find-a-roast.astro use client:only for SortPosts/SundayRoastPlanner" by switching to client:load and removing the blank-gap loading spinner (section 3)
+- 2026-10-04 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/partytown" (section 7)
+- 2026-10-05 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/mdx" (section 7)
+- 2026-10-06 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention sanitize-html" (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -88,14 +94,14 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 7. README / feature alignment
 
-- [ ] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
+- [x] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31) (resolved: 2026-09-26, PR #677)
 - [x] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31) (resolved: 2026-09-24, PR #675)
 - [x] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31) (resolved: 2026-09-23, PR #673)
-- [ ] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31) (resolved: 2026-10-04, PR #682)
+- [x] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31) (resolved: 2026-10-05, PR #683)
+- [x] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31) (resolved: 2026-10-06, PR #685)
 - [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
 - [ ] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31)
 - [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
