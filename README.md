@@ -43,6 +43,7 @@ The dev server starts at `http://localhost:4321`.
 - **Caching:** `@vercel/kv` (guessthescore leaderboard/rate-limiting)
 - **Third-party scripts:** `@astrojs/partytown` (offloads scripts like analytics to a web worker)
 - **Content:** `@astrojs/mdx` (MDX support)
+- **SEO:** `astro-seo` (per-page meta/Open Graph tags via `BaseLayout.astro`)
 - **Sanitization:** `sanitize-html` (sanitizes CMS content rendered via `set:html`)
 - **Auth:** Clerk
 - **Deployment:** Vercel
