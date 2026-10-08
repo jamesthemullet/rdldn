@@ -103,7 +103,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31) (resolved: 2026-10-05, PR #683)
 - [x] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31) (resolved: 2026-10-06, PR #685)
 - [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
-- [x] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31) (resolved: 2026-10-08, PR TBD)
+- [x] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31) (resolved: 2026-10-08, PR #690)
 - [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
 - [ ] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31)
 - [ ] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31)
