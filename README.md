@@ -13,6 +13,10 @@ yarn dev
 
 The dev server starts at `http://localhost:4321`.
 
+## Features
+
+- **Guess the Score:** a rating game (`/guessthescore`) — players see 10 roast dinner photos and guess the score Lord Gravy gave each one, then submit their total to a leaderboard
+
 ## Commands
 
 | Command | Action |
