@@ -13,6 +13,10 @@ yarn dev
 
 The dev server starts at `http://localhost:4321`.
 
+## Features
+
+- **Wishlist:** signed-in users can save roast dinner posts to a personal wishlist (`src/pages/api/wishlist.ts`) and revisit them later from `/my-roasts`
+
 ## Commands
 
 | Command | Action |
