@@ -80,6 +80,35 @@ jobs:
         run: npx playwright install-deps chromium
       - name: Run end-to-end tests (Chromium)
         run: yarn test:e2e --project=chromium
+  e2e-clerk:
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
+      PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_TEST_PUBLISHABLE_KEY }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_TEST_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Cache Playwright browsers
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Playwright OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - name: Run end-to-end tests with Clerk enabled
+        run: yarn test:e2e:clerk
   axe:
     runs-on: ubuntu-latest
     env:
