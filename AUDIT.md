@@ -33,6 +33,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-10-05 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/mdx" (section 7)
 - 2026-10-06 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention sanitize-html" (section 7)
 - 2026-10-08 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention astro-seo" (section 7)
+- 2026-10-10 — scheduled maintenance run: resolved README/feature alignment item "wishlist feature not mentioned in README" by adding a Features section (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -106,7 +107,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
 - [x] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31) (resolved: 2026-10-08, PR #690)
 - [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
-- [ ] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31)
+- [x] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-10, PR #TBD)
 - [ ] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31)
 - [ ] README has no "Features" section at all — only intro + commands + tech stack — despite a large surface of live discovery/ranking/stats pages (search, find-a-roast, maps, league-of-roasts, roastatistics, boroughs, chains); add a brief features overview (found: 2026-08-31)
 - [ ] `src/pages/to-do-list.astro` exists as a live route with no README mention — clarify whether it's user-facing or an internal planning page, and document or remove accordingly (found: 2026-08-31)
