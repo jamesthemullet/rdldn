@@ -5,9 +5,14 @@ if (!process.env.PREVIEW_URL) {
 }
 
 test.beforeEach(async ({ page }) => {
-  // Stop the newsletter popup opening over the page mid-test
+  // Stop the newsletter popup opening over the page mid-test. Init scripts run in every
+  // frame, and sandboxed third-party iframes (e.g. the Substack embed) throw on localStorage.
   await page.addInitScript(() => {
-    localStorage.setItem("newsletter-dismissed", String(Date.now()));
+    try {
+      localStorage.setItem("newsletter-dismissed", String(Date.now()));
+    } catch {
+      // not the top-level document
+    }
   });
 });
 
