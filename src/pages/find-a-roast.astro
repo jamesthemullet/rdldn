@@ -43,7 +43,7 @@ const { inflationIndex, mostRecentYear } = computeInflationIndex(allRoastPosts);
       Tell us where you are, what you want to spend, and how good it needs to be — we'll pick the
       top matches from {allRoastPosts.filter((p) => !p.closedDowns?.nodes[0]?.name).length} reviewed restaurants.
     </p>
-    <SundayRoastPlanner client:only="react" posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
+    <SundayRoastPlanner client:load posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
     <Newsletter />
   </div>
 </BaseLayout>

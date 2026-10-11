@@ -28,10 +28,13 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-24 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing yarn knip" (section 7)
 - 2026-09-23 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing `yarn ts-check`" (section 7)
 - 2026-09-25 — scheduled maintenance run: resolved performance item "to-do-list.astro RandomPubPicker uses client:only instead of hydrating server-rendered markup" (section 3)
+- 2026-10-03 — scheduled maintenance run: resolved performance item "league-of-roasts.astro/find-a-roast.astro use client:only for SortPosts/SundayRoastPlanner" by switching to client:load and removing the blank-gap loading spinner (section 3)
 - 2026-10-04 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/partytown" (section 7)
 - 2026-10-05 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/mdx" (section 7)
 - 2026-10-06 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention sanitize-html" (section 7)
 - 2026-10-07 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention accented" (section 7)
+- 2026-10-08 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention astro-seo" (section 7)
+- 2026-10-10 — scheduled maintenance run: resolved README/feature alignment item "wishlist feature not mentioned in README" by adding a Features section (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -58,7 +61,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 3. Performance
 
-- [ ] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31)
+- [x] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31) (resolved: 2026-10-03, PR #681)
 - [x] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31) (resolved: 2026-09-25, PR #676)
 - [ ] `src/lib/api.ts:1-65` (`fetchGraphQL`) only dedupes requests via a per-invocation in-memory `Map` — identical queries are refetched from WordPress on every cold/new serverless invocation; consider backing with `@vercel/kv` (already a dependency) (found: 2026-08-31)
 - [ ] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31)
@@ -102,10 +105,10 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31) (resolved: 2026-10-04, PR #682)
 - [x] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31) (resolved: 2026-10-05, PR #683)
 - [x] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31) (resolved: 2026-10-06, PR #685)
-- [x] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31) (resolved: 2026-10-07, PR #686)
-- [ ] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31) (resolved: 2026-10-08, PR #690)
 - [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
-- [ ] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31)
+- [x] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-10, PR #694)
 - [ ] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31)
 - [ ] README has no "Features" section at all — only intro + commands + tech stack — despite a large surface of live discovery/ranking/stats pages (search, find-a-roast, maps, league-of-roasts, roastatistics, boroughs, chains); add a brief features overview (found: 2026-08-31)
 - [ ] `src/pages/to-do-list.astro` exists as a live route with no README mention — clarify whether it's user-facing or an internal planning page, and document or remove accordingly (found: 2026-08-31)

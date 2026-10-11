@@ -151,10 +151,8 @@ test("league of roasts table renders, filters, and reveals extra data", async ({
   await page.goto("/league-of-roasts");
   await expect(page).toHaveURL(/\/league-of-roasts\/?$/);
 
-  const sortPostsContainer = page.locator(".sort-posts-container");
-  await expect(sortPostsContainer).toBeVisible({ timeout: 15000 });
-
   const leagueItems = page.locator("ol.league-of-roasts li.grid-item");
+  await expect(leagueItems.first()).toBeVisible({ timeout: 15000 });
   const initialCount = await leagueItems.count();
   expect(initialCount).toBeGreaterThan(0);
 

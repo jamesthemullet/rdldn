@@ -118,7 +118,6 @@ describe("league-of-roasts page", () => {
 
     expect(html).toContain("League of Roasts");
     expect(html).toContain("League intro");
-    expect(html).toContain("Loading the league of roasts...");
     expect(html).toContain("Any comments?");
     expect(html).toContain("No comments yet. Be the first to comment!");
 
