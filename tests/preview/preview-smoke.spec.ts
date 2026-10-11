@@ -4,7 +4,23 @@ if (!process.env.PREVIEW_URL) {
   throw new Error("PREVIEW_URL must be set to the deployment URL to test");
 }
 
+const previewOrigin = new URL(process.env.PREVIEW_URL).origin;
+const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+
 test.beforeEach(async ({ page }) => {
+  // Send the Vercel deployment protection bypass header to the preview origin only. Adding it
+  // to every request (extraHTTPHeaders) forces CORS preflights on third-party scripts like
+  // Clerk, which fail, and leaks the secret to those hosts.
+  if (bypassSecret) {
+    await page.route(
+      (url) => url.origin === previewOrigin,
+      (route) =>
+        route.continue({
+          headers: { ...route.request().headers(), "x-vercel-protection-bypass": bypassSecret },
+        })
+    );
+  }
+
   // Stop the newsletter popup opening over the page mid-test. Init scripts run in every
   // frame, and sandboxed third-party iframes (e.g. the Substack embed) throw on localStorage.
   await page.addInitScript(() => {
