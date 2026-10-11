@@ -4,21 +4,21 @@ if (!process.env.PREVIEW_URL) {
   throw new Error("PREVIEW_URL must be set to the deployment URL to test");
 }
 
-const previewOrigin = new URL(process.env.PREVIEW_URL).origin;
 const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
 test.beforeEach(async ({ page }) => {
-  // Send the Vercel deployment protection bypass header to the preview origin only. Adding it
-  // to every request (extraHTTPHeaders) forces CORS preflights on third-party scripts like
-  // Clerk, which fail, and leaks the secret to those hosts.
+  // Get past Vercel deployment protection by having Vercel set its bypass cookie on the browser
+  // context. The cookie covers every preview-origin request, including service worker scripts
+  // and worker fetches that page.route can't intercept. Sending the header on every request
+  // instead (extraHTTPHeaders) forces CORS preflights on third-party scripts like Clerk, which
+  // fail, and leaks the secret to those hosts.
   if (bypassSecret) {
-    await page.route(
-      (url) => url.origin === previewOrigin,
-      (route) =>
-        route.continue({
-          headers: { ...route.request().headers(), "x-vercel-protection-bypass": bypassSecret },
-        })
-    );
+    await page.request.get("/", {
+      headers: {
+        "x-vercel-protection-bypass": bypassSecret,
+        "x-vercel-set-bypass-cookie": "true",
+      },
+    });
   }
 
   // Stop the newsletter popup opening over the page mid-test. Init scripts run in every
@@ -39,6 +39,11 @@ test("home page renders without server or console errors", async ({ page }) => {
   });
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
+  // Console "Failed to load resource" messages don't include the URL, so record failed responses
+  const failedResponses: string[] = [];
+  page.on("response", (res) => {
+    if (res.status() >= 400) failedResponses.push(`${res.status()} ${res.url()}`);
+  });
 
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
@@ -50,7 +55,10 @@ test("home page renders without server or console errors", async ({ page }) => {
   ).toBeVisible();
 
   expect(pageErrors).toEqual([]);
-  expect(consoleErrors.filter((text) => !text.includes("substack.com"))).toEqual([]);
+  expect(
+    consoleErrors.filter((text) => !text.includes("substack.com")),
+    `failed responses:\n${failedResponses.join("\n")}`
+  ).toEqual([]);
 });
 
 test("a review page renders from the server", async ({ page }) => {

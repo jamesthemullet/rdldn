@@ -12,8 +12,7 @@ export default defineConfig({
     baseURL: process.env.PREVIEW_URL,
     trace: "on-first-retry",
     headless: true,
-    // The Vercel protection bypass header is added per-request in tests/preview/preview-smoke.spec.ts,
-    // scoped to the preview origin only.
+    // The Vercel protection bypass cookie is set in a beforeEach in tests/preview/preview-smoke.spec.ts
   },
   projects: [
     {
