@@ -49,5 +49,6 @@ The dev server starts at `http://localhost:4321`.
 - **Content:** `@astrojs/mdx` (MDX support)
 - **SEO:** `astro-seo` (per-page meta/Open Graph tags via `BaseLayout.astro`)
 - **Sanitization:** `sanitize-html` (sanitizes CMS content rendered via `set:html`)
+- **Accessibility:** `accented` (dev-mode a11y issue highlighter)
 - **Auth:** Clerk
 - **Deployment:** Vercel
