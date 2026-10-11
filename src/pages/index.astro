@@ -365,26 +365,6 @@ const [locationPages, findYourFavouriteRoastPages] = await Promise.all([
   </div>
   <Newsletter />
   <NewsletterPopup />
-  <script is:inline>
-    document.addEventListener("alpine:init", () => {
-      Alpine.data("homepageHighlights", () => ({
-        bestRoasts: [],
-        features: [],
-        roastStatistics: [],
-        async init() {
-          try {
-            const response = await fetch("/api/homepage-highlights.json");
-            const data = await response.json();
-            this.bestRoasts = data.bestRoasts || [];
-            this.features = data.features || [];
-            this.roastStatistics = data.roastStatistics || [];
-          } catch (error) {
-            console.error("Error fetching homepage highlights:", error);
-          }
-        },
-      }));
-    });
-  </script>
   <script lang="ts">
     document.addEventListener("DOMContentLoaded", function () {
       const dropdownButton = document.getElementById("dropdown-btn");

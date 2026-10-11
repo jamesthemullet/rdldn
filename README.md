@@ -16,6 +16,7 @@ The dev server starts at `http://localhost:4321`.
 ## Features
 
 - **Guess the Score:** a rating game (`/guessthescore`) — players see 10 roast dinner photos and guess the score Lord Gravy gave each one, then submit their total to a leaderboard
+- **Wishlist:** signed-in users can save roast dinner posts to a personal wishlist (`src/pages/api/wishlist.ts`) and revisit them later from `/my-roasts`
 
 ## Commands
 
@@ -49,5 +50,6 @@ The dev server starts at `http://localhost:4321`.
 - **Content:** `@astrojs/mdx` (MDX support)
 - **SEO:** `astro-seo` (per-page meta/Open Graph tags via `BaseLayout.astro`)
 - **Sanitization:** `sanitize-html` (sanitizes CMS content rendered via `set:html`)
+- **Accessibility:** `accented` (dev-mode a11y issue highlighter)
 - **Auth:** Clerk
 - **Deployment:** Vercel
