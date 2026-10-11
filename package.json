@@ -48,7 +48,7 @@
     "@astrojs/partytown": "2.1.8",
     "@astrojs/react": "7.0.1",
     "@astrojs/sitemap": "3.7.4",
-    "@astrojs/vercel": "11.0.13",
+    "@astrojs/vercel": "11.0.12",
     "@clerk/astro": "^4.0.0",
     "@neondatabase/serverless": "^1.1.0",
     "@types/alpinejs": "^3.13.11",

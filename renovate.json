@@ -17,6 +17,11 @@
     {
       "matchPackageNames": ["htmlparser2"],
       "enabled": false
+    },
+    {
+      "description": "11.0.13 statically imports rolldown into the server entry, crashing Vercel functions with FUNCTION_INVOCATION_FAILED",
+      "matchPackageNames": ["@astrojs/vercel"],
+      "allowedVersions": "!/^11\\.0\\.13$/"
     }
   ],
   "rebaseWhen": "conflicted"
