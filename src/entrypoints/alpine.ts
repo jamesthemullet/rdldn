@@ -1,4 +1,5 @@
 import type { Alpine as AlpineInstance } from "alpinejs";
+import type { BestRoastHighlight, HighlightItem, HomepageHighlights } from "../lib/homepage-highlights";
 
 type WishlistButtonProps = {
   postSlug: string;
@@ -209,4 +210,23 @@ export default (alpine: AlpineInstance) => {
       },
     };
   });
+
+  alpine.data("homepageHighlights", () => ({
+    bestRoasts: [] as BestRoastHighlight[],
+    features: [] as HighlightItem[],
+    roastStatistics: [] as HighlightItem[],
+
+    async init() {
+      try {
+        const res = await fetch("/api/homepage-highlights.json");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: Partial<HomepageHighlights> = await res.json();
+        this.bestRoasts = data.bestRoasts ?? [];
+        this.features = data.features ?? [];
+        this.roastStatistics = data.roastStatistics ?? [];
+      } catch (error) {
+        console.error("Error fetching homepage highlights:", error);
+      }
+    },
+  }));
 };
