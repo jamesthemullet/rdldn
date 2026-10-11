@@ -39,10 +39,13 @@ test("home page renders without server or console errors", async ({ page }) => {
   });
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
-  // Console "Failed to load resource" messages don't include the URL, so record failed responses
+  // Console "Failed to load resource" messages don't include the URL, so check failed responses
+  // by URL instead. Substack's newsletter embed 403s automated browsers from CI runners.
   const failedResponses: string[] = [];
   page.on("response", (res) => {
-    if (res.status() >= 400) failedResponses.push(`${res.status()} ${res.url()}`);
+    if (res.status() >= 400 && !res.url().includes("substack.com")) {
+      failedResponses.push(`${res.status()} ${res.url()}`);
+    }
   });
 
   const response = await page.goto("/");
@@ -55,9 +58,11 @@ test("home page renders without server or console errors", async ({ page }) => {
   ).toBeVisible();
 
   expect(pageErrors).toEqual([]);
+  expect(failedResponses).toEqual([]);
   expect(
-    consoleErrors.filter((text) => !text.includes("substack.com")),
-    `failed responses:\n${failedResponses.join("\n")}`
+    consoleErrors.filter(
+      (text) => !text.includes("substack.com") && !text.startsWith("Failed to load resource")
+    )
   ).toEqual([]);
 });
 
