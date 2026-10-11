@@ -36,6 +36,21 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Run Astro Type Check
         run: yarn ts-check
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_GRAPHQL_URL: https://blog.rdldn.co.uk/graphql
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run production build
+        run: yarn build
   unit-tests:
     runs-on: ubuntu-latest
     env:
