@@ -128,7 +128,8 @@ describe("index page", () => {
     expect(html).toContain("Features:");
     expect(html).toContain("Roastatistics:");
     expect(html).toContain('x-data="homepageHighlights"');
-    expect(html).toContain("/api/homepage-highlights.json");
+    // Registered in the Alpine entrypoint, not via an inline alpine:init listener
+    expect(html).not.toContain('Alpine.data("homepageHighlights"');
 
     expect(html).not.toContain("Page 4102");
   });
