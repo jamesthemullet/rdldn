@@ -1805,9 +1805,9 @@
     undici-types "~8.9.0"
 
 "@types/node@^24.10.0", "@types/node@^24.9.2":
-  version "24.19.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.19.1.tgz#3a1c3ed9e9fc94fe48d4a72d83dfd0bfcf379c62"
-  integrity sha512-aS3/DG0oM05K0RIXXP+hKjinGG5IgSSVGzswZxW3O0sS3pH4/fycXundUC9XsszgKCk4gHXylTEK6hyFxVxnoQ==
+  version "24.19.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-24.19.2.tgz#8718eedbc0f89648de6525be9f4a9c61cdbaa502"
+  integrity sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==
   dependencies:
     undici-types ">=7.24.0 <7.24.7"
 
@@ -3925,9 +3925,9 @@ sitemap@^9.0.0:
     sax "^1.4.1"
 
 smol-toml@>=1.6.1, smol-toml@^1.8.0, smol-toml@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/smol-toml/-/smol-toml-1.9.0.tgz#f36b8dc7eb621c541c48f9fba6925dab95172817"
-  integrity sha512-hpd+HLON7HdZXqYchMM/+LaTTbdK0AU3NngIJ4KVyWbY9bfQqdL9cD+4yf6dUoU2Ap4VsU0JkQi6FxAI1B2mXQ==
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/smol-toml/-/smol-toml-1.9.1.tgz#1262834a084c3ce2985900450956a580f95cf243"
+  integrity sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==
 
 source-map-js@^1.0.1, source-map-js@^1.2.1, source-map-js@^1.2.2:
   version "1.2.2"
