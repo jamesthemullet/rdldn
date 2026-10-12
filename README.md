@@ -18,6 +18,13 @@ The dev server starts at `http://localhost:4321`.
 - **Guess the Score:** a rating game (`/guessthescore`) — players see 10 roast dinner photos and guess the score Lord Gravy gave each one, then submit their total to a leaderboard
 - **Wishlist:** signed-in users can save roast dinner posts to a personal wishlist (`src/pages/api/wishlist.ts`) and revisit them later from `/my-roasts`
 - **My Roasts:** signed-in users can track which roast dinners they've visited (`src/pages/api/visits.ts`) alongside their wishlist, viewable at `/my-roasts` (`src/pages/my-roasts.astro`)
+- **Search:** full-text search across all reviewed roast dinners by pub, area, or keyword (`/search`)
+- **Find a Roast:** a Sunday Roast Planner that answers a few quick questions to recommend a roast (`/find-a-roast`)
+- **Maps:** an interactive map of every reviewed roast dinner location (`/maps`)
+- **League of Roasts:** a sortable, filterable table ranking every reviewed roast dinner (`/league-of-roasts`)
+- **Roastatistics:** site-wide stats and a price inflation index tracking roast prices over time (`/roastatistics`)
+- **Boroughs:** roast dinners grouped and ranked by London borough (`/boroughs`)
+- **Chains:** roast dinners grouped by restaurant/pub chain (`/chains`)
 
 ## Commands
 
