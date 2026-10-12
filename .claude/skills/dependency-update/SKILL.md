@@ -56,8 +56,9 @@ For **every** entry already in `resolutions` (not just ones touched above):
 1. Remove the entry from `package.json`, run `yarn install`.
 2. Check what got resolved: `yarn why <pkg>` and re-run
    `yarn audit --level high --json` filtered to that package.
-3. Keep the removal if no high/critical advisory reappears **and** nothing breaks (see step 5).
-   Otherwise restore the entry exactly as it was.
+3. Keep the removal only if the full audit (all severities) has no advisory that wasn't there
+   before — a resolution that only suppresses a moderate is still doing its job — **and**
+   nothing breaks (see step 5). Otherwise restore the entry exactly as it was.
 
 Do these one at a time so each decision is attributable. Resolutions that exist for a reason
 other than security (e.g. a pinned exact version like `"htmlparser2": "10.1.0"` used to dodge a
