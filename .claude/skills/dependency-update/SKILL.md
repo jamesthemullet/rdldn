@@ -53,9 +53,9 @@ with a short reason.
 
 For **every** entry already in `resolutions` (not just ones touched above):
 
-1. Remove the entry from `package.json`, run `yarn install`.
-2. Check what got resolved: `yarn why <pkg>` and re-run
-   `yarn audit --level high --json` filtered to that package.
+1. Remove the entry from `package.json` **and** that package's blocks from `yarn.lock` (otherwise
+   the lockfile keeps the forced version and the test proves nothing), then run `yarn install`.
+2. Check what got resolved (`yarn why <pkg>`) and re-run the full `yarn audit --json`.
 3. Keep the removal only if the full audit (all severities) has no advisory that wasn't there
    before — a resolution that only suppresses a moderate is still doing its job — **and**
    nothing breaks (see step 5). Otherwise restore the entry exactly as it was.
