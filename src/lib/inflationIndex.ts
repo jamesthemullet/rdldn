@@ -1,5 +1,6 @@
 import type { Post } from "../types";
 import { getAllRoastDinnerPosts } from "./getAllRoastDinnerPosts";
+import { parsePrice } from "./parsePrice";
 
 type InflationIndexResult = {
   inflationIndex: Record<string, number>;
@@ -17,16 +18,11 @@ export function computeInflationIndex(posts: Post[]): InflationIndexResult {
 
   for (const post of posts) {
     const year = post.yearsOfVisit?.nodes[0]?.name;
-    const priceStr = post.prices?.nodes[0]?.name;
-    if (!year || !priceStr) continue;
-    const match = priceStr.match(/[\d,.]+/);
-    if (!match) continue;
-    const price = Number.parseFloat(match[0].replace(",", ""));
-    if (!Number.isNaN(price) && price > 0) {
-      const arr = yearPrices.get(year) ?? [];
-      arr.push(price);
-      yearPrices.set(year, arr);
-    }
+    const price = parsePrice(post.prices?.nodes[0]?.name);
+    if (!year || !price) continue;
+    const arr = yearPrices.get(year) ?? [];
+    arr.push(price);
+    yearPrices.set(year, arr);
   }
 
   const yearMedians: Record<string, number> = {};

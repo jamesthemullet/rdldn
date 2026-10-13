@@ -39,6 +39,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-10-10 — scheduled maintenance run: resolved README/feature alignment item "wishlist feature not mentioned in README" by adding a Features section (section 7)
 - 2026-10-11 — scheduled maintenance run: resolved README/feature alignment item "my-roasts/visit-tracking feature not mentioned in README" (section 7)
 - 2026-10-12 — scheduled maintenance run: resolved README/feature alignment item "README has no Features section covering discovery/ranking/stats pages" by adding Search, Find a Roast, Maps, League of Roasts, Roastatistics, Boroughs, and Chains to the Features section (section 7)
+- 2026-10-13 — scheduled maintenance run: resolved code quality item "valueScore.ts/inflationIndex.ts/sunday-roast-planner.tsx duplicate price-parsing logic" by extracting a shared `parsePrice` helper (section 8)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -120,7 +121,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 8. Code quality
 
-- [ ] `src/lib/valueScore.ts:11-17`, `src/lib/inflationIndex.ts:22-24`, and `sunday-roast-planner.tsx:28-31` each reimplement "extract price from a `£x.xx` string" — extract a single shared `parsePrice` helper (found: 2026-08-31)
+- [x] `src/lib/valueScore.ts:11-17`, `src/lib/inflationIndex.ts:22-24`, and `sunday-roast-planner.tsx:28-31` each reimplement "extract price from a `£x.xx` string" — extract a single shared `parsePrice` helper (found: 2026-08-31) (resolved: 2026-10-13, PR #705)
 - [ ] `src/components/search/search.astro:87-101` (`getScoreColor`) and `src/components/roast-map/roast-map.tsx:24-36` (`getMarkerColor`) contain byte-for-byte identical rating-to-colour threshold tables — extract one shared helper (found: 2026-08-31)
 - [ ] `src/pages/api/wishlist.ts:47` and `src/pages/api/visits.ts:44` cast `await context.request.json()` directly `as WishlistPostBody`/`as VisitsPostBody` with no runtime validation of the request body — add validation (found: 2026-08-31)
 - [ ] `src/lib/homepage-highlights.ts:56,150,152` uses `array.sort(() => Math.random() - 0.5)` to shuffle — this is a biased shuffle, not a uniform permutation; replace with a Fisher-Yates shuffle (found: 2026-08-31)
