@@ -1,4 +1,5 @@
 import type { Post } from "../types";
+import { parsePrice } from "./parsePrice";
 
 export type ValueScoredPost = {
   post: Post;
@@ -6,14 +7,6 @@ export type ValueScoredPost = {
   adjustedPrice: number;
   rating: number;
   valueScore: number;
-};
-
-const parsePrice = (priceStr: string | undefined): number | null => {
-  if (!priceStr) return null;
-  const match = priceStr.match(/[\d,.]+/);
-  if (!match) return null;
-  const price = Number.parseFloat(match[0].replace(",", ""));
-  return !Number.isNaN(price) && price > 0 ? price : null;
 };
 
 export function computeValueScores(
