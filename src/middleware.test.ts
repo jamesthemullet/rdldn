@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { blockBadBots } from "./middleware.js";
+import { blockBadBots, isProtectedRoute } from "./middleware.js";
 
 const makeRequest = (userAgent: string): Request =>
 	new Request("http://localhost/", {
@@ -38,4 +38,26 @@ describe("blockBadBots", () => {
 		const response = blockBadBots(makeRequest("Custom AhrefsBot 2.0 spider"));
 		expect(response?.status).toBe(403);
 	});
+});
+
+const makeUrlRequest = (pathname: string): Request => new Request(`http://localhost${pathname}`);
+
+describe("isProtectedRoute", () => {
+	test.each([
+		["/api/wishlist"],
+		["/api/wishlist/some-slug"],
+		["/api/profile"],
+		["/api/visits"],
+		["/api/visits/some-slug"],
+		["/my-roasts"],
+	])("protects %s", (pathname) => {
+		expect(isProtectedRoute(makeUrlRequest(pathname))).toBe(true);
+	});
+
+	test.each([["/"], ["/api/homepage-highlights.json"], ["/sign-in"], ["/league-of-roasts"]])(
+		"does not protect %s",
+		(pathname) => {
+			expect(isProtectedRoute(makeUrlRequest(pathname))).toBe(false);
+		}
+	);
 });

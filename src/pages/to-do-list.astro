@@ -32,7 +32,7 @@ const pubNames = extractListItems(sanitizedContent);
   />
   <div class="container">
     <div set:html={sanitizedContent} />
-    <RandomPubPicker pubs={pubNames} client:only="react" />
+    <RandomPubPicker pubs={pubNames} client:load />
     <Newsletter />
 
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />

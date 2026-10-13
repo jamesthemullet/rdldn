@@ -84,59 +84,7 @@ const roastListStructuredData = {
   <div class="container league-container">
     <div set:html={sanitizeContent(singlePage.content)} />
 
-    <div class="sort-posts-loading" id="sort-posts-loading">
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <p>Loading the league of roasts...</p>
-      </div>
-    </div>
-
-    <div
-      class="sort-posts-container"
-      style="opacity: 0; position: absolute; visibility: hidden;"
-    >
-      <SortPosts client:only="react" posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
-    </div>
-
-    <script lang="ts">
-      document.addEventListener("DOMContentLoaded", () => {
-        const loadingElement = document.getElementById("sort-posts-loading");
-        const containerElement = document.querySelector(".sort-posts-container");
-
-        if (!loadingElement || !containerElement) return;
-
-        const showComponent = () => {
-          loadingElement.style.display = "none";
-          containerElement.style.position = "static";
-          containerElement.style.visibility = "visible";
-          containerElement.style.opacity = "1";
-          containerElement.style.transition = "opacity 0.2s ease-in-out";
-        };
-
-        if (containerElement.querySelector("astro-island > div")) {
-          showComponent();
-          return;
-        }
-
-        const observer = new MutationObserver(() => {
-          if (containerElement.querySelector("astro-island > div")) {
-            observer.disconnect();
-            showComponent();
-          }
-        });
-
-        observer.observe(containerElement, { childList: true, subtree: true });
-
-        // Fallback after 3s if React never mounts
-        setTimeout(() => {
-          observer.disconnect();
-          loadingElement.style.display = "none";
-          containerElement.style.position = "static";
-          containerElement.style.visibility = "visible";
-          containerElement.style.opacity = "1";
-        }, 3000);
-      });
-    </script>
+    <SortPosts client:load posts={allRoastPosts} inflationIndex={inflationIndex} mostRecentYear={mostRecentYear} />
 
     <Newsletter />
     <Comments threadedComments={threadedComments} postId={singlePage.pageId} />

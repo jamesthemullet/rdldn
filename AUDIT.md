@@ -20,6 +20,25 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-09-15 — scheduled maintenance run: resolved responsive/UX item "/search page example query names a real public figure with a defamatory claim" (section 5)
 - 2026-09-16 — scheduled maintenance run: resolved SEO item "root-level middleware.js bad-bot blocking logic is dead code" by wiring the check into `src/middleware.ts` and removing the orphaned file (section 4)
 - 2026-09-18 — scheduled maintenance run: resolved security item "best-roast-lists.astro renders singlePage.content via set:html without calling sanitizeContent" (section 6)
+- 2026-09-17 — scheduled maintenance run: resolved SEO item "page titles inconsistently branded" by adding a shared title-suffix helper to `BaseLayout.astro` (section 4)
+- 2026-09-19 — scheduled maintenance run: resolved security item "`roastatistics.astro` renders CMS content via `set:html` without `sanitizeContent`" (section 6)
+- 2026-09-21 — scheduled maintenance run: resolved security item "middleware.ts protected-route list doesn't cover /api/visits" (section 6)
+- 2026-09-28 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention leaflet/@types/leaflet" (section 7)
+- 2026-09-22 — scheduled maintenance run: resolved README alignment item "Commands table missing yarn lint:errors" (section 7)
+- 2026-09-26 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @vercel/kv" (section 7)
+- 2026-09-24 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing yarn knip" (section 7)
+- 2026-09-23 — scheduled maintenance run: resolved README/feature alignment item "Commands table missing `yarn ts-check`" (section 7)
+- 2026-09-25 — scheduled maintenance run: resolved performance item "to-do-list.astro RandomPubPicker uses client:only instead of hydrating server-rendered markup" (section 3)
+- 2026-10-03 — scheduled maintenance run: resolved performance item "league-of-roasts.astro/find-a-roast.astro use client:only for SortPosts/SundayRoastPlanner" by switching to client:load and removing the blank-gap loading spinner (section 3)
+- 2026-10-04 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/partytown" (section 7)
+- 2026-10-05 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention @astrojs/mdx" (section 7)
+- 2026-10-06 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention sanitize-html" (section 7)
+- 2026-10-07 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention accented" (section 7)
+- 2026-10-08 — scheduled maintenance run: resolved README/feature alignment item "Tech stack section doesn't mention astro-seo" (section 7)
+- 2026-10-09 — scheduled maintenance run: resolved README/feature alignment item "guessthescore game feature not mentioned in README" by adding a Features section (section 7)
+- 2026-10-10 — scheduled maintenance run: resolved README/feature alignment item "wishlist feature not mentioned in README" by adding a Features section (section 7)
+- 2026-10-11 — scheduled maintenance run: resolved README/feature alignment item "my-roasts/visit-tracking feature not mentioned in README" (section 7)
+- 2026-10-12 — scheduled maintenance run: resolved README/feature alignment item "README has no Features section covering discovery/ranking/stats pages" by adding Search, Find a Roast, Maps, League of Roasts, Roastatistics, Boroughs, and Chains to the Features section (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -46,8 +65,8 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 3. Performance
 
-- [ ] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31)
-- [ ] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31)
+- [x] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31) (resolved: 2026-10-03, PR #681)
+- [x] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31) (resolved: 2026-09-25, PR #676)
 - [ ] `src/lib/api.ts:1-65` (`fetchGraphQL`) only dedupes requests via a per-invocation in-memory `Map` — identical queries are refetched from WordPress on every cold/new serverless invocation; consider backing with `@vercel/kv` (already a dependency) (found: 2026-08-31)
 - [ ] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31)
 - [x] `src/pages/archive.astro:9` (`prerender = false`) calls `fetchPostsByDate` on every request with no `Cache-Control` header, unlike `annual-roastatistics.astro:14-19` which sets `s-maxage=3600, stale-while-revalidate=86400` — apply the same pattern (found: 2026-08-31) (resolved: 2026-09-01, PR #629)
@@ -64,7 +83,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] Root-level `./middleware.js` (bad-bot blocking logic) is not the file Astro actually loads (`src/middleware.ts` is, and only handles Clerk auth) and isn't wired into the `@astrojs/vercel` build — appears to be dead code, meaning bad bots aren't actually being blocked despite the code existing; wire it in or remove it (found: 2026-08-31) (resolved: 2026-09-16, PR #661)
 - [ ] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31)
 - [x] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31) (resolved: 2026-09-11, PR #651)
-- [ ] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31)
+- [x] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31) (resolved: 2026-09-17, PR #663)
 
 ## 5. Responsive / UX
 
@@ -75,27 +94,27 @@ audit adds new findings to the bottom of each section and leaves checked items a
 
 ## 6. Security
 
-- [x] `src/pages/best-roast-lists.astro:80` renders `singlePage.content` via `set:html` without calling `sanitizeContent`, unlike every other CMS-content page — a compromised/malicious WP editor account could inject script/HTML that executes for all visitors; add sanitization (found: 2026-08-31) (resolved: 2026-09-18, PR #667)
-- [ ] `src/pages/roastatistics.astro:89` has the same issue — `set:html={singlePage.content}` bypasses `sanitizeContent` — add sanitization (found: 2026-08-31)
-- [ ] `src/middleware.ts:4` only lists `/api/wishlist`, `/api/profile`, and `/my-roasts` as protected prefixes; `/api/visits` and `/api/visits/[slug]` aren't covered by middleware (each handler independently checks auth so there's no current bypass, but a future new route could easily forget the manual check) — centralize the protected-route list (found: 2026-08-31)
+- [x] `src/pages/best-roast-lists.astro:80` renders `singlePage.content` via `set:html` without calling `sanitizeContent`, unlike every other CMS-content page — a compromised/malicious WP editor account could inject script/HTML that executes for all visitors; add sanitization (found: 2026-08-31)
+- [x] `src/pages/roastatistics.astro:89` has the same issue — `set:html={singlePage.content}` bypasses `sanitizeContent` — add sanitization (found: 2026-08-31) (resolved: 2026-09-19, PR #668)
+- [x] `src/middleware.ts:4` only lists `/api/wishlist`, `/api/profile`, and `/my-roasts` as protected prefixes; `/api/visits` and `/api/visits/[slug]` aren't covered by middleware (each handler independently checks auth so there's no current bypass, but a future new route could easily forget the manual check) — centralize the protected-route list (found: 2026-08-31) (resolved: 2026-09-21, PR #670)
 - [ ] No Content-Security-Policy header is set in `vercel.json` (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy are already present and correctly apply to all routes via the `/(.*)` catch-all) — nice-to-have for a small project, add a CSP header (found: 2026-08-31)
 
 ## 7. README / feature alignment
 
-- [ ] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
-- [ ] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31)
-- [ ] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
-- [ ] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31)
-- [ ] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
-- [ ] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31)
-- [ ] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31)
-- [ ] README has no "Features" section at all — only intro + commands + tech stack — despite a large surface of live discovery/ranking/stats pages (search, find-a-roast, maps, league-of-roasts, roastatistics, boroughs, chains); add a brief features overview (found: 2026-08-31)
+- [x] README's Commands table is missing `yarn lint:errors` (`biome check --diagnostic-level=error .`) — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@vercel/kv` despite it being a dependency used for guessthescore leaderboard/rate-limiting — add it (found: 2026-08-31) (resolved: 2026-09-26, PR #677)
+- [x] README's Commands table is missing `yarn knip` — add it (found: 2026-08-31) (resolved: 2026-09-24, PR #675)
+- [x] README's Commands table is missing `yarn ts-check` (`astro check`) — add it (found: 2026-08-31) (resolved: 2026-09-23, PR #673)
+- [x] README's Tech stack section doesn't mention `leaflet`/`@types/leaflet` despite `src/pages/maps.astro` and the README's own intro mentioning "maps" — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `@astrojs/partytown` (third-party script offloading) — add it (found: 2026-08-31) (resolved: 2026-10-04, PR #682)
+- [x] README's Tech stack section doesn't mention `@astrojs/mdx` — add it (found: 2026-08-31) (resolved: 2026-10-05, PR #683)
+- [x] README's Tech stack section doesn't mention `sanitize-html` — add it (found: 2026-08-31) (resolved: 2026-10-06, PR #685)
+- [x] README's Tech stack section doesn't mention `accented` (a11y highlighter dependency) — add it (found: 2026-08-31)
+- [x] README's Tech stack section doesn't mention `astro-seo` — add it (found: 2026-08-31) (resolved: 2026-10-08, PR #690)
+- [x] `src/pages/guessthescore/` implements a full "Guess the Score" game feature with no mention anywhere in the README — add a feature line (found: 2026-08-31)
+- [x] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-10, PR #694)
+- [x] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-11, PR #700)
+- [x] README has no "Features" section at all — only intro + commands + tech stack — despite a large surface of live discovery/ranking/stats pages (search, find-a-roast, maps, league-of-roasts, roastatistics, boroughs, chains); add a brief features overview (found: 2026-08-31) (resolved: 2026-10-12, PR #701)
 - [ ] `src/pages/to-do-list.astro` exists as a live route with no README mention — clarify whether it's user-facing or an internal planning page, and document or remove accordingly (found: 2026-08-31)
 - [ ] `src/pages/flags.astro` (feature-flag admin/debug page) exists as a live route with no README mention — document its purpose or restrict/remove if unintended to be public (found: 2026-08-31)
 
