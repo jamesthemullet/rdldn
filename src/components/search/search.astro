@@ -1,4 +1,6 @@
 ---
+import { DEFAULT_RATING_COLOR, RATING_COLOR_THRESHOLDS } from "../../lib/ratingColor";
+
 type Props = {
   resultLimit: number;
 };
@@ -71,7 +73,14 @@ const { resultLimit = 4 } = Astro.props;
   </div>
 </div>
 
-<script is:inline define:vars={{ GRAPHQL_URL: import.meta.env.PUBLIC_GRAPHQL_URL }}>
+<script
+  is:inline
+  define:vars={{
+    GRAPHQL_URL: import.meta.env.PUBLIC_GRAPHQL_URL,
+    RATING_COLOR_THRESHOLDS,
+    DEFAULT_RATING_COLOR,
+  }}
+>
   document.addEventListener("alpine:init", () => {
     Alpine.data("searchComponent", () => ({
       searchTerm: "",
@@ -86,18 +95,11 @@ const { resultLimit = 4 } = Astro.props;
 
       getScoreColor(scoreStr) {
         const score = parseFloat(scoreStr);
-        if (isNaN(score)) return { color: "#fff", background: "#000000" };
-        if (score >= 9) return { color: "#fff", background: "#4B0082" };
-        if (score >= 8.5) return { color: "#fff", background: "#83539B" };
-        if (score >= 8) return { color: "#fff", background: "#588EB5" };
-        if (score >= 7.5) return { color: "#000", background: "#51A790" };
-        if (score >= 7) return { color: "#000", background: "#4D7833" };
-        if (score >= 6.5) return { color: "#000", background: "#6A972A" };
-        if (score >= 6) return { color: "#000", background: "#CFB920" };
-        if (score >= 5) return { color: "#fff", background: "#CF7C1D" };
-        if (score >= 4) return { color: "#fff", background: "#FF0000" };
-        if (score >= 3) return { color: "#fff", background: "#8B0000" };
-        return { color: "#fff", background: "#000000" };
+        if (isNaN(score)) return DEFAULT_RATING_COLOR;
+        const threshold = RATING_COLOR_THRESHOLDS.find((t) => score >= t.min);
+        return threshold
+          ? { color: threshold.color, background: threshold.background }
+          : DEFAULT_RATING_COLOR;
       },
 
       async handleSearch() {
