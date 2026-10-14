@@ -1,5 +1,6 @@
 import { useAuth } from "@clerk/astro/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { parsePrice } from "../../lib/parsePrice";
 import type { Post } from "../../types";
 import WishlistButton from "../wishlist-button/wishlist-button.tsx";
 import "./sunday-roast-planner.css";
@@ -24,11 +25,8 @@ const RATING_OPTIONS = [
 
 const getAdjustedPrice = (post: Post, inflationIndex: Record<string, number>): number | null => {
   const year = post.yearsOfVisit?.nodes[0]?.name ?? "";
-  const priceStr = post.prices?.nodes[0]?.name ?? "";
-  const match = priceStr.match(/[\d,.]+/);
-  if (!match) return null;
-  const raw = Number.parseFloat(match[0].replace(",", ""));
-  if (Number.isNaN(raw) || raw <= 0) return null;
+  const raw = parsePrice(post.prices?.nodes[0]?.name);
+  if (!raw) return null;
   const multiplier = year ? (inflationIndex[year] ?? 1) : 1;
   return raw * multiplier;
 };

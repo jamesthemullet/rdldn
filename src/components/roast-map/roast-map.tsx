@@ -1,5 +1,6 @@
 import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { getRatingColor } from "../../lib/ratingColor";
 import "leaflet/dist/leaflet.css";
 import "./roast-map.css";
 
@@ -20,20 +21,6 @@ type Props = {
 const LONDON_CENTER: [number, number] = [51.505, -0.09];
 const MAP_DEFAULT_ZOOM = 10;
 const TOOLTIP_OPACITY = 0.9;
-
-const getMarkerColor = (rating: number): { colour: string; backgroundColour: string } => {
-  if (rating >= 9) return { colour: "#fff", backgroundColour: "#4B0082" };
-  if (rating >= 8.5) return { colour: "#fff", backgroundColour: "#83539B" };
-  if (rating >= 8) return { colour: "#fff", backgroundColour: "#588EB5" };
-  if (rating >= 7.5) return { colour: "#000", backgroundColour: "#51A790" };
-  if (rating >= 7) return { colour: "#000", backgroundColour: "#4D7833" };
-  if (rating >= 6.5) return { colour: "#000", backgroundColour: "#6A972A" };
-  if (rating >= 6) return { colour: "#000", backgroundColour: "#CFB920" };
-  if (rating >= 5) return { colour: "#fff", backgroundColour: "#CF7C1D" };
-  if (rating >= 4) return { colour: "#fff", backgroundColour: "#FF0000" };
-  if (rating >= 3) return { colour: "#fff", backgroundColour: "#8B0000" };
-  return { colour: "#fff", backgroundColour: "#000000" };
-};
 
 const createColouredIcon = (colour: string, backgroundColour: string, value: number): L.DivIcon => {
   const formattedValue = value.toFixed(1);
@@ -118,8 +105,8 @@ export default function RoastMap({ markers }: Props) {
     layer.clearLayers();
 
     filteredMarkers.forEach(({ lat, lng, label, rating, slug }) => {
-      const { colour, backgroundColour } = getMarkerColor(rating);
-      const icon = createColouredIcon(colour, backgroundColour, rating);
+      const { color, background } = getRatingColor(rating);
+      const icon = createColouredIcon(color, background, rating);
       const markerLabel = label ? `${label} (${rating.toFixed(1)}/10)` : `Roast location (${rating.toFixed(1)}/10)`;
       L.marker([lat, lng], {
         icon,
