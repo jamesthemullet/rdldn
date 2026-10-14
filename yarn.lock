@@ -2966,10 +2966,10 @@ h3@^1.15.10:
     ufo "^1.6.3"
     uncrypto "^0.1.3"
 
-happy-dom@^20.1.0:
-  version "20.14.6"
-  resolved "https://registry.yarnpkg.com/happy-dom/-/happy-dom-20.14.6.tgz#3178d189d6fa13b010e913c8739b9e61a959869c"
-  integrity sha512-5DDsf4QmEIlRL6NkCv/fxSjYHHkZceL/IaYQdJc2h3G7DRTEai++VTjbfL0LB9geW2VrA3+vrjF3Efx+OTtX0Q==
+happy-dom@^21.0.0:
+  version "21.0.1"
+  resolved "https://registry.yarnpkg.com/happy-dom/-/happy-dom-21.0.1.tgz#c3577fb0553f3b8d3a6d86be4971b09541c6d12e"
+  integrity sha512-pRBs/u9fhrncyByOl58DMex0R2uAj6ZPKWIjV5j5yNGZBqLw3P6BTRhlc0DD5b/Ht4/6JYTMuE2LJhUWRC6SGw==
   dependencies:
     "@types/node" ">=20.0.0"
     "@types/whatwg-mimetype" "^3.0.2"
