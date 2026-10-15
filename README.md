@@ -25,6 +25,7 @@ The dev server starts at `http://localhost:4321`.
 - **Roastatistics:** site-wide stats and a price inflation index tracking roast prices over time (`/roastatistics`)
 - **Boroughs:** roast dinners grouped and ranked by London borough (`/boroughs`)
 - **Chains:** roast dinners grouped by restaurant/pub chain (`/chains`)
+- **To-Do List:** a roast dinner checklist with a "pick a random pub" tool to choose where to go next (`/to-do-list`)
 
 ## Commands
 

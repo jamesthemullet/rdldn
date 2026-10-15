@@ -41,6 +41,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-10-12 — scheduled maintenance run: resolved README/feature alignment item "README has no Features section covering discovery/ranking/stats pages" by adding Search, Find a Roast, Maps, League of Roasts, Roastatistics, Boroughs, and Chains to the Features section (section 7)
 - 2026-10-13 — scheduled maintenance run: resolved code quality item "valueScore.ts/inflationIndex.ts/sunday-roast-planner.tsx duplicate price-parsing logic" by extracting a shared `parsePrice` helper (section 8)
 - 2026-10-14 — scheduled maintenance run: resolved code quality item "search.astro/roast-map.tsx duplicate rating-to-colour threshold tables" by extracting a shared `ratingColor` helper (section 8)
+- 2026-10-15 — scheduled maintenance run: resolved README/feature alignment item "to-do-list.astro exists as a live route with no README mention" by confirming it's a user-facing page (linked in main nav) and adding a Features entry (section 7)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -117,7 +118,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] `src/pages/api/wishlist.ts` / `[slug].ts` implement a wishlist feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-10, PR #694)
 - [x] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-11, PR #700)
 - [x] README has no "Features" section at all — only intro + commands + tech stack — despite a large surface of live discovery/ranking/stats pages (search, find-a-roast, maps, league-of-roasts, roastatistics, boroughs, chains); add a brief features overview (found: 2026-08-31) (resolved: 2026-10-12, PR #701)
-- [ ] `src/pages/to-do-list.astro` exists as a live route with no README mention — clarify whether it's user-facing or an internal planning page, and document or remove accordingly (found: 2026-08-31)
+- [x] `src/pages/to-do-list.astro` exists as a live route with no README mention — clarify whether it's user-facing or an internal planning page, and document or remove accordingly (found: 2026-08-31) (resolved: 2026-10-15, PR #708)
 - [ ] `src/pages/flags.astro` (feature-flag admin/debug page) exists as a live route with no README mention — document its purpose or restrict/remove if unintended to be public (found: 2026-08-31)
 
 ## 8. Code quality
