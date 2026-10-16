@@ -120,7 +120,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] `src/pages/my-roasts.astro` + visits API routes implement a "my roasts"/visit-tracking feature not mentioned in the README — add a feature line (found: 2026-08-31) (resolved: 2026-10-11, PR #700)
 - [x] README has no "Features" section at all — only intro + commands + tech stack — despite a large surface of live discovery/ranking/stats pages (search, find-a-roast, maps, league-of-roasts, roastatistics, boroughs, chains); add a brief features overview (found: 2026-08-31) (resolved: 2026-10-12, PR #701)
 - [x] `src/pages/to-do-list.astro` exists as a live route with no README mention — clarify whether it's user-facing or an internal planning page, and document or remove accordingly (found: 2026-08-31) (resolved: 2026-10-15, PR #708)
-- [x] `src/pages/flags.astro` (feature-flag admin/debug page) exists as a live route with no README mention — document its purpose or restrict/remove if unintended to be public (found: 2026-08-31) (resolved: 2026-10-16, PR #TBD)
+- [x] `src/pages/flags.astro` (feature-flag admin/debug page) exists as a live route with no README mention — document its purpose or restrict/remove if unintended to be public (found: 2026-08-31) (resolved: 2026-10-16, PR #710)
 
 ## 8. Code quality
 
