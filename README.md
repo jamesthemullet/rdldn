@@ -27,6 +27,10 @@ The dev server starts at `http://localhost:4321`.
 - **Chains:** roast dinners grouped by restaurant/pub chain (`/chains`)
 - **To-Do List:** a roast dinner checklist with a "pick a random pub" tool to choose where to go next (`/to-do-list`)
 
+## Internal pages
+
+- **Feature flags:** `/flags` lets a visitor toggle feature flags (defined in `src/lib/featureFlags.ts`) for their own browser via cookies. It's an internal dev tool, not linked from site navigation, and excluded from the sitemap/search engines (`noindex`). No flags are currently defined.
+
 ## Commands
 
 | Command | Action |
