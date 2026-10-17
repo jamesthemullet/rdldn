@@ -2,6 +2,7 @@ import type { APIContext } from "astro";
 import { and, eq } from "drizzle-orm";
 import { db } from "../../lib/db";
 import { users, visits } from "../../lib/schema";
+import { isNonEmptyString, isOptionalNullableString } from "../../lib/validation";
 
 type VisitsPostBody = {
   postSlug: string;
@@ -9,6 +10,20 @@ type VisitsPostBody = {
   postRating?: string | null;
   notes?: string | null;
 };
+
+function isValidVisitsPostBody(body: unknown): body is VisitsPostBody {
+  if (typeof body !== "object" || body === null) {
+    return false;
+  }
+
+  const { postSlug, postTitle, postRating, notes } = body as Record<string, unknown>;
+  return (
+    isNonEmptyString(postSlug) &&
+    isNonEmptyString(postTitle) &&
+    isOptionalNullableString(postRating) &&
+    isOptionalNullableString(notes)
+  );
+}
 
 async function getUserId(clerkId: string): Promise<string | null> {
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.clerkId, clerkId)).limit(1);
@@ -41,12 +56,18 @@ export async function POST(context: APIContext): Promise<Response> {
     return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
   }
 
-  const body = (await context.request.json()) as VisitsPostBody;
-  const { postSlug, postTitle, postRating, notes } = body;
+  let body: unknown;
+  try {
+    body = await context.request.json();
+  } catch {
+    return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400 });
+  }
 
-  if (!postSlug || !postTitle) {
+  if (!isValidVisitsPostBody(body)) {
     return new Response(JSON.stringify({ error: "postSlug and postTitle are required" }), { status: 400 });
   }
+
+  const { postSlug, postTitle, postRating, notes } = body;
 
   let userId = await getUserId(clerkId);
   if (!userId) {
