@@ -68,6 +68,33 @@ describe("POST /api/visits", () => {
     expect(response.status).toBe(400);
   });
 
+  test("returns 400 when postTitle is not a string", async () => {
+    const response = await POST(makeContext("clerk_abc", { postSlug: "a", postTitle: 123 }));
+    expect(response.status).toBe(400);
+  });
+
+  test("returns 400 when notes is not a string or null", async () => {
+    const response = await POST(makeContext("clerk_abc", { postSlug: "a", postTitle: "A", notes: 123 }));
+    expect(response.status).toBe(400);
+  });
+
+  test("returns 400 when the request body is not valid JSON", async () => {
+    const response = await POST({
+      locals: { auth: () => ({ userId: "clerk_abc" }) },
+      request: { json: () => Promise.reject(new SyntaxError("Unexpected token")) },
+    } as unknown as APIContext);
+    expect(response.status).toBe(400);
+    expect((await response.json()).error).toContain("Invalid JSON");
+  });
+
+  test("returns 400 when the request body is not an object", async () => {
+    const response = await POST({
+      locals: { auth: () => ({ userId: "clerk_abc" }) },
+      request: { json: () => Promise.resolve("not-an-object") },
+    } as unknown as APIContext);
+    expect(response.status).toBe(400);
+  });
+
   test("creates a new user and logs the visit and returns 201", async () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([]) as never)
