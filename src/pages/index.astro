@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { sanitizeTitle } from "../lib/sanitize";
 import "../styles/index.css";
 import { Image } from "astro:assets";
 import Newsletter from "../components/newsletter/newsletter.astro";
@@ -9,436 +8,186 @@ import Search from "../components/search/search.astro";
 import dreamingOfRoastDinners from "../images/dreaming of roast dinners.png";
 import findARoastImg from "../images/find-a-roast.png";
 import guessTheScoreImg from "../images/guess-the-score.png";
-import { fetchGraphQL } from "../lib/api";
-import MOST_RECENT_POST_QUERY from "../lib/queries/mostRecentPost";
-import OTHER_POSTS_AFTER_FIRST_QUERY from "../lib/queries/otherPostsAfterFirst";
-import SINGLE_PAGE_QUERY_PREVIEW from "../lib/queries/singlePage";
-import type { Page, Post, Size } from "../types";
+import { getHomepageData, type HomepageCard } from "../lib/homepage";
 
-type PageWithFeaturedImage = Page & { featuredImage: string };
+// Every section is fetched and rendered on the server in one pass, so the page never
+// depends on a follow-up client-side fetch to show its content.
+const {
+  latestPosts,
+  opengraphImage,
+  favouriteRoastPages,
+  locationPages,
+  bestRoasts,
+  features,
+  roastStatistics,
+} = await getHomepageData();
 
-let recentPost: Post | null = null;
-let recentPostCursor: string | null = null;
-
-try {
-  const data = (await fetchGraphQL(MOST_RECENT_POST_QUERY)) as {
-    posts: {
-      nodes: Post[];
-      pageInfo: { hasNextPage: boolean; endCursor: string | null };
-    };
-  };
-  recentPost = data.posts.nodes[0];
-  recentPostCursor = data?.posts?.pageInfo?.endCursor;
-
-  if (recentPost) {
-    recentPost = {
-      ...recentPost,
-      featuredImageUrl:
-        recentPost.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size) => size.name === "homepage"
-        )?.sourceUrl || recentPost.featuredImage?.node?.sourceUrl,
-    };
-  }
-} catch (error) {
-  console.error("Error fetching the most recent post:", error);
-  recentPost = null;
-}
-
-let otherPosts: Post[] = [];
-
-if (recentPostCursor) {
-  try {
-    const data = (await fetchGraphQL(OTHER_POSTS_AFTER_FIRST_QUERY, {
-      after: recentPostCursor,
-    })) as { posts: { nodes: Post[] } };
-    otherPosts = data?.posts?.nodes?.map((post: Post) => ({
-      ...post,
-      featuredImageUrl:
-        post.featuredImage?.node?.mediaDetails?.sizes?.find(
-          (size) => size.name === "homepage"
-        )?.sourceUrl || post?.featuredImage?.node?.sourceUrl,
-    }));
-  } catch (error) {
-    console.error("Error fetching other posts:", error);
-  }
-}
-
-const posts = [recentPost, ...otherPosts].filter(Boolean);
-
-const locationPageIds = ["5614", "5612", "5616", "5594"];
-const findYourFavouriteRoastPageIds = ["267", "631", "10368", "17"];
-
-const fetchLocationPages = async (): Promise<PageWithFeaturedImage[]> => {
-  try {
-    const pageResponses = (await Promise.all(
-      locationPageIds.map((id) => fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id }))
-    )) as Array<{ page: Page | null }>;
-
-    return pageResponses
-      .map((response) => {
-        if (!response?.page) return null;
-
-        const featuredImage = response.page.featuredImage?.node;
-        const smallImage =
-          featuredImage?.mediaDetails?.sizes.find(
-            (size: Size) => size.name === "homepage"
-          )?.sourceUrl || featuredImage?.sourceUrl;
-
-        return {
-          ...response.page,
-          featuredImageUrl: smallImage,
-        };
-      })
-      .filter(Boolean) as PageWithFeaturedImage[];
-  } catch (error) {
-    console.error("Error fetching location pages:", error);
-    return [];
-  }
-};
-
-const fetchFindYourFavouriteRoastPages = async (): Promise<PageWithFeaturedImage[]> => {
-  try {
-    const pageResponses = (await Promise.all(
-      findYourFavouriteRoastPageIds.map((id) =>
-        fetchGraphQL(SINGLE_PAGE_QUERY_PREVIEW, { id })
-      )
-    )) as Array<{ page: Page | null }>;
-
-    return pageResponses
-      .map((response) => {
-        if (!response?.page) return null;
-
-        const featuredImage = response.page.featuredImage?.node;
-        const smallImage =
-          featuredImage?.mediaDetails?.sizes.find(
-            (size: Size) => size.name === "homepage"
-          )?.sourceUrl || featuredImage?.sourceUrl;
-
-        return {
-          ...response.page,
-          featuredImageUrl: smallImage,
-        };
-      })
-      .filter(Boolean) as PageWithFeaturedImage[];
-  } catch (error) {
-    console.error("Error fetching favourite roast pages:", error);
-    return [];
-  }
-};
-
-const [locationPages, findYourFavouriteRoastPages] = await Promise.all([
-  fetchLocationPages(),
-  fetchFindYourFavouriteRoastPages(),
-]);
+const cardSections: Array<{
+  id: string;
+  heading: string;
+  cards: HomepageCard[];
+  altPrefix: string;
+  showDetails?: boolean;
+}> = [
+  { id: "best-roasts", heading: "A few of the best roasts:", cards: bestRoasts, altPrefix: "Photo of the roast dinner at", showDetails: true },
+  { id: "features", heading: "Features:", cards: features, altPrefix: "Preview image for" },
+  { id: "roastatistics", heading: "Roastatistics:", cards: roastStatistics, altPrefix: "Preview image for" },
+];
 ---
 
 <BaseLayout
   pageTitle="Home of Roast Dinners In London"
   description="Lord Gravy bringing you a guide to the best and worst roast dinners in London."
-  opengraphImage={recentPost?.seo?.opengraphImage?.sourceUrl}
+  opengraphImage={opengraphImage}
 >
-  <section class="home-list latest-reviews" aria-labelledby="latest-reviews-heading">
-    <h2 id="latest-reviews-heading">Latest Reviews:</h2>
-    <ul>
-      {
-        posts.map((post, index) => (
-          <li class="heading" data-post-date={post?.date}>
-            <h3>
-              <a href={`/${post?.slug}`} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(post?.title)} />
+  {
+    latestPosts.length > 0 && (
+      <section class="home-list latest-reviews" aria-labelledby="latest-reviews-heading">
+        <h2 id="latest-reviews-heading">Latest Reviews:</h2>
+        <ul>
+          {latestPosts.map((post, index) => (
+            <li class="heading" data-post-date={post.date}>
+              <h3>
+                <a href={`/${post.slug}`}>
+                  <Fragment set:html={post.title} />
+                </a>
+              </h3>
+              <a href={`/${post.slug}`} class="featured-image" aria-hidden="true" tabindex="-1">
+                <img
+                  src={post.featuredImageUrl}
+                  alt={`Photo of the roast dinner at ${post.title}`}
+                  width="400"
+                  height="300"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
               </a>
-            </h3>
-            <a
-              href={`/${post?.slug}`}
-              rel="noopener noreferrer"
-              class="featured-image"
-              aria-hidden="true"
-              tabindex="-1"
-            >
-              <img
-                src={post?.featuredImageUrl}
-                alt={`Photo of the roast dinner at ${post?.title}`}
-                width="400"
-                height="300"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-  <section class="home-list" aria-labelledby="find-favourite-heading">
-    <h2 id="find-favourite-heading">Find Your Favourite Roast:</h2>
-    <ul>
-      {
-        findYourFavouriteRoastPages.map((page) => (
-          <li class="heading">
-            <h3>
-              <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(page?.title)} />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+  {
+    favouriteRoastPages.length > 0 && (
+      <section class="home-list" aria-labelledby="find-favourite-heading">
+        <h2 id="find-favourite-heading">Find Your Favourite Roast:</h2>
+        <ul>
+          {favouriteRoastPages.map((page) => (
+            <li class="heading">
+              <h3>
+                <a href={`/${page.slug}`}>
+                  <Fragment set:html={page.title} />
+                </a>
+              </h3>
+              <a href={`/${page.slug}`} aria-hidden="true" tabindex="-1">
+                <img
+                  src={page.featuredImageUrl}
+                  alt={`Preview image for ${page.title}`}
+                  width="400"
+                  height="300"
+                  loading="lazy"
+                />
               </a>
-            </h3>
-            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-              <img
-                src={page?.featuredImageUrl}
-                alt={`Preview image for ${page?.title}`}
-                width={400}
-                height={300}
-                loading="lazy"
-              />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
   <section class="home-list interactive-features" aria-labelledby="interactive-heading">
     <h2 id="interactive-heading">Interactive:</h2>
     <ul>
       <li class="heading">
-        <h3><a href="/find-a-roast" rel="noopener noreferrer">Find A Roast</a></h3>
-        <a href="/find-a-roast" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
+        <h3><a href="/find-a-roast">Find A Roast</a></h3>
+        <a href="/find-a-roast" class="featured-image" aria-hidden="true" tabindex="-1">
           <Image src={findARoastImg} alt="Find a roast" width={400} height={300} loading="lazy" />
         </a>
       </li>
       <li class="heading">
         <h3>
-          <a href="/my-roasts" rel="noopener noreferrer">My Roast List</a>
+          <a href="/my-roasts">My Roast List</a>
         </h3>
-        <a href="/my-roasts" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
+        <a href="/my-roasts" class="featured-image" aria-hidden="true" tabindex="-1">
           <Image src={dreamingOfRoastDinners} alt="My roast list" width={400} height={300} loading="lazy" />
         </a>
       </li>
       <li class="heading">
-        <h3><a href="/guessthescore" rel="noopener noreferrer">Guess The Score</a></h3>
-        <a href="/guessthescore" rel="noopener noreferrer" class="featured-image" aria-hidden="true" tabindex="-1">
+        <h3><a href="/guessthescore">Guess The Score</a></h3>
+        <a href="/guessthescore" class="featured-image" aria-hidden="true" tabindex="-1">
           <Image src={guessTheScoreImg} alt="Guess the score" width={400} height={300} loading="lazy" />
         </a>
       </li>
       <li class="heading interactive-features__placeholder" aria-hidden="true"></li>
     </ul>
   </section>
-  <section class="home-list" aria-labelledby="roast-by-location-heading">
-    <h2 id="roast-by-location-heading">Roast By Location:</h2>
-    <ul>
-      {
-        locationPages.map((page) => (
-          <li class="heading">
-            <h3>
-              <a href={page?.slug} rel="noopener noreferrer">
-                <Fragment set:html={sanitizeTitle(page?.title)} />
+  {
+    locationPages.length > 0 && (
+      <section class="home-list" aria-labelledby="roast-by-location-heading">
+        <h2 id="roast-by-location-heading">Roast By Location:</h2>
+        <ul>
+          {locationPages.map((page) => (
+            <li class="heading">
+              <h3>
+                <a href={`/${page.slug}`}>
+                  <Fragment set:html={page.title} />
+                </a>
+              </h3>
+              <a href={`/${page.slug}`} aria-hidden="true" tabindex="-1">
+                <img
+                  src={page.featuredImageUrl}
+                  alt={`Preview image for ${page.title}`}
+                  width="400"
+                  height="300"
+                  loading="lazy"
+                />
               </a>
-            </h3>
-            <a href={page?.slug} rel="noopener noreferrer" aria-hidden="true" tabindex="-1">
-              <img
-                src={page?.featuredImageUrl}
-                alt={`Preview image for ${page?.title}`}
-                width={400}
-                height={300}
-                loading="lazy"
-              />
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-  <!-- <section class="home-list preferred-locations">
-    <p>
-      Select your preferred location from the list below and we'll highlight appropriate reviews to
-      you in the future.
-    </p>
-
-    <div class="custom-select">
-      <button class="dropdown-btn" id="dropdown-btn">Select Locations</button>
-      <div class="dropdown-content">
-        {
-          allLocations.map((location) => (
-            <label class="dropdown-item">
-              <input
-                type="checkbox"
-                value={location.slug}
-                class="hidden-checkbox location-checkbox"
-                data-location={location.slug}
-              />
-              <span>{location.name}</span>
-            </label>
-          ))
-        }
-      </div>
-    </div>
-    <div id="selected-locations">
-      <p>Your selected locations:</p>
-      <ul id="selected-locations-list"></ul>
-    </div>
-  </section> -->
-
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
   <section class="home" aria-labelledby="search-heading">
     <h2 id="search-heading">Search:</h2>
     <Search resultLimit={4} />
   </section>
-  <div x-data="homepageHighlights">
-    <section class="home-list" aria-labelledby="best-roasts-heading">
-      <h2 id="best-roasts-heading">A few of the best roasts:</h2>
-      <ul class="highlights-list">
-        <template x-for="(post, index) in bestRoasts" :key="post.slug">
-          <li class="heading">
-            <h3>
-              <a :href="`/${post.slug}`" rel="noopener noreferrer" x-text="post.title"></a>
-            </h3>
-            <a
-              :href="`/${post.slug}`"
-              rel="noopener noreferrer"
-              class="featured-image"
-              aria-hidden="true"
-              tabindex="-1"
-            >
-              <img
-                :src="post.featuredImageUrl"
-                :alt="`Photo of the roast dinner at ${post.title}`"
-                width="400"
-                height="300"
-                :loading="index === 0 ? 'eager' : 'lazy'"
-              />
-            </a>
-            <p x-text="`Rating: ${post.rating ?? ''}`"></p>
-            <p x-text="`Year Visited: ${post.yearVisited ?? ''}`"></p>
-          </li>
-        </template>
-      </ul>
-    </section>
-    <section class="home-list" aria-labelledby="features-heading">
-      <h2 id="features-heading">Features:</h2>
-      <ul class="highlights-list">
-        <template x-for="(post, index) in features" :key="post.slug">
-          <li class="heading">
-            <h3>
-              <a :href="`/${post.slug}`" rel="noopener noreferrer" x-text="post.title"></a>
-            </h3>
-            <a
-              :href="`/${post.slug}`"
-              rel="noopener noreferrer"
-              class="featured-image"
-              aria-hidden="true"
-              tabindex="-1"
-            >
-              <img
-                :src="post.featuredImageUrl"
-                :alt="`Preview image for ${post.title}`"
-                width="400"
-                height="300"
-                :loading="index === 0 ? 'eager' : 'lazy'"
-              />
-            </a>
-          </li>
-        </template>
-      </ul>
-    </section>
-    <section class="home-list" aria-labelledby="roastatistics-heading">
-      <h2 id="roastatistics-heading">Roastatistics:</h2>
-      <ul class="highlights-list">
-        <template x-for="(post, index) in roastStatistics" :key="post.slug">
-          <li class="heading">
-            <h3>
-              <a :href="`/${post.slug}`" rel="noopener noreferrer" x-text="post.title"></a>
-            </h3>
-            <a
-              :href="`/${post.slug}`"
-              rel="noopener noreferrer"
-              class="featured-image"
-              aria-hidden="true"
-              tabindex="-1"
-            >
-              <img
-                :src="post.featuredImageUrl"
-                :alt="`Preview image for ${post.title}`"
-                width="400"
-                height="300"
-                :loading="index === 0 ? 'eager' : 'lazy'"
-              />
-            </a>
-          </li>
-        </template>
-      </ul>
-    </section>
-  </div>
+  {
+    cardSections
+      .filter((section) => section.cards.length > 0)
+      .map((section) => (
+        <section class="home-list" aria-labelledby={`${section.id}-heading`}>
+          <h2 id={`${section.id}-heading`}>{section.heading}</h2>
+          <ul>
+            {section.cards.map((card) => (
+              <li class="heading">
+                <h3>
+                  <a href={`/${card.slug}`}>
+                    <Fragment set:html={card.title} />
+                  </a>
+                </h3>
+                <a href={`/${card.slug}`} class="featured-image" aria-hidden="true" tabindex="-1">
+                  <img
+                    src={card.featuredImageUrl}
+                    alt={`${section.altPrefix} ${card.title}`}
+                    width="400"
+                    height="300"
+                    loading="lazy"
+                  />
+                </a>
+                {section.showDetails && (
+                  <>
+                    <p>Rating: {card.rating ?? ""}</p>
+                    <p>Year Visited: {card.yearVisited ?? ""}</p>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+  }
   <Newsletter />
   <NewsletterPopup />
-  <script lang="ts">
-    document.addEventListener("DOMContentLoaded", function () {
-      const dropdownButton = document.getElementById("dropdown-btn");
-      const dropdownContent = document.querySelector(".dropdown-content");
-      const locationCheckboxes =
-        document.querySelectorAll(".location-checkbox");
-      const selectedLocationsList = document.getElementById(
-        "selected-locations-list"
-      );
-
-      const savedLocations =
-        JSON.parse(localStorage.getItem("selectedLocations") || "[]") || [];
-      locationCheckboxes.forEach((checkbox) => {
-        if (savedLocations.includes(checkbox.value)) {
-          checkbox.checked = true;
-        }
-      });
-
-      const capitaliseAndRemoveHyphen = (string) => {
-        return string
-          .split("-")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-      };
-
-      displaySelectedLocations(savedLocations);
-
-      if (dropdownButton) {
-        dropdownButton.addEventListener("click", function () {
-          if (dropdownContent) {
-            dropdownContent.classList.toggle("open");
-          }
-        });
-      }
-
-      locationCheckboxes.forEach((checkbox) => {
-        checkbox.addEventListener("change", function () {
-          updateSelectedLocations();
-        });
-      });
-
-      function updateSelectedLocations() {
-        const selectedLocations = Array.from(locationCheckboxes)
-          .filter((checkbox) => checkbox.checked)
-          .map((checkbox) => checkbox.value);
-
-        localStorage.setItem(
-          "selectedLocations",
-          JSON.stringify(selectedLocations)
-        );
-
-        displaySelectedLocations(selectedLocations);
-      }
-
-      function displaySelectedLocations(locations) {
-        if (selectedLocationsList) {
-          selectedLocationsList.innerHTML = "";
-        }
-        if (locations.length === 0) {
-          if (selectedLocationsList) {
-            selectedLocationsList.innerHTML = "<li>No locations selected</li>";
-          }
-        } else {
-          locations.forEach((location) => {
-            const listItem = document.createElement("li");
-            listItem.textContent = capitaliseAndRemoveHyphen(location);
-            if (selectedLocationsList) {
-              selectedLocationsList.appendChild(listItem);
-            }
-          });
-        }
-      }
-    });
-  </script>
   <script>
     const lastVisit = localStorage.getItem("lastVisit");
     const now = new Date().toISOString();

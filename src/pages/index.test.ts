@@ -21,65 +21,86 @@ vi.mock("astro:assets", () => ({
   })(),
 }));
 
-const createFeaturedImageNode = (homepageUrl: string, sourceUrl: string = homepageUrl) => ({
-  node: {
-    sourceUrl,
-    mediaDetails: {
-      sizes: [{ name: "homepage", sourceUrl: homepageUrl }],
-    },
-  },
+const image = (url: string) => ({
+  node: { sourceUrl: url, mediaDetails: { sizes: [{ name: "homepage", sourceUrl: url }] } },
 });
 
-const getDefaultResponseByQuery = (query: string, variables: Record<string, unknown> = {}) => {
-  if (query.includes("GetMostRecentPost")) {
+const pageIds = ["267", "631", "10368", "17", "5614", "5612", "5616", "5594", "4102"];
+
+const defaultResponse = (query: string) => {
+  if (query.includes("HomepageLatestPosts")) {
     return {
       posts: {
         nodes: [
           {
             slug: "latest-roast",
             title: "Latest Roast",
-            featuredImage: createFeaturedImageNode("https://example.com/latest-homepage.jpg"),
-            seo: {
-              opengraphImage: {
-                sourceUrl: "https://example.com/latest-og.jpg",
-              },
-            },
+            date: "2026-10-01T12:00:00",
+            featuredImage: image("https://example.com/latest.jpg"),
+            seo: { opengraphImage: { sourceUrl: "https://example.com/latest-og.jpg" } },
+          },
+          {
+            slug: "other-roast",
+            title: "Other Roast",
+            date: "2026-09-01T12:00:00",
+            featuredImage: image("https://example.com/other.jpg"),
           },
         ],
-        pageInfo: {
-          endCursor: "cursor-1",
-        },
       },
     };
   }
 
-  if (query.includes("GetOtherPosts")) {
+  if (query.includes("HomepagePages")) {
+    return Object.fromEntries(
+      pageIds.map((id) => [
+        `p${id}`,
+        { slug: `page-${id}`, title: `Page ${id}`, featuredImage: image(`https://example.com/page-${id}.jpg`) },
+      ])
+    );
+  }
+
+  if (query.includes('tag: "best"')) {
     return {
       posts: {
         nodes: [
           {
-            slug: "other-roast",
-            title: "Other Roast",
-            featuredImage: createFeaturedImageNode("https://example.com/other-homepage.jpg"),
+            slug: "best-roast",
+            title: "Best Roast",
+            featuredImage: image("https://example.com/best.jpg"),
+            ratings: { nodes: [{ name: "9.5" }] },
+            yearsOfVisit: { nodes: [{ name: "2025" }] },
           },
         ],
       },
     };
   }
 
-  if (query.includes("query SinglePage($id: ID!)")) {
-    const id = String(variables.id ?? "");
+  if (query.includes('tag: "feature"')) {
     return {
-      page: {
-        pageId: id,
-        slug: `page-${id}`,
-        title: `Page ${id}`,
-        featuredImage: createFeaturedImageNode(`https://example.com/page-${id}-homepage.jpg`),
+      posts: {
+        edges: [{ node: { slug: "feature-post", title: "Feature Post", featuredImage: image("https://example.com/feature.jpg") } }],
+      },
+    };
+  }
+
+  if (query.includes("pages(first: 100)")) {
+    return {
+      pages: {
+        nodes: [
+          { slug: "stats-page", title: "Stats Page", highlights: { tag: "roastatistics" }, featuredImage: image("https://example.com/stats.jpg") },
+          { slug: "feature-page", title: "Feature Page", highlights: { tag: "feature" }, featuredImage: image("https://example.com/feature-page.jpg") },
+        ],
       },
     };
   }
 
   throw new Error(`Unhandled query in test mock: ${query.slice(0, 60)}`);
+};
+
+const renderHomepage = async () => {
+  const container = await AstroContainer.create();
+  const { default: Page } = await import("./index.astro");
+  return container.renderToString(Page);
 };
 
 beforeEach(() => {
@@ -89,408 +110,77 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
-  vi.useRealTimers();
 });
 
 describe("index page", () => {
-  test("renders home sections from GraphQL data and calls expected variables", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
+  test("server-renders every section in a single pass", async () => {
+    fetchGraphQLMock.mockImplementation(async (query: string) => defaultResponse(query));
 
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) =>
-        getDefaultResponseByQuery(query, variables)
-    );
+    const html = await renderHomepage();
 
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(10);
-    expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
-      after: "cursor-1",
-    });
-    expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("SinglePage"), {
-      id: "5614",
-    });
-    expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("SinglePage"), {
-      id: "267",
-    });
+    expect(fetchGraphQLMock).toHaveBeenCalledTimes(5);
 
     expect(html).toContain("Latest Reviews:");
     expect(html).toContain("Latest Roast");
     expect(html).toContain("Other Roast");
+    expect(html).toContain('data-post-date="2026-10-01T12:00:00"');
+
+    expect(html).toContain("Find Your Favourite Roast:");
+    expect(html).toContain('href="/page-267"');
+    expect(html).toContain("Roast By Location:");
+    expect(html).toContain('href="/page-5614"');
+
+    expect(html).toContain("Interactive:");
+    expect(html).toContain("Search:");
+    expect(html).toContain('data-result-limit="4"');
+
+    expect(html).toContain("A few of the best roasts:");
+    expect(html).toContain("Best Roast");
+    expect(html).toContain("Rating: 9.5");
+    expect(html).toContain("Year Visited: 2025");
+
+    expect(html).toContain("Features:");
+    expect(html).toContain("Feature Post");
+    expect(html).toContain("Feature Page");
+
+    expect(html).toContain("Roastatistics:");
+    expect(html).toContain("Page 4102");
+    expect(html).toContain("Stats Page");
+
+    // No content depends on a client-side fetch any more
+    expect(html).not.toContain("x-data=\"homepageHighlights\"");
+  });
+
+  test("keeps rendering the other sections when one query fails", async () => {
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    fetchGraphQLMock.mockImplementation(async (query: string) => {
+      if (query.includes("HomepageLatestPosts")) throw new Error("Latest posts failed");
+      return defaultResponse(query);
+    });
+
+    const html = await renderHomepage();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error fetching homepage latest posts:",
+      expect.any(Error)
+    );
+    expect(html).not.toContain("Latest Reviews:");
     expect(html).toContain("Find Your Favourite Roast:");
     expect(html).toContain("Roast By Location:");
-    expect(html).toContain("Search:");
-    expect(html).toContain("data-result-limit=\"4\"");
-
     expect(html).toContain("A few of the best roasts:");
     expect(html).toContain("Features:");
     expect(html).toContain("Roastatistics:");
-    expect(html).toContain('x-data="homepageHighlights"');
-    // Registered in the Alpine entrypoint, not via an inline alpine:init listener
-    expect(html).not.toContain('Alpine.data("homepageHighlights"');
-
-    expect(html).not.toContain("Page 4102");
   });
 
-  test("continues to render remaining sections when most recent post query fails", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+  test("still renders static sections when the GraphQL backend is down", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    fetchGraphQLMock.mockRejectedValue(new Error("Backend down"));
 
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("GetMostRecentPost")) {
-          throw new Error("Most recent post failed");
-        }
+    const html = await renderHomepage();
 
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(9);
-    expect(fetchGraphQLMock).not.toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
-      after: "cursor-1",
-    });
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching the most recent post:",
-      expect.any(Error)
-    );
-
-    expect(html).toContain("Latest Reviews:");
-    expect(html).toContain("Find Your Favourite Roast:");
-    expect(html).toContain("Roast By Location:");
+    expect(html).toContain("Interactive:");
+    expect(html).toContain("Find A Roast");
     expect(html).toContain("Search:");
-  });
-
-  test("renders remaining content when most recent query returns no posts", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("GetMostRecentPost")) {
-          return {
-            posts: {
-              nodes: [],
-              pageInfo: {
-                endCursor: null,
-              },
-            },
-          };
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(9);
-    expect(fetchGraphQLMock).not.toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
-      after: "cursor-1",
-    });
-    expect(html).toContain("Latest Reviews:");
-    expect(html).toContain("Find Your Favourite Roast:");
-    expect(html).toContain("Roast By Location:");
-    expect(html).toContain("Search:");
-    expect(consoleErrorSpy).not.toHaveBeenCalledWith(
-      "Error fetching the most recent post:",
-      expect.anything()
-    );
-  });
-
-  test("uses other post sourceUrl when homepage image size is missing", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("GetOtherPosts")) {
-          return {
-            posts: {
-              nodes: [
-                {
-                  slug: "other-roast-fallback",
-                  title: "Other Roast Fallback",
-                  featuredImage: {
-                    node: {
-                      sourceUrl: "https://example.com/other-fallback-source.jpg",
-                      mediaDetails: {
-                        sizes: [{ name: "thumbnail", sourceUrl: "https://example.com/thumb.jpg" }],
-                      },
-                    },
-                  },
-                },
-              ],
-            },
-          };
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("GetOtherPosts"), {
-      after: "cursor-1",
-    });
-    expect(html).toContain("Other Roast Fallback");
-    expect(html).toContain('src="https://example.com/other-fallback-source.jpg"');
-  });
-
-  test("logs and continues when other posts request fails", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("GetOtherPosts")) {
-          throw new Error("Other posts failed");
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledTimes(10);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching other posts:",
-      expect.any(Error)
-    );
-    expect(html).toContain("Latest Roast");
-    expect(html).not.toContain("Other Roast");
-  });
-
-  test("uses most recent post sourceUrl when homepage image size is missing", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("GetMostRecentPost")) {
-          return {
-            posts: {
-              nodes: [
-                {
-                  slug: "latest-roast-fallback",
-                  title: "Latest Roast Fallback",
-                  featuredImage: {
-                    node: {
-                      sourceUrl: "https://example.com/latest-fallback-source.jpg",
-                      mediaDetails: {
-                        sizes: [{ name: "thumbnail", sourceUrl: "https://example.com/latest-thumb.jpg" }],
-                      },
-                    },
-                  },
-                  seo: {
-                    opengraphImage: {
-                      sourceUrl: "https://example.com/latest-fallback-og.jpg",
-                    },
-                  },
-                },
-              ],
-              pageInfo: {
-                endCursor: "cursor-1",
-              },
-            },
-          };
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(html).toContain("Latest Roast Fallback");
-    expect(html).toContain('src="https://example.com/latest-fallback-source.jpg"');
-  });
-
-  test("filters out location entries when a single page response has no page", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("query SinglePage($id: ID!)") && variables.id === "5614") {
-          return {};
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("SinglePage"), {
-      id: "5614",
-    });
-    expect(html).toContain("Roast By Location:");
-    expect(html).not.toContain("Page 5614");
-    expect(html).toContain("Page 5612");
-  });
-
-  test("filters out favourite roast entries when a single page response has no page", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("query SinglePage($id: ID!)") && variables.id === "267") {
-          return {};
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(fetchGraphQLMock).toHaveBeenCalledWith(expect.stringContaining("SinglePage"), {
-      id: "267",
-    });
-    expect(html).toContain("Find Your Favourite Roast:");
-    expect(html).not.toContain("Page 267");
-    expect(html).toContain("Page 631");
-  });
-
-  test("uses location page sourceUrl when homepage image size is missing", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("query SinglePage($id: ID!)") && variables.id === "5612") {
-          return {
-            page: {
-              pageId: "5612",
-              slug: "page-5612",
-              title: "Page 5612",
-              featuredImage: {
-                node: {
-                  sourceUrl: "https://example.com/location-fallback-source.jpg",
-                  mediaDetails: {
-                    sizes: [{ name: "thumbnail", sourceUrl: "https://example.com/location-thumb.jpg" }],
-                  },
-                },
-              },
-            },
-          };
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(html).toContain("Page 5612");
-    expect(html).toContain('src="https://example.com/location-fallback-source.jpg"');
-  });
-
-  test("logs and continues when fetching location pages fails", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("query SinglePage($id: ID!)") && variables.id === "5614") {
-          throw new Error("Location page failed");
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching location pages:",
-      expect.any(Error)
-    );
-    expect(html).toContain("Roast By Location:");
-    expect(html).not.toContain("Page 5612");
-    expect(html).toContain("Find Your Favourite Roast:");
-  });
-
-  test("logs and continues when fetching favourite roast pages fails", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("query SinglePage($id: ID!)") && variables.id === "267") {
-          throw new Error("Favourite roast page failed");
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error fetching favourite roast pages:",
-      expect.any(Error)
-    );
-    expect(html).toContain("Find Your Favourite Roast:");
-    expect(html).not.toContain("Page 631");
-    expect(html).toContain("Roast By Location:");
-  });
-
-  test("uses favourite roast page sourceUrl when homepage image size is missing", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0.5);
-
-    fetchGraphQLMock.mockImplementation(
-      async (query: string, variables: Record<string, unknown> = {}) => {
-        if (query.includes("query SinglePage($id: ID!)") && variables.id === "267") {
-          return {
-            page: {
-              pageId: "267",
-              slug: "page-267",
-              title: "Page 267",
-              featuredImage: {
-                node: {
-                  sourceUrl: "https://example.com/favourite-fallback-source.jpg",
-                  mediaDetails: {
-                    sizes: [{ name: "thumbnail", sourceUrl: "https://example.com/favourite-thumb.jpg" }],
-                  },
-                },
-              },
-            },
-          };
-        }
-
-        return getDefaultResponseByQuery(query, variables);
-      }
-    );
-
-    const container = await AstroContainer.create();
-    const { default: Page } = await import("./index.astro");
-    const html = await container.renderToString(Page);
-
-    expect(html).toContain("Find Your Favourite Roast:");
-    expect(html).toContain('src="https://example.com/favourite-fallback-source.jpg"');
+    expect(html).not.toContain("Latest Reviews:");
   });
 });

@@ -34,6 +34,7 @@ describe("fetchGraphQL", () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables: { first: 10 } }),
+      signal: expect.any(AbortSignal),
     });
   });
 
@@ -69,6 +70,25 @@ describe("fetchGraphQL", () => {
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(result1).toBe(result2);
+  });
+
+  it("re-fetches once the cached response has expired", async () => {
+    vi.useFakeTimers();
+    try {
+      mockFetch({ posts: [] });
+      const query = "{ posts { nodes { slug } } }";
+
+      await fetchGraphQL(query);
+      vi.advanceTimersByTime(4 * 60 * 1000);
+      await fetchGraphQL(query);
+      expect(fetch).toHaveBeenCalledTimes(1);
+
+      vi.advanceTimersByTime(2 * 60 * 1000);
+      await fetchGraphQL(query);
+      expect(fetch).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("caches concurrent identical requests and only calls fetch once", async () => {

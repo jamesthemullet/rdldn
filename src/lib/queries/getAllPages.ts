@@ -7,6 +7,7 @@ const GET_ALL_PAGES = `
         slug
         featuredImage {
           node {
+            sourceUrl
             mediaDetails {
               sizes {
                 sourceUrl
