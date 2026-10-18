@@ -2,6 +2,7 @@
 import { fetchGraphQL } from "../../lib/api";
 import GET_POSTS_BY_TAG from "../../lib/queries/getPostsByTag";
 import { sanitizeTitle } from "../../lib/sanitize";
+import { shuffle } from "../../lib/shuffle";
 import type { Post, Size } from "../../types";
 
 const { tag } = Astro.props;
@@ -16,7 +17,7 @@ if (tag) {
       }
     );
 
-    locationPosts = (data.posts.nodes ?? [])
+    const postsWithImages = (data.posts.nodes ?? [])
       .filter((post: Post) => (post.closedDowns?.nodes?.length ?? 0) === 0)
       .map((edge: Post) => ({
         ...edge,
@@ -24,9 +25,9 @@ if (tag) {
           edge.featuredImage?.node?.mediaDetails?.sizes?.find(
             (size: Size) => size.name === "homepage"
           )?.sourceUrl || edge.featuredImage?.node?.sourceUrl,
-      }))
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
+      }));
+
+    locationPosts = shuffle(postsWithImages).slice(0, 3);
   } catch (error) {
     console.error("Error fetching other posts:", error);
   }

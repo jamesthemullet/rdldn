@@ -5,6 +5,7 @@ import GET_ALL_PAGES from "./queries/getAllPages";
 import GET_FEATURE_POSTS from "./queries/getFeaturePosts.ts";
 import { buildHomepagePagesQuery, HOMEPAGE_LATEST_POSTS_QUERY } from "./queries/homepage";
 import { sanitizeTitle } from "./sanitize";
+import { shuffle } from "./shuffle";
 
 export type HomepageCard = {
   slug: string;
@@ -51,15 +52,6 @@ const toCard = (item: {
 });
 
 const hasSlug = (card: HomepageCard) => card.slug !== "";
-
-const shuffle = <T>(items: T[]): T[] => {
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-};
 
 // Each section fetches independently so one failing query never blanks the rest of the page.
 const safely = async <T>(label: string, fallback: T, load: () => Promise<T>): Promise<T> => {
