@@ -1,4 +1,9 @@
-const graphQLRequestCache = new Map<string, Promise<unknown>>();
+// Short-lived cache: dedupes identical requests within a render and across requests on a
+// warm serverless instance, but expires so new content (or a recovered backend) shows up.
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const REQUEST_TIMEOUT_MS = 20 * 1000;
+
+const graphQLRequestCache = new Map<string, { promise: Promise<unknown>; expiresAt: number }>();
 
 export function resetGraphQLRequestCache(): void {
   graphQLRequestCache.clear();
@@ -31,8 +36,8 @@ export async function fetchGraphQL<T = unknown>(
   const cacheKey = getRequestCacheKey(query, variables);
   const existingRequest = graphQLRequestCache.get(cacheKey);
 
-  if (existingRequest) {
-    return (await existingRequest) as T;
+  if (existingRequest && existingRequest.expiresAt > Date.now()) {
+    return (await existingRequest.promise) as T;
   }
 
   const requestPromise = (async () => {
@@ -40,6 +45,7 @@ export async function fetchGraphQL<T = unknown>(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
 
     const json = await response.json();
@@ -54,12 +60,15 @@ export async function fetchGraphQL<T = unknown>(
     return json.data;
   })();
 
-  graphQLRequestCache.set(cacheKey, requestPromise);
+  const entry = { promise: requestPromise, expiresAt: Date.now() + CACHE_TTL_MS };
+  graphQLRequestCache.set(cacheKey, entry);
 
   try {
     return (await requestPromise) as T;
   } catch (error) {
-    graphQLRequestCache.delete(cacheKey);
+    if (graphQLRequestCache.get(cacheKey) === entry) {
+      graphQLRequestCache.delete(cacheKey);
+    }
     throw error;
   }
 }
