@@ -77,6 +77,36 @@ describe("POST /api/wishlist", () => {
     expect((await response.json()).error).toContain("required");
   });
 
+  test("returns 400 when postSlug is not a string", async () => {
+    const response = await POST(makeContext("clerk_abc", { postSlug: 123, postTitle: "Title" }));
+    expect(response.status).toBe(400);
+    expect((await response.json()).error).toContain("required");
+  });
+
+  test("returns 400 when postRating is not a string or null", async () => {
+    const response = await POST(
+      makeContext("clerk_abc", { postSlug: "slug", postTitle: "Title", postRating: 9 }),
+    );
+    expect(response.status).toBe(400);
+  });
+
+  test("returns 400 when the request body is not valid JSON", async () => {
+    const response = await POST({
+      locals: { auth: () => ({ userId: "clerk_abc" }) },
+      request: { json: () => Promise.reject(new SyntaxError("Unexpected token")) },
+    } as unknown as APIContext);
+    expect(response.status).toBe(400);
+    expect((await response.json()).error).toContain("Invalid JSON");
+  });
+
+  test("returns 400 when the request body is not an object", async () => {
+    const response = await POST({
+      locals: { auth: () => ({ userId: "clerk_abc" }) },
+      request: { json: () => Promise.resolve("not-an-object") },
+    } as unknown as APIContext);
+    expect(response.status).toBe(400);
+  });
+
   test("returns 200 and does not insert when the wishlist item already exists", async () => {
     vi.mocked(db.select)
       .mockReturnValueOnce(makeSelectChain([{ id: "user-uuid" }]) as never)
