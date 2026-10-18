@@ -44,6 +44,46 @@ test("home page renders key hero elements without console errors", async ({ page
   expect(consoleErrors).toEqual([]);
 });
 
+const HOMEPAGE_CARD_SECTIONS = [
+  "Latest Reviews:",
+  "Find Your Favourite Roast:",
+  "Interactive:",
+  "Roast By Location:",
+  "A few of the best roasts:",
+  "Features:",
+  "Roastatistics:",
+];
+
+test("every homepage section renders cards with loaded images", async ({ page }) => {
+  test.setTimeout(60_000);
+  const response = await page.goto("/");
+  expect(response?.status()).toBe(200);
+
+  for (const heading of HOMEPAGE_CARD_SECTIONS) {
+    const section = page.locator("section.home-list", {
+      has: page.getByRole("heading", { level: 2, name: heading, exact: true }),
+    });
+    await expect(section, `section "${heading}" should render`).toBeVisible();
+
+    const cards = section.locator("li.heading:not(.interactive-features__placeholder)");
+    expect(await cards.count(), `section "${heading}" should have cards`).toBeGreaterThan(0);
+    await expect(cards.first().locator("h3 a")).toHaveAttribute("href", /^\/.+/);
+
+    const images = section.locator("li.heading img");
+    for (let i = 0; i < (await images.count()); i++) {
+      const img = images.nth(i);
+      await img.scrollIntoViewIfNeeded();
+      await expect(img, `image ${i + 1} in "${heading}" should load`).toHaveJSProperty("complete", true);
+      // Broken or missing images swap to a local fallback via onerror, so allow for that swap
+      await expect
+        .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth), {
+          message: `image ${i + 1} in "${heading}" should have content`,
+        })
+        .toBeGreaterThan(0);
+    }
+  }
+});
+
 test("SEO basics are present on home page", async ({ page }) => {
   const response = await page.goto("/");
   expect(response?.ok()).toBeTruthy();

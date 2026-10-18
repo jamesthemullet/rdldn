@@ -54,7 +54,7 @@ describe("isProtectedRoute", () => {
 		expect(isProtectedRoute(makeUrlRequest(pathname))).toBe(true);
 	});
 
-	test.each([["/"], ["/api/homepage-highlights.json"], ["/sign-in"], ["/league-of-roasts"]])(
+	test.each([["/"], ["/api/ratings/some-slug"], ["/sign-in"], ["/league-of-roasts"]])(
 		"does not protect %s",
 		(pathname) => {
 			expect(isProtectedRoute(makeUrlRequest(pathname))).toBe(false);

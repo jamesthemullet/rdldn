@@ -7,6 +7,7 @@ const GET_BEST_ROASTS = `
         slug
         featuredImage {
           node {
+            sourceUrl
             mediaDetails {
               sizes {
                 sourceUrl

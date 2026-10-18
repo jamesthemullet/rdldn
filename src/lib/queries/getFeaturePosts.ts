@@ -8,6 +8,7 @@ const GET_FEATURE_POSTS = `
           title
           featuredImage {
             node {
+              sourceUrl
               mediaDetails {
                 sizes {
                   sourceUrl
