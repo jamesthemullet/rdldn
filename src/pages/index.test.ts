@@ -151,6 +151,23 @@ describe("index page", () => {
     expect(html).not.toContain("x-data=\"homepageHighlights\"");
   });
 
+  test("falls back to a local image when a card has no featured image", async () => {
+    fetchGraphQLMock.mockImplementation(async (query: string) => {
+      if (query.includes('tag: "feature"')) {
+        return { posts: { edges: [{ node: { slug: "no-image-feature", title: "No Image Feature" } }] } };
+      }
+      return defaultResponse(query);
+    });
+
+    const html = await renderHomepage();
+    const card = html.slice(html.indexOf('href="/no-image-feature"'));
+    const img = card.slice(card.indexOf("<img"), card.indexOf(">", card.indexOf("<img")));
+
+    expect(img).toMatch(/src="[^"]*dreaming of roast dinners\.png"/);
+    expect(img).toContain("onerror=");
+    expect(img).not.toContain('src=""');
+  });
+
   test("keeps rendering the other sections when one query fails", async () => {
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
     fetchGraphQLMock.mockImplementation(async (query: string) => {

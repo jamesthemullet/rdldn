@@ -74,10 +74,12 @@ test("every homepage section renders cards with loaded images", async ({ page })
       const img = images.nth(i);
       await img.scrollIntoViewIfNeeded();
       await expect(img, `image ${i + 1} in "${heading}" should load`).toHaveJSProperty("complete", true);
-      expect(
-        await img.evaluate((el: HTMLImageElement) => el.naturalWidth),
-        `image ${i + 1} in "${heading}" should have content`
-      ).toBeGreaterThan(0);
+      // Broken or missing images swap to a local fallback via onerror, so allow for that swap
+      await expect
+        .poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth), {
+          message: `image ${i + 1} in "${heading}" should have content`,
+        })
+        .toBeGreaterThan(0);
     }
   }
 });

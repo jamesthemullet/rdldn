@@ -22,6 +22,10 @@ const {
   roastStatistics,
 } = await getHomepageData();
 
+// Shown when a card has no featured image, or its image fails to load
+const fallbackImage = dreamingOfRoastDinners.src;
+const swapToFallback = `this.onerror=null;this.src=${JSON.stringify(fallbackImage)}`;
+
 const cardSections: Array<{
   id: string;
   heading: string;
@@ -54,7 +58,8 @@ const cardSections: Array<{
               </h3>
               <a href={`/${post.slug}`} class="featured-image" aria-hidden="true" tabindex="-1">
                 <img
-                  src={post.featuredImageUrl}
+                  src={post.featuredImageUrl ?? fallbackImage}
+                  onerror={swapToFallback}
                   alt={`Photo of the roast dinner at ${post.title}`}
                   width="400"
                   height="300"
@@ -81,7 +86,8 @@ const cardSections: Array<{
               </h3>
               <a href={`/${page.slug}`} aria-hidden="true" tabindex="-1">
                 <img
-                  src={page.featuredImageUrl}
+                  src={page.featuredImageUrl ?? fallbackImage}
+                  onerror={swapToFallback}
                   alt={`Preview image for ${page.title}`}
                   width="400"
                   height="300"
@@ -134,7 +140,8 @@ const cardSections: Array<{
               </h3>
               <a href={`/${page.slug}`} aria-hidden="true" tabindex="-1">
                 <img
-                  src={page.featuredImageUrl}
+                  src={page.featuredImageUrl ?? fallbackImage}
+                  onerror={swapToFallback}
                   alt={`Preview image for ${page.title}`}
                   width="400"
                   height="300"
@@ -167,7 +174,8 @@ const cardSections: Array<{
                 </h3>
                 <a href={`/${card.slug}`} class="featured-image" aria-hidden="true" tabindex="-1">
                   <img
-                    src={card.featuredImageUrl}
+                    src={card.featuredImageUrl ?? fallbackImage}
+                    onerror={swapToFallback}
                     alt={`${section.altPrefix} ${card.title}`}
                     width="400"
                     height="300"
