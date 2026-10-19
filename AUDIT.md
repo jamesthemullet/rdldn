@@ -44,6 +44,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - 2026-10-15 — scheduled maintenance run: resolved README/feature alignment item "to-do-list.astro exists as a live route with no README mention" by confirming it's a user-facing page (linked in main nav) and adding a Features entry (section 7)
 - 2026-10-16 — scheduled maintenance run: resolved README/feature alignment item "flags.astro exists as a live route with no README mention" by confirming it's an internal, per-browser, unlinked/noindexed dev tool and documenting it in a new "Internal pages" section (section 7)
 - 2026-10-17 — scheduled maintenance run: resolved code quality item "wishlist.ts/visits.ts cast request.json() with no runtime validation" by adding type-guard validation and JSON parse error handling (section 8)
+- 2026-10-19 — scheduled maintenance run: resolved code quality item "add-comment.astro sets messageElement.style.color directly instead of toggling a CSS class" (section 8)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -129,7 +130,7 @@ audit adds new findings to the bottom of each section and leaves checked items a
 - [x] `src/components/search/search.astro:87-101` (`getScoreColor`) and `src/components/roast-map/roast-map.tsx:24-36` (`getMarkerColor`) contain byte-for-byte identical rating-to-colour threshold tables — extract one shared helper (found: 2026-08-31) (resolved: 2026-10-14, PR #707)
 - [x] `src/pages/api/wishlist.ts:47` and `src/pages/api/visits.ts:44` cast `await context.request.json()` directly `as WishlistPostBody`/`as VisitsPostBody` with no runtime validation of the request body — add validation (found: 2026-08-31) (resolved: 2026-10-17, PR #712)
 - [ ] `src/lib/homepage-highlights.ts:56,150,152` uses `array.sort(() => Math.random() - 0.5)` to shuffle — this is a biased shuffle, not a uniform permutation; replace with a Fisher-Yates shuffle (found: 2026-08-31)
-- [ ] `src/components/add-comment/add-comment.astro:79,82` sets `messageElement.style.color = "red"/"green"` directly from inline script instead of toggling a CSS class, inconsistent with the project's per-component-CSS convention — refactor to a class toggle (found: 2026-08-31)
+- [x] `src/components/add-comment/add-comment.astro:79,82` sets `messageElement.style.color = "red"/"green"` directly from inline script instead of toggling a CSS class, inconsistent with the project's per-component-CSS convention — refactor to a class toggle (found: 2026-08-31) (resolved: 2026-10-19, PR #TBD)
 - [ ] `src/components/dropdown/dropdown.astro` has no CSS file and uses three inline `style` attributes (lines 46, 52, 59) for static/conditional styling — move to a component CSS file (found: 2026-08-31)
 - [ ] `src/components/comment/comment.astro`'s reply form is shown/hidden via directly toggling `formContainer.style.display` (lines 77, 118-119) instead of a CSS class, and the component has no CSS file — refactor (found: 2026-08-31)
 - [ ] `astro.config.mjs.bak` and `vitest.config.ts.bak` at the repo root are stale (predate the Clerk integration) — safe to delete (found: 2026-08-31)

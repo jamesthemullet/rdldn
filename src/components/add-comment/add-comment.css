@@ -1,0 +1,7 @@
+.comment-form-message--error {
+  color: red;
+}
+
+.comment-form-message--success {
+  color: green;
+}
