@@ -41,6 +41,8 @@ never replaces:
     the line, so there's a record.
   - **Never touch a line that's already checked off (`- [x]`)** — those are the user's own
     record of completed work. Leave them exactly as-is, in place.
+  - Items marked `(won't fix: ...)` were deliberately declined. **Do not raise the same kind of
+    issue again**, even in a different file or route.
   - Genuinely new findings get appended to the bottom of that section's list as new `- [ ]`
     items, dated.
 - Add a line to the `## Run log` section at the top with today's date and a one-line summary
@@ -213,6 +215,8 @@ catch.
   unless it's actually broken for a real user.
 - Cite every finding with a route, file:line, or screenshot — no vague "could be improved"
   entries.
+- **Out of scope — never report:** shuffle randomness/bias (e.g. `.sort(() => Math.random() - 0.5)`
+  vs Fisher-Yates). Random picks on this site are cosmetic, so uniformity doesn't matter.
 - **Every checklist item must be independently reviewable as one small PR** — small, focused
   diffs only. If a finding is actually a bundle of unrelated or large changes (e.g. "add e2e
   coverage for auth flows", "improve accessibility across the app", "harden security headers"),
