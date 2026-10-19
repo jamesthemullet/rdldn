@@ -67,4 +67,21 @@ describe("add-comment component", () => {
     expect(html).toContain("Comment submitted! Awaiting moderation.");
     expect(html).toContain("form.reset()");
   });
+
+  test("toggles message state via CSS classes instead of inline styles", async () => {
+    const container = await AstroContainer.create();
+    const { default: AddComment } = await import("./add-comment.astro");
+    const html = await container.renderToString(AddComment, {
+      props: {
+        postId: "123",
+        parentId: "1",
+      },
+    });
+
+    expect(html).toContain('classList.add("comment-form-message--error")');
+    expect(html).toContain('classList.remove("comment-form-message--success")');
+    expect(html).toContain('classList.add("comment-form-message--success")');
+    expect(html).toContain('classList.remove("comment-form-message--error")');
+    expect(html).not.toContain("messageElement.style.color");
+  });
 });

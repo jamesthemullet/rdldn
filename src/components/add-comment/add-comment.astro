@@ -4,6 +4,8 @@ type Props = {
   parentId?: string | null;
 };
 const { postId, parentId } = Astro.props as Props;
+
+import "./add-comment.css";
 ---
 
 <form
@@ -76,10 +78,12 @@ const { postId, parentId } = Astro.props as Props;
 
           if (data.errors) {
             messageElement.textContent = "Failed to submit comment. Please try again later.";
-            messageElement.style.color = "red";
+            messageElement.classList.remove("comment-form-message--success");
+            messageElement.classList.add("comment-form-message--error");
           } else {
             messageElement.textContent = "Comment submitted! Awaiting moderation.";
-            messageElement.style.color = "green";
+            messageElement.classList.remove("comment-form-message--error");
+            messageElement.classList.add("comment-form-message--success");
             form.reset();
           }
         });
