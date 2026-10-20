@@ -1,0 +1,13 @@
+.dropdown-select {
+  min-width: 200px;
+}
+
+.dropdown-label--center {
+  display: block;
+  text-align: center;
+}
+
+.dropdown-form--center {
+  display: flex;
+  justify-content: center;
+}
