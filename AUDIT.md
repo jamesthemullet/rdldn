@@ -48,6 +48,7 @@ anywhere else in the codebase.
 - 2026-10-19 — marked code quality item "homepage-highlights.ts biased shuffle" as won't fix (section 8) — shuffle uniformity isn't a concern for this site
 - 2026-10-17 — scheduled maintenance run: resolved code quality item "wishlist.ts/visits.ts cast request.json() with no runtime validation" by adding type-guard validation and JSON parse error handling (section 8)
 - 2026-10-19 — scheduled maintenance run: resolved code quality item "add-comment.astro sets messageElement.style.color directly instead of toggling a CSS class" (section 8)
+- 2026-10-20 — scheduled maintenance run: resolved code quality item "dropdown.astro has no CSS file and uses inline style attributes" by moving styles to dropdown.css (section 8)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -134,7 +135,7 @@ anywhere else in the codebase.
 - [x] `src/pages/api/wishlist.ts:47` and `src/pages/api/visits.ts:44` cast `await context.request.json()` directly `as WishlistPostBody`/`as VisitsPostBody` with no runtime validation of the request body — add validation (found: 2026-08-31) (resolved: 2026-10-17, PR #712)
 - [x] `src/lib/homepage-highlights.ts:56,150,152` uses `array.sort(() => Math.random() - 0.5)` to shuffle — this is a biased shuffle, not a uniform permutation; replace with a Fisher-Yates shuffle (found: 2026-08-31) (won't fix: 2026-10-19, PR #714 closed — how evenly "random" picks are shuffled doesn't matter for this site; don't raise shuffle bias / Fisher-Yates findings again)
 - [x] `src/components/add-comment/add-comment.astro:79,82` sets `messageElement.style.color = "red"/"green"` directly from inline script instead of toggling a CSS class, inconsistent with the project's per-component-CSS convention — refactor to a class toggle (found: 2026-08-31)
-- [ ] `src/components/dropdown/dropdown.astro` has no CSS file and uses three inline `style` attributes (lines 46, 52, 59) for static/conditional styling — move to a component CSS file (found: 2026-08-31)
+- [x] `src/components/dropdown/dropdown.astro` has no CSS file and uses three inline `style` attributes (lines 46, 52, 59) for static/conditional styling — move to a component CSS file (found: 2026-08-31) (resolved: 2026-10-20, PR #TBD)
 - [ ] `src/components/comment/comment.astro`'s reply form is shown/hidden via directly toggling `formContainer.style.display` (lines 77, 118-119) instead of a CSS class, and the component has no CSS file — refactor (found: 2026-08-31)
 - [ ] `astro.config.mjs.bak` and `vitest.config.ts.bak` at the repo root are stale (predate the Clerk integration) — safe to delete (found: 2026-08-31)
 - [ ] `knip.json`'s `ignoreBinaries: ["wait-on", "axe"]` is flagged by `yarn knip` itself as a removable configuration hint — clean it up (found: 2026-08-31)

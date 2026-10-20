@@ -27,7 +27,8 @@ describe("dropdown component", () => {
     expect(html).toContain('title="Latest first"');
     expect(html).toContain("Latest first");
     expect(html).not.toContain('value=""');
-    expect(html).not.toContain("display: block; text-align: center;");
+    expect(html).not.toContain("dropdown-label--center");
+    expect(html).toContain('class="dropdown-select"');
   });
 
   test("renders centred layout, placeholder option and truncated labels", async () => {
@@ -53,10 +54,10 @@ describe("dropdown component", () => {
       }
     });
 
-    expect(html).toContain('style="display: block; text-align: center;"');
+    expect(html).toContain('class="dropdown-label--center"');
     expect(html).toContain('id="area-form"');
     expect(html).toContain('method="post"');
-    expect(html).toContain('style="display: flex; justify-content: center;"');
+    expect(html).toContain('class="dropdown-form--center"');
     expect(html).toContain('onchange="console.log(\'changed\')"');
     expect(html).toContain('value=""');
     expect(html).toContain("All areas");

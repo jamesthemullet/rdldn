@@ -1,4 +1,6 @@
 ---
+import "./dropdown.css";
+
 type DropdownOption = {
   value: string;
   label: string;
@@ -43,20 +45,20 @@ const getDisplayLabel = (labelToFormat: string): string => {
 
 <label
   for={id}
-  style={center ? "display: block; text-align: center;" : undefined}
+  class={center ? "dropdown-label--center" : undefined}
   >{label}</label
 >
 <form
   id={formId}
   method={formMethod}
-  style={center ? "display: flex; justify-content: center;" : undefined}
+  class={center ? "dropdown-form--center" : undefined}
 >
   <select
     id={id}
     name={name}
     value={selectedValue}
     onchange={onChange}
-    style="min-width: 200px;"
+    class="dropdown-select"
   >
     {defaultOptionLabel && <option value="">{defaultOptionLabel}</option>}
     {
