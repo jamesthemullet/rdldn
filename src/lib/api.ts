@@ -1,6 +1,9 @@
+import { kv } from "./kv";
+
 // Short-lived cache: dedupes identical requests within a render and across requests on a
 // warm serverless instance, but expires so new content (or a recovered backend) shows up.
 const CACHE_TTL_MS = 5 * 60 * 1000;
+const KV_CACHE_TTL_SECONDS = CACHE_TTL_MS / 1000;
 const REQUEST_TIMEOUT_MS = 20 * 1000;
 
 const graphQLRequestCache = new Map<string, { promise: Promise<unknown>; expiresAt: number }>();
@@ -29,6 +32,8 @@ const getRequestCacheKey = (
   variables: Record<string, unknown>
 ): string => `${query}::${stableStringify(variables)}`;
 
+const getKvCacheKey = (cacheKey: string): string => `graphql:${cacheKey}`;
+
 export async function fetchGraphQL<T = unknown>(
   query: string,
   variables: Record<string, unknown> = {}
@@ -41,6 +46,14 @@ export async function fetchGraphQL<T = unknown>(
   }
 
   const requestPromise = (async () => {
+    const kvCacheKey = getKvCacheKey(cacheKey);
+    // KV persists the result across serverless invocations; a lookup failure (e.g. KV
+    // unavailable) is treated as a cache miss rather than failing the request.
+    const cached = await kv.get<T>(kvCacheKey).catch(() => null);
+    if (cached !== null && cached !== undefined) {
+      return cached;
+    }
+
     const response = await fetch(import.meta.env.PUBLIC_GRAPHQL_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,7 +70,9 @@ export async function fetchGraphQL<T = unknown>(
       throw new Error(errorMsg);
     }
 
-    return json.data;
+    const data = json.data;
+    await kv.set(kvCacheKey, data, { ex: KV_CACHE_TTL_SECONDS }).catch(() => {});
+    return data;
   })();
 
   const entry = { promise: requestPromise, expiresAt: Date.now() + CACHE_TTL_MS };

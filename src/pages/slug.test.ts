@@ -2,6 +2,10 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { resetGraphQLRequestCache } from "../lib/api";
 
+vi.mock("../lib/kv", () => ({
+  kv: { get: vi.fn().mockResolvedValue(null), set: vi.fn().mockResolvedValue("OK") },
+}));
+
 vi.mock("../components/header/HeaderAuth");
 
 vi.mock("astro:assets", () => ({

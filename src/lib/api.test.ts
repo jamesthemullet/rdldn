@@ -1,5 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("./kv", () => ({
+  kv: {
+    get: vi.fn().mockResolvedValue(null),
+    set: vi.fn().mockResolvedValue("OK"),
+  },
+}));
+
 import { fetchGraphQL, resetGraphQLRequestCache } from "./api";
+import { kv } from "./kv";
 
 const GRAPHQL_URL = import.meta.env.PUBLIC_GRAPHQL_URL;
 
@@ -18,10 +27,13 @@ function mockFetch(data: unknown, options: { ok?: boolean; errors?: unknown[] } 
 describe("fetchGraphQL", () => {
   beforeEach(() => {
     resetGraphQLRequestCache();
+    vi.mocked(kv.get).mockResolvedValue(null);
+    vi.mocked(kv.set).mockResolvedValue("OK");
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.clearAllMocks();
   });
 
   it("makes a POST request to the GraphQL endpoint with the query and variables", async () => {
@@ -193,5 +205,50 @@ describe("fetchGraphQL", () => {
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ posts: [{ slug: "new" }] });
+  });
+
+  it("stores a successful response in KV so it survives across invocations", async () => {
+    mockFetch({ posts: [] });
+    const query = "{ posts { nodes { slug } } }";
+
+    await fetchGraphQL(query);
+
+    expect(kv.set).toHaveBeenCalledWith(
+      expect.stringContaining(query),
+      { posts: [] },
+      { ex: expect.any(Number) }
+    );
+  });
+
+  it("returns the KV-cached value without calling fetch when present", async () => {
+    mockFetch({ posts: [] });
+    vi.mocked(kv.get).mockResolvedValue({ posts: [{ slug: "from-kv" }] });
+    const query = "{ posts { nodes { slug } } }";
+
+    const result = await fetchGraphQL(query);
+
+    expect(fetch).not.toHaveBeenCalled();
+    expect(result).toEqual({ posts: [{ slug: "from-kv" }] });
+  });
+
+  it("falls back to fetching from the network when the KV lookup fails", async () => {
+    mockFetch({ posts: [] });
+    vi.mocked(kv.get).mockRejectedValue(new Error("KV unavailable"));
+    const query = "{ posts { nodes { slug } } }";
+
+    const result = await fetchGraphQL(query);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({ posts: [] });
+  });
+
+  it("does not fail the request when storing the response in KV fails", async () => {
+    mockFetch({ posts: [] });
+    vi.mocked(kv.set).mockRejectedValue(new Error("KV unavailable"));
+    const query = "{ posts { nodes { slug } } }";
+
+    const result = await fetchGraphQL(query);
+
+    expect(result).toEqual({ posts: [] });
   });
 });
