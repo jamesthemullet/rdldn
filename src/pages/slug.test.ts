@@ -3,6 +3,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { resetGraphQLRequestCache } from "../lib/api";
 
 vi.mock("../components/header/HeaderAuth");
+vi.mock("../lib/kv");
 
 vi.mock("astro:assets", () => ({
   Image: (() => {

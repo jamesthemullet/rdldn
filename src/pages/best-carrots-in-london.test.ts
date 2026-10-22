@@ -61,6 +61,7 @@ const mockPosts = [
 ];
 
 vi.mock("../components/header/HeaderAuth");
+vi.mock("../lib/kv");
 
 vi.mock("../lib/api", () => {
   return {

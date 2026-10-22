@@ -49,6 +49,7 @@ anywhere else in the codebase.
 - 2026-10-17 — scheduled maintenance run: resolved code quality item "wishlist.ts/visits.ts cast request.json() with no runtime validation" by adding type-guard validation and JSON parse error handling (section 8)
 - 2026-10-19 — scheduled maintenance run: resolved code quality item "add-comment.astro sets messageElement.style.color directly instead of toggling a CSS class" (section 8)
 - 2026-10-20 — scheduled maintenance run: resolved code quality item "dropdown.astro has no CSS file and uses inline style attributes" by moving styles to dropdown.css (section 8)
+- 2026-10-22 — scheduled maintenance run: resolved performance item "getAllRoastDinnerPosts.ts caches only in a per-invocation module-level Promise, not @vercel/kv" by backing it with the shared KV cache (section 3)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -78,7 +79,7 @@ anywhere else in the codebase.
 - [x] `src/pages/league-of-roasts.astro:98` and `src/pages/find-a-roast.astro:46` use `client:only="react"` for `SortPosts`/`SundayRoastPlanner`, rendering nothing until JS loads even though their data (`allRoastPosts`) is available at build time (`prerender = true`) — `league-of-roasts.astro:87-99` ships a manual CSS spinner to paper over the blank gap; consider server-rendering with client hydration instead (found: 2026-08-31) (resolved: 2026-10-03, PR #681)
 - [x] `src/pages/to-do-list.astro:35` uses `client:only="react"` for `RandomPubPicker`, which doesn't need `window` at import time and could render server-side with hydration instead of a blank-until-JS gap (found: 2026-08-31) (resolved: 2026-09-25, PR #676)
 - [ ] `src/lib/api.ts:1-65` (`fetchGraphQL`) only dedupes requests via a per-invocation in-memory `Map` — identical queries are refetched from WordPress on every cold/new serverless invocation; consider backing with `@vercel/kv` (already a dependency) (found: 2026-08-31)
-- [ ] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31)
+- [x] `src/lib/getAllRoastDinnerPosts.ts:9-43` caches the full paginated post list only in a per-invocation module-level `Promise`, not `@vercel/kv` — the same expensive, largely-static fetch reruns across invocations (found: 2026-08-31) (resolved: 2026-10-22, PR #723)
 - [x] `src/pages/archive.astro:9` (`prerender = false`) calls `fetchPostsByDate` on every request with no `Cache-Control` header, unlike `annual-roastatistics.astro:14-19` which sets `s-maxage=3600, stale-while-revalidate=86400` — apply the same pattern (found: 2026-08-31) (resolved: 2026-09-01, PR #629)
 - [x] `src/pages/api/homepage-highlights.json.ts:4-10` runs four parallel GraphQL fetches on every request (called client-side from `index.astro:376-377`) with no `Cache-Control` header and no KV caching despite infrequently-changing data (found: 2026-08-31) (resolved: 2026-09-07, PR #642)
 - [x] `src/pages/api/passport/og.ts:6-10` regenerates a `@vercel/og` image on every request with no `Cache-Control` header, so neither CDN nor browser caches it despite repeatable params (found: 2026-08-31) (resolved: 2026-09-02, PR #631)
