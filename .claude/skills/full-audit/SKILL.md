@@ -217,6 +217,9 @@ catch.
   entries.
 - **Out of scope — never report:** shuffle randomness/bias (e.g. `.sort(() => Math.random() - 0.5)`
   vs Fisher-Yates). Random picks on this site are cosmetic, so uniformity doesn't matter.
+- **Out of scope — never report:** backing `fetchGraphQL` or other WordPress/GraphQL fetches with
+  `@vercel/kv`. It adds a KV round trip per query and doesn't help prerendered pages; for SSR
+  routes, recommend `Cache-Control: s-maxage` / `stale-while-revalidate` instead.
 - **Every checklist item must be independently reviewable as one small PR** — small, focused
   diffs only. If a finding is actually a bundle of unrelated or large changes (e.g. "add e2e
   coverage for auth flows", "improve accessibility across the app", "harden security headers"),
