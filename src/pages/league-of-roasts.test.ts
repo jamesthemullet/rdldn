@@ -5,6 +5,7 @@ const fetchGraphQLMock = vi.fn();
 const getSinglePageDataMock = vi.fn();
 
 vi.mock("../components/header/HeaderAuth");
+vi.mock("../lib/kv");
 
 vi.mock("../lib/api", () => ({
   fetchGraphQL: fetchGraphQLMock,

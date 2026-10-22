@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 const fetchGraphQLMock = vi.fn();
 
+vi.mock("../lib/kv");
+
 vi.mock("../lib/api", () => ({
   fetchGraphQL: fetchGraphQLMock,
 }));

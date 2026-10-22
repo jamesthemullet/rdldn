@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Post } from "../types";
 import { computeInflationIndex } from "./inflationIndex";
+
+vi.mock("./kv");
 
 function makePost(year: string | undefined, price: string | undefined): Post {
   return {
