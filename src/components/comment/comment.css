@@ -1,0 +1,7 @@
+.reply-form-container {
+  display: none;
+}
+
+.reply-form-container--visible {
+  display: block;
+}
