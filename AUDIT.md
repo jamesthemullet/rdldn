@@ -51,6 +51,7 @@ anywhere else in the codebase.
 - 2026-10-19 — scheduled maintenance run: resolved code quality item "add-comment.astro sets messageElement.style.color directly instead of toggling a CSS class" (section 8)
 - 2026-10-20 — scheduled maintenance run: resolved code quality item "dropdown.astro has no CSS file and uses inline style attributes" by moving styles to dropdown.css (section 8)
 - 2026-10-24 — scheduled maintenance run: resolved code quality item "astro.config.mjs.bak and vitest.config.ts.bak are stale, predate Clerk" by deleting both files (section 8)
+- 2026-10-24 — scheduled maintenance run: resolved code quality item "knip.json's ignoreBinaries: [\"wait-on\", \"axe\"] is a removable configuration hint" by removing both stale entries (section 8)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -140,4 +141,4 @@ anywhere else in the codebase.
 - [x] `src/components/dropdown/dropdown.astro` has no CSS file and uses three inline `style` attributes (lines 46, 52, 59) for static/conditional styling — move to a component CSS file (found: 2026-08-31) (resolved: 2026-10-20, PR #718)
 - [ ] `src/components/comment/comment.astro`'s reply form is shown/hidden via directly toggling `formContainer.style.display` (lines 77, 118-119) instead of a CSS class, and the component has no CSS file — refactor (found: 2026-08-31)
 - [x] `astro.config.mjs.bak` and `vitest.config.ts.bak` at the repo root are stale (predate the Clerk integration) — safe to delete (found: 2026-08-31) (resolved: 2026-10-24, PR #730)
-- [ ] `knip.json`'s `ignoreBinaries: ["wait-on", "axe"]` is flagged by `yarn knip` itself as a removable configuration hint — clean it up (found: 2026-08-31)
+- [x] `knip.json`'s `ignoreBinaries: ["wait-on", "axe"]` is flagged by `yarn knip` itself as a removable configuration hint — clean it up (found: 2026-08-31) (resolved: 2026-10-24, PR #731)
