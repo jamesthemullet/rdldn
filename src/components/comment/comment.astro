@@ -4,6 +4,7 @@ import type { Comment as CommentType } from "../../types";
 // Parent Astro File
 import AddComment from "../add-comment/add-comment.astro";
 import Comment from "../comment/comment.astro";
+import "./comment.css";
 
 type Props = {
   comment: CommentType;
@@ -74,7 +75,6 @@ const formatDate = (dateString: string): string => {
     class="reply-form-container"
     id={`reply-form-${comment.id}`}
     aria-hidden="true"
-    style="display: none;"
   >
     <AddComment postId={postId} parentId={comment.id} />
   </div>
@@ -115,8 +115,8 @@ const formatDate = (dateString: string): string => {
           );
 
           if (formContainer) {
-            const isVisible = formContainer.style.display !== "none";
-            formContainer.style.display = isVisible ? "none" : "block";
+            const isVisible = formContainer.classList.contains("reply-form-container--visible");
+            formContainer.classList.toggle("reply-form-container--visible", !isVisible);
             formContainer.setAttribute("aria-hidden", isVisible.toString());
             event.target.setAttribute("aria-expanded", (!isVisible).toString());
           }
