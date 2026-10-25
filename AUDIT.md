@@ -53,6 +53,7 @@ anywhere else in the codebase.
 - 2026-10-22 — scheduled maintenance run: resolved code quality item "comment.astro reply form toggled via inline style.display, no CSS file" by moving to a comment.css class toggle (section 8)
 - 2026-10-24 — scheduled maintenance run: resolved code quality item "astro.config.mjs.bak and vitest.config.ts.bak are stale, predate Clerk" by deleting both files (section 8)
 - 2026-10-24 — scheduled maintenance run: resolved code quality item "knip.json's ignoreBinaries: [\"wait-on\", \"axe\"] is a removable configuration hint" by removing both stale entries (section 8)
+- 2026-10-25 — scheduled maintenance run: resolved security item "No Content-Security-Policy header is set in vercel.json" by adding a Content-Security-Policy-Report-Only header (section 6)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -111,7 +112,7 @@ anywhere else in the codebase.
 - [x] `src/pages/best-roast-lists.astro:80` renders `singlePage.content` via `set:html` without calling `sanitizeContent`, unlike every other CMS-content page — a compromised/malicious WP editor account could inject script/HTML that executes for all visitors; add sanitization (found: 2026-08-31)
 - [x] `src/pages/roastatistics.astro:89` has the same issue — `set:html={singlePage.content}` bypasses `sanitizeContent` — add sanitization (found: 2026-08-31) (resolved: 2026-09-19, PR #668)
 - [x] `src/middleware.ts:4` only lists `/api/wishlist`, `/api/profile`, and `/my-roasts` as protected prefixes; `/api/visits` and `/api/visits/[slug]` aren't covered by middleware (each handler independently checks auth so there's no current bypass, but a future new route could easily forget the manual check) — centralize the protected-route list (found: 2026-08-31) (resolved: 2026-09-21, PR #670)
-- [ ] No Content-Security-Policy header is set in `vercel.json` (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy are already present and correctly apply to all routes via the `/(.*)` catch-all) — nice-to-have for a small project, add a CSP header (found: 2026-08-31)
+- [x] No Content-Security-Policy header is set in `vercel.json` (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy are already present and correctly apply to all routes via the `/(.*)` catch-all) — nice-to-have for a small project, add a CSP header (found: 2026-08-31) (resolved: 2026-10-25, PR #TBD)
 
 ## 7. README / feature alignment
 
