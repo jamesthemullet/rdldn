@@ -35,7 +35,11 @@ than new feature ideas, that's `/full-audit`.
 Plain markdown, not an HTML artifact — this has been requested explicitly before and is the
 standing preference for this deliverable. Write directly to `ROADMAP.md` at the repo root,
 overwriting the previous version (git history preserves prior versions; don't keep an "old
-roadmap" section).
+roadmap" section). When refreshing, carry over every ticked `- [x]` box for a feature that's
+still on the roadmap, and keep the **Ruled out** section — never re-propose anything listed there.
+
+The roadmap is a **checklist**: every checkbox is exactly one human-reviewable PR, and nothing
+else is a checkbox.
 
 Structure:
 
@@ -45,21 +49,23 @@ Structure:
    - **Engagement** — deepens a single visit
    - **Retention** — earns a repeat visit
    - **Fun** — no metric, just delight
-2. **PR-sequence explainer** — one short paragraph stating that every feature is broken into a
-   PR sequence sized for ~15-minute human review, and that genuinely atomic changes are left as
-   one PR rather than artificially split.
+2. **How to read this** — one short paragraph stating that every checkbox is one PR sized for
+   ~15-minute human review (ticked when it merges), boxes are in merge order, non-code
+   prerequisites appear as **Blocked by** lines linking an issue, and multi-step UI features are
+   flag-gated so each PR can merge on its own.
 3. **Now / Next / Later** sections, ordered by effort and how much new infrastructure they need:
    - **Now** — ships in weeks, reuses existing infra/patterns entirely.
    - **Next** — this quarter, moderate new build (new tables, new routes, no new third-party
      services).
    - **Later** — bigger bets that need a new infra dependency first (email provider, push,
      moderation tooling, etc).
-4. Each feature is a `### N. Name — *Goal tags*` heading, one-line description, then a numbered
-   PR-step list (see "Breaking a feature into PR steps" below).
-5. **Mise en place** table at the end — infra prerequisites that block one or more features
+4. Each feature is a `### N. Name — *Goal tags*` heading, one-line description, then a
+   `- [ ]` checklist of PR steps in merge order (see "Breaking a feature into PR steps" below).
+5. **Ruled out** — ideas the user has rejected, one line each with the reason.
+6. **Mise en place** table at the end — infra prerequisites that block one or more features
    (email provider, web push, moderation queue, etc), cross-referencing which feature/step needs
    each one, so shared infra isn't proposed twice.
-6. Footer: `*Roast Dinners in London — product roadmap, <today's date>*`.
+7. Footer: `*Roast Dinners in London — product roadmap, <today's date>*`.
 
 ## Grounding the roadmap in the real app
 
@@ -94,9 +100,14 @@ splitting wherever a step could stand alone as a reviewable, mergeable change:
 - Shared infra setup (email provider, web push, moderation tooling) is step 1 of whichever
   feature needs it first, labeled **"Infra (Mise en Place):"**, and also listed in the Mise en
   place table.
-- A step that's actually a non-code task (CMS content tagging, a manual data-availability check)
-  gets labeled **"Not a PR"** / **"Data check first, not really a PR"** rather than forced into
-  the PR-step numbering as if it were code.
+- Every checkbox must name a concrete code change a reviewer can read and approve: what file or
+  pattern it touches and what tests come with it. Vague steps ("investigate", "pick a provider",
+  "data check") are not checkboxes — turn them into a reviewable PR (e.g. a query + tests whose
+  output answers the question) or into a **Blocked by** line.
+- A non-code task (CMS content tagging, a product decision) is a `> **Blocked by** <issue link>`
+  line above the feature's checklist, never a checkbox.
+- Before writing a step, check the repo doesn't already do it (e.g. existing JSON-LD, existing
+  stats pages). If it's partly done, describe only the remaining delta.
 - If a step needs new **human-written content** (copy, editorial tagging, photography, a written
   policy/FAQ, anything a person has to sit down and write rather than code) — not just a
   mechanical data check — raise a GitHub issue for it with `mcp__github__create_issue` rather
@@ -107,7 +118,7 @@ splitting wherever a step could stand alone as a reviewable, mergeable change:
   after the roadmap content itself is finalized — confirm with the user first if it's unclear
   whether they want issues opened automatically for a given run.
 - If a feature is small enough that splitting would just produce dependent stubs with nothing to
-  review independently, don't split it — write **"One PR."** and say why in one clause.
+  review independently, don't split it — give it a single checkbox.
 - If two adjacent steps are borderline (each is small but splitting is defensible either way),
   keep them separate but add a one-line note that they could be combined at a reviewer's
   discretion.
