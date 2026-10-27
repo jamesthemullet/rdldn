@@ -1,0 +1,126 @@
+---
+import "./halloween-easter-eggs.css";
+---
+
+<div class="haunted-eyes" aria-hidden="true">
+  <span class="eye"></span>
+  <span class="eye"></span>
+</div>
+
+<div class="skeleton-hand" aria-hidden="true">
+  <svg viewBox="0 0 120 200" width="120" height="200">
+    <g fill="#f4f1e8" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round">
+      <rect x="44" y="150" width="14" height="50" rx="7" />
+      <rect x="62" y="150" width="14" height="50" rx="7" />
+      <path d="M30 105 Q60 90 90 105 L86 152 Q60 162 34 152 Z" />
+      <rect x="31" y="50" width="11" height="26" rx="5.5" />
+      <rect x="31" y="78" width="11" height="26" rx="5.5" />
+      <rect x="47" y="30" width="11" height="34" rx="5.5" />
+      <rect x="47" y="66" width="11" height="34" rx="5.5" />
+      <rect x="63" y="36" width="11" height="30" rx="5.5" />
+      <rect x="63" y="68" width="11" height="32" rx="5.5" />
+      <rect x="79" y="58" width="10" height="22" rx="5" />
+      <rect x="79" y="82" width="10" height="22" rx="5" />
+      <rect x="92" y="108" width="10" height="20" rx="5" transform="rotate(35 97 118)" />
+      <rect x="100" y="92" width="10" height="20" rx="5" transform="rotate(35 105 102)" />
+    </g>
+  </svg>
+</div>
+
+<script>
+  import {
+    DEMON_RATING,
+    GLITCH_TEXT,
+    hasScrolledPast,
+    isTypingTarget,
+    pickHauntedTitle,
+    pushSecretKey,
+    wrapGravyWords,
+  } from "../../lib/halloweenEasterEggs";
+
+  const IDLE_BEFORE_EYES_MS = 30000;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const postContent = document.querySelector(".post-content");
+  if (postContent) wrapGravyWords(postContent);
+
+  // Tab title haunting
+  const originalTitle = document.title;
+  document.addEventListener("visibilitychange", () => {
+    document.title = document.hidden ? pickHauntedTitle() : originalTitle;
+  });
+
+  // Rating briefly shows the number of the beast
+  const ratingValue = document.querySelector<HTMLElement>(".rating-value");
+  if (ratingValue) {
+    const realRating = ratingValue.textContent ?? "";
+    let restoreTimer: number | undefined;
+    ratingValue.addEventListener("mouseenter", () => {
+      ratingValue.textContent = DEMON_RATING;
+      ratingValue.classList.add("possessed");
+      window.clearTimeout(restoreTimer);
+      restoreTimer = window.setTimeout(() => {
+        ratingValue.textContent = realRating;
+        ratingValue.classList.remove("possessed");
+      }, 600);
+    });
+  }
+
+  // Eyes appear in the dark after a spell of idleness
+  const eyes = document.querySelector<HTMLElement>(".haunted-eyes");
+  let idleTimer: number | undefined;
+  const resetIdle = () => {
+    eyes?.classList.remove("watching");
+    window.clearTimeout(idleTimer);
+    idleTimer = window.setTimeout(() => eyes?.classList.add("watching"), IDLE_BEFORE_EYES_MS);
+  };
+  for (const event of ["mousemove", "scroll", "keydown", "touchstart"]) {
+    window.addEventListener(event, resetIdle, { passive: true });
+  }
+  resetIdle();
+
+  if (!reducedMotion) {
+    // Typing "boo" or "gravy" flickers the lights and summons a hand
+    const container = document.querySelector<HTMLElement>(".page-container");
+    const hand = document.querySelector<HTMLElement>(".skeleton-hand");
+    let buffer = "";
+    let summoning = false;
+    document.addEventListener("keydown", (event) => {
+      if (summoning || event.ctrlKey || event.metaKey || event.altKey || isTypingTarget(event.target)) return;
+
+      const result = pushSecretKey(buffer, event.key);
+      buffer = result.buffer;
+      if (!result.matched) return;
+
+      summoning = true;
+      container?.classList.add("lights-flicker");
+      hand?.classList.add("reaching");
+      window.setTimeout(() => {
+        container?.classList.remove("lights-flicker");
+        hand?.classList.remove("reaching");
+        summoning = false;
+      }, 3000);
+    });
+
+    // A paragraph near the end briefly reveals the truth
+    let glitched = false;
+    const glitchOnScroll = () => {
+      if (glitched) return;
+      const { scrollY, innerHeight } = window;
+      if (!hasScrolledPast(0.8, scrollY, innerHeight, document.documentElement.scrollHeight)) return;
+
+      const paragraph = Array.from(postContent?.querySelectorAll<HTMLElement>("p") ?? []).find((p) => {
+        const { top, bottom } = p.getBoundingClientRect();
+        return top >= 0 && bottom <= innerHeight && (p.textContent?.trim().length ?? 0) > 20;
+      });
+      if (!paragraph) return;
+
+      glitched = true;
+      window.removeEventListener("scroll", glitchOnScroll);
+      paragraph.dataset.glitch = GLITCH_TEXT;
+      paragraph.classList.add("glitching");
+      window.setTimeout(() => paragraph.classList.remove("glitching"), 300);
+    };
+    window.addEventListener("scroll", glitchOnScroll, { passive: true });
+  }
+</script>

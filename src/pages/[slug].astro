@@ -17,6 +17,7 @@ import "../styles/post.css";
 import sanitizeHtml from "sanitize-html";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import HalloweenEasterEggs from "../components/halloween-easter-eggs/halloween-easter-eggs.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RatingAverage from "../components/rating-average/rating-average.astro";
 import RoastByTagSection from "../components/roastByTagSection/roast-by-tag-section.astro";
@@ -139,6 +140,7 @@ const rating = post.ratings?.nodes?.[0]?.name;
 const tubeStation = post.tubeStations?.nodes?.[0]?.name;
 const tubeLines = post.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
 const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
+const isHalloween = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ?? false;
 
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
@@ -204,7 +206,7 @@ const reviewStructuredData =
   pageTitle={singlePost.title ?? ""}
   description={singlePost?.seo?.opengraphDescription}
   opengraphImage={singlePost.seo?.opengraphImage?.sourceUrl}
-  halloween={post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ? true : false}
+  halloween={isHalloween}
   structuredData={reviewStructuredData}
   ogType={contentType === "post" ? "article" : "website"}
 >
@@ -255,7 +257,7 @@ const reviewStructuredData =
       </>
     )}
     
-    <div set:html={safeContent} />
+    <div class="post-content" set:html={safeContent} />
 
     <Newsletter />
     
@@ -270,7 +272,7 @@ const reviewStructuredData =
       )}
         <p>{singlePost.title}</p>
       <p class={isRereviewed ? "re-reviewed-rating" : ""}>
-        Rating: {rating}
+        Rating: <span class="rating-value">{rating}</span>
       </p>
       {tubeStation && <p>Tube Station: {tubeStation}</p> }
               <p>
@@ -363,6 +365,8 @@ const reviewStructuredData =
       <Comments threadedComments={threadedComments} postId={(singlePost as Page).pageId} />
     )}
   </div>
+
+  {isHalloween && <HalloweenEasterEggs />}
 </BaseLayout>
 
 <script>
