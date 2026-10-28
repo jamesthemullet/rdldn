@@ -43,6 +43,10 @@
     font-weight: bold;
   }
 
+  .search-error {
+    text-align: center;
+  }
+
   form {
     display: flex;
     justify-content: center;

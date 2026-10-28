@@ -67,8 +67,11 @@ const { resultLimit = 4 } = Astro.props;
         </template>
       </ul>
     </section>
-    <p x-show="searchPerformed && searchResults.length === 0">
+    <p x-show="searchPerformed && !searchError && searchResults.length === 0">
       No results found.
+    </p>
+    <p class="search-error" x-show="searchError">
+      Search is unavailable right now. Please try again in a moment.
     </p>
   </div>
 </div>
@@ -86,6 +89,7 @@ const { resultLimit = 4 } = Astro.props;
       searchTerm: "",
       searchResults: [],
       searchPerformed: false,
+      searchError: false,
       resultLimit: 4,
 
       init() {
@@ -103,37 +107,49 @@ const { resultLimit = 4 } = Astro.props;
       },
 
       async handleSearch() {
-        const response = await fetch(GRAPHQL_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            query: `
-              query SearchPosts($search: String!, $first: Int!) {
-                posts(where: { search: $search }, first: $first) {
-                  nodes {
-                    title
-                    slug
-                    featuredImage {
-                      node {
-                        sourceUrl
-                      }
+        // GET rather than POST: WAF rules on the WordPress host (Wordfence) have blocked
+        // POSTed post queries before, and GET responses can be cached.
+        const params = new URLSearchParams({
+          query: `
+            query SearchPosts($search: String!, $first: Int!) {
+              posts(where: { search: $search }, first: $first) {
+                nodes {
+                  title
+                  slug
+                  featuredImage {
+                    node {
+                      sourceUrl
                     }
-                    ratings { nodes { name } }
-                    areas { nodes { name } }
-                    closedDowns { nodes { name } }
                   }
+                  ratings { nodes { name } }
+                  areas { nodes { name } }
+                  closedDowns { nodes { name } }
                 }
               }
-            `,
-            variables: {
-              search: this.searchTerm,
-              first: this.resultLimit,
-            },
+            }
+          `,
+          variables: JSON.stringify({
+            search: this.searchTerm,
+            first: this.resultLimit,
           }),
         });
 
-        const json = await response.json();
-        this.searchResults = json.data.posts.nodes || [];
+        try {
+          const response = await fetch(`${GRAPHQL_URL}?${params}`);
+          if (!response.ok) throw new Error(`Search request failed: ${response.status}`);
+
+          const json = await response.json();
+          if (json.errors || !json.data?.posts) {
+            throw new Error(`Search GraphQL error: ${JSON.stringify(json.errors)}`);
+          }
+
+          this.searchResults = json.data.posts.nodes || [];
+          this.searchError = false;
+        } catch (error) {
+          console.error(error);
+          this.searchResults = [];
+          this.searchError = true;
+        }
         this.searchPerformed = true;
       },
     }));

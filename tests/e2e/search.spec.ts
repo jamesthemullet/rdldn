@@ -22,16 +22,18 @@ const waitForAlpine = async (page: Page) => {
 
 const mockSearchResponse = async (page: Page, options: MockOptions) => {
   await page.route(SEARCH_ENDPOINT, async (route) => {
-    const payload = route.request().postDataJSON() as {
-      variables?: { search?: string; first?: number };
-    };
+    const request = route.request();
+    expect(request.method()).toBe("GET");
+    const variables = JSON.parse(
+      new URL(request.url()).searchParams.get("variables") ?? "{}"
+    ) as { search?: string; first?: number };
 
     if (options.expectedSearch) {
-      expect(payload.variables?.search).toBe(options.expectedSearch);
+      expect(variables.search).toBe(options.expectedSearch);
     }
 
     if (typeof options.expectedLimit === "number") {
-      expect(payload.variables?.first).toBe(options.expectedLimit);
+      expect(variables.first).toBe(options.expectedLimit);
     }
 
     await route.fulfill({
@@ -117,5 +119,28 @@ test.describe("search page", () => {
 
     await expect(page.getByText("No results found.")).toBeVisible();
     await expect(page.locator("section.search-container li.heading")).toHaveCount(0);
+  });
+
+  test("shows an error message when the backend blocks the request", async ({ page }) => {
+    // e.g. a Wordfence WAF block: a 403 HTML page instead of JSON
+    await page.route(SEARCH_ENDPOINT, (route) =>
+      route.fulfill({
+        status: 403,
+        contentType: "text/html",
+        body: "<!DOCTYPE html><title>403 Forbidden</title>",
+      })
+    );
+
+    await page.goto("/search");
+    await waitForAlpine(page);
+
+    await page.getByPlaceholder("Search...").fill("gravy");
+
+    const responsePromise = page.waitForResponse(SEARCH_ENDPOINT);
+    await page.getByRole("button", { name: /search/i }).click();
+    await responsePromise;
+
+    await expect(page.getByText("Search is unavailable right now.")).toBeVisible();
+    await expect(page.getByText("No results found.")).toBeHidden();
   });
 });
