@@ -23,7 +23,7 @@
   "resolutions": {
     "htmlparser2": "10.1.0",
     "path-to-regexp": "6.3.0",
-    "yaml": ">=2.8.3"
+    "**/@vercel/cli-config/zod": "^4.6.6"
   },
   "dependencies": {
     "@astrojs/alpinejs": "^1.0.0",
