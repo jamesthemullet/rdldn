@@ -131,6 +131,36 @@ test("league of roasts lists roasts", async ({ page }) => {
   });
 });
 
+test("search returns real results from the WordPress backend", async ({ page }) => {
+  await page.goto("/search");
+  await page.getByPlaceholder("Search...").fill("gravy");
+
+  const responsePromise = page.waitForResponse(/blog\.rdldn\.co\.uk\/graphql/);
+  await page.getByRole("button", { name: /search/i }).click();
+  const response = await responsePromise;
+
+  // A WAF block (e.g. Wordfence) answers with a 403 HTML page instead of JSON
+  expect(response.status()).toBe(200);
+  await expect(page.locator("section.search-container li.heading").first()).toBeVisible();
+  // Submitting must not fall back to a native form submit (a reload to /search?)
+  expect(page.url()).not.toContain("?");
+});
+
+test("Alpine still starts when Clerk fails to load", async ({ page }) => {
+  // Ad blockers and flaky connections can kill Clerk's API calls. Clerk's injected script
+  // top-level-awaits its load, so any Alpine code bundled after it would never run.
+  await page.route(/clerk\.rdldn\.co\.uk\/v1\//, (route) => route.abort());
+  await page.goto("/search");
+
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => !!(document.querySelector("[x-data]") as { _x_dataStack?: unknown } | null)?._x_dataStack
+      )
+    )
+    .toBe(true);
+});
+
 test("unknown routes render the custom 404 page", async ({ page }) => {
   const response = await page.goto(`/this-page-does-not-exist-${Date.now()}`);
   expect(response?.status()).toBe(404);
