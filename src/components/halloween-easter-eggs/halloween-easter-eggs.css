@@ -1,0 +1,189 @@
+.haunted-gravy {
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 85%;
+    left: 45%;
+    width: 0.3em;
+    height: 0.3em;
+    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+    background-color: #5a2d0c;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .haunted-gravy::after {
+    animation: gravy-drip 24s ease-in infinite;
+  }
+
+  .haunted-gravy:nth-of-type(2n)::after {
+    animation-delay: 9s;
+  }
+
+  .haunted-gravy:nth-of-type(3n)::after {
+    animation-delay: 15s;
+  }
+}
+
+@keyframes gravy-drip {
+  0%,
+  88% {
+    opacity: 0;
+    transform: translateY(0) scaleY(1);
+  }
+
+  91% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1.6);
+  }
+
+  96% {
+    opacity: 1;
+    transform: translateY(1.2em) scaleY(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(3em) scaleY(1);
+  }
+}
+
+.rating-value.possessed {
+  color: var(--blood);
+  font-family: "Creepster", sans-serif;
+}
+
+.haunted-eyes {
+  position: fixed;
+  bottom: 18%;
+  left: 1rem;
+  z-index: 50;
+  display: flex;
+  gap: 0.6rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+
+  &.watching {
+    opacity: 1;
+    transition: opacity 3s;
+  }
+
+  .eye {
+    width: 1.1rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff7a8 0 30%, #ffcf33 31% 55%, transparent 56%);
+    box-shadow: 0 0 12px 3px rgba(255, 207, 51, 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .haunted-eyes.watching .eye {
+    animation: eye-blink 6s 3s infinite;
+  }
+}
+
+@keyframes eye-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+.skeleton-hand {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  z-index: 60;
+  transform: translate(-50%, 100%);
+  pointer-events: none;
+
+  &.reaching {
+    animation: hand-reach 3s ease-in-out;
+  }
+}
+
+@keyframes hand-reach {
+  0%,
+  100% {
+    transform: translate(-50%, 100%) rotate(0deg);
+  }
+
+  35% {
+    transform: translate(-50%, 15%) rotate(-6deg);
+  }
+
+  55% {
+    transform: translate(-50%, 20%) rotate(5deg);
+  }
+
+  75% {
+    transform: translate(-50%, 15%) rotate(-3deg);
+  }
+}
+
+.page-container.lights-flicker {
+  animation: lights-flicker 1.5s steps(1);
+}
+
+@keyframes lights-flicker {
+  0%,
+  100% {
+    filter: none;
+  }
+
+  10%,
+  30%,
+  55% {
+    filter: brightness(0.15);
+  }
+
+  20%,
+  40%,
+  70% {
+    filter: brightness(0.8) sepia(0.6);
+  }
+}
+
+.glitching {
+  position: relative;
+  color: transparent;
+
+  & * {
+    color: transparent;
+  }
+
+  &::after {
+    content: attr(data-glitch);
+    position: absolute;
+    inset: 0;
+    color: var(--blood);
+    font-family: "Creepster", sans-serif;
+    font-size: 1.5em;
+    text-shadow:
+      -2px 0 cyan,
+      2px 0 magenta;
+    animation: glitch-shake 0.1s steps(2) infinite;
+  }
+}
+
+@keyframes glitch-shake {
+  0% {
+    transform: translate(-2px, 1px);
+  }
+
+  100% {
+    transform: translate(2px, -1px);
+  }
+}

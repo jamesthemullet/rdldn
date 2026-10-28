@@ -34,6 +34,9 @@ export default defineConfig({
   output: "server",
   adapter: vercel(),
   site: "https://rdldn.co.uk",
+  image: {
+    remotePatterns: [{ protocol: "https", hostname: "blog.rdldn.co.uk" }],
+  },
   devToolbar: {
     enabled: !isTesting,
   },

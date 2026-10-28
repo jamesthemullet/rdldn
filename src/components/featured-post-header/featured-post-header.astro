@@ -9,7 +9,14 @@ const { imageSrc, title, imageAlt = title }: Props = Astro.props;
 ---
 
 <div class="image-container">
-  <img src={imageSrc} alt={imageAlt} class="featured-image" loading="eager" />
+  <img
+    src={imageSrc}
+    alt={imageAlt}
+    class="featured-image"
+    loading="eager"
+    width="1200"
+    height="675"
+  />
   <slot name="overlay" />
   <div class="copyright-overlay">
     © {new Date().getFullYear()} Roast Dinners in London. All rights reserved.
