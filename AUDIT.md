@@ -90,7 +90,7 @@ anywhere else in the codebase.
 - [x] `src/pages/api/homepage-highlights.json.ts:4-10` runs four parallel GraphQL fetches on every request (called client-side from `index.astro:376-377`) with no `Cache-Control` header and no KV caching despite infrequently-changing data (found: 2026-08-31) (resolved: 2026-09-07, PR #642)
 - [x] `src/pages/api/passport/og.ts:6-10` regenerates a `@vercel/og` image on every request with no `Cache-Control` header, so neither CDN nor browser caches it despite repeatable params (found: 2026-08-31) (resolved: 2026-09-02, PR #631)
 - [x] `src/components/featured-post-header/featured-post-header.astro:12` renders the hero image as a raw `<img loading="eager">` with no `width`/`height` (CLS risk); `astro.config.mjs` has no `image.domains`/`remotePatterns` for the WordPress media host, forcing all WP-hosted images through plain `<img>` with no AVIF/WebP conversion or responsive `srcset` — configure remote image domains (found: 2026-08-31) (resolved: 2026-10-27, PR #735)
-- [x] `src/components/best-posts-list/best-posts-list.astro:44-53` has correct `width`/`height`/`loading="lazy"` but still serves the raw full-size WordPress `sourceUrl` rather than a resized/optimized variant, for the same remote-image-config reason above (found: 2026-08-31) (resolved: 2026-10-29, PR #TBD)
+- [x] `src/components/best-posts-list/best-posts-list.astro:44-53` has correct `width`/`height`/`loading="lazy"` but still serves the raw full-size WordPress `sourceUrl` rather than a resized/optimized variant, for the same remote-image-config reason above (found: 2026-08-31) (resolved: 2026-10-29, PR #741)
 
 ## 4. SEO / metadata
 
