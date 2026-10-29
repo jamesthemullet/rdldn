@@ -12,6 +12,8 @@ describe("search component", () => {
     expect(html).toContain('placeholder="Search..."');
     expect(html).toMatch(/x-show="searchResults\.length (?:&gt;|>) 0"/);
     expect(html).toContain("No results found.");
+    expect(html).toContain('x-show="searchError"');
+    expect(html).toContain("Search is unavailable right now.");
   });
 
   test("uses provided result limit and includes expected fetch contract", async () => {
@@ -22,7 +24,8 @@ describe("search component", () => {
     });
 
     expect(html).toContain('data-result-limit="9"');
-    expect(html).toContain('fetch(GRAPHQL_URL');
+    expect(html).toContain("fetch(`${GRAPHQL_URL}?${params}`)");
+    expect(html).not.toContain('method: "POST"');
     expect(html).toContain("query SearchPosts($search: String!, $first: Int!)");
     expect(html).toContain("search: this.searchTerm");
     expect(html).toContain("first: this.resultLimit");
