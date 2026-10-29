@@ -48,6 +48,10 @@ export default defineConfig({
     ...(isTesting && { server: { hmr: { overlay: false } } }),
   },
   integrations: [
+    // Must come before clerk(): Clerk's injected page script top-level-awaits Clerk loading,
+    // so if Alpine's script is bundled after it, its DOMContentLoaded listener is registered
+    // too late on cold loads and Alpine never starts.
+    alpinejs({ entrypoint: "./src/entrypoints/alpine.ts" }),
     ...(isTesting ? [] : [clerk()]),
     partytown({
       config: {
@@ -97,7 +101,6 @@ export default defineConfig({
         return item;
       },
     }),
-    alpinejs({ entrypoint: "./src/entrypoints/alpine.ts" }),
     react(),
   ],
 });
