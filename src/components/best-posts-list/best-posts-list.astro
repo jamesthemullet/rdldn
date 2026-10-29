@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import type { Post } from "../../types";
 
 type Props = {
@@ -43,11 +44,11 @@ const { posts } = Astro.props as Props;
 
       {post.featuredImage?.node?.sourceUrl && (
         <div class="best-container-image">
-          <img
+          <Image
             src={post.featuredImage.node.sourceUrl}
             alt={post.featuredImage.node.altText || `Image for ${post.title}`}
-            width="400"
-            height="300"
+            width={400}
+            height={300}
             loading="lazy"
           />
         </div>
