@@ -38,7 +38,7 @@ describe("[slug] getStaticPaths", () => {
       if (body.query.includes("query AllSlugs")) {
         return makeResponse({
           posts: {
-            nodes: [{ slug: "post-1" }],
+            nodes: [{ slug: "post-1", modified: "2026-01-02T03:04:05", commentCount: 3 }],
             pageInfo: { hasNextPage: false, endCursor: null }
           }
         });
@@ -46,7 +46,7 @@ describe("[slug] getStaticPaths", () => {
 
       return makeResponse({
         pages: {
-          nodes: [{ slug: "page-1" }],
+          nodes: [{ slug: "page-1", modified: "2026-02-03T04:05:06", commentCount: null }],
           pageInfo: { hasNextPage: false, endCursor: null }
         }
       });
@@ -57,10 +57,20 @@ describe("[slug] getStaticPaths", () => {
     const { getStaticPaths } = await import("./[slug].astro");
     const paths = await getStaticPaths();
 
+    const year = new Date().getFullYear();
+
     expect(paths).toHaveLength(2);
     expect(paths).toEqual([
-      { params: { slug: "post-1" }, props: { contentType: "post" } },
-      { params: { slug: "page-1" }, props: { contentType: "page" } }
+      {
+        params: { slug: "post-1" },
+        props: { contentType: "post" },
+        cacheKey: `${year}:2026-01-02T03:04:05:3`
+      },
+      {
+        params: { slug: "page-1" },
+        props: { contentType: "page" },
+        cacheKey: `${year}:2026-02-03T04:05:06:0`
+      }
     ]);
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
@@ -111,10 +121,10 @@ describe("[slug] getStaticPaths", () => {
 
     expect(paths).toHaveLength(4);
     expect(paths).toEqual([
-      { params: { slug: "post-1" }, props: { contentType: "post" } },
-      { params: { slug: "post-2" }, props: { contentType: "post" } },
-      { params: { slug: "page-1" }, props: { contentType: "page" } },
-      { params: { slug: "page-2" }, props: { contentType: "page" } }
+      { params: { slug: "post-1" }, props: { contentType: "post" }, cacheKey: expect.any(String) },
+      { params: { slug: "post-2" }, props: { contentType: "post" }, cacheKey: expect.any(String) },
+      { params: { slug: "page-1" }, props: { contentType: "page" }, cacheKey: expect.any(String) },
+      { params: { slug: "page-2" }, props: { contentType: "page" }, cacheKey: expect.any(String) }
     ]);
     expect(fetchMock).toHaveBeenCalledTimes(4);
   });

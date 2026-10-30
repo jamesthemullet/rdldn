@@ -1,7 +1,7 @@
 import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fetchGraphQL } from "./api";
-import { fetchAllSlugs } from "./fetchAllSlugs";
+import { buildSlugCacheKey, fetchAllSlugs } from "./fetchAllSlugs";
 
 vi.mock("./api", () => ({
   fetchGraphQL: vi.fn(),
@@ -24,6 +24,19 @@ function makeResponse(
     },
   };
 }
+
+describe("buildSlugCacheKey", () => {
+  const node = { slug: "post-a", modified: "2026-01-02T03:04:05", commentCount: 3 };
+  const year = new Date().getFullYear();
+
+  it("combines the current year, modified date and comment count", () => {
+    expect(buildSlugCacheKey(node)).toBe(`${year}:2026-01-02T03:04:05:3`);
+  });
+
+  it("treats a null comment count as zero", () => {
+    expect(buildSlugCacheKey({ ...node, commentCount: null })).toBe(`${year}:2026-01-02T03:04:05:0`);
+  });
+});
 
 describe("fetchAllSlugs", () => {
   beforeEach(() => {

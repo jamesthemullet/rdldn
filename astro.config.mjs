@@ -34,6 +34,9 @@ export default defineConfig({
   output: "server",
   adapter: vercel(),
   site: "https://rdldn.co.uk",
+  build: {
+    concurrency: 4,
+  },
   image: {
     remotePatterns: [{ protocol: "https", hostname: "blog.rdldn.co.uk" }],
   },
