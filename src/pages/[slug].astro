@@ -9,7 +9,7 @@ export const response = {
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { fetchGraphQL } from "../lib/api";
-import { fetchAllSlugs } from "../lib/fetchAllSlugs";
+import { buildSlugCacheKey, fetchAllSlugs } from "../lib/fetchAllSlugs";
 import SINGLE_PAGE_QUERY from "../lib/queries/singlePageBySlug";
 import SINGLE_POST_QUERY from "../lib/queries/singlePostBySlug";
 import { organiseComments } from "../lib/utils";
@@ -40,6 +40,8 @@ export async function getStaticPaths() {
     posts(first: $first, after: $after) {
       nodes {
         slug
+        modified
+        commentCount
       }
       pageInfo {
         hasNextPage
@@ -54,6 +56,8 @@ export async function getStaticPaths() {
     pages(first: $first, after: $after) {
       nodes {
         slug
+        modified
+        commentCount
       }
       pageInfo {
         hasNextPage
@@ -72,14 +76,16 @@ export async function getStaticPaths() {
     .filter((post) => post?.slug && !dedicatedPageSlugs.has(post.slug))
     .map((post) => ({
       params: { slug: post.slug },
-      props: { contentType: "post" }
+      props: { contentType: "post" },
+      cacheKey: buildSlugCacheKey(post)
     }));
 
   const pagePaths = allPages
     .filter((page) => page?.slug && !dedicatedPageSlugs.has(page.slug))
     .map((page) => ({
       params: { slug: page.slug },
-      props: { contentType: "page" }
+      props: { contentType: "page" },
+      cacheKey: buildSlugCacheKey(page)
     }));
 
   return [...postPaths, ...pagePaths];

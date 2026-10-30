@@ -1,6 +1,6 @@
 import { fetchGraphQL } from "./api";
 
-type SlugNode = { slug: string };
+type SlugNode = { slug: string; modified: string; commentCount: number | null };
 
 type GraphEntity = "posts" | "pages";
 
@@ -35,4 +35,10 @@ export async function fetchAllSlugs(entity: GraphEntity, query: string): Promise
   }
 
   return allItems;
+}
+
+// Lets incremental builds reuse a prerendered page until its content or comments change.
+// The year is included because the page renders text relative to the current year.
+export function buildSlugCacheKey({ modified, commentCount }: SlugNode): string {
+  return `${new Date().getFullYear()}:${modified}:${commentCount ?? 0}`;
 }
