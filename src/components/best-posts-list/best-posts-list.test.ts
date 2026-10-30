@@ -1,5 +1,16 @@
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
+
+vi.mock("astro:assets", () => ({
+  Image: Object.assign(
+    (_result: unknown, props: { src: string; alt?: string }) => ({
+      render(destination: { write: (chunk: string) => void }) {
+        destination.write(`<img src="${props.src}" alt="${props.alt ?? ""}" />`);
+      },
+    }),
+    { isAstroComponentFactory: true }
+  ),
+}));
 
 describe("best-posts-list", () => {
   test("renders rating and image alt fallback branches", async () => {

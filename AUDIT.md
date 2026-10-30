@@ -55,6 +55,7 @@ anywhere else in the codebase.
 - 2026-10-24 — scheduled maintenance run: resolved code quality item "knip.json's ignoreBinaries: [\"wait-on\", \"axe\"] is a removable configuration hint" by removing both stale entries (section 8)
 - 2026-10-25 — scheduled maintenance run: resolved security item "No Content-Security-Policy header is set in vercel.json" by adding a Content-Security-Policy-Report-Only header (section 6)
 - 2026-10-27 — scheduled maintenance run: resolved performance item "featured-post-header.astro raw img with no width/height; astro.config.mjs missing image remotePatterns" by adding explicit width/height to the hero image and configuring `image.remotePatterns` for the WordPress media host (section 3)
+- 2026-10-29 — scheduled maintenance run: resolved performance item "best-posts-list.astro serves raw full-size WordPress sourceUrl instead of a resized/optimized variant" by switching to Astro's `<Image>` component (section 3)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -89,7 +90,7 @@ anywhere else in the codebase.
 - [x] `src/pages/api/homepage-highlights.json.ts:4-10` runs four parallel GraphQL fetches on every request (called client-side from `index.astro:376-377`) with no `Cache-Control` header and no KV caching despite infrequently-changing data (found: 2026-08-31) (resolved: 2026-09-07, PR #642)
 - [x] `src/pages/api/passport/og.ts:6-10` regenerates a `@vercel/og` image on every request with no `Cache-Control` header, so neither CDN nor browser caches it despite repeatable params (found: 2026-08-31) (resolved: 2026-09-02, PR #631)
 - [x] `src/components/featured-post-header/featured-post-header.astro:12` renders the hero image as a raw `<img loading="eager">` with no `width`/`height` (CLS risk); `astro.config.mjs` has no `image.domains`/`remotePatterns` for the WordPress media host, forcing all WP-hosted images through plain `<img>` with no AVIF/WebP conversion or responsive `srcset` — configure remote image domains (found: 2026-08-31) (resolved: 2026-10-27, PR #735)
-- [ ] `src/components/best-posts-list/best-posts-list.astro:44-53` has correct `width`/`height`/`loading="lazy"` but still serves the raw full-size WordPress `sourceUrl` rather than a resized/optimized variant, for the same remote-image-config reason above (found: 2026-08-31)
+- [x] `src/components/best-posts-list/best-posts-list.astro:44-53` has correct `width`/`height`/`loading="lazy"` but still serves the raw full-size WordPress `sourceUrl` rather than a resized/optimized variant, for the same remote-image-config reason above (found: 2026-08-31) (resolved: 2026-10-29, PR #741)
 
 ## 4. SEO / metadata
 
