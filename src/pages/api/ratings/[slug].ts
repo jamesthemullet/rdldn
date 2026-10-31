@@ -11,6 +11,9 @@ export async function GET(context: APIContext): Promise<Response> {
   const summary = await getAverageRating(slug);
 
   return new Response(JSON.stringify(summary), {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+    },
   });
 }

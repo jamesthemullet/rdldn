@@ -27,4 +27,10 @@ describe("GET /api/ratings/[slug]", () => {
     expect(await response.json()).toEqual({ average: 8.2, count: 5 });
     expect(getAverageRating).toHaveBeenCalledWith("some-slug");
   });
+
+  test("sets a CDN cache header so page views do not wake the database", async () => {
+    vi.mocked(getAverageRating).mockResolvedValue({ average: 8.2, count: 5 });
+    const response = await GET(makeContext("some-slug"));
+    expect(response.headers.get("Cache-Control")).toBe("public, s-maxage=3600, stale-while-revalidate=86400");
+  });
 });
