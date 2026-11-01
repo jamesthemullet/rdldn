@@ -28,6 +28,23 @@ describe("comments component", () => {
     expect(html).toContain('id="message"');
   });
 
+  test("only wraps the form in a disclosure when collapsed", async () => {
+    const container = await AstroContainer.create();
+    const { default: Comments } = await import("./comments.astro");
+
+    const open = await container.renderToString(Comments, {
+      props: { threadedComments: null, postId: "77" },
+    });
+    expect(open).not.toContain("<details");
+
+    const collapsed = await container.renderToString(Comments, {
+      props: { threadedComments: null, postId: "77", collapsed: true },
+    });
+    expect(collapsed).toContain("<details");
+    expect(collapsed).toContain("Leave a comment");
+    expect(collapsed).toContain('id="comment-form"');
+  });
+
   test("renders threaded comments and inline submission script", async () => {
     const container = await AstroContainer.create();
     const { default: Comments } = await import("./comments.astro");

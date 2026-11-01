@@ -12,5 +12,16 @@ describe("newsletter component", () => {
     expect(html).toContain('src="https://rdldn.substack.com/embed"');
     expect(html).toContain('class="substack-signup-heading"');
     expect(html).toContain("Get new roast reviews direct to your inbox");
+    expect(html).not.toContain("substack-signup--panel");
+  });
+
+  test("keeps the Substack embed in the panel variant", async () => {
+    const container = await AstroContainer.create();
+    const { default: Newsletter } = await import("./newsletter.astro");
+
+    const html = await container.renderToString(Newsletter, { props: { variant: "panel" } });
+
+    expect(html).toContain("substack-signup--panel");
+    expect(html).toContain('src="https://rdldn.substack.com/embed"');
   });
 });

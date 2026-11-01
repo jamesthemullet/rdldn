@@ -1,9 +1,27 @@
 ---
+type Props = {
+  variant?: "default" | "panel";
+};
+
+const { variant = "default" } = Astro.props;
+const isPanel = variant === "panel";
 const isTesting = import.meta.env.PLAYWRIGHT === "true";
 ---
 
-<div class="post-summary-block highlight-block substack-signup">
-  <h2 class="substack-signup-heading">📬 Get new roast reviews direct to your inbox</h2>
+<div
+  class:list={[
+    "post-summary-block highlight-block substack-signup",
+    { "substack-signup--panel": isPanel },
+  ]}
+>
+  {isPanel ? (
+    <div>
+      <h2 class="substack-signup-heading">Get new roast reviews direct to your inbox</h2>
+      <p class="substack-signup-note">Free on Substack. Unsubscribe any time.</p>
+    </div>
+  ) : (
+    <h2 class="substack-signup-heading">📬 Get new roast reviews direct to your inbox</h2>
+  )}
   {!isTesting && (
     <iframe
       src="https://rdldn.substack.com/embed"

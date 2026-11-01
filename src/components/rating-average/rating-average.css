@@ -6,3 +6,9 @@
 .rating-average__scale {
   opacity: 0.7;
 }
+
+.rating-average__count {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-muted-2);
+}
