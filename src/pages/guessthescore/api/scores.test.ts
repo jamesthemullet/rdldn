@@ -56,6 +56,20 @@ describe("GET /guessthescore/api/scores", () => {
     expect(data).toEqual([{ name: "Bob", score: 70, date: "2026-01-01T00:00:00.000Z" }]);
   });
 
+  test("skips members that are neither objects nor strings", async () => {
+    const entries = [
+      42,
+      null,
+      JSON.stringify({ name: "Carol", score: 60, date: "2026-01-03T00:00:00.000Z" }),
+    ];
+    vi.mocked(kv.zrange).mockResolvedValue(entries as unknown as string[]);
+
+    const response = await GET({} as unknown as APIContext);
+    const data = await response.json();
+
+    expect(data).toEqual([{ name: "Carol", score: 60, date: "2026-01-03T00:00:00.000Z" }]);
+  });
+
   test("returns empty array when leaderboard is empty", async () => {
     vi.mocked(kv.zrange).mockResolvedValue([]);
 
