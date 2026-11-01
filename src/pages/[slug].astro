@@ -14,6 +14,7 @@ import SINGLE_PAGE_QUERY from "../lib/queries/singlePageBySlug";
 import SINGLE_POST_QUERY from "../lib/queries/singlePostBySlug";
 import { organiseComments } from "../lib/utils";
 import "../styles/post.css";
+import "../styles/post-bottom.css";
 import sanitizeHtml from "sanitize-html";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
@@ -147,6 +148,9 @@ const tubeStation = post.tubeStations?.nodes?.[0]?.name;
 const tubeLines = post.tubeLines?.nodes?.map((line: { name: string }) => line.name).join(", ");
 const isRoastDinner = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Roast Dinner");
 const isHalloween = post.typesOfPost?.nodes?.some((node: { name: string }) => node.name === "Halloween") ?? false;
+const isRoastReview = contentType === "post" && isRoastDinner;
+const hasBookingLinks =
+  post.closedDowns?.nodes?.length === 0 && Boolean(post.highlights?.website || post.highlights?.instagram);
 
 const isRereviewed = closedDownId?.startsWith("re-reviewed");
 /* istanbul ignore next */
@@ -265,54 +269,117 @@ const reviewStructuredData =
     
     <div class="post-content" set:html={safeContent} />
 
-    <Newsletter />
-    
-    {contentType === "post" && isRoastDinner && (
-    <section id="summary" class="summary" aria-labelledby="summary-heading">
-              <h3 id="summary-heading">Summary:</h3>
+    {!isRoastReview && <Newsletter />}
+
+    {isRoastReview && (
+    <>
+    <section id="summary" class="post-card" aria-labelledby="summary-heading">
+      <h3 id="summary-heading">Summary:</h3>
 
       {(post.closedDowns?.nodes?.length ?? 0) > 0 && (
         <p class="closed-message">
           {getClosedMessage()}
         </p>
       )}
-        <p>{singlePost.title}</p>
-      <p class={isRereviewed ? "re-reviewed-rating" : ""}>
-        Rating: <span class="rating-value">{rating}</span>
-      </p>
-      {tubeStation && <p>Tube Station: {tubeStation}</p> }
-              <p>
-        Tube Lines:{" "}
-        {tubeLines}
-      </p>
-      <p>
-        Price Paid{Number(yearOfVisit) !== currentYear
-          ? ` (in ${yearOfVisit})`
-          : ""}:
-        {" "}{price}
-        {inflationAdjustedPrice && (
-          <span class="inflation-price"> ({inflationAdjustedPrice} adjusted for inflation in {mostRecentYear})</span>
+      <p class="post-card__title">{singlePost.title}</p>
+
+      <dl class="post-facts">
+        {rating && (
+          <div class="post-fact post-fact--rating">
+            <dt>Rating</dt>
+            <dd class={isRereviewed ? "re-reviewed-rating" : ""}>
+              <span class="rating-value">{rating}</span><span class="post-fact__scale">/10</span>
+            </dd>
+          </div>
         )}
-      </p>
-      <p>Year of Visit: {yearOfVisit}</p>
-      {(post.owners?.nodes?.length ?? 0) > 0 && (
-        <p>
-          Chain{(post.owners?.nodes?.length ?? 0) > 1 ? "s" : ""}:{" "}
-          {post.owners?.nodes?.map((owner: { name: string }, index: number) => (
-            <>
-              <a href={`/chains/${toOwnerSlug(owner.name)}`}>{owner.name}</a>
-              {index < (post.owners?.nodes?.length ?? 0) - 1 ? ", " : ""}
-            </>
-          ))}
-        </p>
-      )}
+        <RatingAverage postSlug={String(slug)} />
+        {price && (
+          <div class="post-fact">
+            <dt>Price Paid{yearOfVisit && Number(yearOfVisit) !== currentYear ? ` (in ${yearOfVisit})` : ""}</dt>
+            <dd>
+              {price}
+              {inflationAdjustedPrice && (
+                <span class="inflation-price">{inflationAdjustedPrice} adjusted for inflation in {mostRecentYear}</span>
+              )}
+            </dd>
+          </div>
+        )}
+        {yearOfVisit && (
+          <div class="post-fact">
+            <dt>Year of Visit</dt>
+            <dd>{yearOfVisit}</dd>
+          </div>
+        )}
+        {tubeStation && (
+          <div class="post-fact">
+            <dt>Tube Station</dt>
+            <dd>{tubeStation}</dd>
+          </div>
+        )}
+        {tubeLines && (
+          <div class="post-fact">
+            <dt>Tube Lines</dt>
+            <dd>{tubeLines}</dd>
+          </div>
+        )}
+        {(post.owners?.nodes?.length ?? 0) > 0 && (
+          <div class="post-fact">
+            <dt>Chain{(post.owners?.nodes?.length ?? 0) > 1 ? "s" : ""}</dt>
+            <dd>
+              {post.owners?.nodes?.map((owner: { name: string }, index: number) => (
+                <>
+                  <a href={`/chains/${toOwnerSlug(owner.name)}`}>{owner.name}</a>
+                  {index < (post.owners?.nodes?.length ?? 0) - 1 ? ", " : ""}
+                </>
+              ))}
+            </dd>
+          </div>
+        )}
+      </dl>
     </section>
-    <section aria-labelledby="loved-loathed-heading">
+
+    <section class="post-card" aria-labelledby="loved-loathed-heading">
       <h3 id="loved-loathed-heading">Loved & Loathed:</h3>
       <p>Loved: {post.highlights?.loved}</p>
       <p>Loathed: {post.highlights?.loathed}</p>
     </section>
-    <section aria-label="Share this review">
+
+    <section class="post-card" aria-label="Visit this roast">
+      {hasBookingLinks && (
+        <div class="post-go">
+          <h3>Go Yourself:</h3>
+          <div class="post-go__links">
+            {post.highlights?.website && (
+              <a class="post-cta" href={post.highlights.website}>Book {singlePost.title}</a>
+            )}
+            {post.highlights?.instagram && (
+              <a class="post-cta post-cta--secondary" href={post.highlights.instagram}>Follow on Instagram</a>
+            )}
+          </div>
+        </div>
+      )}
+      <div class="post-record">
+        <p>Keep your own roast record.</p>
+        <div class="post-record__actions">
+          <WishlistButton
+            postSlug={String(slug)}
+            postTitle={singlePost.title ?? ""}
+            postRating={rating ?? null}
+            signInText="Sign in to save, log a visit and rate it"
+          />
+          <VisitButton
+            postSlug={String(slug)}
+            postTitle={singlePost.title ?? ""}
+            postRating={rating ?? null}
+            hideSignIn
+          />
+        </div>
+      </div>
+    </section>
+
+    <Newsletter variant="panel" />
+
+    <section class="post-card post-share" aria-label="Share this review">
       <ShareReviewButton
         title={singlePost.title ?? ""}
         rating={rating}
@@ -324,47 +391,14 @@ const reviewStructuredData =
         slug={String(slug)}
       />
     </section>
-    <section aria-label="Get Booking">
-      {post.closedDowns?.nodes?.length === 0 && (
-        <>
-          <h3>Get Booking:</h3>
-          {post.highlights?.website && (
-            <p>
-              <a href={post.highlights.website}>
-                Book {singlePost.title}
-              </a>
-            </p>
-          )}
-          {post.highlights?.instagram && (
-            <p>
-              <a href={post.highlights.instagram}>
-                Follow on Instagram
-              </a>
-            </p>
-          )}
-        </>
-      )}
-    </section>
-    <WishlistButton
-      postSlug={String(slug)}
-      postTitle={singlePost.title ?? ""}
-      postRating={rating ?? null}
-    />
-    <VisitButton
-      postSlug={String(slug)}
-      postTitle={singlePost.title ?? ""}
-      postRating={rating ?? null}
-    />
-
-    <RatingAverage postSlug={String(slug)} />
 
     <RoastByTagSection
       type="location"
       tag={post.boroughs?.nodes?.[0]?.name?.replace(/\s+/g, "-")}
     />
 
-    <Comments threadedComments={threadedComments} postId={String(post.postId ?? "")} />
-
+    <Comments threadedComments={threadedComments} postId={String(post.postId ?? "")} collapsed />
+    </>
     )}
 
     {contentType === "page" && (

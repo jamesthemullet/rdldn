@@ -1,0 +1,158 @@
+.post-card {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-alt);
+
+  @media (min-width: 769px) {
+    padding: 1.5rem;
+  }
+}
+
+.post-card__title {
+  margin-top: 0.25rem;
+  color: var(--text-muted-2);
+}
+
+.post-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 1rem 0 0;
+}
+
+.post-fact {
+  dt {
+    font-size: 0.9rem;
+    color: var(--text-muted-2);
+  }
+
+  dd {
+    margin: 0.125rem 0 0;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+  }
+
+  .inflation-price {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-muted-2);
+  }
+}
+
+.post-fact--rating dd {
+  font-family: "Loved by the King", sans-serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--link-color, var(--roast-new-blue));
+
+  &.re-reviewed-rating {
+    color: #888;
+  }
+}
+
+.post-fact__scale {
+  font-family: sans-serif;
+  font-size: 1.2rem;
+  color: var(--text-muted-2);
+}
+
+.post-go__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.post-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  background: var(--roast-new-blue);
+  border: 2px solid var(--roast-new-blue);
+  color: var(--roast-white);
+  font-family: "Loved by the King", sans-serif;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.post-cta--secondary {
+  background: none;
+  color: var(--roast-main-text);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  text-transform: none;
+}
+
+.post-go + .post-record {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--surface-alt);
+}
+
+.post-record__actions {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.75rem;
+}
+
+.post-share {
+  padding-block: 0.5rem;
+
+  .share-review-label,
+  .share-review-btn {
+    font-size: 0.9rem;
+  }
+
+  .share-review-btn {
+    padding: 0.35rem 0.75rem;
+  }
+}
+
+.post-share + .roast-by-tag {
+  margin-top: 2rem;
+}
+
+.substack-signup--panel {
+  display: grid;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--roast-new-blue);
+  text-align: left;
+
+  @media (min-width: 769px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+  }
+
+  .substack-signup-heading {
+    margin: 0;
+    color: var(--roast-white);
+    font-size: 2rem;
+    font-weight: normal;
+    line-height: 1.1;
+    text-align: left;
+    text-decoration: none;
+
+    @media (min-width: 769px) {
+      font-size: 2.5rem;
+    }
+  }
+
+  .substack-signup-note {
+    margin: 0.5rem 0 0;
+    color: var(--roast-white);
+  }
+
+  iframe {
+    display: block;
+    width: 100%;
+  }
+}

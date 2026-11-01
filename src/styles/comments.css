@@ -25,6 +25,29 @@
   }
 }
 
+.comment-form-toggle {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--roast-new-blue);
+  color: var(--roast-white);
+  font-family: "Loved by the King", sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--roast-pink);
+    outline-offset: 2px;
+  }
+}
+
 .comments-list {
   list-style: none;
   padding: 0;

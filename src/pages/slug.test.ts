@@ -203,8 +203,11 @@ describe("[slug] render", () => {
     });
 
     expect(html).toContain("Re-reviewed: 2024");
-    expect(html).toMatch(/Price Paid \(in 2024\):\s*£20/);
-    expect(html).toContain("Rating: 8.5");
+    expect(html).toMatch(/Price Paid \(in 2024\)<\/dt>\s*<dd[^>]*>\s*£20/);
+    expect(html).toMatch(/Year of Visit<\/dt>\s*<dd[^>]*>2024/);
+    expect(html).toContain('class="rating-value">8.5<');
+    expect(html).toContain("substack-signup--panel");
+    expect(html).not.toContain("Go Yourself:");
   });
 
   test("omits year in price label for current year", async () => {
@@ -254,7 +257,7 @@ describe("[slug] render", () => {
     });
 
     expect(html).toContain("Under New Owners");
-    expect(html).toMatch(/Price Paid:\s*£25/);
+    expect(html).toMatch(/Price Paid<\/dt>\s*<dd[^>]*>\s*£25/);
     expect(html).not.toContain("(in 2026)");
   });
 
