@@ -56,6 +56,7 @@ anywhere else in the codebase.
 - 2026-10-25 — scheduled maintenance run: resolved security item "No Content-Security-Policy header is set in vercel.json" by adding a Content-Security-Policy-Report-Only header (section 6)
 - 2026-10-27 — scheduled maintenance run: resolved performance item "featured-post-header.astro raw img with no width/height; astro.config.mjs missing image remotePatterns" by adding explicit width/height to the hero image and configuring `image.remotePatterns` for the WordPress media host (section 3)
 - 2026-10-29 — scheduled maintenance run: resolved performance item "best-posts-list.astro serves raw full-size WordPress sourceUrl instead of a resized/optimized variant" by switching to Astro's `<Image>` component (section 3)
+- 2026-11-01 — scheduled maintenance run: resolved test coverage item "guessthescore/api/scores.ts uncovered line 17" by adding a unit test for the flatMap fallback branch (non-object/non-string leaderboard members), since the KV-failure error path it originally described was already covered by an existing test (section 1)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -70,7 +71,7 @@ anywhere else in the codebase.
 - [ ] `src/pages/chains/[chain].astro` / `index.astro` have no e2e spec — add `tests/e2e/chains.spec.ts` covering navigating the chains index to a specific chain listing page (found: 2026-08-31)
 - [ ] `src/components/best-value/best-value.tsx` + `useValueFilter.tsx` (uncovered lines 96-98) have no e2e spec — add `tests/e2e/best-value.spec.ts` covering filtering the best-value list and confirming results update (found: 2026-08-31)
 - [ ] `src/components/sort-posts/sort-posts.tsx` is the weakest unit-covered component (69.49% stmt, uncovered block 376-388) and its show/hide-columns + combined sort+filter+pagination interplay isn't e2e-tested — extend/add `tests/e2e/league-of-roasts-sort.spec.ts` covering sort order changes combined with an active filter (found: 2026-08-31)
-- [ ] `src/pages/guessthescore/api/scores.ts` (uncovered line 17, likely an error path) — add an error-state case to `tests/e2e/guessthescore.spec.ts` for when the leaderboard fetch fails (found: 2026-08-31)
+- [x] `src/pages/guessthescore/api/scores.ts` (uncovered line 17, likely an error path) — add an error-state case to `tests/e2e/guessthescore.spec.ts` for when the leaderboard fetch fails (found: 2026-08-31) (resolved: 2026-11-01, PR #pending)
 - [ ] `src/components/header/HeaderAuth.tsx` has a unit test with a mock but no e2e spec verifying real signed-in vs signed-out header states — add `tests/e2e/header-auth.spec.ts` (found: 2026-08-31)
 
 ## 2. Accessibility
