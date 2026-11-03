@@ -51,6 +51,8 @@ One-tap, geolocation-based "closest great roast to me right now."
 
 ### 4. Embeddable rating badge — *Acquisition*
 A small "As rated on Roast Dinners in London — 4.2★" badge pubs can embed on their own site.
+Pairs well with telling the pubs in each year's top 10 that they placed: they share it, which
+brings followers and links from other sites.
 
 - [ ] One new API route rendering a static SVG per venue slug, plus tests — self-contained, nothing else depends on it.
 
@@ -76,11 +78,29 @@ already answer but doesn't have a dedicated page for.
 - [ ] Query: top-N posts per borough by rating/value — pure function + tests, reusing the Roastatistics data layer.
 - [ ] Static page template (`/boroughs/[borough]/best.astro` or similar), reusing the existing boroughs page layout and linking into individual post pages.
 
+### 8. Ranked-list structured data on best-of pages — *Acquisition*
+The best-of pages (ingredient, area and the yearly top 10) are ranked lists, but nothing tells
+Google that. `ItemList` JSON-LD giving each entry's position and review URL makes them eligible
+for list-style search results.
+
+- [ ] Pure `buildItemListJsonLd(posts, siteUrl)` + tests, emitted through `BaseLayout`'s existing `structuredData` prop on the 13 `BestPostsList` pages.
+- [ ] Same JSON-LD on the 13 `BestRoastLayout` area pages, reusing the builder.
+
+### 9. Area best-of pages, same treatment as ingredient pages — *Engagement, Acquisition*
+The ingredient pages now have numbered entries, a newsletter panel and follow card mid-list, and
+a shared bottom section (PR #753). The 13 `BestRoastLayout` area pages (Soho, Hackney, North
+London…) still use their own copy of the list card markup, unnumbered, with the old newsletter box
+at the bottom. They keep their "Also worth a try" section and their existing selection
+(`fetchTopRatedRoastsByFilter`, min 7.5).
+
+- [ ] Render `topRated` in `BestRoastLayout` with `BestPostsList`: removes the duplicated card markup and adds numbering and mid-list prompts.
+- [ ] Make `BestOfBottom`'s link card take its heading and links as props, so area pages link to the other area pages; swap the layout's `<Newsletter />` + `<Comments />` for `BestOfBottom`.
+
 ## Next (this quarter — moderate new build)
 
 Bigger dishes: new mechanics and a first outbound channel.
 
-### 8. Roast Battle — *Engagement, Fun*
+### 10. Roast Battle — *Engagement, Fun*
 A quick "which roast wins" head-to-head swipe that quietly feeds a crowdsourced Elo ranking.
 
 - [ ] Migration: a `post_elo` table keyed by post slug (posts live in WordPress, not Postgres).
@@ -89,7 +109,7 @@ A quick "which roast wins" head-to-head swipe that quietly feeds a crowdsourced 
 - [ ] Vote API route — wires the swipe UI to the Elo update function and `post_elo`.
 - [ ] Surface Elo as a sortable column in League of Roasts.
 
-### 9. Roast crews — *Retention, Engagement*
+### 11. Roast crews — *Retention, Engagement*
 Follow other roast-hunters, compare stats, run a private leaderboard for your group of mates.
 
 - [ ] Migration: a `follows` table (follower/following user IDs).
@@ -99,7 +119,7 @@ Follow other roast-hunters, compare stats, run a private leaderboard for your gr
 - [ ] Group leaderboard UI, reusing the existing League of Roasts table component.
 - [ ] Side-by-side stats comparison view (optional — can ship later independently).
 
-### 10. The Sunday Post — *Retention, Acquisition*
+### 12. The Sunday Post — *Retention, Acquisition*
 A weekly digest email: new reviews near your wishlist or borough, this week's Roastle streaks, one
 Roast Battle prompt. The site's first outbound channel.
 
@@ -109,7 +129,7 @@ Roast Battle prompt. The site's first outbound channel.
 - [ ] Opt-in / unsubscribe — a `digestOptIn` column + settings toggle, gated behind a new `sundayPost` flag.
 - [ ] Weekly Vercel cron that assembles and sends the digest to opted-in users only.
 
-### 11. Dietary & occasion filters — *Acquisition, Fun*
+### 13. Dietary & occasion filters — *Acquisition, Fun*
 Filter Search and League of Roasts by veggie/vegan nut roast, gluten-free Yorkshires, kid-friendly.
 
 > **Blocked by** [#632](https://github.com/jamesthemullet/rdldn/issues/632) — existing posts need
@@ -119,7 +139,7 @@ Filter Search and League of Roasts by veggie/vegan nut roast, gluten-free Yorksh
 - [ ] Filter UI control on the Search page.
 - [ ] Same filter added to League of Roasts, reusing the Search filter component.
 
-### 12. Price history, per venue — *Engagement*
+### 14. Price history, per venue — *Engagement*
 A small sparkline on each post showing how that specific roast's price has moved over time.
 
 - [ ] Query extracting one venue's price points across its posts — pure function + tests. Run it against live data in the PR description: if most venues have fewer than two price points, stop here and drop the rest of this feature.
@@ -131,7 +151,7 @@ A small sparkline on each post showing how that specific roast's price has moved
 Each needs a kitchen upgrade first, but they're what turns the site from "a list someone
 maintains" into "a community that maintains itself."
 
-### 13. Community reviews — *Engagement, Retention*
+### 15. Community reviews — *Engagement, Retention*
 Users add their own short review and photo alongside the editorial one, moderated before going live.
 
 - [ ] Migration: a `community_reviews` table with a status (`pending` / `approved` / `rejected`).
@@ -141,7 +161,7 @@ Users add their own short review and photo alongside the editorial one, moderate
 - [ ] Render approved community reviews on the post page.
 - [ ] **Infra (Mise en place):** photo upload — Vercel Blob storage + a `photoUrl` column, attached to the submission form.
 
-### 14. Wishlist alerts — *Retention*
+### 16. Wishlist alerts — *Retention*
 Opt-in push notification when a wishlisted pub gets a new review, or a Roastle streak is about to lapse.
 
 - [ ] **Infra (Mise en place):** web push setup — service worker registration, VAPID keys in env, and a send utility. No feature logic.
@@ -150,7 +170,7 @@ Opt-in push notification when a wishlisted pub gets a new review, or a Roastle s
 - [ ] Send a push to users whose wishlist contains a newly detected slug, reusing the send utility.
 - [ ] Streak-about-to-lapse reminder, reusing the same send utility.
 
-### 15. Roast Crawl planner — *Fun, Acquisition*
+### 17. Roast Crawl planner — *Fun, Acquisition*
 Extend the Sunday Roast Planner into a shareable, multi-stop itinerary across boroughs or tube stops.
 
 - [ ] Extend the planner's state model from one stop to N stops (data model change inside the existing component, no new UI) + tests.
@@ -174,4 +194,4 @@ Shared infra that more than one feature leans on, so it isn't built twice:
 | **Blob storage** | Community reviews, last step | Review photos, and any future user uploads. |
 
 ---
-*Roast Dinners in London — product roadmap, 25 October 2026*
+*Roast Dinners in London — product roadmap, 3 November 2026*
