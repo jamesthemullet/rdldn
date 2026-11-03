@@ -18,6 +18,7 @@ import "../styles/post-bottom.css";
 import sanitizeHtml from "sanitize-html";
 import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
+import FollowCard from "../components/follow-card/follow-card.astro";
 import HalloweenEasterEggs from "../components/halloween-easter-eggs/halloween-easter-eggs.astro";
 import Newsletter from "../components/newsletter/newsletter.astro";
 import RatingAverage from "../components/rating-average/rating-average.astro";
@@ -27,6 +28,7 @@ import VisitButton from "../components/visit-button/visit-button.astro";
 import WishlistButton from "../components/wishlist-button/wishlist-button.astro";
 import logo3 from "../images/logo-3.png";
 import { buildInflationIndex } from "../lib/inflationIndex";
+import { rewriteInternalLinks, splitBeforeNumberedHeadings } from "../lib/listPost";
 import { toOwnerSlug } from "../lib/ownerSlug";
 import type { Page, Post } from "../types";
 
@@ -172,6 +174,10 @@ const safeContent = sanitizeHtml(rawContent, {
   allowVulnerableTags: true,
 });
 
+// On list posts, ask for a newsletter signup after the 4th entry and a social follow after the 7th.
+const contentWithLocalLinks = rewriteInternalLinks(safeContent);
+const listSegments = isRoastReview ? null : splitBeforeNumberedHeadings(contentWithLocalLinks, [5, 8]);
+
 const threadedComments = organiseComments(
   (contentType === "page" ? data.page?.comments?.nodes : data.post?.comments?.nodes) ?? null
 );
@@ -239,6 +245,7 @@ const reviewStructuredData =
   <div class="container">
     {contentType === "post" && (
       <>
+        {isRoastReview && (
         <button
           type="button"
           class="skip"
@@ -254,6 +261,7 @@ const reviewStructuredData =
         >
           Skip The Nonsense
         </button>
+        )}
         {postMoreThanTwoYearsOld && (
           <p class="warning">
             This post is from {postYear}. Maybe check some other reviews on Google Maps or something before booking.  If you have been since my visit, please let me know how it was in the comments below!
@@ -267,9 +275,42 @@ const reviewStructuredData =
       </>
     )}
     
-    <div class="post-content" set:html={safeContent} />
+    {listSegments ? (
+      <>
+        <div class="post-content" set:html={listSegments[0]} />
+        <Newsletter variant="panel" />
+        <div class="post-content" set:html={listSegments[1]} />
+        <FollowCard />
+        <div class="post-content" set:html={listSegments[2]} />
+      </>
+    ) : (
+      <div class="post-content" set:html={contentWithLocalLinks} />
+    )}
 
-    {!isRoastReview && <Newsletter />}
+    {contentType === "page" && <Newsletter />}
+
+    {contentType === "post" && !isRoastReview && (
+    <>
+    {!listSegments && (
+      <>
+        <Newsletter variant="panel" />
+        <FollowCard />
+      </>
+    )}
+
+    <section class="post-card post-explore" aria-labelledby="explore-heading">
+      <h3 id="explore-heading">Find your next roast:</h3>
+      <div class="post-go__links">
+        <a class="post-cta" href="/league-of-roasts">League of Roasts</a>
+        <a class="post-cta post-cta--secondary" href="/maps">Roast map</a>
+        <a class="post-cta post-cta--secondary" href="/best-roast-lists">More best-of lists</a>
+        <a class="post-cta post-cta--secondary" href="/find-a-roast">Find a roast near you</a>
+      </div>
+    </section>
+
+    <Comments threadedComments={threadedComments} postId={String(post.postId ?? "")} collapsed />
+    </>
+    )}
 
     {isRoastReview && (
     <>

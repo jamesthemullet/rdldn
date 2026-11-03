@@ -359,6 +359,62 @@ describe("[slug] render", () => {
     expect(html).toMatch(/logo-3\.png/);
   });
 
+  test("breaks list posts up with signup prompts and local links", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));
+
+    const entries = Array.from(
+      { length: 10 },
+      (_, i) =>
+        `<h2 class="wp-block-heading">${10 - i}. Pub ${10 - i}</h2><p><a href="https://blog.rdldn.co.uk/pub-${10 - i}/">Pub</a></p>`
+    ).join("");
+
+    const fetchMock = vi.fn().mockImplementation(async (_url, init) => {
+      const body = JSON.parse(String(init?.body));
+      if (body.query.includes("GetAllPosts")) {
+        return makeResponse({ posts: { nodes: [], pageInfo: { hasNextPage: false, endCursor: null } } });
+      }
+      return makeResponse({
+        post: {
+          postId: "7",
+          date: "2025-11-12",
+          content: `<p>Intro</p>${entries}`,
+          title: "10 Best Roast Dinners",
+          featuredImage: { node: { sourceUrl: "https://example.com/img.jpg" } },
+          seo: { opengraphDescription: "Desc", opengraphImage: { sourceUrl: "https://example.com/og.jpg" } },
+          typesOfPost: { nodes: [{ name: "Best Of" }] },
+          closedDowns: { nodes: [] },
+          nSFWs: { nodes: [] },
+          comments: { nodes: [] }
+        }
+      });
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const container = await AstroContainer.create();
+    const { default: Page } = await import("./[slug].astro");
+    const html = await container.renderToString(Page, {
+      params: { slug: "10-best-roast-dinners" },
+      props: { contentType: "post" },
+      request: new Request("https://rdldn.co.uk/10-best-roast-dinners")
+    });
+
+    const newsletterAt = html.indexOf("substack-signup--panel");
+    const followAt = html.indexOf("Enjoying this? Follow Lord Gravy");
+
+    expect(newsletterAt).toBeGreaterThan(html.indexOf("7. Pub 7"));
+    expect(newsletterAt).toBeLessThan(html.indexOf("6. Pub 6"));
+    expect(followAt).toBeGreaterThan(html.indexOf("4. Pub 4"));
+    expect(followAt).toBeLessThan(html.indexOf("3. Pub 3"));
+    expect(html.match(/substack-signup--panel/g)).toHaveLength(1);
+    expect(html).toContain('href="/pub-10/"');
+    expect(html).not.toContain("blog.rdldn.co.uk/pub-");
+    expect(html).toContain("Find your next roast:");
+    expect(html).toContain("Any comments?");
+    expect(html).not.toContain("Skip The Nonsense");
+  });
+
   test("renders page content for contentType page", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-27T00:00:00.000Z"));

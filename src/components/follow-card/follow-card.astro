@@ -1,0 +1,22 @@
+---
+const profiles = [
+  { name: "Instagram", href: "https://instagram.com/roastdinnersinlondon" },
+  { name: "Bluesky", href: "https://bsky.app/profile/roastdinners.bsky.social" },
+  { name: "Threads", href: "https://www.threads.net/@roastdinnersinlondon" },
+  { name: "Facebook", href: "https://facebook.com/roastdinnerslondon" },
+];
+---
+
+<section class="post-card follow-card" aria-labelledby="follow-card-heading">
+  <h2 id="follow-card-heading" class="follow-card__heading">Enjoying this? Follow Lord Gravy</h2>
+  <p>New roasts, hot takes and the occasional crime against gravy, most Sundays.</p>
+  <ul class="follow-card__links">
+    {profiles.map((profile) => (
+      <li>
+        <a class="post-cta post-cta--secondary" href={profile.href} target="_blank" rel="noopener noreferrer">
+          {profile.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
