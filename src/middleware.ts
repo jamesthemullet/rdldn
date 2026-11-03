@@ -10,6 +10,7 @@ const badBots = [
   "PetalBot",
   "Crawlers",
   "Python-requests",
+  "meta-externalagent",
 ];
 
 export const blockBadBots = (request: Request): Response | undefined => {
