@@ -7,4 +7,7 @@ Disallow: /api/
 # Allow all other pages
 Allow: /
 
+User-agent: meta-externalagent
+Disallow: /
+
 Sitemap: https://rdldn.co.uk/sitemap-index.xml

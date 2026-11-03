@@ -16,6 +16,7 @@ describe("blockBadBots", () => {
 		["PetalBot", "Mozilla/5.0 (compatible; PetalBot; +https://aspiegel.com/petalbot)"],
 		["Crawlers", "Mozilla/5.0 (compatible; Crawlers/1.0)"],
 		["Python-requests", "Python-requests/2.28.0"],
+		["meta-externalagent", "meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler)"],
 	])("blocks %s user agent with 403", async (_botName, userAgent) => {
 		const response = blockBadBots(makeRequest(userAgent));
 		expect(response).toBeInstanceOf(Response);
