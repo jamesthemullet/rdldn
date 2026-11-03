@@ -55,6 +55,20 @@ export const getTopRoastDinnerPosts = (
     .slice(0, limit);
 };
 
+// Best-of pages show up to 10 roasts while they're all rated 8+, but never fewer than the original 5.
+const BEST_OF_MAX = 10;
+const BEST_OF_MIN = 5;
+const BEST_OF_HIGH_RATING = 8;
+
+export const getBestOfRoastDinnerPosts = (
+  posts: Post[],
+  options: Omit<TopRoastPostOptions, "limit"> = {}
+): Post[] => {
+  const ranked = getTopRoastDinnerPosts(posts, { ...options, limit: BEST_OF_MAX });
+  const highlyRated = ranked.filter((post) => getPostRating(post) >= BEST_OF_HIGH_RATING).length;
+  return ranked.slice(0, Math.max(BEST_OF_MIN, highlyRated));
+};
+
 export const organiseComments = (comments: CommentsType): Comment[] => {
   if (!comments || comments.length === 0) {
     return [];

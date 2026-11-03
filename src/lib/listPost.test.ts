@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { rewriteInternalLinks, splitBeforeNumberedHeadings } from "./listPost";
+import { getListPromptPositions, rewriteInternalLinks, splitBeforeNumberedHeadings } from "./listPost";
 
 const listHtml = (count: number) =>
   "<p>Intro</p>" +
@@ -39,5 +39,18 @@ describe("splitBeforeNumberedHeadings", () => {
   test("returns null when the post has too few numbered entries", () => {
     expect(splitBeforeNumberedHeadings(listHtml(7), [5, 8])).toBeNull();
     expect(splitBeforeNumberedHeadings("<h2>Not a list</h2><p>Body</p>", [1])).toBeNull();
+  });
+});
+
+describe("getListPromptPositions", () => {
+  test("places prompts after the 4th and 7th entries on a full list", () => {
+    expect(getListPromptPositions(10)).toEqual({ newsletterAfter: 4, followAfter: 7 });
+    expect(getListPromptPositions(9)).toEqual({ newsletterAfter: 4, followAfter: 7 });
+  });
+
+  test("moves prompts earlier or to the bottom on short lists", () => {
+    expect(getListPromptPositions(8)).toEqual({ newsletterAfter: 4, followAfter: null });
+    expect(getListPromptPositions(5)).toEqual({ newsletterAfter: 3, followAfter: null });
+    expect(getListPromptPositions(2)).toEqual({ newsletterAfter: null, followAfter: null });
   });
 });

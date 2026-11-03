@@ -17,6 +17,7 @@ import "../styles/post.css";
 import "../styles/post-bottom.css";
 import sanitizeHtml from "sanitize-html";
 import Comments from "../components/comments/comments.astro";
+import ExploreCard from "../components/explore-card/explore-card.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
 import FollowCard from "../components/follow-card/follow-card.astro";
 import HalloweenEasterEggs from "../components/halloween-easter-eggs/halloween-easter-eggs.astro";
@@ -298,15 +299,7 @@ const reviewStructuredData =
       </>
     )}
 
-    <section class="post-card post-explore" aria-labelledby="explore-heading">
-      <h3 id="explore-heading">Find your next roast:</h3>
-      <div class="post-go__links">
-        <a class="post-cta" href="/league-of-roasts">League of Roasts</a>
-        <a class="post-cta post-cta--secondary" href="/maps">Roast map</a>
-        <a class="post-cta post-cta--secondary" href="/best-roast-lists">More best-of lists</a>
-        <a class="post-cta post-cta--secondary" href="/find-a-roast">Find a roast near you</a>
-      </div>
-    </section>
+    <ExploreCard />
 
     <Comments threadedComments={threadedComments} postId={String(post.postId ?? "")} collapsed />
     </>

@@ -1,20 +1,26 @@
 ---
 import { Image } from "astro:assets";
+import { getListPromptPositions } from "../../lib/listPost";
 import type { Post } from "../../types";
+import FollowCard from "../follow-card/follow-card.astro";
+import Newsletter from "../newsletter/newsletter.astro";
+import "../../styles/post-bottom.css";
 
 type Props = {
   posts: Post[];
 };
 
 const { posts } = Astro.props as Props;
+const { newsletterAfter, followAfter } = getListPromptPositions(posts.length);
 ---
 
 {
-  posts.map((post) => (
+  posts.map((post, index) => (
+    <>
     <div class="best-container">
       <div class="best-container-details">
         <h2>
-          <a href={`/${post.slug}`}>{post.title}</a>
+          {index + 1}. <a href={`/${post.slug}`}>{post.title}</a>
         </h2>
 
         {post.highlights?.loved && (
@@ -54,5 +60,8 @@ const { posts } = Astro.props as Props;
         </div>
       )}
     </div>
+    {index + 1 === newsletterAfter && <Newsletter variant="panel" />}
+    {index + 1 === followAfter && <FollowCard />}
+    </>
   ))
 }

@@ -1,0 +1,52 @@
+---
+import { getListPromptPositions } from "../../lib/listPost";
+import type { Comments as CommentsType } from "../../types";
+import Comments from "../comments/comments.astro";
+import ExploreCard from "../explore-card/explore-card.astro";
+import FollowCard from "../follow-card/follow-card.astro";
+import Newsletter from "../newsletter/newsletter.astro";
+import "../../styles/post-bottom.css";
+
+type Props = {
+  listLength: number;
+  threadedComments: CommentsType;
+  postId: string;
+};
+
+const { listLength, threadedComments, postId } = Astro.props;
+const { newsletterAfter, followAfter } = getListPromptPositions(listLength);
+
+const ingredientPages = [
+  { href: "/best-roast-beef-in-london", label: "Beef" },
+  { href: "/best-roast-lamb-in-london", label: "Lamb" },
+  { href: "/best-roast-pork-in-london", label: "Pork" },
+  { href: "/best-pork-belly-in-london", label: "Pork belly" },
+  { href: "/best-roast-chicken-in-london", label: "Chicken" },
+  { href: "/best-crackling-in-london", label: "Crackling" },
+  { href: "/best-roast-potatoes-in-london", label: "Roast potatoes" },
+  { href: "/best-yorkshire-puddings-in-london", label: "Yorkshire puddings" },
+  { href: "/best-gravy-in-london", label: "Gravy" },
+  { href: "/best-carrots-in-london", label: "Carrots" },
+  { href: "/best-cauliflower-cheese-in-london", label: "Cauliflower cheese" },
+];
+const currentPath = Astro.url.pathname.replace(/\/$/, "");
+const otherIngredientPages = ingredientPages.filter((page) => page.href !== currentPath);
+---
+
+{newsletterAfter === null && <Newsletter variant="panel" />}
+{followAfter === null && <FollowCard />}
+
+<section class="post-card" aria-labelledby="best-of-links-heading">
+  <h3 id="best-of-links-heading">The best of the rest of the plate:</h3>
+  <ul class="best-of-links">
+    {otherIngredientPages.map((page) => (
+      <li>
+        <a class="post-cta post-cta--secondary" href={page.href}>{page.label}</a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<ExploreCard />
+
+<Comments threadedComments={threadedComments} postId={postId} collapsed />
