@@ -17,3 +17,18 @@ export const splitBeforeNumberedHeadings = (html: string, positions: number[]): 
   const cuts = positions.map((position) => headingStarts[position - 1]);
   return [0, ...cuts].map((start, index) => html.slice(start, cuts[index]));
 };
+
+type ListPromptPositions = {
+  newsletterAfter: number | null;
+  followAfter: number | null;
+};
+
+/**
+ * Where to ask for a newsletter signup and a social follow in a ranked list of roasts:
+ * after the 4th and 7th entries on a full list, earlier on short lists, and only when
+ * at least a couple of entries follow. A null position means "at the bottom instead".
+ */
+export const getListPromptPositions = (count: number): ListPromptPositions => ({
+  newsletterAfter: count >= 5 ? Math.min(4, count - 2) : null,
+  followAfter: count >= 9 ? 7 : null,
+});

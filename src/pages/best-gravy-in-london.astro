@@ -4,20 +4,19 @@ import { sanitizeContent } from "../lib/sanitize";
 export const prerender = true;
 
 import "../styles/post.css";
+import BestOfBottom from "../components/best-of-bottom/best-of-bottom.astro";
 import BestPostsList from "../components/best-posts-list/best-posts-list.astro";
-import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
-import Newsletter from "../components/newsletter/newsletter.astro";
 import { getAllRoastDinnerPosts } from "../lib/getAllRoastDinnerPosts";
 import { getSinglePageData } from "../lib/getSinglePageData";
-import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
+import { getBestOfRoastDinnerPosts, organiseComments } from "../lib/utils";
 
 const variables = { id: "5992" };
 const singlePage = await getSinglePageData({ variables });
 
 const allPosts = await getAllRoastDinnerPosts();
 
-const filtered = getTopRoastDinnerPosts(allPosts, {
+const filtered = getBestOfRoastDinnerPosts(allPosts, {
   lovedIncludesAny: ["gravy"],
 });
 
@@ -38,7 +37,6 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
 
     <BestPostsList posts={filtered} />
 
-    <Newsletter />
-    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+    <BestOfBottom listLength={filtered.length} threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>

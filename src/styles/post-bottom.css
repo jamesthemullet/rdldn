@@ -176,7 +176,8 @@
   margin-bottom: 1.5rem;
 }
 
-.follow-card__links {
+.follow-card__links,
+.best-of-links {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -184,4 +185,9 @@
   margin: 0.75rem 0 0;
   padding: 0;
   list-style: none;
+}
+
+.best-container + .substack-signup--panel,
+.best-container + .follow-card {
+  margin-bottom: 1.5rem;
 }

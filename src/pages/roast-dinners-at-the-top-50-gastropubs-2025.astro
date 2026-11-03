@@ -1,12 +1,11 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { sanitizeContent } from "../lib/sanitize";
-import { getTopRoastDinnerPosts, organiseComments } from "../lib/utils";
+import { getBestOfRoastDinnerPosts, organiseComments } from "../lib/utils";
 import "../styles/post.css";
+import BestOfBottom from "../components/best-of-bottom/best-of-bottom.astro";
 import BestPostsList from "../components/best-posts-list/best-posts-list.astro";
-import Comments from "../components/comments/comments.astro";
 import FeaturedPostHeader from "../components/featured-post-header/featured-post-header.astro";
-import Newsletter from "../components/newsletter/newsletter.astro";
 import logo3 from "../images/logo-3.png";
 export const prerender = true;
 
@@ -18,7 +17,7 @@ const singlePage = await getSinglePageData({ variables });
 
 const allPosts = await getAllRoastDinnerPosts();
 
-const filtered = getTopRoastDinnerPosts(allPosts, {
+const filtered = getBestOfRoastDinnerPosts(allPosts, {
   extraPredicate: (post) =>
     post.features?.nodes.some(
       (feature) => feature.name === "top-50-gastropub-2025"
@@ -47,7 +46,6 @@ const threadedComments = organiseComments(singlePage.comments.nodes);
       comments as to what you thought!
     </p>
 
-    <Newsletter />
-    <Comments threadedComments={threadedComments} postId={singlePage.pageId} />
+    <BestOfBottom listLength={filtered.length} threadedComments={threadedComments} postId={singlePage.pageId} />
   </div>
 </BaseLayout>

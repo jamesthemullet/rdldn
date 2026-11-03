@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Comment, Comments, Post } from "../types";
-import { getPostRating, getTopRoastDinnerPosts, isRoastDinnerPost, organiseComments } from "./utils";
+import { getBestOfRoastDinnerPosts, getPostRating, getTopRoastDinnerPosts, isRoastDinnerPost, organiseComments } from "./utils";
 
 const createComment = (id: string, overrides: Partial<Comment> = {}): Comment => ({
   id,
@@ -92,6 +92,30 @@ const createPost = (
     nodes: isRoastDinner ? [{ name: "Roast Dinner" }] : [{ name: "Not Roast" }]
   },
   features: { nodes: features.map((name) => ({ name })) }
+});
+
+describe("getBestOfRoastDinnerPosts", () => {
+  const ratedPosts = (ratings: number[]) =>
+    ratings.map((rating, index) => createPost(`P${index}`, { rating: String(rating), loved: "lamb" }));
+
+  it("shows up to 10 roasts while they are all rated 8 or above", () => {
+    const posts = ratedPosts([9.5, 9.4, 9.3, 9.2, 9.1, 9, 8.9, 8.8, 8.7, 8.6, 8.5, 8.4]);
+
+    expect(getBestOfRoastDinnerPosts(posts)).toHaveLength(10);
+  });
+
+  it("stops at the last roast rated 8 or above", () => {
+    const posts = ratedPosts([9.5, 9.1, 8.8, 8.4, 8.2, 8.1, 8, 7.9, 7.5, 7.2]);
+
+    expect(getBestOfRoastDinnerPosts(posts).map((post) => post.title)).toEqual(["P0", "P1", "P2", "P3", "P4", "P5", "P6"]);
+  });
+
+  it("never shows fewer than 5 roasts when enough exist", () => {
+    const posts = ratedPosts([8.5, 7.9, 7.5, 7.2, 7, 6.5, 6]);
+
+    expect(getBestOfRoastDinnerPosts(posts)).toHaveLength(5);
+    expect(getBestOfRoastDinnerPosts(ratedPosts([9, 8]))).toHaveLength(2);
+  });
 });
 
 describe("getTopRoastDinnerPosts", () => {
