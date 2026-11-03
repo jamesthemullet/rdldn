@@ -156,3 +156,32 @@
     width: 100%;
   }
 }
+
+.follow-card {
+  .follow-card__heading {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: normal;
+    line-height: 1.1;
+    text-align: left;
+    text-decoration: none;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+  }
+}
+
+.post-content + .follow-card {
+  margin-bottom: 1.5rem;
+}
+
+.follow-card__links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
