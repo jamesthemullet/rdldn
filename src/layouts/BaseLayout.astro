@@ -148,6 +148,7 @@ const formattedTitle =
     <div class={`page-container` + (halloween ? " halloween" : "")}>
       <Header />
       <main id="main-content">
+        <h1>{pageTitle || siteName}</h1>
         <slot />
       </main>
       <Footer />

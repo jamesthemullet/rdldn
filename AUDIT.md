@@ -57,6 +57,7 @@ anywhere else in the codebase.
 - 2026-10-27 — scheduled maintenance run: resolved performance item "featured-post-header.astro raw img with no width/height; astro.config.mjs missing image remotePatterns" by adding explicit width/height to the hero image and configuring `image.remotePatterns` for the WordPress media host (section 3)
 - 2026-10-29 — scheduled maintenance run: resolved performance item "best-posts-list.astro serves raw full-size WordPress sourceUrl instead of a resized/optimized variant" by switching to Astro's `<Image>` component (section 3)
 - 2026-11-01 — scheduled maintenance run: resolved test coverage item "guessthescore/api/scores.ts uncovered line 17" by adding a unit test for the flatMap fallback branch (non-object/non-string leaderboard members), since the KV-failure error path it originally described was already covered by an existing test (section 1)
+- 2026-11-09 — scheduled maintenance run: resolved SEO item "no route has a visible, page-topic-specific h1" by rendering `pageTitle` as a visible `<h1>` in `BaseLayout.astro`'s `<main>` and demoting the header's duplicate brand `<h1>` to a non-heading `<p>` (section 4)
 
 ## 1. Test coverage — unit gaps and e2e
 
@@ -99,7 +100,7 @@ anywhere else in the codebase.
 - [x] `public/robots.txt` disallows `/flags` and `/sign-in`, but both also set `noindex={true}` via BaseLayout — blocking crawl access prevents Googlebot from ever seeing the noindex tag, so de-indexing can silently fail if the URL is linked elsewhere; allow crawl and rely on noindex, or vice versa consistently (found: 2026-08-31) (resolved: 2026-09-09, PR #647)
 - [x] `public/robots.txt` disallows `/404.html` but the real 404 route is `/404` (`src/pages/404.astro`, no `.html`) — fix the Disallow rule to match the actual route (found: 2026-08-31) (resolved: 2026-09-10, PR #648)
 - [x] Root-level `./middleware.js` (bad-bot blocking logic) is not the file Astro actually loads (`src/middleware.ts` is, and only handles Clerk auth) and isn't wired into the `@astrojs/vercel` build — appears to be dead code, meaning bad bots aren't actually being blocked despite the code existing; wire it in or remove it (found: 2026-08-31) (resolved: 2026-09-16, PR #661)
-- [ ] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31)
+- [x] Every route renders a single sr-only `<h1>Roast Dinners in London</h1>` via `header.astro:18`/BaseLayout, and no route's page-specific title becomes a visible h1 — no route has a visible, page-topic-specific h1 (found: 2026-08-31) (resolved: 2026-11-09, PR #TBD)
 - [x] `src/pages/privacy-policy.astro:16` renders its own visible `<h1>Privacy Policy</h1>` in addition to the global sr-only h1, giving that route two h1 elements — remove one (found: 2026-08-31) (resolved: 2026-09-11, PR #651)
 - [x] Page titles are inconsistently branded — some routes append `"| Roast Dinners in London"` (`boroughs/index.astro:85`, `guessthescore/index.astro:45`) while others don't (`chains/index.astro:47`, `archive.astro:44`, `my-roasts.astro:41`); BaseLayout applies no shared title template — standardize via a shared suffix (found: 2026-08-31) (resolved: 2026-09-17, PR #663)
 
