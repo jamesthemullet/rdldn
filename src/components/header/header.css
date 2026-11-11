@@ -51,6 +51,9 @@ header {
     display: block;
     min-height: 4rem;
     align-content: center;
+    margin: 0;
+    font: inherit;
+    text-transform: none;
 
     a {
       font-size: 1rem;
