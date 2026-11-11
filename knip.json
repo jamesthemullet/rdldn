@@ -5,7 +5,7 @@
     "type": true
   },
   "tags": ["-lintignore"],
-  "ignoreDependencies": ["@astrojs/ts-plugin", "sitemap", "accented"],
+  "ignoreDependencies": ["@astrojs/ts-plugin", "sitemap", "accented", "@emnapi/runtime"],
   "ignoreFiles": [
     "src/entrypoints/alpine.ts",
     "vitest.setup.ts"
