@@ -33,4 +33,13 @@ describe("GET /api/ratings/[slug]", () => {
     const response = await GET(makeContext("some-slug"));
     expect(response.headers.get("Cache-Control")).toBe("public, s-maxage=3600, stale-while-revalidate=86400");
   });
+
+  test("returns an empty, uncached summary when the database query fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.mocked(getAverageRating).mockRejectedValue(new Error("Failed query"));
+    const response = await GET(makeContext("some-slug"));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({ average: null, count: 0 });
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+  });
 });

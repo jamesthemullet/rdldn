@@ -15,10 +15,9 @@ const isTesting = import.meta.env.PLAYWRIGHT === "true";
       <a class="logo" href="/" aria-label="Home"
         ><Image src={logo1} alt="" width="100" height="100" /></a
       >
-      <h1 class="sr-only">Roast Dinners in London</h1>
-      <div class="title">
+      <h1 class="title">
         <a href="/">Roast Dinners in London</a>
-      </div>
+      </h1>
 
       <div class="header-top-right">
         {!isTesting && <HeaderAuthDesktop client:idle />}

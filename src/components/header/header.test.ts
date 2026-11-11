@@ -20,6 +20,8 @@ describe("header component", () => {
 
     expect(html).toContain('aria-label="Home"');
     expect(html).toContain("Roast Dinners in London");
+    expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    expect(html).toMatch(/<h1 class="title"[^>]*>\s*<a href="\/"[^>]*>Roast Dinners in London<\/a>\s*<\/h1>/);
     expect(html).toContain('class="socials header-socials"');
     expect(html).toContain('id="nav-toggle"');
 
