@@ -3,12 +3,23 @@ import { pathToFileURL } from "node:url";
 import { defineConfig } from "vitest/config";
 
 const astroRoot = path.join(process.cwd(), "node_modules", "astro", "dist");
+// Since astro 7.4.10 the .astro compile plugin lives in its own package.
+const astroPluginEntry = path.join(
+  process.cwd(),
+  "node_modules",
+  "@astrojs",
+  "vite-plugin-astro",
+  "dist",
+  "index.js"
+);
 
-const [{ default: astroPlugin }, config, { AstroLogger }] = await Promise.all([
-  import(pathToFileURL(path.join(astroRoot, "vite-plugin-astro", "index.js")).href),
-  import(pathToFileURL(path.join(astroRoot, "core", "config", "index.js")).href),
-  import(pathToFileURL(path.join(astroRoot, "core", "logger", "core.js")).href)
-]);
+const [{ default: astroPlugin }, config, { AstroLogger }, { toAstroOptions, toAstroCli }] =
+  await Promise.all([
+    import(pathToFileURL(astroPluginEntry).href),
+    import(pathToFileURL(path.join(astroRoot, "core", "config", "index.js")).href),
+    import(pathToFileURL(path.join(astroRoot, "core", "logger", "core.js")).href),
+    import(pathToFileURL(path.join(astroRoot, "core", "astro-options.js")).href)
+  ]);
 
 const root = process.cwd();
 // Disable the dev toolbar so the compiler doesn't add data-astro-source-* attributes to rendered HTML.
@@ -50,7 +61,20 @@ const imageMetadataStub = {
 };
 
 export default defineConfig({
-  plugins: [imageMetadataStub, clerkVirtualModules, astroPlugin({ settings, logger })],
+  plugins: [
+    imageMetadataStub,
+    clerkVirtualModules,
+    ...astroPlugin(toAstroOptions(settings), {
+      ...toAstroCli(settings, {
+        logger,
+        command: "dev",
+        routesList: { routes: [] },
+        serverIslandsState: undefined
+      }),
+      // Keep the compiler from adding data-astro-source-* attributes to rendered HTML.
+      toolbarEnabled: () => false
+    })
+  ],
   test: {
     globals: true,
     environment: "node",
