@@ -27,6 +27,28 @@ const clerkVirtualConfig = {
   },
 };
 
+// Workaround: since astro 7.4.10, @astrojs/vite-plugin-astro emits the before-hydration
+// script (Clerk's browser-only runner) as an entry chunk in every server environment,
+// including the image service build. Astro then loads the first entry chunk of that build
+// as the image service, runs Clerk's script in Node and fails with "document is not defined".
+const BEFORE_HYDRATION_SCRIPT_ID = "astro:scripts/before-hydration.js";
+const dropBeforeHydrationFromImageService = {
+  name: "drop-before-hydration-from-image-service",
+  applyToEnvironment(/** @type {{ name: string }} */ environment) {
+    return environment.name === "astroImageService";
+  },
+  generateBundle(
+    /** @type {unknown} */ _options,
+    /** @type {Record<string, { type: string; facadeModuleId?: string | null }>} */ bundle
+  ) {
+    for (const [fileName, chunk] of Object.entries(bundle)) {
+      if (chunk.type === "chunk" && chunk.facadeModuleId === BEFORE_HYDRATION_SCRIPT_ID) {
+        delete bundle[fileName];
+      }
+    }
+  },
+};
+
 const isTesting = process.env.PLAYWRIGHT === "true";
 
 // https://astro.build/config
@@ -47,7 +69,7 @@ export default defineConfig({
     incrementalBuild: true,
   },
   vite: {
-    plugins: [clerkVirtualConfig],
+    plugins: [clerkVirtualConfig, dropBeforeHydrationFromImageService],
     ...(isTesting && { server: { hmr: { overlay: false } } }),
   },
   integrations: [
