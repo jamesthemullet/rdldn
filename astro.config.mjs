@@ -31,6 +31,7 @@ const clerkVirtualConfig = {
 // script (Clerk's browser-only runner) as an entry chunk in every server environment,
 // including the image service build. Astro then loads the first entry chunk of that build
 // as the image service, runs Clerk's script in Node and fails with "document is not defined".
+// src/lib/astroWorkarounds.test.ts fails when that package is bumped, as a reminder to re-check this.
 const BEFORE_HYDRATION_SCRIPT_ID = "astro:scripts/before-hydration.js";
 const dropBeforeHydrationFromImageService = {
   name: "drop-before-hydration-from-image-service",
