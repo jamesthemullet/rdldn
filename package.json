@@ -28,9 +28,9 @@
   "dependencies": {
     "@astrojs/alpinejs": "^1.0.0",
     "@astrojs/check": "0.9.12",
-    "@astrojs/mdx": "8.1.4",
+    "@astrojs/mdx": "8.1.5",
     "@astrojs/partytown": "2.1.9",
-    "@astrojs/react": "7.1.7",
+    "@astrojs/react": "7.1.8",
     "@astrojs/sitemap": "3.7.4",
     "@astrojs/vercel": "11.0.21",
     "@clerk/astro": "^4.0.0",
@@ -41,7 +41,7 @@
     "@vercel/kv": "^3.0.0",
     "accented": "^1.2.0",
     "alpinejs": "^3.14.9",
-    "astro": "7.4.10",
+    "astro": "7.4.11",
     "astro-seo": "^1.0.0",
     "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
@@ -51,7 +51,7 @@
     "typescript": "6.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
+    "@biomejs/biome": "2.6.7",
     "@emnapi/runtime": "1.11.3",
     "@playwright/test": "1.65.0",
     "@types/leaflet": "^1.9.18",
