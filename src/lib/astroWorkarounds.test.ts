@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 // Reminder test: astro.config.mjs has a workaround (dropBeforeHydrationFromImageService)
 // for a bug in @astrojs/vite-plugin-astro that breaks the image service build.
 // This fails when that package is upgraded, so whoever bumps it re-checks the workaround.
-const WORKAROUND_CHECKED_AGAINST = "0.1.1";
+const WORKAROUND_CHECKED_AGAINST = "0.1.3";
 
 describe("astro.config.mjs workarounds", () => {
   it("before-hydration image service workaround has been re-checked for the installed @astrojs/vite-plugin-astro", () => {
