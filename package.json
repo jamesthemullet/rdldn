@@ -51,7 +51,7 @@
     "typescript": "6.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.7",
+    "@biomejs/biome": "2.6.8",
     "@emnapi/runtime": "1.11.3",
     "@playwright/test": "1.65.1",
     "@types/leaflet": "^1.9.18",
