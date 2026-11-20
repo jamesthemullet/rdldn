@@ -902,3 +902,37 @@ p {
   color: #888;
   text-decoration: line-through;
 }
+
+/* Keep WordPress page content inside the viewport on narrow screens:
+   long unbroken strings (URLs, pub names), tables and embeds must not
+   push the page wider than 100% and cause horizontal scrolling. */
+.page-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+
+  img,
+  video,
+  iframe,
+  figure,
+  pre,
+  .wp-block-columns,
+  .wp-block-group {
+    max-width: 100%;
+  }
+
+  figure {
+    margin-inline: 0;
+  }
+
+  table,
+  .wp-block-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  pre {
+    overflow-x: auto;
+  }
+}
