@@ -31,7 +31,7 @@
     "@astrojs/mdx": "8.1.6",
     "@astrojs/partytown": "2.1.9",
     "@astrojs/react": "7.1.9",
-    "@astrojs/sitemap": "3.7.5",
+    "@astrojs/sitemap": "3.7.6",
     "@astrojs/vercel": "11.0.22",
     "@clerk/astro": "^4.0.0",
     "@neondatabase/serverless": "^1.1.0",
@@ -41,7 +41,7 @@
     "@vercel/kv": "^3.0.0",
     "accented": "^1.2.0",
     "alpinejs": "^3.14.9",
-    "astro": "7.4.12",
+    "astro": "7.4.13",
     "astro-seo": "^1.0.0",
     "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
@@ -57,11 +57,11 @@
     "@types/leaflet": "^1.9.18",
     "@types/node": "^24.10.0",
     "@types/sanitize-html": "^2.16.1",
-    "@vitest/coverage-istanbul": "5.1.0",
-    "@vitest/coverage-v8": "5.1.0",
+    "@vitest/coverage-istanbul": "5.1.1",
+    "@vitest/coverage-v8": "5.1.1",
     "drizzle-kit": "^0.31.10",
     "happy-dom": "^21.0.0",
     "knip": "^6.0.0",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   }
 }
