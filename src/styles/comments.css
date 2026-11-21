@@ -62,8 +62,12 @@
   background: var(--surface);
   border-left: 4px solid var(--roast-new-blue);
   border-radius: 4px;
-  min-width: 100%;
-  max-width: fit-content;
+  /* border-box + width: 100% keeps padding/border inside the list, and
+     overflow-wrap lets long URLs in comment text break instead of
+     stretching the thread wider than the viewport on mobile. */
+  box-sizing: border-box;
+  width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .comment-replies {
@@ -72,10 +76,6 @@
   margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
-
-  .comment {
-    min-width: calc(100% - 1rem);
-  }
 }
 
 .comment-reply {
