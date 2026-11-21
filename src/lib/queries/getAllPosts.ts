@@ -12,7 +12,7 @@ const GET_ALL_POSTS = `
         endCursor
       }
       nodes {
-        postId
+        postId: databaseId
         title
         date
         slug
