@@ -3,7 +3,7 @@ import { SEO_FIELDS } from "./fragments";
 const SINGLE_POST_QUERY = (slug: string) => `
   query SinglePost($id: ID = "${slug}") {
     post(idType: SLUG, id: $id) {
-      postId
+      postId: databaseId
       date
       content
       title
