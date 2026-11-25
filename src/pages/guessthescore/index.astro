@@ -2,35 +2,12 @@
 import FeaturedPostHeader from "../../components/featured-post-header/featured-post-header.astro";
 import guessTheScoreImg from "../../images/guess-the-score.png";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getAllRoastDinnerPosts } from "../../lib/getAllRoastDinnerPosts";
 import "./game.css";
 import "../../styles/post.css";
 import { createHmac, randomUUID } from "node:crypto";
 
-const allPosts = await getAllRoastDinnerPosts();
-
-type GamePost = {
-  title: string;
-  slug: string;
-  imageUrl: string;
-  rating: number;
-};
-
-const gamePosts: GamePost[] = allPosts
-  .filter((post) => {
-    const ratingName = post.ratings?.nodes?.[0]?.name;
-    const imageUrl = post.featuredImage?.node?.sourceUrl;
-    if (!ratingName || !imageUrl) return false;
-    const rating = Number.parseFloat(ratingName);
-    return !Number.isNaN(rating) && rating >= 0 && rating <= 10;
-  })
-  .map((post) => ({
-    title: post.title || "Unknown",
-    slug: post.slug || "",
-    imageUrl: post.featuredImage!.node.sourceUrl,
-    rating: Number.parseFloat(post.ratings!.nodes[0].name),
-  }));
-
+// The roast list comes from /guessthescore/api/posts (CDN-cached) in the browser, so this
+// page doesn't wait on WordPress. Only the per-visit submit token is made here.
 const secret = import.meta.env.SCORE_SECRET;
 if (!secret) throw new Error("SCORE_SECRET env var is not set");
 const nonce = randomUUID();
@@ -58,8 +35,11 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       <div x-show="!gameStarted" class="pre-game">
         <div x-show="!showingHighScores" class="pre-game-actions">
           <p x-show="personalBest !== null" class="personal-best-display">Your best: <strong x-text="`${personalBest}/100`"></strong></p>
-          <button @click="startGame" class="submit-btn">Start Game</button>
+          <button @click="startGame" class="submit-btn" :disabled="!postsReady">Start Game</button>
           <button @click="showHighScores" class="submit-btn high-scores-btn">High Scores</button>
+          <p x-show="postsError" class="posts-error" role="alert">
+            Couldn't load the roast dinners. Please refresh the page to try again.
+          </p>
         </div>
 
         <div x-show="showingHighScores" class="pre-game-leaderboard">
@@ -80,7 +60,7 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
               </template>
             </ol>
           </div>
-          <button @click="startGame" class="submit-btn">Start Game</button>
+          <button @click="startGame" class="submit-btn" :disabled="!postsReady">Start Game</button>
         </div>
       </div>
 
@@ -235,16 +215,16 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
   </section>
 </BaseLayout>
 
-<script is:inline define:vars={{ gamePosts, submitToken }}>
-  window.__roastGamePosts = gamePosts;
+<script is:inline define:vars={{ submitToken }}>
   window.__roastSubmitToken = submitToken;
 </script>
 
 <script is:inline>
   document.addEventListener("alpine:init", () => {
     Alpine.data("roastGame", () => ({
-      allPosts: window.__roastGamePosts || [],
+      allPosts: [],
       gamePosts: [],
+      postsError: false,
       currentIndex: 0,
       guess: 5,
       revealed: false,
@@ -264,8 +244,24 @@ const submitToken = `${nonce}:${timestamp}:${sig}`;
       isNewPersonalBest: false,
 
       async init() {
-        this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+        this.loadPosts();
         if (await this.isSignedIn()) this.fetchPersonalBest();
+      },
+
+      get postsReady() {
+        return this.gamePosts.length === 10;
+      },
+
+      async loadPosts() {
+        try {
+          const res = await fetch("/guessthescore/api/posts");
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          this.allPosts = await res.json();
+          this.gamePosts = this.shuffle([...this.allPosts]).slice(0, 10);
+          if (!this.postsReady) this.postsError = true;
+        } catch {
+          this.postsError = true;
+        }
       },
 
       async isSignedIn() {

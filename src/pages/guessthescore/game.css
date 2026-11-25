@@ -260,6 +260,15 @@
   &:hover {
     background: var(--roast-pink);
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+
+  &:disabled:hover {
+    background: var(--roast-new-blue);
+  }
 }
 
 /* Reveal section */
@@ -405,7 +414,8 @@
   }
 }
 
-.submit-error {
+.submit-error,
+.posts-error {
   color: var(--blood);
   font-size: 0.9rem;
   margin: 0;
