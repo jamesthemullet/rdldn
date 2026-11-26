@@ -5,7 +5,13 @@ import "./header.css";
 import SocialLinks from "../social-links/social-links.astro";
 import { HeaderAuthDesktop, HeaderAuthMobile } from "./HeaderAuth";
 
+type Props = {
+  pageTitle?: string;
+};
+
+const { pageTitle } = Astro.props;
 const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/";
 const isTesting = import.meta.env.PLAYWRIGHT === "true";
 ---
 
@@ -16,7 +22,11 @@ const isTesting = import.meta.env.PLAYWRIGHT === "true";
         ><Image src={logo1} alt="" width="100" height="100" /></a
       >
       <h1 class="title">
-        <a href="/">Roast Dinners in London</a>
+        {isHome ? (
+          <a href="/">Roast Dinners in London</a>
+        ) : (
+          pageTitle || "Roast Dinners in London"
+        )}
       </h1>
 
       <div class="header-top-right">

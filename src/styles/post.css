@@ -354,6 +354,7 @@ p {
   .nav-container {
     background-color: var(--halloween);
 
+    .title,
     .title a {
       color: var(--blood);
       font-family: "Creepster", sans-serif;
