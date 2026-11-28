@@ -229,12 +229,16 @@ test("league of roasts table renders, filters, and reveals extra data", async ({
   await expect(page).toHaveURL(/\/league-of-roasts\/?$/);
   await expect(leagueItems.first()).toBeVisible({ timeout: 15000 });
 
+  // After goBack the server-rendered button is visible before the React island hydrates,
+  // and a click before hydration does nothing. Retry until the options panel opens.
   const optionsButton = page.locator(".show-hide-button");
-  const buttonLabel = (await optionsButton.textContent()) || "";
-  if (buttonLabel.toLowerCase().includes("show")) {
-    await optionsButton.click();
-  }
-  await expect(page.locator(".toggle-columns")).toBeVisible();
+  await expect(async () => {
+    const buttonLabel = (await optionsButton.textContent()) || "";
+    if (buttonLabel.toLowerCase().includes("show")) {
+      await optionsButton.click();
+    }
+    await expect(page.locator(".toggle-columns")).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 15_000 });
 
   await page.locator("#price").check();
   await page.locator("#meat").check();
