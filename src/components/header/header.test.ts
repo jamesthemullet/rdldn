@@ -34,4 +34,16 @@ describe("header component", () => {
     expect(html).toContain('class="dropdown-toggle"');
     expect(html).toContain('href="/advertise-with-us"');
   });
+
+  test("renders a page-specific visible h1 on non-home routes", async () => {
+    const container = await AstroContainer.create();
+    const { default: Header } = await import("./header.astro");
+    const html = await container.renderToString(Header, {
+      props: { pageTitle: "Privacy Policy" },
+      request: new Request("https://rdldn.co.uk/privacy-policy"),
+    });
+
+    expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    expect(html).toMatch(/<h1 class="title">\s*Privacy Policy\s*<\/h1>/);
+  });
 });

@@ -146,7 +146,7 @@ const formattedTitle =
   <body>
     <a href="#main-content" class="skip-to-main">Skip to main content</a>
     <div class={`page-container` + (halloween ? " halloween" : "")}>
-      <Header />
+      <Header pageTitle={pageTitle} />
       <main id="main-content">
         <slot />
       </main>

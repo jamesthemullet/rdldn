@@ -53,13 +53,15 @@ header {
     align-content: center;
     margin: 0;
     font: inherit;
-    text-transform: none;
+    font-family: "Loved by the King", sans-serif;
+    text-transform: uppercase;
+    color: var(--roast-white);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 1rem;
 
-    a {
-      font-size: 1rem;
-      @media (min-width: 768px) {
-        font-size: 2rem;
-      }
+    @media (min-width: 768px) {
+      font-size: 2rem;
     }
   }
 

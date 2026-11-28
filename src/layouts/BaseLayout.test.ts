@@ -28,6 +28,8 @@ describe("BaseLayout", () => {
     expect(html).toContain("A short test description");
     expect(html).toContain('charset="utf-8"');
     expect(html).toContain('href="#main-content"');
+    expect(html.match(/<h1[\s>]/g)).toHaveLength(1);
+    expect(html).toMatch(/<h1 class="title">\s*My Test Page\s*<\/h1>/);
   });
 
   test("inlines structured data as an application/ld+json script when provided", async () => {
